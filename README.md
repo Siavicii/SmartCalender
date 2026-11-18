@@ -4,7 +4,6 @@ All-in-One Persian (Jalali), Gregorian & Hijri Progressive Web App (PWA)
 
 تقویم هوشمند جامع (Smart Cal) یک وب‌اپلیکیشن مدرن، سریع و آفلاین است که مطابق با آخرین استانداردهای طراحی iOS 26 (Liquid Glass) و Android 17 (Material 3 Expressive) توسعه یافته است.
 
-🚀 مشاهده نسخه آنلاین (Live Demo)
 
 ✨ امکانات و ویژگی‌های کلیدی (Features)
 
