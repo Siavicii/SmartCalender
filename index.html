@@ -959,7 +959,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v21";
+  const VER = "v22";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1943,9 +1943,7 @@ async function activateOrRefreshStatusNotif() {
     await Notification.requestPermission().catch(() => null);
   }
   if (Notification.permission === "denied") {
-    alert("مجوز اعلان برای این سایت در مرورگر شما بسته شده است.
-
-لطفاً روی آیکون تنظیمات/قفل کنار نوار آدرس بالای مرورگر بزنید، وارد بخش Permissions (مجوزها) شوید و گزینه Notifications (اعلان‌ها) را روی Allow (مجاز) قرار دهید.");
+    alert(tr("مجوز اعلان برای این سایت در مرورگر شما بسته شده است.\n\nلطفاً روی آیکون تنظیمات/قفل کنار نوار آدرس بالای مرورگر بزنید، وارد بخش Permissions (مجوزها) شوید و گزینه Notifications (اعلان‌ها) را روی Allow (مجاز) قرار دهید.", "مۆڵەتی ئاگاداری بۆ ئەم ماڵپەڕە لە وێبگەڕەکەت داخراوە.\n\nتکایە لە ڕێکخستنی ماڵپەڕەکە مۆڵەتی Notifications چالاک بکە.", "Notification permission is blocked for this site in your browser.\n\nPlease tap the lock/tune icon next to the address bar, open Permissions, and set Notifications to Allow."));
     updateStatusDateBtnUI();
     return;
   }
@@ -2057,8 +2055,7 @@ async function updatePersistentStatusDate(forcePost = false) {
   }
 
   const weatherLine = hasRealTemp
-    ? `
-${iEl} ${cName || "تهران"}: ${rawTemp}${rawDesc && !rawDesc.includes("دریافت") ? " (" + rawDesc + ")" : ""}`
+    ? ("\n" + `${iEl} ${trCity(cName || "تهران")}: ${rawTemp}${rawDesc && !rawDesc.includes("دریافت") ? " (" + rawDesc + ")" : ""}`)
     : "";
 
   const notifBody = `${notifSubDates}${weatherLine}`;
