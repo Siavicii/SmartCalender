@@ -1979,7 +1979,7 @@ function saveSettings(reload=false){
 }
 
 // Weather with Dynamic Day/Night Icons & Instant Auto-Refresh on App Visit
-function is currentlyDaytime(cw) {
+function isCurrentlyDaytime(cw) {
   if (cw && cw.is_day !== undefined) return Number(cw.is_day) === 1;
   const hr = new Date().getHours();
   return hr >= 6 && hr < 18;
@@ -2167,11 +2167,7 @@ function renderWeatherData(data,cityName,isCached=false){
   }
 }
 
-function isCurrentlyDaytime(cw) {
-  if (cw && cw.is_day !== undefined) return Number(cw.is_day) === 1;
-  const hr = new Date().getHours();
-  return hr >= 6 && hr < 18;
-}
+
 
 let weatherFetching = false;
 async function fetchWeather(force=false){
