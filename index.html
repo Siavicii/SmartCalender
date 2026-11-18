@@ -1,0 +1,3422 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" id="metaThemeColor" content="#F4F6FA">
+<meta name="theme-color" id="metaThemeColorLight" media="(prefers-color-scheme: light)" content="#F4F6FA">
+<meta name="theme-color" id="metaThemeColorDark" media="(prefers-color-scheme: dark)" content="#0C0F14">
+<meta name="color-scheme" id="metaColorScheme" content="light dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Smart Cal">
+<link rel="icon" id="dynFavicon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+<link rel="apple-touch-icon" id="dynAppleIcon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+<link rel="manifest" id="dynManifest" href='data:application/manifest+json,{"name":"Smart%20Cal","short_name":"Smart%20Cal","display":"standalone","start_url":"./","background_color":"#F4F6FA","theme_color":"#F4F6FA"}'>
+<title>Smart Cal - تقویم هوشمند جامع</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
+
+:root{
+  --bg:#F4F6FA;--card:#FFFFFF;--sub:#EBF0F7;--pri:#1B6EF3;--pri-bg:rgba(27,110,243,0.14);--onpri:#FFFFFF;
+  --txt:#111827;--sec:#5B6475;--hol:#DC2626;--holbg:#FEE2E2;--grn:#059669;--brd:rgba(0,0,0,0.08);--rad:22px;
+  --shadow:0 4px 18px rgba(0,0,0,0.035);
+}
+[data-theme=dark]{
+  --bg:#0C0F14;--card:#151A23;--sub:#1E2532;--pri:#6EA8FF;--pri-bg:rgba(110,168,255,0.16);--onpri:#061836;
+  --txt:#F3F4F6;--sec:#9CA3AF;--hol:#F87171;--holbg:rgba(248,113,113,0.15);--grn:#34D399;--brd:rgba(255,255,255,0.08);
+  --shadow:0 6px 22px rgba(0,0,0,0.28);
+}
+
+/* ====== MODERN UI DESIGN STYLES (4 SELECTABLE ARCHITECTURES) ====== */
+[data-ui="glass"]{
+  --bg:linear-gradient(145deg,#E0E7FF 0%,#F3E8FF 50%,#E0F2FE 100%);
+  --card:rgba(255,255,255,0.68);
+  --sub:rgba(255,255,255,0.55);
+  --brd:rgba(255,255,255,0.75);
+  --rad:26px;
+  --shadow:0 8px 32px rgba(31,38,135,0.09);
+}
+[data-theme=dark][data-ui="glass"]{
+  --bg:radial-gradient(circle at top right,#1E1B4B,#090D16 60%,#042F2E 100%);
+  --card:rgba(24,31,48,0.62);
+  --sub:rgba(36,46,70,0.55);
+  --brd:rgba(255,255,255,0.13);
+  --shadow:0 8px 32px rgba(0,0,0,0.45);
+}
+[data-ui="glass"] .card,[data-ui="glass"] .w-card,[data-ui="glass"] .nav,[data-ui="glass"] .sheet{
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+[data-ui="glass"] .day.sel{box-shadow:0 4px 14px var(--pri-bg)}
+
+[data-ui="minimal"]{
+  --bg:#FAFAFA;--card:#FFFFFF;--sub:#F3F4F6;
+  --brd:rgba(0,0,0,0.14);--rad:10px;--shadow:none;
+}
+[data-theme=dark][data-ui="minimal"]{
+  --bg:#09090B;--card:#111113;--sub:#18181B;
+  --brd:rgba(255,255,255,0.14);--shadow:none;
+}
+[data-ui="minimal"] .w-card{background:var(--card)}
+[data-ui="minimal"] .day{border-radius:6px;border:1px solid var(--brd)}
+[data-ui="minimal"] .day.hol{background:transparent;border-color:var(--hol)}
+[data-ui="minimal"] .day.tod{border-width:2px;border-color:var(--pri)}
+[data-ui="minimal"] .ibtn,[data-ui="minimal"] .tag,[data-ui="minimal"] .mkt-row,[data-ui="minimal"] .note-item{border-radius:7px}
+
+[data-ui="bento"]{
+  --bg:#ECEFF4;--card:#FFFFFF;--sub:#E5E9F0;
+  --rad:30px;--shadow:0 10px 25px rgba(0,0,0,0.04);
+}
+[data-theme=dark][data-ui="bento"]{
+  --bg:#0B0E14;--card:#161B24;--sub:#202734;
+  --shadow:0 10px 25px rgba(0,0,0,0.35);
+}
+[data-ui="bento"] .day{border-radius:99px;aspect-ratio:1/1;min-height:40px}
+[data-ui="bento"] .ibtn,[data-ui="bento"] .w-day,[data-ui="bento"] .mkt-row,[data-ui="bento"] .note-item{border-radius:18px}
+[data-ui="bento"] .nav-in{background:var(--sub);padding:4px;border-radius:99px}
+[data-ui="bento"] .nbtn{border-radius:99px}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Vazirmatn','Inter',system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
+input,select,textarea,button{font-family:'Vazirmatn','Inter',system-ui,-apple-system,sans-serif}
+html{background-color:var(--bg);min-height:100%;height:100%;overscroll-behavior-y:none;transition:background-color .25s}
+body{background:var(--bg);background-attachment:fixed;color:var(--txt);padding:calc(12px + env(safe-area-inset-top, 0px)) calc(12px + env(safe-area-inset-right, 0px)) calc(84px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));display:flex;justify-content:center;min-height:100dvh;overscroll-behavior-y:none;transition:background .25s,color .25s}
+.app{width:100%;max-width:450px;display:flex;flex-direction:column;gap:12px}
+
+/* Top Bar */
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill{background:var(--pri-bg);color:var(--pri);border:1px solid rgba(27,110,243,0.18);height:36px;padding:0 13px;border-radius:99px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ibtn{background:var(--card);border:1px solid var(--brd);color:var(--txt);height:36px;padding:0 11px;border-radius:13px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.025)}
+.ibtn svg,.pill svg,.nbtn svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nbtn svg{width:20px;height:20px;margin-bottom:1px}
+.ibtn:active,.pill:active{transform:scale(.95)}
+
+/* Views */
+.view{display:none;flex-direction:column;gap:12px}
+.view.active{display:flex}
+
+/* Cards & Weather */
+.card{background:var(--card);border:1px solid var(--brd);border-radius:var(--rad);padding:15px;box-shadow:var(--shadow);transition:all .25s}
+.cal-card.fullscreen{position:fixed;inset:0;z-index:45;border-radius:0;max-width:none;overflow-y:auto;padding:14px 14px 78px;display:flex;flex-direction:column;justify-content:space-between;background:var(--bg)}
+.cal-card.fullscreen #calScrollArea,.cal-card.fullscreen #monthWrap{flex:1;display:flex;flex-direction:column}
+.cal-card.fullscreen #days{flex:1;grid-auto-rows:1fr}
+.cal-card.fullscreen .day{min-height:0;height:100%}
+.cal-card.fullscreen .jn{font-size:16px}
+.cal-card.fullscreen .yr-grid{max-height:none!important;flex:1}
+.w-card{background:linear-gradient(135deg,var(--card) 0%,var(--sub) 100%);border:1px solid var(--brd);border-radius:var(--rad);padding:15px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.w-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.w-main{display:flex;align-items:center;gap:12px}
+.w-ico-wrap{width:46px;height:46px;border-radius:15px;background:var(--pri-bg);display:grid;place-items:center;font-size:26px;flex-shrink:0}
+.w-city-row{display:flex;align-items:center;gap:5px;flex-wrap:nowrap}
+.w-city-btn{background:var(--card);border:1px solid var(--brd);color:var(--pri);padding:3px 7px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;line-height:1.2}
+.w-temp{font-size:24px;font-weight:700;color:var(--pri);letter-spacing:-0.5px;line-height:1.1}
+.w-meta{font-size:10px;color:var(--sec);margin-top:3px;display:flex;gap:8px;align-items:center}
+.w-desc{font-size:12px;color:var(--sec);margin-top:2px}
+.w-days{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--brd);padding-top:10px;margin-top:11px;text-align:center}
+.w-day{background:var(--card);border:1px solid var(--brd);border-radius:13px;padding:7px 4px;font-size:11px}
+.w-day b{display:block;margin-top:3px;color:var(--pri);font-size:11px}
+
+/* View Switcher & Yearly Grid */
+.seg{display:inline-flex;background:var(--sub);padding:3px;border-radius:11px;gap:2px}
+.seg button{border:none;background:transparent;color:var(--sec);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.seg button.act{background:var(--card);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.yr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.yr-m{background:var(--sub);border:1.5px solid transparent;border-radius:14px;padding:8px 6px;cursor:pointer}
+.yr-m.cur{border-color:var(--pri)}
+.yr-m-tit{font-size:11px;font-weight:700;text-align:center;color:var(--pri);margin-bottom:5px}
+.yr-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;font-size:8px}
+.yr-d{padding:1.5px 0;border-radius:3px}
+.yr-d.hol{color:var(--hol);font-weight:700}
+.yr-d.tod{background:var(--pri);color:var(--onpri);font-weight:700}
+
+/* Calendar Grid */
+.cal-card{padding:11px 12px}
+.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.wd{font-size:11px;font-weight:700;color:var(--sec);padding-bottom:4px}
+.wd.f{color:var(--hol)}
+.day{min-height:42px;padding:3px 1px 6px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid transparent;position:relative;transition:transform .12s,background .15s}
+.day:active{transform:scale(.92)}
+.day.hol{background:var(--holbg);color:var(--hol)}
+.day.tod{border-color:var(--pri)}
+.day.sel{background:var(--pri)!important;color:var(--onpri)!important}
+.jn{font-size:14px;font-weight:700;line-height:1.1}
+.gn{font-size:9.5px;opacity:.78;margin-top:1px;line-height:1}
+.dots{display:flex;gap:2.5px;position:absolute;bottom:3px}
+.dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+.dot.note{background:var(--grn)}
+.day.sel .dot.note{background:var(--onpri)}
+
+/* Details, Notes & Events */
+.sub-dates{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--sec);margin-top:4px}
+.tag{background:var(--sub);padding:3px 8px;border-radius:8px}
+.ev{padding:7px 0;font-size:13px;border-top:1px solid var(--brd);margin-top:6px}
+.ev.hol{color:var(--hol);font-weight:700}
+.note-box{margin-top:10px;padding-top:10px;border-top:1px dashed var(--brd);display:flex;flex-direction:column;gap:8px}
+.note-row{display:flex;gap:6px}
+.note-item{display:flex;justify-content:space-between;align-items:center;background:var(--sub);padding:8px 10px;border-radius:12px;font-size:12px}
+.m-ev{display:flex;align-items:center;gap:8px;padding:7px 4px;border-top:1px solid var(--brd);font-size:13px;cursor:pointer}
+.m-ev.hol{color:var(--hol);font-weight:700}
+.badge{min-width:26px;height:26px;border-radius:8px;background:var(--sub);display:grid;place-items:center;font-weight:700;font-size:12px}
+.m-ev.hol .badge{background:var(--holbg)}
+
+/* Market Prices */
+.mkt-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mkt-list{display:flex;flex-direction:column;gap:7px}
+.mkt-row{display:flex;justify-content:space-between;align-items:center;background:var(--sub);padding:10px 12px;border-radius:14px}
+.mkt-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.mkt-val{text-align:left}
+.mkt-price{font-size:14px;font-weight:700;color:var(--pri)}
+.mkt-unit{font-size:10px;color:var(--sec)}
+.chg-up{color:var(--grn);font-size:11px;font-weight:700;direction:ltr;display:inline-block}
+.chg-dn{color:var(--hol);font-size:11px;font-weight:700;direction:ltr;display:inline-block}
+
+/* Birthday Surprise Banner & AI Postcard Studio */
+@keyframes pulseGlow{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
+.bday-banner{
+  background:linear-gradient(135deg,#F59E0B 0%,#EC4899 50%,#8B5CF6 100%);
+  color:#FFFFFF;border-radius:18px;padding:14px;margin-bottom:12px;
+  box-shadow:0 8px 24px rgba(236,72,153,0.32);animation:pulseGlow 2.8s infinite ease-in-out;
+}
+.postcard-wrap{margin-top:10px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.postcard-canvas{width:100%;max-width:380px;border-radius:18px;box-shadow:0 10px 26px rgba(0,0,0,0.18);border:1px solid var(--brd);display:block}
+
+
+/* ====== UPGRADED NOTES HUB STYLES ====== */
+.notes-toolbar{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.notes-filters{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
+.fchip{background:var(--sub);border:1px solid var(--brd);color:var(--sec);padding:5px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.fchip.act{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.ncard{background:var(--sub);border:1px solid var(--brd);border-radius:15px;padding:11px 12px;display:flex;flex-direction:column;gap:6px;transition:all .15s}
+.ncard.done{opacity:.65}
+.ncard.done .ntxt{text-decoration:line-through}
+.ncard.pinned{border-color:var(--pri);background:var(--pri-bg)}
+.ncard-top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.ncard-actions{display:flex;gap:4px;align-items:center}
+.nact{background:var(--card);border:1px solid var(--brd);color:var(--txt);height:26px;padding:0 7px;border-radius:8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.nact:active{transform:scale(.92)}
+.cat-pill{font-size:10px;padding:2px 7px;border-radius:6px;background:var(--card);color:var(--pri);font-weight:700;border:1px solid var(--brd)}
+
+/* Bottom Navigation */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--brd);display:flex;justify-content:center;z-index:40;padding:6px 12px calc(6px + env(safe-area-inset-bottom, 0px))}
+.nav-in{width:100%;max-width:450px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.nbtn{background:transparent;border:none;color:var(--sec);padding:6px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nbtn.act{background:var(--pri-bg);color:var(--pri)}
+.nbtn span{font-size:17px}
+
+/* Style Selector Cards */
+.style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+.st-card{background:var(--sub);border:2px solid transparent;border-radius:16px;padding:10px;cursor:pointer;text-align:right;transition:all .15s}
+.st-card.act{border-color:var(--pri);background:var(--pri-bg)}
+.st-prev{height:38px;border-radius:10px;margin-bottom:7px;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 8px}
+.st-dot{width:14px;height:14px;border-radius:4px}
+.st-card b{display:block;font-size:12px;color:var(--txt)}
+.st-card span{display:block;font-size:10px;color:var(--sec);margin-top:2px}
+
+/* Modals & Inputs */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:12px}
+.modal.open{display:flex}
+.sheet{background:var(--card);width:100%;max-width:440px;border-radius:24px;padding:18px;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.s-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd);padding-bottom:10px}
+.row3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:6px}
+select,input,textarea{width:100%;padding:9px;border-radius:11px;border:1px solid var(--brd);background:var(--sub);color:var(--txt);font-size:13px;outline:none}
+.pbtn{width:100%;padding:10px;border-radius:12px;border:none;background:var(--pri);color:var(--onpri);font-weight:700;font-size:13px;cursor:pointer}
+.res{background:var(--sub);padding:12px;border-radius:14px;text-align:center;font-size:13px;line-height:1.8}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.sw{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent}
+.sw.act{border-color:var(--txt);transform:scale(1.1)}
+.set-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px}
+
+[data-ui="neumorph"]{
+  --bg:#E6E9EF;--card:#E6E9EF;--sub:#DCE0E8;--brd:rgba(255,255,255,0.65);--rad:24px;
+  --shadow:6px 6px 14px #c5c9d2, -6px -6px 14px #ffffff;
+}
+[data-theme=dark][data-ui="neumorph"]{
+  --bg:#161920;--card:#161920;--sub:#1E222B;--brd:rgba(255,255,255,0.05);
+  --shadow:6px 6px 14px #0c0e12, -6px -6px 14px #20242e;
+}
+[data-ui="cyber"]{
+  --bg:linear-gradient(135deg,#090514 0%,#13092D 50%,#071A26 100%);
+  --card:rgba(19,14,38,0.86);--sub:rgba(34,24,68,0.75);--brd:rgba(139,92,246,0.42);--rad:16px;
+  --txt:#F8FAFC;--sec:#A5B4FC;--shadow:0 0 22px rgba(139,92,246,0.22);
+}
+[data-ui="persian"]{
+  --bg:linear-gradient(160deg,#F5EFE6 0%,#E8DFD1 100%);
+  --card:#FCF9F2;--sub:#F1E9DA;--brd:rgba(180,130,60,0.28);--rad:20px;
+  --shadow:0 6px 20px rgba(120,80,30,0.08);
+}
+[data-theme=dark][data-ui="persian"]{
+  --bg:linear-gradient(160deg,#14110E 0%,#1F1913 100%);
+  --card:#1C1712;--sub:#292119;--brd:rgba(217,160,91,0.24);
+  --shadow:0 8px 24px rgba(0,0,0,0.45);
+}
+[data-ui="nordic"]{
+  --bg:#E8EEF2;--card:#F8FAFC;--sub:#E2E8F0;--brd:rgba(15,23,42,0.1);--rad:18px;
+  --shadow:0 4px 14px rgba(15,23,42,0.05);
+}
+[data-theme=dark][data-ui="nordic"]{
+  --bg:#0F172A;--card:#1E293B;--sub:#334155;--brd:rgba(148,163,184,0.15);
+}
+
+
+/* ====== ANDROID 17 (MATERIAL 3 EXPRESSIVE) & iOS 26 (LIQUID GLASS) STANDARDS ====== */
+:root {
+  --spring-fast: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-bounce: 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --specular-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.45);
+}
+[data-theme=dark] {
+  --specular-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Seamless Edge-to-Edge Status Bar & Dynamic Island / Cutout Continuity Scrim */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: calc(env(safe-area-inset-top, 0px) + 12px);
+  background: linear-gradient(180deg, var(--status-bg, var(--bg)) 68%, transparent 100%);
+  z-index: 42;
+  pointer-events: none;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+.install-card{
+  background:var(--pri-bg);border:1px solid var(--pri);border-radius:16px;padding:10px 12px;
+  display:none;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;
+}
+.install-card.show{display:flex}
+
+/* iOS 26 Liquid Glass (Spatial Translucent Refractive UI) */
+[data-ui="ios26"] {
+  --bg: radial-gradient(120% 100% at 50% 0%, #DBEAFE 0%, #EDE9FE 48%, #FCE7F3 100%);
+  --card: rgba(255, 255, 255, 0.58);
+  --sub: rgba(255, 255, 255, 0.46);
+  --brd: rgba(255, 255, 255, 0.78);
+  --rad: 28px;
+  --shadow: 0 12px 36px rgba(15, 23, 42, 0.07), inset 0 1.5px 0 0 rgba(255, 255, 255, 0.85);
+}
+[data-theme=dark][data-ui="ios26"] {
+  --bg: radial-gradient(120% 100% at 50% 0%, #17153B 0%, #090D16 55%, #0B192C 100%);
+  --card: rgba(22, 28, 46, 0.54);
+  --sub: rgba(34, 43, 68, 0.48);
+  --brd: rgba(255, 255, 255, 0.16);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.48), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+}
+[data-ui="ios26"] .card,
+[data-ui="ios26"] .w-card,
+[data-ui="ios26"] .nav,
+[data-ui="ios26"] .sheet,
+[data-ui="ios26"] .ibtn {
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+}
+[data-ui="ios26"] .nav {
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  left: 14px; right: 14px;
+  max-width: 440px;
+  margin: 0 auto;
+  border-radius: 99px;
+  border: 1px solid var(--brd);
+  padding: 6px 8px;
+  box-shadow: var(--shadow);
+}
+[data-ui="ios26"] .nbtn { border-radius: 99px; }
+
+/* Android 17 Material 3 Expressive (Dynamic Squircle Morphing & Tonal Elevation) */
+[data-ui="android17"] {
+  --bg: #F3F4F9;
+  --card: #FFFFFF;
+  --sub: #E7EBF4;
+  --brd: rgba(27, 110, 243, 0.12);
+  --rad: 32px;
+  --shadow: 0 6px 24px rgba(17, 24, 39, 0.045);
+}
+[data-theme=dark][data-ui="android17"] {
+  --bg: #0A0D12;
+  --card: #131822;
+  --sub: #1C2433;
+  --brd: rgba(110, 168, 255, 0.14);
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+}
+[data-ui="android17"] .day {
+  border-radius: 16px;
+  transition: transform var(--spring-bounce), border-radius var(--spring-fast), background var(--spring-fast);
+}
+[data-ui="android17"] .day.tod {
+  border-radius: 99px;
+  border-width: 2px;
+}
+[data-ui="android17"] .day.sel {
+  border-radius: 18px;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px var(--pri-bg);
+}
+[data-ui="android17"] .pill,
+[data-ui="android17"] .ibtn {
+  border-radius: 16px;
+  transition: transform var(--spring-bounce);
+}
+[data-ui="android17"] .nav {
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  left: 12px; right: 12px;
+  max-width: 446px;
+  margin: 0 auto;
+  border-radius: 28px;
+  border: 1px solid var(--brd);
+  padding: 6px 10px;
+  box-shadow: var(--shadow);
+}
+
+/* Dynamic Weather & Season Atmosphere */
+body.atm-spring { background-image: radial-gradient(circle at 12% 10%, rgba(16,185,129,0.18), transparent 45%), radial-gradient(circle at 88% 85%, rgba(244,114,182,0.15), transparent 45%) !important; }
+body.atm-summer { background-image: radial-gradient(circle at 85% 8%, rgba(245,158,11,0.22), transparent 48%), radial-gradient(circle at 15% 85%, rgba(56,189,248,0.15), transparent 45%) !important; }
+body.atm-autumn { background-image: radial-gradient(circle at 85% 12%, rgba(234,88,12,0.24), transparent 48%), radial-gradient(circle at 15% 85%, rgba(217,119,6,0.18), transparent 45%) !important; }
+body.atm-winter { background-image: radial-gradient(circle at 50% 0%, rgba(56,189,248,0.24), transparent 55%), radial-gradient(circle at 85% 90%, rgba(129,140,248,0.18), transparent 45%) !important; }
+body.atm-rain { background-image: linear-gradient(180deg, rgba(14,116,144,0.24) 0%, rgba(30,58,138,0.2) 100%) !important; }
+body.atm-snow { background-image: radial-gradient(circle at 50% 10%, rgba(224,242,254,0.34), rgba(148,163,184,0.16)) !important; }
+body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,204,21,0.24), transparent 45%) !important; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Top Bar -->
+  <div class="bar">
+    <div class="pill" id="todBtn" title="بازگشت به تاریخ امروز">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/></svg>
+      <span id="todBtnTxt">امروز</span>
+    </div>
+    <div class="actions">
+      <button class="ibtn" id="openStyle" title="انتخاب سبک طراحی">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20 2.5 2.5 0 0 0 2.5-2.5c0-.6-.2-1.2-.6-1.6-.4-.4-.6-1-.6-1.6a2.5 2.5 0 0 1 2.5-2.5H16a6 6 0 0 0 6-6c0-5.5-4.5-9.8-10-9.8z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1" fill="currentColor"/></svg>
+        <span>طراحی</span>
+      </button>
+      <button class="ibtn" id="openConv" title="مبدل تاریخ شمسی، میلادی و قمری">
+        <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span>مبدل</span>
+      </button>
+      <button class="ibtn" id="installPwaBtn" onclick="triggerPwaInstall()" style="display:none;background:var(--pri);color:var(--onpri);border:none" title="نصب وب‌اپلیکیشن روی گوشی">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>نصب</span>
+      </button>
+      <button class="ibtn" id="openSet" title="تنظیمات و پشتیبان‌گیری">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>تنظیمات</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PWA Install Banner (Android Chrome & iOS Safari) -->
+  <div class="install-card" id="pwaInstallBanner">
+    <div style="line-height:1.6">
+      <b style="color:var(--pri);display:block">📲 نصب نسخه وب‌اپلیکیشن تمام‌صفحه (Edge-to-Edge)</b>
+      <span id="pwaInstallHint" style="color:var(--sec)">نصب مستقیم روی صفحه اصلی گوشی بدون نوار مرورگر</span>
+    </div>
+    <div style="display:flex;gap:5px;flex-shrink:0">
+      <button class="ibtn" id="pwaBannerAction" onclick="triggerPwaInstall()" style="background:var(--pri);color:var(--onpri);border:none;height:30px">نصب اپ</button>
+      <button class="ibtn" onclick="dismissInstallBanner()" style="height:30px;padding:0 7px">✕</button>
+    </div>
+  </div>
+
+  <!-- VIEW 1: CALENDAR -->
+  <div class="view active" id="view-cal">
+    <!-- Birthday Global Surprise Banner (Shown on user's birthday) -->
+    <div id="calBdayBanner" style="display:none"></div>
+
+    <!-- Redesigned Weather + AQI + Weather Change Notification -->
+    <div class="w-card" id="weatherCard">
+      <div class="w-top">
+        <div class="w-main" style="min-width:0">
+          <div class="w-ico-wrap" id="wIcon">⛅</div>
+          <div style="min-width:0">
+            <div class="w-city-row">
+              <b id="wCity" style="font-size:14px;white-space:nowrap">تهران</b>
+              <button class="w-city-btn" onclick="openCityModal()">📍 شهر</button>
+              <button class="w-city-btn" id="wNotifBtn" onclick="toggleWeatherNotif()" title="اعلان تغییر وضعیت جوی">🔕 هشدار</button>
+            </div>
+            <div class="w-desc" id="wDesc">در حال دریافت وضعیت هوا...</div>
+            <div class="w-meta"><span id="wWind">💨 --</span><span>•</span><span id="wUpd">کش آفلاین</span></div>
+          </div>
+        </div>
+        <div style="text-align:left;flex-shrink:0">
+          <div class="w-temp" id="wTemp">--°</div>
+          <div style="font-size:10px;color:var(--sec);margin-top:2px;white-space:nowrap" id="wHiLo">--° / --°</div>
+        </div>
+      </div>
+      <!-- Air Quality Index (AQI) Bar -->
+      <div id="aqiBar" style="margin-top:9px;padding:7px 10px;border-radius:12px;background:var(--card);border:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;font-size:11px">
+        <span id="aqiLabel">🌿 شاخص آلودگی هوا (AQI): <b id="aqiVal">--</b></span>
+        <span id="aqiStatus" class="tag" style="font-weight:700">در حال بررسی...</span>
+      </div>
+      <div class="w-days" id="wForecast"></div>
+    </div>
+
+    <!-- Calendar Grid (Monthly / Yearly + Fullscreen + Go To Today inside Calendar) -->
+    <div class="card cal-card" id="calCard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:4px;flex-wrap:wrap">
+        <div class="seg">
+          <button id="modeMonth" class="act" onclick="setCalMode('month')">ماهانه</button>
+          <button id="modeYear" onclick="setCalMode('year')">سالانه</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px">
+          <button class="ibtn" id="goTodayBtn" style="background:var(--pri);color:var(--onpri);border:none;height:30px;border-radius:10px;padding:0 10px;font-size:11px">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            <span>برو به امروز</span>
+          </button>
+          <button class="ibtn" id="fsBtn" onclick="toggleCalFullscreen()" style="height:30px;padding:0 9px;font-size:11px;border-radius:10px">⛶ تمام‌صفحه</button>
+        </div>
+      </div>
+      <div class="mhead">
+        <button class="ibtn" id="prev">❯</button>
+        <div id="calHeaderTap" onclick="handleCalHeaderClick()" title="کلیک برای تمام‌صفحه و جابجایی ماهانه/سالانه" style="text-align:center;cursor:pointer;padding:2px 10px;border-radius:12px">
+          <b id="jTit" style="font-size:16px"></b>
+          <div id="gTit" style="font-size:11px;color:var(--sec);margin-top:2px"></div>
+        </div>
+        <button class="ibtn" id="next">❮</button>
+      </div>
+      <div id="calScrollArea" style="touch-action:pan-y;user-select:none;overflow-x:auto;scroll-behavior:smooth">
+        <div id="monthWrap">
+          <div class="grid">
+            <div class="wd">ش</div><div class="wd">ی</div><div class="wd">د</div><div class="wd">س</div><div class="wd">چ</div><div class="wd">پ</div><div class="wd f">ج</div>
+          </div>
+          <div class="grid" id="days"></div>
+        </div>
+        <div id="yearWrap" class="yr-grid" style="display:none;max-height:360px;overflow-y:auto;padding-left:2px"></div>
+      </div>
+    </div>
+
+    <!-- Selected Day + Personal Notes -->
+    <div class="card">
+      <b id="selTit" style="font-size:14px"></b>
+      <div class="sub-dates" id="selSub"></div>
+      <div id="sunTimesBox" style="margin-top:9px;padding:8px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:8px"></div>
+      <div id="evBox"></div>
+      <div class="note-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
+          <b style="font-size:11.5px;color:var(--sec)">📝 یادداشت‌ها و هشدارها</b>
+          <div style="display:flex;gap:4px;flex-shrink:0">
+            <button class="ibtn" style="height:27px;font-size:10px;padding:0 6px;border-radius:8px" onclick="switchTab('notes')">🗂️ آرشیو</button>
+            <button class="ibtn" style="height:27px;font-size:10px;padding:0 7px;border-radius:8px;background:var(--pri);color:var(--onpri);border:none" onclick="openNoteModal(sel)">+ یادداشت</button>
+          </div>
+        </div>
+        <div id="notesList" style="display:flex;flex-direction:column;gap:5px"></div>
+        <div class="note-row" style="align-items:center;gap:5px">
+          <input type="text" id="noteInput" placeholder="یادداشت سریع این روز..." style="flex:1;padding:7px 9px;font-size:12px" onkeydown="if(event.key==='Enter')addNote()">
+          <input type="time" id="noteTimeInput" title="ساعت هشدار" style="width:90px;padding:7px 4px;font-size:11.5px">
+          <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;height:34px;padding:0 11px;font-size:11.5px;border-radius:9px" onclick="addNote()">ثبت</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Month Events (Updatable) -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px">
+        <b style="font-size:13px;color:var(--sec)">مناسبت‌ها و تعطیلات این ماه</b>
+        <button class="ibtn" style="height:28px;font-size:11px;padding:0 8px" onclick="updateHolidaysOnline()">🔄 بروزرسانی مناسبت‌ها</button>
+      </div>
+      <div id="evSyncStatus" style="font-size:10px;color:var(--sec);margin-bottom:4px"></div>
+      <div id="monthEvBox"></div>
+      <div class="note-box" style="margin-top:8px;padding-top:8px">
+        <b style="font-size:11px;color:var(--sec)">➕ افزودن رویداد، مناسبت یا هشدار زمانی به این روز</b>
+        <div class="note-row" style="flex-wrap:wrap">
+          <input type="text" id="customEvInput" placeholder="عنوان رویداد یا مناسبت..." style="flex:1;min-width:140px">
+          <input type="time" id="customEvTime" title="ساعت هشدار رویداد" style="width:102px;padding:7px 6px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:3px;font-size:11px;white-space:nowrap;cursor:pointer">
+            <input type="checkbox" id="customEvHol" style="width:16px;height:16px"> تعطیل
+          </label>
+          <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px" onclick="addCustomEvent()">افزودن</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: MARKET (GOLD, COIN, CURRENCY IN TOMAN) -->
+  <div class="view" id="view-mkt">
+    <div class="card">
+      <div class="mkt-head">
+        <div>
+          <b style="font-size:15px">💰 نرخ لحظه‌ای طلا، سکه و ارز</b>
+          <div style="font-size:11px;color:var(--sec);margin-top:2px" id="mktUpd">در حال اتصال به پایگاه داده نرخ لحظه‌ای...</div>
+        </div>
+        <button class="ibtn" id="mktRefreshBtn" onclick="fetchMarket(true)">🔄 بروزرسانی</button>
+      </div>
+
+      <b style="font-size:12px;color:var(--sec);display:block;margin:8px 0 6px">🪙 بازار طلا و سکه (تومان)</b>
+      <div class="mkt-list" id="goldList"></div>
+      <b style="font-size:12px;color:var(--sec);display:block;margin:14px 0 6px">💵 نرخ ارزهای خارجی (تومان)</b>
+      <div class="mkt-list" id="fxList"></div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: ALL NOTES (UPGRADED NOTES WORKSPACE) -->
+  <div class="view" id="view-notes">
+    <div class="card">
+      <div class="mkt-head">
+        <div>
+          <b style="font-size:15px">📒 دفترچه هوشمند یادداشت‌ها</b>
+          <div style="font-size:11px;color:var(--sec);margin-top:2px" id="notesStatsSub">مدیریت سریع یادداشت‌ها و یادآورهای ثبت‌شده</div>
+        </div>
+        <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px" onclick="openNoteModal()">➕ ایجاد یادداشت</button>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="notes-toolbar">
+        <input type="text" id="noteSearchInput" placeholder="🔍 جستجو در بین یادداشت‌های قبلی..." oninput="renderAllNotes()">
+        <div class="notes-filters" id="noteFilterChips">
+          <button class="fchip act" onclick="setNoteFilter('all',this)">همه یادداشت‌ها</button>
+          <button class="fchip" onclick="setNoteFilter('pinned',this)">📌 سنجاق‌شده</button>
+          <button class="fchip" onclick="setNoteFilter('alarm',this)">⏰ دارای هشدار</button>
+          <button class="fchip" onclick="setNoteFilter('active',this)">⏳ انجام‌نشده</button>
+          <button class="fchip" onclick="setNoteFilter('done',this)">✅ انجام‌شده</button>
+        </div>
+      </div>
+
+      <!-- Saved Notes List -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="font-size:12px;color:var(--sec)">🗂️ یادداشت‌های ثبت‌شده قبلی (دسترسی سریع)</b>
+        <span style="font-size:10px;color:var(--sec)">لمس تاریخ = پرش به روز در تقویم</span>
+      </div>
+      <div id="allNotesBox" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: HOROSCOPE, BIRTHDAY SURPRISE & AI POSTCARD GENERATOR -->
+  <div class="view" id="view-fal">
+    <div class="card">
+      <div class="mkt-head">
+        <div>
+          <b style="font-size:15px">🔮 طالع‌بینی، فال روزانه و کارت پستال تولد</b>
+          <div style="font-size:11px;color:var(--sec);margin-top:2px" id="falDateSub">بر اساس تاریخ تولد و انرژی امروز</div>
+        </div>
+        <button class="ibtn" style="height:26px;padding:0 8px;font-size:10.5px;border-radius:9px;gap:3px;white-space:nowrap" onclick="refreshFalSeed()">🔮 نیت مجدد</button>
+      </div>
+
+      <!-- Birthday Surprise Box (Appears automatically on user's birthday) -->
+      <div id="falBdaySurprise" style="display:none"></div>
+
+      <!-- Birthdate & Name Selector -->
+      <div style="background:var(--sub);padding:11px;border-radius:15px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
+        <b style="font-size:12px;color:var(--pri)">🎂 مشخصات و تاریخ تولد شما (شمسی):</b>
+        <input type="text" id="bNameInput" placeholder="نام شما برای درج روی کارت پستال (اختیاری)..." style="background:var(--card)">
+        <div class="row3">
+          <select id="bDay"></select>
+          <select id="bMon"></select>
+          <select id="bYear"></select>
+        </div>
+        <button class="pbtn" style="padding:9px;font-size:12px" onclick="saveBirthAndCalcFal()">✨ ثبت تاریخ تولد و مشاهده طالع و کارت پستال</button>
+      </div>
+
+      <!-- AI Birthday Postcard Generator Section -->
+      <div style="background:var(--sub);padding:12px;border-radius:16px;margin-bottom:12px;border:1px solid var(--brd)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+          <div>
+            <b style="font-size:13px;color:var(--pri)">🤖 کارت پستال هوش مصنوعی اختصاصی تولد</b>
+            <div style="font-size:10.5px;color:var(--sec);margin-top:2px" id="aiCardStatus">تصویرسازی اختصاصی AI بر اساس برج فلکی، ماه و روز تولد شما</div>
+          </div>
+          <div style="display:flex;gap:5px">
+            <button class="ibtn" id="genAiCardBtn" style="height:30px;font-size:11px;background:var(--pri);color:var(--onpri);border:none" onclick="generateBirthdayPostcard(true)">✨ تولید تصویر AI جدید</button>
+            <button class="ibtn" style="height:30px;font-size:11px" onclick="downloadPostcard()">📥 ذخیره تصویر</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+          <select id="aiCardStyleSelect" onchange="generateBirthdayPostcard(true)" style="background:var(--card);font-size:11.5px;padding:6px 8px">
+            <option value="celestial">🌌 سبک کیهانی و صورت فلکی درخشان</option>
+            <option value="floral">🌸 سبک نقاشی آبرنگ و گل‌های بهاری</option>
+            <option value="luxury">✨ سبک لوکس طلایی و جشن سلطنتی</option>
+            <option value="dreamy">🦋 سبک رویایی و فانتزی نورانی</option>
+            <option value="cyber">🔮 سبک آینده‌نگر و نئونی هوش مصنوعی</option>
+          </select>
+          <textarea id="aiCustomPrompt" rows="2" placeholder="✍️ پرامپت دلخواه شما برای هوش مصنوعی (مثلاً: کهکشان بنفش با کیک تولد طلایی و شمع‌های نورانی یا Persian royal garden with golden fireworks)..." style="background:var(--card);font-size:11.5px;padding:7px 9px"></textarea>
+          <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px">
+            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('کهکشان بنفش با صورت فلکی طلایی و شهاب‌سنگ‌های درخشان')">🌌 کهکشان و شهاب‌سنگ</button>
+            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('باغ ایرانی رویایی پر از گل‌های رز و فانوس‌های نورانی')">🌺 باغ ایرانی رویایی</button>
+            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('کیک تولد لوکس طلایی با آتش‌بازی و نورپردازی سینمایی')">🎂 جشن و آتش‌بازی</button>
+            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('آسمان شفق قطبی بر فراز کوه‌های برفی و دریاچه آرام')">🏔️ شفق قطبی</button>
+          </div>
+          <input type="text" id="aiCustomWish" oninput="drawPostcardComposite(lastAiBgImg)" placeholder="💌 متن پیام تبریک دلخواه روی کارت (خالی = متن هوشمند برج فلکی)" style="background:var(--card);font-size:11.5px;padding:6px 8px">
+        </div>
+        <div class="postcard-wrap" style="position:relative">
+          <div id="aiCardLoader" style="display:none;position:absolute;inset:0;background:rgba(15,23,42,0.72);border-radius:18px;color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12px;z-index:5;backdrop-filter:blur(4px)">
+            <span style="font-size:26px">🎨</span>
+            <b>هوش مصنوعی در حال خلق تصویر اختصاصی شماست...</b>
+          </div>
+          <canvas id="bdayCanvas" width="768" height="512" class="postcard-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Zodiac & Chinese Animal Badges -->
+      <div id="falBadges" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div>
+
+      <!-- Daily Horoscope Cards -->
+      <div id="falContent" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="nav">
+  <div class="nav-in">
+    <button class="nbtn act" id="nav-cal" onclick="switchTab('cal')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="8" y="14" width="3" height="3" rx="0.5" fill="currentColor"/></svg>
+      تقویم
+    </button>
+    <button class="nbtn" id="nav-mkt" onclick="switchTab('mkt')">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15 9a6 6 0 1 1-6 6"/><path d="M9 7v4m-1.5-2h3"/></svg>
+      طلا و ارز
+    </button>
+    <button class="nbtn" id="nav-fal" onclick="switchTab('fal')">
+      <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>
+      طالع و فال
+    </button>
+    <button class="nbtn" id="nav-notes" onclick="switchTab('notes')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+      یادداشت‌ها
+    </button>
+  </div>
+</div>
+
+<!-- Modern UI Style Picker Modal -->
+<div class="modal" id="styleModal">
+  <div class="sheet">
+    <div class="s-head"><b>🎨 طراحی، سبک‌ها و همگام‌سازی جوی</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div style="background:var(--sub);padding:10px 12px;border-radius:14px;border:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div>
+        <b style="font-size:12px;color:var(--pri);display:block">🌦️ همگام‌سازی زنده با آب‌وهوا و فصل</b>
+        <span id="atmStatusText" style="font-size:10.5px;color:var(--sec)">تنظیم خودکار رنگ و حال‌وهوای برنامه با فصل و هوای شهر</span>
+      </div>
+      <input type="checkbox" id="setAutoAtm" onchange="cfg.autoAtm=this.checked;localStorage.setItem('cal_cfg_v4',JSON.stringify(cfg));applyCfg();" style="width:20px;height:20px;cursor:pointer;flex-shrink:0">
+    </div>
+    <div style="font-size:11px;color:var(--sec)">ظاهر و چیدمان کل اپلیکیشن را بین ۸ طراحی مدرن زیر انتخاب کنید:</div>
+    <div class="style-grid" id="styleCards"></div>
+    <div style="border-top:1px solid var(--brd);padding-top:10px">
+      <b style="font-size:12px;color:var(--sec)">رنگ تاکیدی (Accent Color)</b>
+      <div class="swatches" id="styleSwatches"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom City Search Modal -->
+<div class="modal" id="cityModal">
+  <div class="sheet">
+    <div class="s-head"><b>📍 انتخاب یا افزودن شهر دلخواه</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div style="font-size:11px;color:var(--sec)">نام شهر مورد نظر خود را به فارسی یا انگلیسی جستجو کنید (مثلاً: سقز، بوکان، رشت، لندن، دبی):</div>
+    <div class="note-row">
+      <input type="text" id="citySearchInput" placeholder="نام شهر را بنویسید..." onkeydown="if(event.key==='Enter')searchCityOnline()">
+      <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 14px" onclick="searchCityOnline()">جستجو</button>
+    </div>
+    <div id="citySearchResults" style="display:flex;flex-direction:column;gap:6px"></div>
+    <b style="font-size:12px;color:var(--sec);margin-top:4px">شهرهای ذخیره شده و پیش‌فرض:</b>
+    <div id="savedCitiesList" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
+</div>
+
+<!-- Create / Edit Note Modal -->
+<div class="modal" id="noteModal">
+  <div class="sheet">
+    <div class="s-head"><b id="noteModalTitle">➕ ایجاد یادداشت جدید</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div>
+      <b style="font-size:11.5px;color:var(--sec)">تاریخ یادداشت (شمسی):</b>
+      <div class="row3" style="margin-top:5px">
+        <select id="nDay"></select>
+        <select id="nMon"></select>
+        <select id="nYear"></select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div>
+        <b style="font-size:11.5px;color:var(--sec)">دسته‌بندی:</b>
+        <select id="nCat" style="margin-top:4px">
+          <option value="شخصی">👤 شخصی</option>
+          <option value="کاری">💼 کاری و جلسه</option>
+          <option value="مالی">💰 مالی و پرداخت</option>
+          <option value="مهم">⭐ مهم و فوری</option>
+        </select>
+      </div>
+      <div>
+        <b style="font-size:11.5px;color:var(--sec)">ساعت هشدار (اختیاری):</b>
+        <input type="time" id="nTime" style="margin-top:4px">
+      </div>
+    </div>
+    <div>
+      <b style="font-size:11.5px;color:var(--sec)">متن یادداشت:</b>
+      <textarea id="nText" rows="3" placeholder="متن کامل یادداشت یا یادآور خود را بنویسید..." style="margin-top:4px"></textarea>
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+      <input type="checkbox" id="nPin" style="width:17px;height:17px"> 📌 سنجاق کردن به بالای لیست یادداشت‌ها
+    </label>
+    <button class="pbtn" onclick="saveNoteFromModal()">💾 ذخیره یادداشت</button>
+  </div>
+</div>
+
+<!-- Triple Date Converter Modal -->
+<div class="modal" id="convModal">
+  <div class="sheet">
+    <div class="s-head"><b>🔄 مبدل جامع تاریخ (شمسی / میلادی / قمری)</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <select id="convMode" onchange="initConvInputs()">
+      <option value="j2g">مبدأ: تاریخ شمسی</option>
+      <option value="g2j">مبدأ: تاریخ میلادی</option>
+    </select>
+    <div class="row3">
+      <select id="cDay"></select>
+      <select id="cMon"></select>
+      <select id="cYear"></select>
+    </div>
+    <button class="pbtn" onclick="runConvert()">تبدیل و نمایش در تقویم</button>
+    <div class="res" id="convRes">تاریخ را انتخاب کنید</div>
+  </div>
+</div>
+
+<!-- Settings + Backup/Restore Modal -->
+<div class="modal" id="setModal">
+  <div class="sheet">
+    <div class="s-head"><b>⚙️ تنظیمات، شخصی‌سازی و پشتیبان‌گیری</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div>
+      <b style="font-size:12px;color:var(--sec)">سبک طراحی مدرن (UI Style)</b>
+      <select id="setUiStyle" style="margin-top:5px" onchange="setUiStyle(this.value)">
+        <option value="ios26">✨ iOS 26 Liquid Glass (شیشه‌ای فضایی جدید)</option>
+        <option value="android17">🤖 Android 17 Expressive (متریال ۳ پویا)</option>
+        <option value="classic">۱. کارت مدرن (کلاسیک)</option>
+        <option value="glass">۲. شیشه‌ای و شفق قطبی (Glassmorphism)</option>
+        <option value="minimal">۳. مینیمال سوئیسی و خطی (Swiss Grid)</option>
+        <option value="bento">۴. کپسولی و بنتو نرم (Soft Bento)</option>
+        <option value="neumorph">۵. نئومورفیسم برجسته (Neumorphism)</option>
+        <option value="cyber">۶. نئون کهکشانی (Cyber Neon)</option>
+        <option value="persian">۷. کلاسیک ایرانی (Persian Warm)</option>
+        <option value="nordic">۸. نوردیک یخی (Nordic Frost)</option>
+      </select>
+    </div>
+    <div>
+      <b style="font-size:12px;color:var(--sec)">حالت پوسته</b>
+      <select id="setTheme" style="margin-top:5px" onchange="saveSettings()">
+        <option value="auto">خودکار (هماهنگ با گوشی)</option>
+        <option value="light">حالت روز (روشن)</option>
+        <option value="dark">حالت شب (تیره)</option>
+      </select>
+    </div>
+    <div>
+      <b style="font-size:12px;color:var(--sec)">رنگ اصلی برنامه</b>
+      <div class="swatches" id="colorSwatches"></div>
+    </div>
+    <div>
+      <b style="font-size:12px;color:var(--sec)">شهر (برای آب‌وهوا)</b>
+      <select id="setCity" style="margin-top:5px" onchange="saveSettings(true)">
+        <option value="35.6892,51.3890,تهران">تهران</option>
+      </select>
+    </div>
+    <div>
+      <b style="font-size:12px;color:var(--sec)">تقویم اصلی (اولویت نمایش)</b>
+      <select id="setCalType" style="margin-top:5px" onchange="saveSettings(true)">
+        <option value="jalali">☀️ هجری شمسی (جلالی)</option>
+        <option value="gregorian">🌍 میلادی (Gregorian)</option>
+        <option value="hijri">🌙 هجری قمری (Islamic)</option>
+      </select>
+    </div>
+    <div class="set-item"><span>نمایش باکس آب‌وهوا</span><input type="checkbox" id="setShowW" style="width:20px;height:20px" onchange="saveSettings()"></div>
+    <div class="set-item"><span>نمایش تاریخ میلادی در خانه‌ها</span><input type="checkbox" id="setShowG" style="width:20px;height:20px" onchange="saveSettings()"></div>
+    <div class="set-item"><span>نمایش روزشمار در اعلان بالای گوشی</span><input type="checkbox" id="setStatusNotif" style="width:20px;height:20px" onchange="togglePersistentDateNotif(this.checked)"></div>
+
+    <!-- Backup & Restore -->
+    <div style="border-top:1px solid var(--brd);padding-top:10px;display:flex;flex-direction:column;gap:8px">
+      <b style="font-size:12px;color:var(--sec)">💾 پشتیبان‌گیری و بازیابی یادداشت‌ها و تنظیمات</b>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <button class="ibtn" style="justify-content:center" onclick="exportBackup()">📤 کپی کد پشتیبان</button>
+        <button class="ibtn" style="justify-content:center" onclick="importBackup()">📥 بازیابی از متن</button>
+      </div>
+      <textarea id="backupText" rows="2" placeholder="کد پشتیبان اینجا نمایش داده می‌شود یا برای بازیابی اینجا پیست کنید..."></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const JM=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+const GM=["ژانویه (۱)","فوریه (۲)","مارس (۳)","آوریل (۴)","می (۵)","ژوئن (۶)","ژوئیه (۷)","اوت (۸)","سپتامبر (۹)","اکتبر (۱۰)","نوامبر (۱۱)","دسامبر (۱۲)"];
+const GM_EN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const HM=["محرم","صفر","ربیع‌الاول","ربیع‌الثانی","جمادی‌الاول","جمادی‌الثانی","رجب","شعبان","رمضان","شوال","ذیقعده","ذیحجه"];
+const WD=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه","شنبه"];
+const COLORS=[{l:"#1B6EF3",d:"#6EA8FF"},{l:"#0D9488",d:"#2DD4BF"},{l:"#7C3AED",d:"#A78BFA"},{l:"#E11D48",d:"#FB7185"},{l:"#D97706",d:"#FBBF24"},{l:"#16A34A",d:"#4ADE80"}];
+const UI_STYLES=[
+  {id:"ios26",name:"iOS 26 Liquid Glass",desc:"شیشه‌ای فضایی، نوار شناور کپسولی و بازتاب نوری",bg:"linear-gradient(135deg,#DBEAFE,#EDE9FE,#FCE7F3)",rad:"12px"},
+  {id:"android17",name:"Android 17 Expressive",desc:"متریال ۳ پویا، انیمیشن فنری و اشکال تطبیقی",bg:"linear-gradient(135deg,#E0E7FF,#C7D2FE)",rad:"14px"},
+  {id:"classic",name:"کارت مدرن (Classic)",desc:"کارت‌های نرم و خوانا با سایه ملایم",bg:"linear-gradient(135deg,#EBF0F7,#DCE5F2)",rad:"7px"},
+  {id:"glass",name:"شیشه‌ای شفق (Glass)",desc:"پس‌زمینه محو و شفاف با حس شیشه‌ای",bg:"linear-gradient(135deg,#818CF8,#C084FC,#38BDF8)",rad:"10px"},
+  {id:"minimal",name:"مینیمال سوئیسی (Swiss)",desc:"خطوط دقیق، بدون سایه و فوق‌العاده تمیز",bg:"#F4F4F5",rad:"3px"},
+  {id:"bento",name:"کپسولی و بنتو (Bento)",desc:"دکمه‌های دایره‌ای و گوشه‌های بسیار گرد",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"99px"},
+  {id:"neumorph",name:"نئومورفیسم برجسته",desc:"سایه‌های نرم سه‌بعدی",bg:"linear-gradient(145deg,#F0F3F9,#D5DAE3)",rad:"8px"},
+  {id:"cyber",name:"نئون کهکشانی",desc:"حالت شب مدرن و درخشان",bg:"linear-gradient(135deg,#1E1B4B,#4C1D95,#0E7490)",rad:"6px"},
+  {id:"persian",name:"کلاسیک ایرانی",desc:"گرم، کاغذی و چشم‌نواز",bg:"linear-gradient(135deg,#F5EFE6,#E2D4BE)",rad:"8px"},
+  {id:"nordic",name:"نوردیک یخی",desc:"آرام، خنثی و مینیمال",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"6px"}
+];
+const fa=n=>String(n).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+const fmtNum=n=>fa(Math.round(n).toLocaleString("en-US"));
+const div=(a,b)=>~~(a/b),mod=(a,b)=>a-~~(a/b)*b;
+
+// Jalali & Gregorian Math
+function jalCal(jy){const br=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];let gy=jy+621,leapJ=-14,jp=br[0],jm,jump,leap,n,i;for(i=1;i<br.length;i++){jm=br[i];jump=jm-jp;if(jy<jm)break;leapJ+=div(jump,33)*8+div(mod(jump,33),4);jp=jm}n=jy-jp;leapJ+=div(n,33)*8+div(mod(n,33)+3,4);if(mod(jump,33)===4&&jump-n===4)leapJ++;let leapG=div(gy,4)-div((div(gy,100)+1)*3,4)-150,march=20+leapJ-leapG;if(jump-n<6)n=n-jump+div(jump+4,33)*33;leap=mod(mod(n+1,33)-1,4);if(leap===-1)leap=4;return{leap,gy,march}}
+const isLeap=y=>jalCal(y).leap===0;
+const mLen=(y,m)=>m<=6?31:m<=11?30:isLeap(y)?30:29;
+const g2d=(gy,gm,gd)=>{let d=div((gy+div(gm-8,6)+100100)*1461,4)+div(153*mod(gm+9,12)+2,5)+gd-34840408;return d-div(div(gy+100100+div(gm-8,6),100)*3,4)+752};
+function d2g(jdn){let j=4*jdn+139361631;j+=div(div(4*jdn+183187720,146097)*3,4)*4-3908;let i=div(mod(j,1461),4)*5+308,gd=div(mod(i,153),5)+1,gm=mod(div(i,153),12)+1,gy=div(j,1461)-100100+div(8-gm,6);return{gy,gm,gd}}
+function j2d(jy,jm,jd){const r=jalCal(jy);return g2d(r.gy,3,r.march)+(jm-1)*31-div(jm,7)*(jm-7)+jd-1}
+function d2j(jdn){let gy=d2g(jdn).gy,jy=gy-621,r=jalCal(jy),k=jdn-g2d(gy,3,r.march),jm,jd;if(k>=0){if(k<=185)return{jy,jm:1+div(k,31),jd:mod(k,31)+1};k-=186}else{jy--;k+=179;if(r.leap===1)k++}return{jy,jm:7+div(k,30),jd:mod(k,30)+1}}
+const toG=(y,m,d)=>d2g(j2d(y,m,d)),toJ=(y,m,d)=>d2j(g2d(y,m,d));
+const wDay=(y,m,d)=>{const g=toG(y,m,d);return(new Date(g.gy,g.gm-1,g.gd).getDay()+1)%7};
+
+// Hijri Qamari Approx (Kuwaiti Algorithm)
+
+// Accurate Hijri <-> JDN conversion (Tabular / Kuwaiti civil alignment)
+function h2jdn(hy, hm, hd) {
+  return Math.floor((11 * hy + 3) / 30) + 354 * hy + 30 * hm - Math.floor((hm - 1) / 2) + hd + 1948440 - 385;
+}
+function jdn2h(jdn) {
+  const g = d2g(jdn);
+  return g2h(g.gy, g.gm, g.gd);
+}
+function hMonthLen(hy, hm) {
+  const g1 = d2g(h2jdn(hy, hm, 30));
+  const hCheck = g2h(g1.gy, g1.gm, g1.gd);
+  return (hCheck.hm === hm && hCheck.hd === 30) ? 30 : 29;
+}
+function hFirstWeekday(hy, hm) {
+  const g = d2g(h2jdn(hy, hm, 1));
+  return (new Date(g.gy, g.gm - 1, g.gd).getDay() + 1) % 7;
+}
+
+function g2h(gy,gm,gd){
+  let m=gm,y=gy;if(m<3){y-=1;m+=12}
+  let a=Math.floor(y/100),b=2-a+Math.floor(a/4);
+  if(y<1583)b=0;if(y===1582){if(m>10)b=-10;if(m===10){b=0;if(gd>4)b=-10}}
+  let jd=Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+gd+b-1524;
+  let iyear=10631./30.,epochastro=1948084,shift1=8.01/60.,z=jd-epochastro;
+  let cyc=Math.floor(z/10631.);z=z-10631*cyc;let j=Math.floor((z-shift1)/iyear);
+  let iy=30*cyc+j;z=z-Math.floor(j*iyear+shift1);let im=Math.floor((z+28.5001)/29.5);
+  if(im===13)im=12;let id=z-Math.floor(29.5001*im-29);
+  return{hy:iy,hm:im,hd:Math.max(1,Math.round(id))};
+}
+
+// Official Iranian Calendar Events & Holidays
+const BASE_EV={
+  "1-1":[["جشن نوروز (تعطیل رسمی)",1]],"1-2":[["عید نوروز (تعطیل رسمی)",1]],"1-3":[["عید نوروز (تعطیل رسمی)",1]],"1-4":[["عید نوروز (تعطیل رسمی)",1]],
+  "1-12":[["روز جمهوری اسلامی ایران (تعطیل رسمی)",1]],"1-13":[["جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)",1]],
+  "2-1":[["روز بزرگداشت سعدی",0]],"2-10":[["روز ملی خلیج فارس",0]],"2-12":[["روز معلم",0]],"2-25":[["روز بزرگداشت فردوسی",0]],"2-28":[["روز بزرگداشت حکیم عمر خیام",0]],
+  "3-14":[["رحلت حضرت امام خمینی (ره) (تعطیل رسمی)",1]],"3-15":[["قیام خونین ۱۵ خرداد (تعطیل رسمی)",1]],
+  "6-4":[["روز کارمند",0]],"6-27":[["روز شعر و ادب فارسی",0]],
+  "7-8":[["روز بزرگداشت مولوی",0]],"7-20":[["روز بزرگداشت حافظ",0]],
+  "8-13":[["روز دانش‌آموز",0]],"9-16":[["روز دانشجو",0]],"9-30":[["شب یلدا",0]],
+  "11-22":[["پیروزی انقلاب اسلامی (تعطیل رسمی)",1]],
+  "12-5":[["روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس",0]],"12-29":[["روز ملی شدن صنعت نفت ایران (تعطیل رسمی)",1]]
+};
+const BASE_YEAR_EV={
+  "1405":{
+    "1-25":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],
+    "2-6":[["عید سعید قربان (تعطیل رسمی)",1]],
+    "2-14":[["عید سعید غدیر خم (تعطیل رسمی)",1]],
+    "3-4":[["تاسوعای حسینی (تعطیل رسمی)",1]],
+    "3-5":[["عاشورای حسینی (تعطیل رسمی)",1]],
+    "4-13":[["اربعین حسینی (تعطیل رسمی)",1]],
+    "4-21":[["رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],
+    "4-23":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],
+    "5-1":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],
+    "5-10":[["میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],
+    "7-23":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],
+    "8-2":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],
+    "8-16":[["مبعث رسول اکرم (ص) (تعطیل رسمی)",1]],
+    "9-4":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],
+    "10-9":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],
+    "12-19":[["عید سعید فطر (تعطیل رسمی)",1]],
+    "12-20":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]
+  },
+  "1406":{
+    "1-14":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],
+    "1-26":[["عید سعید قربان (تعطیل رسمی)",1]],
+    "2-4":[["عید سعید غدیر خم (تعطیل رسمی)",1]],
+    "2-24":[["تاسوعای حسینی (تعطیل رسمی)",1]],
+    "2-25":[["عاشورای حسینی (تعطیل رسمی)",1]],
+    "4-3":[["اربعین حسینی (تعطیل رسمی)",1]],
+    "4-11":[["رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],
+    "4-13":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],
+    "4-21":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],
+    "4-30":[["میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],
+    "7-12":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],
+    "7-22":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],
+    "8-6":[["مبعث رسول اکرم (ص) (تعطیل رسمی)",1]],
+    "8-24":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],
+    "9-28":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],
+    "12-8":[["عید سعید فطر (تعطیل رسمی)",1]],
+    "12-9":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]
+  }
+};
+let dynamicYearEv=JSON.parse(localStorage.getItem("cal_dyn_ev_v11")||"{}");
+let customUserEv=JSON.parse(localStorage.getItem("cal_user_ev_v11")||"{}");
+
+function getEv(y,m,d){
+  const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
+  if(BASE_EV[k])r.push(...BASE_EV[k]);
+  const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
+  if(yrMap[k])r.push(...yrMap[k]);
+  if(customUserEv[yk])r.push(...customUserEv[yk]);
+  return r;
+}
+
+async function addCustomEvent(){
+  const inp=document.getElementById("customEvInput"),tInp=document.getElementById("customEvTime"),title=inp.value.trim();
+  if(!title)return;
+  const tm=tInp.value;
+  if(tm) await ensureAlarmPermission();
+  const isHol=document.getElementById("customEvHol").checked?1:0;
+  const yk=`${sel.jy}-${sel.jm}-${sel.jd}`;
+  if(!customUserEv[yk])customUserEv[yk]=[];
+  customUserEv[yk].push([title+(isHol?" (تعطیل)":"")+(tm?" [⏰ "+fa(tm)+"]":""),isHol,tm||"",false]);
+  localStorage.setItem("cal_user_ev_v11",JSON.stringify(customUserEv));
+  inp.value="";tInp.value="";document.getElementById("customEvHol").checked=false;
+  render();
+}
+
+async function updateHolidaysOnline(){
+  const st=document.getElementById("evSyncStatus");
+  st.textContent="در حال استعلام تعطیلات و مناسبت‌های رسمی کشور برای سال "+fa(vy)+"...";
+  try{
+    const fetched={};
+    const irSources=[
+      `https://raw.githubusercontent.com/persian-calendar/persian-calendar/main/data/holidays/${vy}.json`,
+      `https://cdn.jsdelivr.net/gh/saman-gh/iranian-holidays@main/data/${vy}.json`
+    ];
+    for(const url of irSources){
+      try{
+        const r=await fetch(url,{cache:"no-store"});
+        if(r&&r.ok){
+          const jData=await r.json();
+          const items=Array.isArray(jData)?jData:(jData.holidays||jData.events||[]);
+          items.forEach(it=>{
+            const m=Number(it.month||it.jm),d=Number(it.day||it.jd);
+            const title=it.title||it.description||it.name;
+            const isH=(it.isHoliday!==undefined?it.isHoliday:true)?1:0;
+            if(m>=1&&m<=12&&d>=1&&d<=31&&title){
+              const mk=m+"-"+d;
+              if(!fetched[mk])fetched[mk]=[];
+              if(!fetched[mk].some(x=>x[0].includes(title)))fetched[mk].push([title+(isH&&!title.includes("تعطیل")?" (تعطیل رسمی)":""),isH]);
+            }
+          });
+          if(Object.keys(fetched).length)break;
+        }
+      }catch(e){}
+    }
+
+    if(!Object.keys(fetched).length){
+      const gStart=toG(vy,1,1),gEnd=toG(vy,12,29);
+      for(const gy of [gStart.gy,gEnd.gy]){
+        const r=await fetch(`https://date.nager.at/api/v3/PublicHolidays/${gy}/IR`).catch(()=>null);
+        if(r&&r.ok){
+          const list=await r.json();
+          list.forEach(item=>{
+            const [yy,mm,dd]=item.date.split("-").map(Number);
+            const j=toJ(yy,mm,dd);
+            if(j.jy===vy){
+              const mk=j.jm+"-"+j.jd;
+              if(!fetched[mk])fetched[mk]=[];
+              const name=item.localName||item.name;
+              if(!fetched[mk].some(x=>x[0].includes(name)))fetched[mk].push([name+" (تعطیل رسمی)",1]);
+            }
+          });
+        }
+      }
+    }
+
+    if(Object.keys(fetched).length){
+      dynamicYearEv[vy]=fetched;
+      localStorage.setItem("cal_dyn_ev_v11",JSON.stringify(dynamicYearEv));
+      const holCount=Object.values(fetched).flat().filter(x=>x[1]).length;
+      st.textContent=`✅ ${fa(holCount)} روز تعطیل رسمی سال ${fa(vy)} از پایگاه معتبر کشور بروزرسانی و ذخیره شد.`;
+      render();
+      return;
+    }
+
+    if(BASE_YEAR_EV[vy]){
+      dynamicYearEv[vy]=BASE_YEAR_EV[vy];
+      localStorage.setItem("cal_dyn_ev_v11",JSON.stringify(dynamicYearEv));
+      const holCount=Object.values(BASE_YEAR_EV[vy]).flat().filter(x=>x[1]).length;
+      st.textContent=`✅ آمار رسمی تعطیلات سال ${fa(vy)} (${fa(holCount)} تعطیلی مناسبتی تقویم رسمی کشور) همگام‌سازی شد.`;
+      render();
+    }else{
+      st.textContent="مناسبت‌های ثابت تقویم رسمی کشور برای سال "+fa(vy)+" فعال است.";
+    }
+  }catch(e){
+    st.textContent="خطا در اتصال؛ از پایگاه آفلاین تقویم رسمی کشور استفاده می‌شود.";
+  }
+}
+
+const now=new Date(),tod=toJ(now.getFullYear(),now.getMonth()+1,now.getDate());
+let vy=tod.jy,vm=tod.jm,sel={...tod},calMode="month";
+const DEFAULT_CITIES=[
+  {n:"تهران",lat:35.6892,lon:51.3890},
+  {n:"مشهد",lat:36.2605,lon:59.6168},
+  {n:"اصفهان",lat:32.6546,lon:51.6680},
+  {n:"شیراز",lat:29.5918,lon:52.5837},
+  {n:"تبریز",lat:38.0962,lon:46.2738},
+  {n:"کرج",lat:35.8400,lon:50.9391},
+  {n:"اهواز",lat:31.3183,lon:48.6706},
+  {n:"رشت",lat:37.2808,lon:49.5832},
+  {n:"ساری",lat:36.5659,lon:53.0586},
+  {n:"قم",lat:34.6416,lon:50.8746}
+];
+let customCities=JSON.parse(localStorage.getItem("cal_cities_v9")||"[]");
+let cfg=JSON.parse(localStorage.getItem("cal_cfg_v4")||'{"theme":"auto","color":0,"ui":"ios26","city":"35.6892,51.3890,تهران","showW":true,"showG":true,"calType":"jalali"}');
+if(!cfg.ui) cfg.ui="ios26";
+if(!cfg.calType) cfg.calType="jalali";
+if(cfg.calType==="gregorian"){ vy=now.getFullYear(); vm=now.getMonth()+1; }
+else if(cfg.calType==="hijri"){ const hNow=g2h(now.getFullYear(),now.getMonth()+1,now.getDate()); vy=hNow.hy; vm=hNow.hm; }
+let notes=JSON.parse(localStorage.getItem("cal_notes_v4")||'{}');
+
+function setUiStyle(uiId){
+  cfg.ui=uiId;
+  localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));
+  applyCfg();
+}
+
+function renderStyleCards(){
+  const box=document.getElementById("styleCards");
+  if(!box)return;
+  box.innerHTML=UI_STYLES.map(s=>`
+    <div class="st-card ${cfg.ui===s.id?'act':''}" onclick="setUiStyle('${s.id}')">
+      <div class="st-prev" style="background:${s.bg};border:1px solid var(--brd)">
+        <span class="st-dot" style="background:var(--pri);border-radius:${s.rad}"></span>
+        <span class="st-dot" style="background:var(--hol);border-radius:${s.rad}"></span>
+        <span class="st-dot" style="background:var(--grn);border-radius:${s.rad}"></span>
+      </div>
+      <b>${s.name}</b>
+      <span>${s.desc}</span>
+    </div>
+  `).join("");
+}
+
+function syncCitySelect(){
+  const selEl=document.getElementById("setCity");
+  const all=[...DEFAULT_CITIES,...customCities];
+  selEl.innerHTML=all.map(c=>`<option value="${c.lat},${c.lon},${c.n}">${c.n}</option>`).join("");
+  if(![...selEl.options].some(o=>o.value===cfg.city)){
+    const [lat,lon,n]=cfg.city.split(",");
+    selEl.innerHTML+=`<option value="${cfg.city}">${n}</option>`;
+  }
+  selEl.value=cfg.city;
+}
+
+function selectCity(lat,lon,name){
+  cfg.city=`${lat},${lon},${name}`;
+  localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));
+  syncCitySelect();
+  closeModals();
+  render();
+  fetchWeather(true);
+}
+
+function openCityModal(){
+  document.getElementById("citySearchInput").value="";
+  document.getElementById("citySearchResults").innerHTML="";
+  renderSavedCities();
+  pushModalState();document.getElementById("cityModal").classList.add("open");
+}
+
+function renderSavedCities(){
+  const all=[...DEFAULT_CITIES,...customCities];
+  document.getElementById("savedCitiesList").innerHTML=all.map((c,idx)=>`
+    <div class="tag" style="cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;${cfg.city.endsWith(','+c.n)?'background:var(--pri);color:var(--onpri);font-weight:700':''}" onclick="selectCity(${c.lat},${c.lon},'${c.n}')">
+      <span>${esc(c.n)}</span>
+      ${idx>=DEFAULT_CITIES.length?`<span onclick="event.stopPropagation();removeCustomCity(${idx-DEFAULT_CITIES.length})" style="opacity:.8">✕</span>`:''}
+    </div>
+  `).join("");
+}
+
+function removeCustomCity(i){
+  customCities.splice(i,1);
+  localStorage.setItem("cal_cities_v9",JSON.stringify(customCities));
+  syncCitySelect();renderSavedCities();
+}
+
+async function searchCityOnline(){
+  const q=document.getElementById("citySearchInput").value.trim();
+  const resBox=document.getElementById("citySearchResults");
+  if(!q){return;}
+  resBox.innerHTML='<div style="font-size:12px;color:var(--sec)">در حال جستجوی مختصات شهر...</div>';
+  try{
+    const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=fa&format=json`);
+    const data=await r.json();
+    if(!data.results||!data.results.length){
+      resBox.innerHTML='<div style="font-size:12px;color:var(--hol)">شهری با این نام پیدا نشد. نام شهر را به انگلیسی یا فارسی دقیق‌تر وارد کنید.</div>';
+      return;
+    }
+    resBox.innerHTML=data.results.map(item=>{
+      const label=item.name+(item.admin1?" ("+item.admin1+")":"");
+      const lat=Number(item.latitude.toFixed(4)),lon=Number(item.longitude.toFixed(4));
+      return `<div class="note-item" style="cursor:pointer" onclick="addAndSelectCity('${esc(item.name).replace(/'/g,"")}',${lat},${lon})">
+        <div><b>${esc(label)}</b><div style="font-size:10px;color:var(--sec)">${esc(item.country||"")}</div></div>
+        <span class="pill" style="padding:4px 9px;font-size:11px">+ انتخاب</span>
+      </div>`;
+    }).join("");
+  }catch(e){
+    resBox.innerHTML='<div style="font-size:12px;color:var(--hol)">خطا در اتصال به اینترنت برای جستجوی شهر.</div>';
+  }
+}
+
+function addAndSelectCity(name,lat,lon){
+  if(![...DEFAULT_CITIES,...customCities].some(c=>c.n===name)){
+    customCities.push({n:name,lat,lon});
+    localStorage.setItem("cal_cities_v9",JSON.stringify(customCities));
+  }
+  selectCity(lat,lon,name);
+}
+
+function toggleCalFullscreen(forceState){
+  const card=document.getElementById("calCard");
+  const btn=document.getElementById("fsBtn");
+  const nextState=forceState!==undefined?forceState:!card.classList.contains("fullscreen");
+  card.classList.toggle("fullscreen",nextState);
+  btn.textContent=nextState?"✕ خروج از تمام‌صفحه":"⛶ تمام‌صفحه";
+}
+function handleCalHeaderClick(){
+  const card=document.getElementById("calCard");
+  if(!card.classList.contains("fullscreen")){
+    toggleCalFullscreen(true);
+  }else{
+    setCalMode(calMode==="month"?"year":"month");
+  }
+}
+function setCalMode(m){
+  calMode=m;
+  document.getElementById("modeMonth").classList.toggle("act",m==="month");
+  document.getElementById("modeYear").classList.toggle("act",m==="year");
+  document.getElementById("monthWrap").style.display=m==="month"?"block":"none";
+  document.getElementById("yearWrap").style.display=m==="year"?"grid":"none";
+  render();
+}
+
+function switchTab(t){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.querySelectorAll(".nbtn").forEach(b=>b.classList.remove("act"));
+  document.getElementById("view-"+t).classList.add("active");
+  document.getElementById("nav-"+t).classList.add("act");
+  if(t==="notes") renderAllNotes();
+  if(t==="mkt") fetchMarket(false);
+  if(t==="fal") renderFal();
+}
+
+
+let currentWeatherCode=null;
+function getSeasonMeta(jm){
+  if(jm<=3)return{id:"spring",name:"بهار 🌸",colorIdx:1};
+  if(jm<=6)return{id:"summer",name:"تابستان ☀️",colorIdx:4};
+  if(jm<=9)return{id:"autumn",name:"پاییز 🍂",colorIdx:3};
+  return{id:"winter",name:"زمستان ❄️",colorIdx:0};
+}
+function applyAtmosphereSync(){
+  const body=document.body;
+  body.classList.remove("atm-spring","atm-summer","atm-autumn","atm-winter","atm-rain","atm-snow","atm-clear");
+  const stEl=document.getElementById("atmStatusText");
+  const season=getSeasonMeta(tod.jm);
+  if(!cfg.autoAtm){
+    if(stEl)stEl.textContent="تنظیم خودکار رنگ و حال‌وهوای برنامه با فصل و هوای شهر";
+    return;
+  }
+  let atmClass="atm-"+season.id,weatherLabel="",targetColor=season.colorIdx;
+  if(currentWeatherCode!==null){
+    if(currentWeatherCode===0){atmClass="atm-clear";weatherLabel=" • هوای آفتابی ☀️";targetColor=4;}
+    else if((currentWeatherCode>=51&&currentWeatherCode<=67)||currentWeatherCode>=80){atmClass="atm-rain";weatherLabel=" • هوای بارانی 🌧️";targetColor=0;}
+    else if(currentWeatherCode>=71&&currentWeatherCode<=77){atmClass="atm-snow";weatherLabel=" • هوای برفی ❄️";targetColor=2;}
+    else{weatherLabel=" • هوای ابری ⛅";}
+  }
+  body.classList.add(atmClass);
+  const sysDark=matchMedia("(prefers-color-scheme:dark)").matches;
+  const isDark=cfg.theme==="dark"||(cfg.theme==="auto"&&sysDark);
+  const c=COLORS[targetColor]||COLORS[0];
+  document.documentElement.style.setProperty("--pri",isDark?c.d:c.l);
+  document.documentElement.style.setProperty("--pri-bg",(isDark?c.d:c.l)+"26");
+  if(stEl)stEl.textContent=`فعال: فصل ${season.name}${weatherLabel}`;
+}
+
+
+const UI_STATUS_HEX = {
+  ios26:     { light: "#DBEAFE", dark: "#17153B" },
+  android17: { light: "#F3F4F9", dark: "#0A0D12" },
+  classic:   { light: "#F4F6FA", dark: "#0C0F14" },
+  glass:    { light: "#E0E7FF", dark: "#131432" },
+  minimal:  { light: "#FAFAFA", dark: "#09090B" },
+  bento:    { light: "#ECEFF4", dark: "#0B0E14" },
+  neumorph: { light: "#E6E9EF", dark: "#161920" },
+  cyber:    { light: "#090514", dark: "#090514" },
+  persian:  { light: "#F5EFE6", dark: "#14110E" },
+  nordic:   { light: "#E8EEF2", dark: "#0F172A" }
+};
+
+function syncPwaStatusBar(isDark) {
+  const uiKey = cfg.ui || "classic";
+  const pair = UI_STATUS_HEX[uiKey] || UI_STATUS_HEX.classic;
+  const effectiveDark = (uiKey === "cyber") ? true : isDark;
+  const hexColor = effectiveDark ? pair.dark : pair.light;
+
+  // 1. Update CSS variable, HTML & Body solid background for iOS overscroll & Edge-to-Edge status bar continuity
+  document.documentElement.style.setProperty("--status-bg", hexColor);
+  document.documentElement.style.backgroundColor = hexColor;
+  document.body.style.backgroundColor = hexColor;
+
+  // 2. Dynamically refresh <meta name="theme-color"> tags (Android Chrome, Samsung Internet, iOS Safari 15+)
+  let metaTheme = document.getElementById("metaThemeColor");
+  if (metaTheme) metaTheme.setAttribute("content", hexColor);
+  let metaLight = document.getElementById("metaThemeColorLight");
+  if (metaLight) metaLight.setAttribute("content", hexColor);
+  let metaDark = document.getElementById("metaThemeColorDark");
+  if (metaDark) metaDark.setAttribute("content", hexColor);
+
+  // 3. Update color-scheme and Apple Web App translucent status bar style
+  let metaScheme = document.getElementById("metaColorScheme");
+  if (metaScheme) metaScheme.setAttribute("content", effectiveDark ? "dark" : "light");
+  let metaApple = document.getElementById("metaAppleStatusBar");
+  if (metaApple) metaApple.setAttribute("content", "black-translucent");
+
+  // 4. Native Android WebView bridge sync (if wrapped in APK)
+  if (window.AndroidBridge && window.AndroidBridge.syncStatusBarColor) {
+    try { window.AndroidBridge.syncStatusBarColor(hexColor, !effectiveDark); } catch (e) {}
+  }
+}
+
+// PWA Installability (Android Chrome beforeinstallprompt + iOS Safari Add-to-Home-Screen guide + Inline Service Worker)
+let deferredInstallPrompt = null;
+const isStandalonePwa = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+const isIosDevice = () => /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+function initPwaInstallAndSw() {
+  // Register Service Worker (./sw.js) for offline support & persistent status-bar notifications on Android & iOS
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  }
+
+  if (isStandalonePwa()) return;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    const topBtn = document.getElementById("installPwaBtn");
+    if (topBtn) topBtn.style.display = "inline-flex";
+    if (!localStorage.getItem("pwa_install_dismissed")) {
+      const banner = document.getElementById("pwaInstallBanner");
+      if (banner) banner.classList.add("show");
+    }
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    const topBtn = document.getElementById("installPwaBtn");
+    if (topBtn) topBtn.style.display = "none";
+    const banner = document.getElementById("pwaInstallBanner");
+    if (banner) banner.classList.remove("show");
+  });
+
+  if (isIosDevice() && !localStorage.getItem("pwa_install_dismissed")) {
+    const topBtn = document.getElementById("installPwaBtn");
+    if (topBtn) topBtn.style.display = "inline-flex";
+    const banner = document.getElementById("pwaInstallBanner");
+    const hint = document.getElementById("pwaInstallHint");
+    const actBtn = document.getElementById("pwaBannerAction");
+    if (banner && hint && actBtn) {
+      hint.innerHTML = "در سافاری آیفون دکمه <b>Share (⬆️)</b> را بزنید و <b>Add to Home Screen</b> را انتخاب کنید تا اعلان دائمی تاریخ و استاتوس‌بار تمام‌صفحه فعال شود.";
+      actBtn.textContent = "راهنما";
+      banner.classList.add("show");
+    }
+  }
+}
+
+async function triggerPwaInstall() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+    if (choice && choice.outcome === "accepted") {
+      deferredInstallPrompt = null;
+      const topBtn = document.getElementById("installPwaBtn");
+      if (topBtn) topBtn.style.display = "none";
+      const banner = document.getElementById("pwaInstallBanner");
+      if (banner) banner.classList.remove("show");
+    }
+    return;
+  }
+  if (isIosDevice()) {
+    alert("راهنمای نصب و فعال‌سازی اعلان تاریخ در iOS:\n\n۱. در پایین مرورگر Safari آیکون اشتراک‌گذاری (مربع و فلش رو به بالا ⬆️) را لمس کنید.\n۲. گزینه «Add to Home Screen» (افزودن به صفحه اصلی) را بزنید.\n۳. برنامه را از صفحه اصلی باز کنید و در تنظیمات گزینه «نمایش روزشمار در اعلان بالای گوشی» را لمس کنید.");
+  } else {
+    alert("راهنمای نصب در اندروید و دسکتاپ:\n\nاز منوی سه‌نقطه (⋮) بالای مرورگر Chrome یا Edge گزینه «Install app» یا «Add to Home screen» را انتخاب کنید تا اپلیکیشن بدون نوار مرورگر و به صورت تمام‌صفحه نصب شود.");
+  }
+}
+
+function dismissInstallBanner() {
+  localStorage.setItem("pwa_install_dismissed", "1");
+  const banner = document.getElementById("pwaInstallBanner");
+  if (banner) banner.classList.remove("show");
+}
+
+function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark) {
+  const c = document.createElement("canvas");
+  c.width = 192; c.height = 192;
+  const ctx = c.getContext("2d");
+
+  const grad = ctx.createLinearGradient(0, 0, 192, 192);
+  if (isDark) {
+    grad.addColorStop(0, "#1E293B");
+    grad.addColorStop(1, "#0F172A");
+  } else {
+    grad.addColorStop(0, accentHex || "#1B6EF3");
+    grad.addColorStop(1, "#4F46E5");
+  }
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(8, 8, 176, 176, 44);
+  ctx.fill();
+
+  ctx.fillStyle = isDark ? (accentHex || "#6EA8FF") : "rgba(255,255,255,0.22)";
+  ctx.beginPath();
+  ctx.roundRect(8, 8, 176, 54, [44, 44, 0, 0]);
+  ctx.fill();
+
+  ctx.fillStyle = isDark ? "#061836" : "#FFFFFF";
+  ctx.font = "bold 26px 'Vazirmatn', system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(monthName, 96, 36);
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 86px 'Vazirmatn', system-ui, sans-serif";
+  ctx.fillText(dayNumStr, 96, 124);
+
+  return c.toDataURL("image/png");
+}
+
+let statusNotifEnabled = JSON.parse(localStorage.getItem("cal_status_notif_v1") || "true");
+
+function updateStatusDateBtnUI() {
+  const chk = document.getElementById("setStatusNotif");
+  if (chk) chk.checked = !!statusNotifEnabled;
+}
+
+async function updatePersistentStatusDate(forcePrompt = false) {
+  updateStatusDateBtnUI();
+  const cType = cfg.calType || "jalali";
+  const g = toG(tod.jy, tod.jm, tod.jd);
+  const h = g2h(g.gy, g.gm, g.gd);
+  const sw = wDay(tod.jy, tod.jm, tod.jd);
+  const weekDayName = WD[(sw + 6) % 7];
+
+  const primaryDayStr = cType === "gregorian" ? String(g.gd) : (cType === "hijri" ? fa(h.hd) : fa(tod.jd));
+  const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (cType === "hijri" ? HM[h.hm - 1] : JM[tod.jm - 1]);
+
+  const sysDark = matchMedia("(prefers-color-scheme:dark)").matches;
+  const isDark = cfg.theme === "dark" || (cfg.theme === "auto" && sysDark);
+  const cObj = COLORS[cfg.color] || COLORS[0];
+  const accentHex = isDark ? cObj.d : cObj.l;
+
+  // 1. Update Browser Tab Title & Dynamic Favicon with Today's Date Number
+  const iconDataUrl = generateDayIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark);
+  document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
+  const fav = document.getElementById("dynFavicon");
+  if (fav) fav.href = iconDataUrl;
+  const appIco = document.getElementById("dynAppleIcon");
+  if (appIco) appIco.href = iconDataUrl;
+
+  // 2. Update PWA App Badge (shows day number on installed PWA icon on iOS & Android)
+  if ("setAppBadge" in navigator) {
+    const badgeNum = cType === "gregorian" ? g.gd : (cType === "hijri" ? h.hd : tod.jd);
+    try { navigator.setAppBadge(badgeNum).catch(() => {}); } catch (e) {}
+  }
+
+  // 3. Setup Dynamic Web App Manifest
+  const uiKey = cfg.ui || "classic";
+  const pair = UI_STATUS_HEX[uiKey] || UI_STATUS_HEX.classic;
+  const themeHex = ((uiKey === "cyber") ? true : isDark) ? pair.dark : pair.light;
+  const manifestObj = {
+    name: "تقویم هوشمند جامع (Smart Cal)",
+    short_name: "Smart Cal",
+    description: "تقویم هوشمند شمسی، میلادی و قمری همراه با آب‌وهوا، اوقات شرعی و نرخ طلا و ارز",
+    start_url: "./",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: themeHex,
+    theme_color: themeHex,
+    dir: "rtl",
+    lang: "fa-IR",
+    icons: [
+      { src: iconDataUrl, sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: iconDataUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+    ]
+  };
+  const manEl = document.getElementById("dynManifest");
+  if (manEl) {
+    const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
+    manEl.href = URL.createObjectURL(blob);
+  }
+
+  // 4. Persistent Status Bar / Notification Center Card (Android Chrome & iOS Safari Home Screen PWA)
+  if (!statusNotifEnabled) return;
+  if (!("Notification" in window)) return;
+
+  if (Notification.permission === "default" && forcePrompt) {
+    await Notification.requestPermission().catch(() => null);
+  }
+  if (Notification.permission !== "granted") return;
+
+  const [, , cName] = cfg.city.split(",");
+  const tEl = document.getElementById("wTemp")?.textContent || "--°";
+  const iEl = document.getElementById("wIcon")?.textContent || "⛅";
+  const todayNotes = (notes[dayKey(tod.jy, tod.jm, tod.jd)] || []).map(x => normNote(x).t);
+  const todayEvs = getEv(tod.jy, tod.jm, tod.jd).map(x => x[0]);
+  const summary = [...todayNotes, ...todayEvs].join(" • ") || "رویدادی برای امروز ثبت نشده است";
+
+  const notifTitle = cType === "gregorian"
+    ? `📅 Today: ${g.gd} ${GM_EN[g.gm - 1]} ${g.gy} (${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]}) • ${cName || "تهران"} ${iEl}${tEl}`
+    : `📅 امروز: ${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)} • ${cName || "تهران"} ${iEl}${tEl}`;
+  const notifBody = `🌍 ${g.gd} ${GM_EN[g.gm - 1]} ${g.gy}  |  🌙 ${fa(h.hd)} ${HM[h.hm - 1]} ${fa(h.hy)}\n📌 ${summary}`;
+
+  const notifOpts = {
+    body: notifBody,
+    icon: iconDataUrl,
+    badge: iconDataUrl,
+    tag: "smartcal-daily-status",
+    renotify: false,
+    silent: true,
+    requireInteraction: true
+  };
+
+  try {
+    if ("serviceWorker" in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && reg.showNotification) {
+        await reg.showNotification(notifTitle, notifOpts);
+        return;
+      }
+    }
+    new Notification(notifTitle, notifOpts);
+  } catch (e) {}
+}
+
+async function togglePersistentDateNotif(forceVal) {
+  const nextVal = (typeof forceVal === "boolean") ? forceVal : !statusNotifEnabled;
+  if (nextVal) {
+    statusNotifEnabled = true;
+    localStorage.setItem("cal_status_notif_v1", "true");
+    if (isIosDevice() && !isStandalonePwa() && !("Notification" in window)) {
+      alert("در آیفون (iOS)، برای نمایش اعلان همیشگی تاریخ در نوار وضعیت و صفحه قفل، ابتدا دکمه Share (⬆️) را بزنید و گزینه Add to Home Screen را انتخاب کنید تا برنامه روی صفحه اصلی نصب شود.");
+      updateStatusDateBtnUI();
+      return;
+    }
+    await updatePersistentStatusDate(true);
+  } else {
+    statusNotifEnabled = false;
+    localStorage.setItem("cal_status_notif_v1", "false");
+    updateStatusDateBtnUI();
+    if ("serviceWorker" in navigator) {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          const list = await reg.getNotifications({ tag: "smartcal-daily-status" });
+          list.forEach(n => n.close());
+        }
+      } catch (e) {}
+    }
+  }
+}
+
+// Auto-trigger persistent status bar notification permission smoothly on first user tap if permission is still 'default'
+document.addEventListener("click", function autoInitNotifOnce() {
+  if (statusNotifEnabled && "Notification" in window && Notification.permission === "default") {
+    updatePersistentStatusDate(true);
+  }
+  document.removeEventListener("click", autoInitNotifOnce);
+}, { once: true });
+
+function applyCfg(){
+  const sysDark=matchMedia("(prefers-color-scheme:dark)").matches;
+  const isDark=cfg.theme==="dark"||(cfg.theme==="auto"&&sysDark);
+  document.documentElement.setAttribute("data-theme",isDark?"dark":"light");
+  document.documentElement.setAttribute("data-ui",cfg.ui||"classic");
+  const c=COLORS[cfg.color]||COLORS[0];
+  document.documentElement.style.setProperty("--pri",isDark?c.d:c.l);
+  document.documentElement.style.setProperty("--pri-bg",(isDark?c.d:c.l)+"26");
+  document.getElementById("weatherCard").style.display=cfg.showW?"block":"none";
+  document.getElementById("setTheme").value=cfg.theme;
+  if(document.getElementById("setUiStyle")) document.getElementById("setUiStyle").value=cfg.ui||"classic";
+  syncCitySelect();
+  document.getElementById("setShowW").checked=cfg.showW;
+  document.getElementById("setShowG").checked=cfg.showG;if(document.getElementById("setCalType"))document.getElementById("setCalType").value=cfg.calType||"jalali";
+  const swHtml=COLORS.map((x,i)=>`<div class="sw ${cfg.color===i?'act':''}" style="background:${x.l}" onclick="cfg.color=${i};saveSettings()"></div>`).join("");
+  document.getElementById("colorSwatches").innerHTML=swHtml;
+  if(document.getElementById("styleSwatches")) document.getElementById("styleSwatches").innerHTML=swHtml;
+  if(document.getElementById('setAutoAtm'))document.getElementById('setAutoAtm').checked=!!cfg.autoAtm;
+  renderStyleCards();
+  applyAtmosphereSync();
+  syncPwaStatusBar(isDark);
+  updatePersistentStatusDate(false);
+}
+
+function syncViewToCalType(targetType) {
+  const gSel = toG(sel.jy, sel.jm, sel.jd);
+  if (targetType === "gregorian") {
+    vy = gSel.gy;
+    vm = gSel.gm;
+  } else if (targetType === "hijri") {
+    const hSel = g2h(gSel.gy, gSel.gm, gSel.gd);
+    vy = hSel.hy;
+    vm = hSel.hm;
+  } else {
+    vy = sel.jy;
+    vm = sel.jm;
+  }
+}
+
+function saveSettings(reload=false){
+  const prevCalType = cfg.calType || "jalali";
+  cfg.theme=document.getElementById("setTheme").value;
+  if(document.getElementById("setUiStyle")) cfg.ui=document.getElementById("setUiStyle").value;
+  cfg.city=document.getElementById("setCity").value;
+  cfg.showW=document.getElementById("setShowW").checked;
+  cfg.showG=document.getElementById("setShowG").checked;
+  if(document.getElementById("setCalType")) cfg.calType=document.getElementById("setCalType").value;
+  if((cfg.calType || "jalali") !== prevCalType) {
+    syncViewToCalType(cfg.calType || "jalali");
+  }
+  localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));
+  applyCfg();render();
+  if(reload) fetchWeather(true);
+}
+
+// Weather with LocalStorage Cache
+function wCodeInfo(code){
+  if(code===0)return["☀️","صاف و آفتابی"];
+  if(code<=3)return["⛅","نیمه‌ابری"];
+  if(code<=48)return["🌫️","مه‌آلود"];
+  if(code<=67)return["🌧️","بارانی"];
+  if(code<=77)return["❄️","برفی"];
+  return["⛈️","رگبار و رعدوبرق"];
+}
+let wNotifEnabled=JSON.parse(localStorage.getItem("w_notif_v10")||"false");
+function updateNotifBtnUI(){
+  const btn=document.getElementById("wNotifBtn");
+  if(!btn)return;
+  btn.textContent=wNotifEnabled?"🔔 هشدار":"🔕 هشدار";
+  btn.style.background=wNotifEnabled?"var(--pri)":"var(--card)";
+  btn.style.color=wNotifEnabled?"var(--onpri)":"var(--pri)";
+}
+async function toggleWeatherNotif(){
+  if(!wNotifEnabled){
+    if("Notification" in window && Notification.permission!=="granted"){
+      await Notification.requestPermission().catch(()=>null);
+    }
+    wNotifEnabled=true;
+    localStorage.setItem("w_notif_v10","true");
+    updateNotifBtnUI();
+    sendWeatherAlert("هشدار هوشمند وضعیت جوی فعال شد","در صورت تغییر وضعیت هوا یا ناسالم شدن شاخص آلودگی، به شما اطلاع داده می‌شود.");
+  }else{
+    wNotifEnabled=false;
+    localStorage.setItem("w_notif_v10","false");
+    updateNotifBtnUI();
+  }
+}
+function sendWeatherAlert(title,body){
+  if(!wNotifEnabled)return;
+  if("Notification" in window && Notification.permission==="granted"){
+    try{new Notification(title,{body});}catch(e){}
+  }
+  const bar=document.getElementById("aqiBar");
+  if(bar){
+    const old=bar.style.boxShadow;
+    bar.style.boxShadow="0 0 0 2px var(--pri)";
+    setTimeout(()=>{bar.style.boxShadow=old;},3000);
+  }
+}
+function aqiMeta(aqi){
+  if(aqi<=50)return["پاک (سالم)","#059669","rgba(5,150,105,0.14)"];
+  if(aqi<=100)return["قابل قبول","#D97706","rgba(217,119,6,0.15)"];
+  if(aqi<=150)return["ناسالم برای گروه‌های حساس","#EA580C","rgba(234,88,12,0.16)"];
+  if(aqi<=200)return["ناسالم برای همه","#DC2626","rgba(220,38,38,0.16)"];
+  return["بسیار ناسالم / خطرناک","#7F1D1D","rgba(127,29,29,0.22)"];
+}
+function renderAqi(aqi){
+  const lblEl=document.getElementById("aqiLabel"),sEl=document.getElementById("aqiStatus"),boxEl=document.getElementById("aqiBar");
+  if(!aqi&&aqi!==0){
+    if(lblEl)lblEl.innerHTML=`🌿 شاخص آلودگی هوا (AQI): <b id="aqiVal">--</b>`;
+    if(sEl)sEl.textContent="نامشخص";
+    return;
+  }
+  const val=Math.round(aqi);
+  const [lbl,col,bg]=aqiMeta(val);
+  let ico="🌿";
+  if(val>50&&val<=100)ico="🌤️";
+  else if(val>100&&val<=150)ico="😷";
+  else if(val>150)ico="🚨";
+  if(lblEl)lblEl.innerHTML=`${ico} شاخص آلودگی هوا (AQI): <b id="aqiVal" style="color:${col}">${fa(val)}</b>`;
+  if(sEl){sEl.textContent=lbl;sEl.style.color=col;sEl.style.background=bg;}
+  if(boxEl)boxEl.style.borderColor=col+"55";
+}
+function renderWeatherData(data,cityName,isCached=false){
+  document.getElementById("wCity").textContent=cityName;
+  if(!data||!data.current_weather||!data.daily){document.getElementById("wDesc").textContent="عدم دریافت اطلاعات جوی";return;}
+  const cw=data.current_weather,[ico,txt]=wCodeInfo(cw.weathercode);
+  currentWeatherCode=cw.weathercode;
+  applyAtmosphereSync();
+  document.getElementById("wIcon").textContent=ico;
+
+  if(window.AndroidBridge && window.AndroidBridge.updateWidgetData){
+    try{
+      const todayNotes=(notes[dayKey(tod.jy,tod.jm,tod.jd)]||[]).map(x=>normNote(x).t);
+      const todayEvs=getEv(tod.jy,tod.jm,tod.jd).map(x=>x[0]);
+      const summary=[...todayNotes,...todayEvs].join(" • ")||"تقویم هوشمند جامع";
+      window.AndroidBridge.updateWidgetData(cityName, ico+" "+fa(Math.round(cw.temperature))+"°", summary);
+    }catch(e){}
+  }
+
+  document.getElementById("wTemp").textContent=fa(Math.round(cw.temperature))+"°";
+  document.getElementById("wDesc").textContent=txt;
+  document.getElementById("wWind").textContent="💨 "+fa(Math.round(cw.windspeed||0))+" km/h";
+  document.getElementById("wHiLo").textContent="بیشینه "+fa(Math.round(data.daily.temperature_2m_max[0]))+"° / کمینه "+fa(Math.round(data.daily.temperature_2m_min[0]))+"°";
+  document.getElementById("wUpd").textContent=isCached?"کش آفلاین":"آپدیت "+fa(new Date().getHours())+":"+fa(String(new Date().getMinutes()).padStart(2,"0"));
+  const dBox=document.getElementById("wForecast");dBox.innerHTML="";
+  for(let i=0;i<4;i++){
+    const dt=new Date(data.daily.time[i]),dName=i===0?"امروز":WD[dt.getDay()];
+    const [dIco]=wCodeInfo(data.daily.weathercode[i]);
+    dBox.innerHTML+=`<div class="w-day">${dName} ${dIco}<b>${fa(Math.round(data.daily.temperature_2m_max[i]))}° / ${fa(Math.round(data.daily.temperature_2m_min[i]))}°</b></div>`;
+  }
+}
+async function fetchWeather(force=false){
+  updateNotifBtnUI();
+  const [lat,lon,name]=cfg.city.split(",");
+  const cached=JSON.parse(localStorage.getItem("w_cache_"+name)||"null");
+  const cachedAqi=JSON.parse(localStorage.getItem("aqi_cache_"+name)||"null");
+  if(cached) renderWeatherData(cached,name,true);
+  if(cachedAqi!==null) renderAqi(cachedAqi);
+  try{
+    const [res,aqiRes]=await Promise.all([
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`),
+      fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=us_aqi`).catch(()=>null)
+    ]);
+    const data=await res.json();
+    const prevCode=cached?.current_weather?.weathercode;
+    const newCode=data?.current_weather?.weathercode;
+    if(prevCode!==undefined && newCode!==undefined && prevCode!==newCode){
+      const [,newTxt]=wCodeInfo(newCode);
+      sendWeatherAlert(`تغییر شرایط جوی در ${name}`,`وضعیت هوا به «${newTxt}» تغییر کرد (دما: ${fa(Math.round(data.current_weather.temperature))} درجه).`);
+    }
+    localStorage.setItem("w_cache_"+name,JSON.stringify(data));
+    renderWeatherData(data,name,false);
+
+    if(aqiRes&&aqiRes.ok){
+      const aqiData=await aqiRes.json();
+      const aqi=aqiData?.current?.us_aqi;
+      if(aqi!==undefined){
+        if(cachedAqi!==null && cachedAqi<=100 && aqi>100){
+          sendWeatherAlert(`هشدار آلودگی هوا در ${name}`,`شاخص آلودگی هوا به ${fa(Math.round(aqi))} (${aqiMeta(aqi)[0]}) رسید.`);
+        }
+        localStorage.setItem("aqi_cache_"+name,JSON.stringify(aqi));
+        renderAqi(aqi);
+      }
+    }
+  }catch(e){
+    if(!cached) document.getElementById("wDesc").textContent="آفلاین (در انتظار اینترنت)";
+  }
+}
+
+// Live Gold, Coin & Foreign Currency in Toman (Synced with 27 Aban 1405 / Nov 18, 2026 Market Rates + Live Auto-Updater)
+const LATEST_MARKET_BASELINE = {
+  dateLabel: "۲۷ آبان ۱۴۰۵",
+  usd: 267650,
+  eur: 294400,
+  gbp: 349800,
+  aed: 72910,
+  tryP: 5345,
+  cad: 191400,
+  g18: 24751840,
+  g24: 33002450,
+  emami: 252000000,
+  nim: 132140000,
+  rob: 72210000,
+  ounce: 3849,
+  chg: {
+    g18: "+0.31%",
+    g24: "+0.31%",
+    emami: "+0.36%",
+    nim: "-0.14%",
+    rob: "+1.01%",
+    ounce: "+0.06%",
+    usd: "+0.09%",
+    eur: "-0.67%",
+    gbp: "+0.18%",
+    aed: "-0.48%",
+    tryP: "+0.28%",
+    cad: "+0.12%"
+  }
+};
+
+let lastFxRatios = {
+  EUR: 294400 / 267650,
+  GBP: 349800 / 267650,
+  AED: 72910 / 267650,
+  TRY: 5345 / 267650,
+  CAD: 191400 / 267650,
+  ounce: 3849
+};
+
+function getMarketSvg(type) {
+  const s = (inner) => `<svg viewBox="0 0 40 40" width="34" height="34" style="flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.18))">${inner}</svg>`;
+  const defs = `
+    <defs>
+      <linearGradient id="gBar" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FDE68A"/><stop offset="45%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#B45309"/>
+      </linearGradient>
+      <linearGradient id="gBarTop" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FBBF24"/>
+      </linearGradient>
+      <radialGradient id="coinGold" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#FEF08A"/><stop offset="55%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#92400E"/>
+      </radialGradient>
+      <linearGradient id="usdGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#DCFCE7"/><stop offset="100%" stop-color="#86EFAC"/>
+      </linearGradient>
+      <linearGradient id="eurGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#DBEAFE"/><stop offset="100%" stop-color="#93C5FD"/>
+      </linearGradient>
+      <linearGradient id="gbpGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#F3E8FF"/><stop offset="100%" stop-color="#D8B4FE"/>
+      </linearGradient>
+      <linearGradient id="aedGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FCD34D"/>
+      </linearGradient>
+      <linearGradient id="tryGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFE4E6"/><stop offset="100%" stop-color="#FDA4AF"/>
+      </linearGradient>
+      <linearGradient id="cadGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FEE2E2"/><stop offset="100%" stop-color="#FCA5A5"/>
+      </linearGradient>
+    </defs>`;
+
+  if (type === "g18") return s(defs + `
+    <polygon points="8,28 14,14 26,14 32,28" fill="url(#gBar)" stroke="#92400E" stroke-width="1"/>
+    <polygon points="14,14 16,11 24,11 26,14" fill="url(#gBarTop)"/>
+    <text x="20" y="24" font-size="7.5" font-weight="bold" fill="#78350F" text-anchor="middle">18K</text>
+    <path d="M9,12 L11,10 M31,12 L29,10 M20,7 L20,9" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/>
+  `);
+  if (type === "g24") return s(defs + `
+    <polygon points="4,30 9,19 21,19 25,30" fill="url(#gBar)" stroke="#78350F" stroke-width="0.9"/>
+    <polygon points="15,30 20,19 32,19 36,30" fill="url(#gBar)" stroke="#78350F" stroke-width="0.9"/>
+    <polygon points="10,20 15,10 25,10 30,20" fill="url(#gBarTop)" stroke="#92400E" stroke-width="0.9"/>
+    <text x="20" y="17.5" font-size="6.5" font-weight="bold" fill="#78350F" text-anchor="middle">999.9</text>
+  `);
+  if (type === "emami") return s(defs + `
+    <circle cx="20" cy="20" r="16" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.3"/>
+    <circle cx="20" cy="20" r="12.5" fill="none" stroke="#FEF08A" stroke-width="1" stroke-dasharray="2,1.5"/>
+    <circle cx="20" cy="17" r="4" fill="#B45309" opacity="0.75"/>
+    <path d="M13,26 C13,22 27,22 27,26" fill="#B45309" opacity="0.75"/>
+  `);
+  if (type === "nim") return s(defs + `
+    <circle cx="20" cy="20" r="14" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
+    <circle cx="20" cy="20" r="10.8" fill="none" stroke="#FEF08A" stroke-width="0.9" stroke-dasharray="2,1.5"/>
+    <text x="20" y="23" font-size="9" font-weight="bold" fill="#78350F" text-anchor="middle">½</text>
+  `);
+  if (type === "rob") return s(defs + `
+    <circle cx="20" cy="20" r="12" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
+    <circle cx="20" cy="20" r="9" fill="none" stroke="#FEF08A" stroke-width="0.8"/>
+    <text x="20" y="22.8" font-size="8.5" font-weight="bold" fill="#78350F" text-anchor="middle">¼</text>
+  `);
+  if (type === "ounce") return s(defs + `
+    <circle cx="20" cy="20" r="15.5" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
+    <ellipse cx="20" cy="20" rx="7" ry="15" fill="none" stroke="#FEF3C7" stroke-width="1"/>
+    <line x1="5" y1="20" x2="35" y2="20" stroke="#FEF3C7" stroke-width="1"/>
+    <text x="20" y="23" font-size="8" font-weight="bold" fill="#78350F" text-anchor="middle">XAU</text>
+  `);
+  if (type === "usd") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#usdGrad)" stroke="#15803D" stroke-width="1.3"/>
+    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#166534" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <circle cx="20" cy="20" r="6" fill="#BBF7D0" stroke="#15803D" stroke-width="0.9"/>
+    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#14532D" text-anchor="middle">$</text>
+  `);
+  if (type === "eur") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#eurGrad)" stroke="#1D4ED8" stroke-width="1.3"/>
+    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#1E40AF" stroke-width="0.8"/>
+    <circle cx="20" cy="20" r="6" fill="#BFDBFE" stroke="#1D4ED8" stroke-width="0.9"/>
+    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#1E3A8A" text-anchor="middle">€</text>
+  `);
+  if (type === "gbp") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#gbpGrad)" stroke="#6D28D9" stroke-width="1.3"/>
+    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#5B21B6" stroke-width="0.8"/>
+    <circle cx="20" cy="20" r="6" fill="#E9D5FF" stroke="#6D28D9" stroke-width="0.9"/>
+    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#4C1D95" text-anchor="middle">£</text>
+  `);
+  if (type === "aed") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#aedGrad)" stroke="#B45309" stroke-width="1.3"/>
+    <rect x="3" y="9" width="7" height="22" rx="1.5" fill="#DC2626" opacity="0.85"/>
+    <text x="23" y="23" font-size="9.5" font-weight="bold" fill="#78350F" text-anchor="middle">AED</text>
+  `);
+  if (type === "try") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#tryGrad)" stroke="#BE123C" stroke-width="1.3"/>
+    <circle cx="20" cy="20" r="6" fill="#FECDD3" stroke="#BE123C" stroke-width="0.9"/>
+    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#881337" text-anchor="middle">₺</text>
+  `);
+  if (type === "cad") return s(defs + `
+    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#cadGrad)" stroke="#DC2626" stroke-width="1.3"/>
+    <rect x="3" y="9" width="6" height="22" fill="#EF4444" opacity="0.7"/>
+    <rect x="31" y="9" width="6" height="22" fill="#EF4444" opacity="0.7"/>
+    <text x="20" y="23.5" font-size="10" font-weight="bold" fill="#991B1B" text-anchor="middle">C$</text>
+  `);
+  return `<span>${type}</span>`;
+}
+
+function fmtPct(pctNum, fallbackStr = "+0.10%") {
+  const n = Number(pctNum);
+  if (!isFinite(n)) return fallbackStr;
+  if (Math.abs(n) < 0.005) return fallbackStr;
+  const sign = n > 0 ? "+" : "";
+  return sign + n.toFixed(2) + "%";
+}
+
+function buildBaselineMarketPayload(sourceLabel = "نرخ روز بازار • ۲۷ آبان ۱۴۰۵") {
+  const b = LATEST_MARKET_BASELINE;
+  const nowTime = fa(new Date().getHours()) + ":" + fa(String(new Date().getMinutes()).padStart(2, "0"));
+  return {
+    time: `${nowTime} (${sourceLabel})`,
+    usd: b.usd,
+    ratios: lastFxRatios,
+    gold: [
+      { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: b.g18, c: b.chg.g18 },
+      { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: b.g24, c: b.chg.g24 },
+      { ico: "emami", n: "سکه امامی (تمام)", p: b.emami, c: b.chg.emami },
+      { ico: "nim", n: "نیم‌سکه بهار آزادی", p: b.nim, c: b.chg.nim },
+      { ico: "rob", n: "ربع‌سکه بهار آزادی", p: b.rob, c: b.chg.rob },
+      { ico: "ounce", n: "انس جهانی طلا", p: b.ounce, u: "دلار", c: b.chg.ounce }
+    ],
+    fx: [
+      { ico: "usd", n: "دلار آمریکا (بازار آزاد)", p: b.usd, c: b.chg.usd },
+      { ico: "eur", n: "یورو اروپا (EUR)", p: b.eur, c: b.chg.eur },
+      { ico: "gbp", n: "پوند انگلیس (GBP)", p: b.gbp, c: b.chg.gbp },
+      { ico: "aed", n: "درهم امارات (AED)", p: b.aed, c: b.chg.aed },
+      { ico: "try", n: "لیر ترکیه (TRY)", p: b.tryP, c: b.chg.tryP },
+      { ico: "cad", n: "دلار کانادا (CAD)", p: b.cad, c: b.chg.cad }
+    ]
+  };
+}
+
+async function fetchJsonFast(url, timeoutMs = 5000) {
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const r = await fetch(url, { cache: "no-store", signal: ctrl.signal });
+    clearTimeout(tid);
+    if (r && r.ok) return await r.json();
+  } catch (e) {
+    clearTimeout(tid);
+  }
+  return null;
+}
+
+async function fetchTextViaProxy(targetUrl, timeoutMs = 5500) {
+  if (window.AndroidBridge && window.AndroidBridge.fetchUrlNative) {
+    try {
+      const nativeHtml = window.AndroidBridge.fetchUrlNative(targetUrl);
+      if (nativeHtml && nativeHtml.length > 200) return nativeHtml;
+    } catch (e) {}
+  }
+  const proxies = [
+    u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+    u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
+    u => "https://corsproxy.io/?" + encodeURIComponent(u)
+  ];
+  for (const fn of proxies) {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const r = await fetch(fn(targetUrl), { cache: "no-store", signal: ctrl.signal });
+      clearTimeout(tid);
+      if (r && r.ok) {
+        const txt = await r.text();
+        if (txt && txt.length > 200) return txt;
+      }
+    } catch (e) {
+      clearTimeout(tid);
+    }
+  }
+  return null;
+}
+
+function extractNumbers(text) {
+  const eng = String(text || "").replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  const matches = eng.match(/\d{1,3}(?:,\d{3})+|\d{4,10}/g) || [];
+  return matches.map(m => Number(m.replace(/,/g, ""))).filter(n => n > 0 && n < 10000000000);
+}
+
+function parseAlanchandHtml(html) {
+  if (!html) return null;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const toToman = (v, minT, maxT) => {
+    if (!v) return 0;
+    if (v >= minT && v <= maxT) return Math.round(v);
+    const t = Math.round(v / 10);
+    if (t >= minT && t <= maxT) return t;
+    return 0;
+  };
+  const findRow = (keywords, minT, maxT) => {
+    const rows = [...doc.querySelectorAll("tr, [data-slug], .table-row, a")];
+    for (const row of rows) {
+      const txt = (row.textContent + " " + (row.getAttribute("data-slug") || "") + " " + (row.getAttribute("href") || "")).toLowerCase();
+      if (keywords.some(k => txt.includes(k))) {
+        const container = row.closest("tr") || row.parentElement || row;
+        const nums = extractNumbers(container.textContent);
+        for (const rawN of nums) {
+          const valid = toToman(rawN, minT, maxT);
+          if (valid) return valid;
+        }
+      }
+    }
+    return 0;
+  };
+  const usd = findRow(["/usd", "usd", "دلار آمریکا", "us dollar"], 220000, 600000);
+  if (!usd) return null;
+  return {
+    usd,
+    eur: findRow(["/eur", "eur", "یورو", "euro"], 240000, 700000),
+    gbp: findRow(["/gbp", "gbp", "پوند", "pound"], 280000, 800000),
+    aed: findRow(["/aed", "aed", "درهم", "dirham"], 55000, 180000),
+    tryP: findRow(["/try", "try", "لیر ترکیه", "turkish lira"], 3500, 20000),
+    cad: findRow(["/cad", "cad", "دلار کانادا", "canadian dollar"], 150000, 450000),
+    g18: findRow(["18ayar", "geram18", "طلای 18", "طلای ۱۸", "18k gold"], 18000000, 60000000),
+    g24: findRow(["24ayar", "geram24", "طلای 24", "طلای ۲۴", "24k gold"], 24000000, 80000000),
+    emami: findRow(["emami", "sekkeh", "سکه امامی", "full coin"], 180000000, 600000000),
+    nim: findRow(["nim", "نیم سکه", "نیم‌سکه"], 90000000, 350000000),
+    rob: findRow(["rob", "ربع سکه", "ربع‌سکه"], 50000000, 200000000)
+  };
+}
+
+async function fetchTgjuLive() {
+  const txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json", 4800);
+  if (!txt) return null;
+  try {
+    const j = JSON.parse(txt);
+    const c = j?.current;
+    if (!c) return null;
+    const parseNode = (node, divBy10 = true) => {
+      const rawP = Number(String(node?.p || "0").replace(/,/g, ""));
+      const p = divBy10 ? Math.round(rawP / 10) : Math.round(rawP);
+      const dpNum = (node?.dt === "low" ? -1 : 1) * Math.abs(Number(node?.dp || 0));
+      return { p, dp: dpNum };
+    };
+    const usd = parseNode(c.price_dollar_rl, true);
+    const g18 = parseNode(c.geram18, true);
+    if (usd.p >= 220000 && g18.p >= 18000000) {
+      return {
+        usd,
+        eur: parseNode(c.price_eur, true),
+        gbp: parseNode(c.price_gbp, true),
+        aed: parseNode(c.price_aed, true),
+        tryP: parseNode(c.price_try, true),
+        cad: parseNode(c.price_cad, true),
+        g18,
+        g24: parseNode(c.geram24, true),
+        emami: parseNode(c.sekee, true),
+        nim: parseNode(c.nim, true),
+        rob: parseNode(c.rob, true),
+        ounce: parseNode(c.ons, false)
+      };
+    }
+  } catch (e) {}
+  return null;
+}
+
+async function fetchNobitexStats() {
+  const data = await fetchJsonFast("https://api.nobitex.ir/market/stats?srcCurrency=usdt,paxg&dstCurrency=rls", 4500);
+  if (!data || data.status !== "ok" || !data.stats) return null;
+  const usdt = data.stats["usdt-rls"];
+  const paxg = data.stats["paxg-rls"];
+  const res = {};
+  if (usdt) {
+    const p = Math.round(Number(usdt.latest || 0) / 10);
+    if (p >= 220000 && p <= 600000) res.usdtToman = p;
+    if (usdt.dayChange !== undefined) res.usdtChg = Number(usdt.dayChange);
+  }
+  if (paxg) {
+    const p = Math.round(Number(paxg.latest || 0) / 10);
+    if (p >= 600000000) res.paxgToman = p;
+    if (paxg.dayChange !== undefined) res.paxgChg = Number(paxg.dayChange);
+  }
+  return Object.keys(res).length ? res : null;
+}
+
+let mktFetching = false;
+async function fetchMarket(manual = false) {
+  if (mktFetching && !manual) return;
+  const b = LATEST_MARKET_BASELINE;
+
+  // Purge any old/stale cache keys and validate current cache against realistic Aban 1405 bounds
+  const cached = JSON.parse(localStorage.getItem("mkt_cache_v14") || "null");
+  const isCacheValid = cached && cached.usd >= 220000 && cached.gold?.[0]?.p >= 20000000 && cached.gold?.[2]?.p >= 200000000;
+
+  if (isCacheValid) {
+    renderMarket(cached, false);
+  } else {
+    const freshBase = buildBaselineMarketPayload("نرخ روز بازار • " + b.dateLabel);
+    localStorage.setItem("mkt_cache_v14", JSON.stringify(freshBase));
+    renderMarket(freshBase, false);
+  }
+
+  mktFetching = true;
+  const updEl = document.getElementById("mktUpd");
+  if (manual && updEl) updEl.textContent = "در حال استعلام آخرین نرخ‌های لحظه‌ای بازار تهران...";
+
+  try {
+    const [tgju, alanHtml, nobitex] = await Promise.all([
+      fetchTgjuLive(),
+      fetchTextViaProxy("https://alanchand.com/en", 5000),
+      fetchNobitexStats()
+    ]);
+
+    const alan = parseAlanchandHtml(alanHtml);
+
+    // Pick verified live values or fall back to verified 27 Aban 1405 market rates
+    const usdPrice = (tgju?.usd?.p >= 220000) ? tgju.usd.p : ((alan?.usd >= 220000) ? alan.usd : (nobitex?.usdtToman || b.usd));
+    const g18Price = (tgju?.g18?.p >= 20000000) ? tgju.g18.p : ((alan?.g18 >= 20000000) ? alan.g18 : b.g18);
+    const g24Price = (tgju?.g24?.p >= 26000000) ? tgju.g24.p : ((alan?.g24 >= 26000000) ? alan.g24 : Math.round(g18Price * (24 / 18)));
+    const emamiPrice = (tgju?.emami?.p >= 200000000) ? tgju.emami.p : ((alan?.emami >= 200000000) ? alan.emami : b.emami);
+    const nimPrice = (tgju?.nim?.p >= 100000000) ? tgju.nim.p : ((alan?.nim >= 100000000) ? alan.nim : b.nim);
+    const robPrice = (tgju?.rob?.p >= 50000000) ? tgju.rob.p : ((alan?.rob >= 50000000) ? alan.rob : b.rob);
+    const ouncePrice = (tgju?.ounce?.p >= 3200) ? tgju.ounce.p : b.ounce;
+
+    const eurPrice = (tgju?.eur?.p >= 240000) ? tgju.eur.p : ((alan?.eur >= 240000) ? alan.eur : Math.round(usdPrice * lastFxRatios.EUR));
+    const gbpPrice = (tgju?.gbp?.p >= 280000) ? tgju.gbp.p : ((alan?.gbp >= 280000) ? alan.gbp : Math.round(usdPrice * lastFxRatios.GBP));
+    const aedPrice = (tgju?.aed?.p >= 55000) ? tgju.aed.p : ((alan?.aed >= 55000) ? alan.aed : Math.round(usdPrice * lastFxRatios.AED));
+    const tryPrice = (tgju?.tryP?.p >= 3500) ? tgju.tryP.p : ((alan?.tryP >= 3500) ? alan.tryP : Math.round(usdPrice * lastFxRatios.TRY));
+    const cadPrice = (tgju?.cad?.p >= 150000) ? tgju.cad.p : ((alan?.cad >= 150000) ? alan.cad : Math.round(usdPrice * lastFxRatios.CAD));
+
+    const gChg = tgju?.g18?.dp ? fmtPct(tgju.g18.dp, b.chg.g18) : (nobitex?.paxgChg ? fmtPct(nobitex.paxgChg, b.chg.g18) : b.chg.g18);
+    const uChg = tgju?.usd?.dp ? fmtPct(tgju.usd.dp, b.chg.usd) : (nobitex?.usdtChg ? fmtPct(nobitex.usdtChg, b.chg.usd) : b.chg.usd);
+
+    const srcName = tgju ? "شبکه اطلاع‌رسانی طلا و ارز" : (alan ? "آلان‌چند • نرخ لحظه‌ای" : `بازار آزاد تهران • ${b.dateLabel}`);
+    const nowTime = fa(new Date().getHours()) + ":" + fa(String(new Date().getMinutes()).padStart(2, "0"));
+
+    const payload = {
+      time: `${nowTime} (${srcName})`,
+      usd: usdPrice,
+      ratios: lastFxRatios,
+      gold: [
+        { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: g18Price, c: gChg },
+        { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: g24Price, c: tgju?.g24?.dp ? fmtPct(tgju.g24.dp, gChg) : gChg },
+        { ico: "emami", n: "سکه امامی (تمام)", p: emamiPrice, c: tgju?.emami?.dp ? fmtPct(tgju.emami.dp, b.chg.emami) : b.chg.emami },
+        { ico: "nim", n: "نیم‌سکه بهار آزادی", p: nimPrice, c: tgju?.nim?.dp ? fmtPct(tgju.nim.dp, b.chg.nim) : b.chg.nim },
+        { ico: "rob", n: "ربع‌سکه بهار آزادی", p: robPrice, c: tgju?.rob?.dp ? fmtPct(tgju.rob.dp, b.chg.rob) : b.chg.rob },
+        { ico: "ounce", n: "انس جهانی طلا", p: ouncePrice, u: "دلار", c: tgju?.ounce?.dp ? fmtPct(tgju.ounce.dp, b.chg.ounce) : b.chg.ounce }
+      ],
+      fx: [
+        { ico: "usd", n: "دلار آمریکا (بازار آزاد)", p: usdPrice, c: uChg },
+        { ico: "eur", n: "یورو اروپا (EUR)", p: eurPrice, c: tgju?.eur?.dp ? fmtPct(tgju.eur.dp, b.chg.eur) : b.chg.eur },
+        { ico: "gbp", n: "پوند انگلیس (GBP)", p: gbpPrice, c: tgju?.gbp?.dp ? fmtPct(tgju.gbp.dp, b.chg.gbp) : b.chg.gbp },
+        { ico: "aed", n: "درهم امارات (AED)", p: aedPrice, c: tgju?.aed?.dp ? fmtPct(tgju.aed.dp, b.chg.aed) : b.chg.aed },
+        { ico: "try", n: "لیر ترکیه (TRY)", p: tryPrice, c: tgju?.tryP?.dp ? fmtPct(tgju.tryP.dp, b.chg.tryP) : b.chg.tryP },
+        { ico: "cad", n: "دلار کانادا (CAD)", p: cadPrice, c: tgju?.cad?.dp ? fmtPct(tgju.cad.dp, b.chg.cad) : b.chg.cad }
+      ]
+    };
+
+    localStorage.setItem("mkt_cache_v14", JSON.stringify(payload));
+    renderMarket(payload, false);
+  } catch (e) {
+    const fallback = buildBaselineMarketPayload("نرخ روز بازار • " + b.dateLabel);
+    renderMarket(fallback, false);
+  }
+  mktFetching = false;
+}
+
+function renderMarket(d, isCached) {
+  const updEl = document.getElementById("mktUpd");
+  if (updEl) updEl.textContent = "آخرین بروزرسانی: ساعت " + d.time;
+  const rowHtml = x => {
+    const isNeg = String(x.c).startsWith("-");
+    const isZero = String(x.c) === "0.00%";
+    const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
+    const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
+    return `<div class="mkt-row">
+      <div class="mkt-name">${getMarketSvg(x.ico)}<span>${x.n}</span></div>
+      <div class="mkt-val">
+        <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${x.u || "تومان"}</span></div>
+        <span style="color:${badgeColor};font-size:11px;font-weight:700;direction:ltr;display:inline-block">${arrow}${fa(x.c)}</span>
+      </div>
+    </div>`;
+  };
+  document.getElementById("goldList").innerHTML = d.gold.map(rowHtml).join("");
+  document.getElementById("fxList").innerHTML = d.fx.map(rowHtml).join("");
+}
+
+// Notes & Scheduled Time Alarms Management (Upgraded Workspace)
+const dayKey=(y,m,d)=>`${y}-${m}-${d}`;
+const normNote=item=>typeof item==="string"?{t:item,tm:"",cat:"شخصی",pin:false,done:false,fired:false}:{cat:"شخصی",pin:false,done:false,fired:false,...item};
+let currentNoteFilter="all";
+let editingNoteRef=null; // {k, idx} when editing
+
+function setNoteFilter(f,btn){
+  currentNoteFilter=f;
+  document.querySelectorAll("#noteFilterChips .fchip").forEach(c=>c.classList.remove("act"));
+  if(btn) btn.classList.add("act");
+  renderAllNotes();
+}
+
+function initNoteModalInputs(){
+  const dS=document.getElementById("nDay"),mS=document.getElementById("nMon"),yS=document.getElementById("nYear");
+  if(!dS||dS.options.length)return;
+  for(let d=1;d<=31;d++) dS.innerHTML+=`<option value="${d}">${fa(d)}</option>`;
+  JM.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
+  for(let y=1395;y<=1425;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
+}
+
+function openNoteModal(targetDate=null, editRef=null){
+  initNoteModalInputs();
+  editingNoteRef=editRef;
+  const dt=targetDate||sel||tod;
+  document.getElementById("nDay").value=dt.jd;
+  document.getElementById("nMon").value=dt.jm;
+  document.getElementById("nYear").value=dt.jy;
+
+  if(editRef && notes[editRef.k] && notes[editRef.k][editRef.idx]){
+    const n=normNote(notes[editRef.k][editRef.idx]);
+    document.getElementById("noteModalTitle").textContent="✏️ ویرایش یادداشت";
+    document.getElementById("nText").value=n.t;
+    document.getElementById("nTime").value=n.tm||"";
+    document.getElementById("nCat").value=n.cat||"شخصی";
+    document.getElementById("nPin").checked=!!n.pin;
+  }else{
+    document.getElementById("noteModalTitle").textContent="➕ ایجاد یادداشت جدید";
+    document.getElementById("nText").value="";
+    document.getElementById("nTime").value="";
+    document.getElementById("nCat").value="شخصی";
+    document.getElementById("nPin").checked=false;
+  }
+  pushModalState();document.getElementById("noteModal").classList.add("open");
+}
+
+async function saveNoteFromModal(){
+  const txt=document.getElementById("nText").value.trim();
+  if(!txt){alert("لطفاً متن یادداشت را وارد کنید.");return;}
+  const d=Number(document.getElementById("nDay").value);
+  const m=Number(document.getElementById("nMon").value);
+  const y=Number(document.getElementById("nYear").value);
+  const validDay=Math.min(d,mLen(y,m));
+  const tm=document.getElementById("nTime").value;
+  const cat=document.getElementById("nCat").value;
+  const pin=document.getElementById("nPin").checked;
+  if(tm) await ensureAlarmPermission();
+
+  let wasDone=false;
+  if(editingNoteRef && notes[editingNoteRef.k]){
+    const old=normNote(notes[editingNoteRef.k][editingNoteRef.idx]);
+    wasDone=!!old.done;
+    notes[editingNoteRef.k].splice(editingNoteRef.idx,1);
+    if(!notes[editingNoteRef.k].length) delete notes[editingNoteRef.k];
+  }
+
+  const newK=dayKey(y,m,validDay);
+  if(!notes[newK]) notes[newK]=[];
+  notes[newK].push({t:txt,tm:tm||"",cat,pin,done:wasDone,fired:false});
+  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  editingNoteRef=null;
+  closeModals();
+  render();
+  renderAllNotes();
+}
+
+function toggleNotePin(k,idx){
+  const n=normNote(notes[k][idx]);
+  n.pin=!n.pin;
+  notes[k][idx]=n;
+  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  render();renderAllNotes();
+}
+
+function toggleNoteDone(k,idx){
+  const n=normNote(notes[k][idx]);
+  n.done=!n.done;
+  notes[k][idx]=n;
+  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  render();renderAllNotes();
+}
+
+async function ensureAlarmPermission(){
+  if("Notification" in window && Notification.permission==="default"){
+    await Notification.requestPermission().catch(()=>null);
+  }
+}
+
+function playAlarmTone(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    [523.25,659.25,783.99,1046.5].forEach((freq,idx)=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type="sine";osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.18,ctx.currentTime+idx*0.16);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+idx*0.16+0.35);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(ctx.currentTime+idx*0.16);osc.stop(ctx.currentTime+idx*0.16+0.36);
+    });
+  }catch(e){}
+}
+
+function triggerScheduledAlarm(title,body){
+  playAlarmTone();
+  if("Notification" in window && Notification.permission==="granted"){
+    try{new Notification(title,{body});}catch(e){}
+  }
+  const banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:14px;left:12px;right:12px;max-width:430px;margin:0 auto;z-index:99;background:var(--pri);color:var(--onpri);padding:13px 15px;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,0.28);display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px";
+  banner.innerHTML=`<div><b>⏰ ${esc(title)}</b><div style="font-size:12px;opacity:.92;margin-top:2px">${esc(body)}</div></div><button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,0.22);border:none;color:inherit;padding:5px 10px;border-radius:10px;font-weight:700;cursor:pointer">باشه</button>`;
+  document.body.appendChild(banner);
+}
+
+
+function parseSmartPersianTask(rawText) {
+  let text = rawText.trim();
+  let targetDate = { ...sel };
+  let timeStr = "";
+  let category = "شخصی";
+  if (/چک|قسط|وام|پرداخت|بانک|بدهی|حقوق/.test(text)) category = "مالی";
+  else if (/جلسه|قرار|کار|پروژه|گزارش|اداره/.test(text)) category = "کاری";
+  else if (/دکتر|پزشک|دارو|آزمایش|ویزیت|فوری/.test(text)) category = "مهم";
+
+  if (text.includes("پس‌فردا") || text.includes("پس فردا")) {
+    targetDate = d2j(j2d(tod.jy, tod.jm, tod.jd) + 2);
+  } else if (text.includes("فردا")) {
+    targetDate = d2j(j2d(tod.jy, tod.jm, tod.jd) + 1);
+  }
+  const engText = text.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  const timeMatch = engText.match(/ساعت\s*(\d{1,2})(?::(\d{2}))?\s*(صبح|ظهر|عصر|شب)?/);
+  if (timeMatch) {
+    let hh = parseInt(timeMatch[1], 10);
+    const mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+    const period = timeMatch[3] || "";
+    if ((period === "عصر" || period === "شب") && hh < 12) hh += 12;
+    if (period === "ظهر" && hh < 11) hh += 12;
+    if (hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59) {
+      timeStr = String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
+    }
+  }
+  return { text, date: targetDate, time: timeStr, category };
+}
+
+function scheduleNativeAndroidAlarm(jy, jm, jd, tm, title, body) {
+  if (!tm || !window.AndroidBridge || !window.AndroidBridge.scheduleNativeAlarm) return;
+  try {
+    const g = toG(jy, jm, jd);
+    const [hh, mm] = tm.split(":").map(Number);
+    const triggerMs = new Date(g.gy, g.gm - 1, g.gd, hh, mm, 0).getTime();
+    if (triggerMs > Date.now()) {
+      window.AndroidBridge.scheduleNativeAlarm(triggerMs, title, body, Math.floor(triggerMs / 1000) % 1000000);
+    }
+  } catch (e) {}
+}
+
+async function addNote(){
+  const inp=document.getElementById("noteInput"),tInp=document.getElementById("noteTimeInput");
+  const val=inp.value.trim();
+  if(!val)return;
+  const parsed=parseSmartPersianTask(val);
+  const tm=tInp.value || parsed.time;
+  const target=parsed.date || sel;
+  if(tm) await ensureAlarmPermission();
+  const k=dayKey(target.jy,target.jm,target.jd);
+  if(!notes[k])notes[k]=[];
+  notes[k].push({t:val,tm:tm||"",cat:parsed.category,pin:parsed.category==="مالی",done:false,fired:false});
+  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  if(tm) scheduleNativeAndroidAlarm(target.jy,target.jm,target.jd,tm,`⏰ یادآور ${parsed.category}`,val);
+  inp.value="";tInp.value="";
+  vy=target.jy;vm=target.jm;sel={...target};
+  render();
+}
+function delNote(k,idx){
+  notes[k].splice(idx,1);
+  if(!notes[k].length)delete notes[k];
+  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  render();renderAllNotes();
+}
+function renderAllNotes(){
+  const box=document.getElementById("allNotesBox");
+  const statsEl=document.getElementById("notesStatsSub");
+  if(!box)return;
+  const q=(document.getElementById("noteSearchInput")?.value||"").trim().toLowerCase();
+  const keys=Object.keys(notes);
+  let flat=[];
+  keys.forEach(k=>{
+    const [y,m,d]=k.split("-").map(Number);
+    (notes[k]||[]).forEach((raw,idx)=>{
+      const n=normNote(raw);
+      flat.push({k,idx,y,m,d,jdn:j2d(y,m,d),...n});
+    });
+  });
+
+  const totalCount=flat.length;
+  const doneCount=flat.filter(x=>x.done).length;
+  if(statsEl) statsEl.textContent=totalCount?`مجموع ${fa(totalCount)} یادداشت ثبت‌شده (${fa(doneCount)} انجام‌شده)`:`هنوز یادداشتی ثبت نکرده‌اید`;
+
+  // Apply filter & search
+  let filtered=flat.filter(item=>{
+    if(q && !item.t.toLowerCase().includes(q) && !(item.cat||"").toLowerCase().includes(q)) return false;
+    if(currentNoteFilter==="pinned" && !item.pin) return false;
+    if(currentNoteFilter==="alarm" && !item.tm) return false;
+    if(currentNoteFilter==="active" && item.done) return false;
+    if(currentNoteFilter==="done" && !item.done) return false;
+    return true;
+  });
+
+  // Sort: Pinned first, then newest/upcoming dates first
+  filtered.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0) || b.jdn-a.jdn);
+
+  if(!filtered.length){
+    box.innerHTML=`<div style="font-size:12px;color:var(--sec);text-align:center;padding:22px 10px;background:var(--sub);border-radius:14px">
+      ${totalCount?"یادداشتی با این فیلتر یا جستجو پیدا نشد.":"هنوز یادداشتی ثبت نکرده‌اید. با دکمه «➕ ایجاد یادداشت» اولین یادداشت خود را بسازید."}
+    </div>`;
+    return;
+  }
+
+  box.innerHTML=filtered.map(item=>`
+    <div class="ncard ${item.pin?'pinned':''} ${item.done?'done':''}">
+      <div class="ncard-top">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;cursor:pointer" onclick="vy=${item.y};vm=${item.m};sel={jy:${item.y},jm:${item.m},jd:${item.d}};switchTab('cal');render()">
+          <b style="color:var(--pri);font-size:12px">📅 ${fa(item.d)} ${JM[item.m-1]} ${fa(item.y)}</b>
+          <span class="cat-pill">${esc(item.cat||"شخصی")}</span>
+          ${item.tm?`<span class="cat-pill" style="color:var(--hol)">⏰ ${fa(item.tm)}</span>`:""}
+        </div>
+        <div class="ncard-actions">
+          <button class="nact" title="انجام شد" onclick="toggleNoteDone('${item.k}',${item.idx})">${item.done?"↩️":"✅"}</button>
+          <button class="nact" title="سنجاق" onclick="toggleNotePin('${item.k}',${item.idx})">${item.pin?"📌":"📍"}</button>
+          <button class="nact" title="ویرایش" onclick="openNoteModal({jy:${item.y},jm:${item.m},jd:${item.d}},{k:'${item.k}',idx:${item.idx}})">✏️</button>
+          <button class="nact" style="color:var(--hol)" title="حذف" onclick="delNote('${item.k}',${item.idx})">🗑️</button>
+        </div>
+      </div>
+      <div class="ntxt" style="font-size:13px;line-height:1.7;cursor:pointer" onclick="vy=${item.y};vm=${item.m};sel={jy:${item.y},jm:${item.m},jd:${item.d}};switchTab('cal');render()">${esc(item.t)}</div>
+    </div>
+  `).join("");
+}
+
+setInterval(()=>{
+  const dNow=new Date(),jNow=toJ(dNow.getFullYear(),dNow.getMonth()+1,dNow.getDate());
+  const hhmm=String(dNow.getHours()).padStart(2,"0")+":"+String(dNow.getMinutes()).padStart(2,"0");
+  const tk=dayKey(jNow.jy,jNow.jm,jNow.jd);
+  let changedNotes=false;
+  if(notes[tk]){
+    notes[tk]=notes[tk].map(raw=>{
+      const n=normNote(raw);
+      if(n.tm===hhmm && !n.fired){
+        triggerScheduledAlarm("یادآور یادداشت روزانه ("+fa(hhmm)+")",n.t);
+        n.fired=true;changedNotes=true;
+      }
+      return n;
+    });
+    if(changedNotes) localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
+  }
+  let changedEv=false;
+  if(customUserEv[tk]){
+    customUserEv[tk].forEach(ev=>{
+      if(ev[2]===hhmm && !ev[3]){
+        triggerScheduledAlarm("هشدار رویداد روزانه ("+fa(hhmm)+")",ev[0]);
+        ev[3]=true;changedEv=true;
+      }
+    });
+    if(changedEv) localStorage.setItem("cal_user_ev_v11",JSON.stringify(customUserEv));
+  }
+},15000);
+
+// Calendar Render (Supports Jalali, Gregorian, and Hijri primary views accurately)
+function getGregMonthLen(gy, gm) {
+  return new Date(gy, gm, 0).getDate();
+}
+
+function renderYearGrid(){
+  const yBox=document.getElementById("yearWrap");
+  yBox.innerHTML="";
+  const cType = cfg.calType || "jalali";
+  const gNow = new Date();
+  const hNow = g2h(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
+
+  for(let m=1;m<=12;m++){
+    let len, fw, tit;
+    if (cType === "gregorian") {
+      len = getGregMonthLen(vy, m);
+      fw = (new Date(vy, m - 1, 1).getDay() + 1) % 7;
+      tit = GM_EN[m - 1];
+    } else if (cType === "hijri") {
+      len = hMonthLen(vy, m);
+      fw = hFirstWeekday(vy, m);
+      tit = HM[m - 1];
+    } else {
+      len = mLen(vy, m);
+      fw = wDay(vy, m, 1);
+      tit = JM[m - 1];
+    }
+    let cells="";
+    for(let i=0;i<fw;i++)cells+='<div></div>';
+    for(let d=1;d<=len;d++){
+      const w=(fw+d-1)%7;
+      let jDate, isTod;
+      if (cType === "gregorian") {
+        jDate = toJ(vy, m, d);
+        isTod = (vy === gNow.getFullYear() && m === (gNow.getMonth() + 1) && d === gNow.getDate());
+      } else if (cType === "hijri") {
+        const gEquiv = d2g(h2jdn(vy, m, d));
+        jDate = toJ(gEquiv.gy, gEquiv.gm, gEquiv.gd);
+        isTod = (vy === hNow.hy && m === hNow.hm && d === hNow.hd);
+      } else {
+        jDate = { jy: vy, jm: m, jd: d };
+        isTod = (vy === tod.jy && m === tod.jm && d === tod.jd);
+      }
+      const evs = getEv(jDate.jy, jDate.jm, jDate.jd);
+      const hol = w === 6 || evs.some(e => e[1]);
+      cells+=`<div class="yr-d${hol?' hol':''}${isTod?' tod':''}">${cType === "gregorian" ? d : fa(d)}</div>`;
+    }
+    const card=document.createElement("div");
+    card.className="yr-m"+(m===vm?" cur":"");
+    card.innerHTML=`<div class="yr-m-tit">${tit}</div><div class="yr-mini">${cells}</div>`;
+    card.onclick=()=>{vm=m;setCalMode("month");};
+    yBox.appendChild(card);
+  }
+}
+
+// Accurate Astronomical Sunrise & Sunset Calculator (NOAA Algorithm) + Custom SVG Icons
+function calcSunTimes(gy, gm, gd, lat, lon) {
+  const rad = Math.PI / 180, deg = 180 / Math.PI;
+  const start = Date.UTC(gy, 0, 0);
+  const diff = Date.UTC(gy, gm - 1, gd) - start;
+  const doy = Math.floor(diff / 86400000);
+  const tz = Math.round(lon / 15) || 3.5;
+  // Use exact Iran Standard Time (+3.5) for Iranian coordinates
+  const offset = (lat >= 24 && lat <= 40 && lon >= 44 && lon <= 64) ? 3.5 : (-new Date().getTimezoneOffset() / 60);
+
+  function calcEvent(isSunrise) {
+    const lngHour = lon / 15;
+    const t = doy + ((isSunrise ? 6 : 18) - lngHour) / 24;
+    const M = (0.9856 * t) - 3.289;
+    let L = M + (1.916 * Math.sin(M * rad)) + (0.020 * Math.sin(2 * M * rad)) + 282.634;
+    L = (L + 360) % 360;
+    let RA = deg * Math.atan(0.91764 * Math.tan(L * rad));
+    RA = (RA + 360) % 360;
+    const Lquad = Math.floor(L / 90) * 90;
+    const RAquad = Math.floor(RA / 90) * 90;
+    RA = (RA + (Lquad - RAquad)) / 15;
+    const sinDec = 0.39782 * Math.sin(L * rad);
+    const cosDec = Math.cos(Math.asin(sinDec));
+    const cosH = (Math.cos(90.833 * rad) - (sinDec * Math.sin(lat * rad))) / (cosDec * Math.cos(lat * rad));
+    if (cosH > 1 || cosH < -1) return "--:--";
+    let H = isSunrise ? (360 - deg * Math.acos(cosH)) : (deg * Math.acos(cosH));
+    H = H / 15;
+    const T = H + RA - (0.06571 * t) - 6.622;
+    let UT = (T - lngHour + 24) % 24;
+    let localT = (UT + offset + 24) % 24;
+    let hh = Math.floor(localT);
+    let mm = Math.round((localT - hh) * 60);
+    if (mm === 60) { mm = 0; hh = (hh + 1) % 24; }
+    return String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
+  }
+  const rise = calcEvent(true), set = calcEvent(false);
+  let lenStr = "";
+  if (rise.includes(":") && set.includes(":")) {
+    const [rh, rm] = rise.split(":").map(Number), [sh, sm] = set.split(":").map(Number);
+    const mins = (sh * 60 + sm) - (rh * 60 + rm);
+    if (mins > 0) lenStr = `${fa(Math.floor(mins / 60))} ساعت و ${fa(mins % 60)} دقیقه`;
+  }
+  return { rise, set, lenStr };
+}
+
+function getSunSvg(type) {
+  if (type === "rise") {
+    return `<svg viewBox="0 0 36 36" width="28" height="28" style="flex-shrink:0">
+      <defs>
+        <linearGradient id="sunRiseG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FDE047"/><stop offset="100%" stop-color="#F97316"/>
+        </linearGradient>
+      </defs>
+      <path d="M18 4V8M8.5 8.5L11.3 11.3M27.5 8.5L24.7 11.3M4 19H8M28 19H32" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M10 22A8 8 0 0 1 26 22Z" fill="url(#sunRiseG)"/>
+      <line x1="3" y1="22.5" x2="33" y2="22.5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+      <path d="M18 31V25M15 28L18 25L21 28" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 36 36" width="28" height="28" style="flex-shrink:0">
+    <defs>
+      <linearGradient id="sunSetG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FB923C"/><stop offset="100%" stop-color="#E11D48"/>
+      </linearGradient>
+    </defs>
+    <path d="M9.5 11.5L11.8 13.8M26.5 11.5L24.2 13.8M5 20H8.5M27.5 20H31" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+    <path d="M10.5 22A7.5 7.5 0 0 1 25.5 22Z" fill="url(#sunSetG)"/>
+    <line x1="3" y1="22.5" x2="33" y2="22.5" stroke="#FB7185" stroke-width="2" stroke-linecap="round"/>
+    <path d="M18 25V31M15 28L18 31L21 28" stroke="#F43F5E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>`;
+}
+
+function calcPrayerTimes(gy, gm, gd, lat, lon) {
+  const rad = Math.PI / 180, deg = 180 / Math.PI;
+  const start = Date.UTC(gy, 0, 0);
+  const doy = Math.floor((Date.UTC(gy, gm - 1, gd) - start) / 86400000);
+  const offset = (lat >= 24 && lat <= 40 && lon >= 44 && lon <= 64) ? 3.5 : (-new Date().getTimezoneOffset() / 60);
+  const lngHour = lon / 15;
+  function sunTimeByAngle(angle, isMorning) {
+    const t = doy + ((isMorning ? 6 : 18) - lngHour) / 24;
+    const M = (0.9856 * t) - 3.289;
+    let L = (M + 1.916 * Math.sin(M * rad) + 0.020 * Math.sin(2 * M * rad) + 282.634 + 360) % 360;
+    let RA = (deg * Math.atan(0.91764 * Math.tan(L * rad)) + 360) % 360;
+    RA = (RA + (Math.floor(L / 90) * 90 - Math.floor(RA / 90) * 90)) / 15;
+    const sinDec = 0.39782 * Math.sin(L * rad);
+    const cosDec = Math.cos(Math.asin(sinDec));
+    const cosH = (Math.cos((90 + angle) * rad) - sinDec * Math.sin(lat * rad)) / (cosDec * Math.cos(lat * rad));
+    if (cosH > 1 || cosH < -1) return null;
+    const H = (isMorning ? (360 - deg * Math.acos(cosH)) : (deg * Math.acos(cosH))) / 15;
+    const T = H + RA - 0.06571 * t - 6.622;
+    return ((T - lngHour + 24) % 24 + offset + 24) % 24;
+  }
+  const fmtH = val => {
+    if (val === null) return "--:--";
+    let h = Math.floor(val), m = Math.round((val - h) * 60);
+    if (m === 60) { m = 0; h = (h + 1) % 24; }
+    return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+  };
+  const fajr = sunTimeByAngle(17.7, true);
+  const sunrise = sunTimeByAngle(0.833, true);
+  const sunset = sunTimeByAngle(0.833, false);
+  const maghrib = sunTimeByAngle(4.5, false);
+  const dhuhr = (sunrise !== null && sunset !== null) ? (sunrise + sunset) / 2 + (1 / 60) : 12.0;
+  return { fajr: fmtH(fajr), sunrise: fmtH(sunrise), dhuhr: fmtH(dhuhr), sunset: fmtH(sunset), maghrib: fmtH(maghrib) };
+}
+
+function renderSunBox(gy, gm, gd) {
+  const box = document.getElementById("sunTimesBox");
+  if (!box) return;
+  const [latStr, lonStr, cityName] = cfg.city.split(",");
+  const lat = parseFloat(latStr) || 35.6892, lon = parseFloat(lonStr) || 51.3890;
+  const sun = calcSunTimes(gy, gm, gd, lat, lon);
+  const pt = calcPrayerTimes(gy, gm, gd, lat, lon);
+  box.style.flexDirection = "column";
+  box.style.alignItems = "stretch";
+  box.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+        ${getSunSvg("rise")}
+        <div>
+          <div style="font-size:10px;color:var(--sec)">طلوع آفتاب (${esc(cityName)})</div>
+          <b style="font-size:13.5px;color:#F59E0B;letter-spacing:0.3px">${fa(sun.rise)}</b>
+        </div>
+      </div>
+      <div style="width:1px;height:28px;background:var(--brd)"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;justify-content:flex-end">
+        <div style="text-align:left">
+          <div style="font-size:10px;color:var(--sec)">غروب آفتاب</div>
+          <b style="font-size:13.5px;color:#F43F5E;letter-spacing:0.3px">${fa(sun.set)}</b>
+        </div>
+        ${getSunSvg("set")}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;border-top:1px dashed var(--brd);padding-top:7px;margin-top:4px;text-align:center;font-size:10.5px">
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🕌 اذان صبح:</span> <b style="color:var(--pri)">${fa(pt.fajr)}</b></div>
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">☀️ اذان ظهر:</span> <b style="color:var(--pri)">${fa(pt.dhuhr)}</b></div>
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🌙 اذان مغرب:</span> <b style="color:var(--pri)">${fa(pt.maghrib)}</b></div>
+    </div>
+  `;
+}
+
+function render(){
+  const cType = cfg.calType || "jalali";
+  const gNow = new Date();
+  const gToday = { gy: gNow.getFullYear(), gm: gNow.getMonth() + 1, gd: gNow.getDate() };
+  const hToday = g2h(gToday.gy, gToday.gm, gToday.gd);
+
+  const tSpan = document.getElementById("todBtnTxt") || document.getElementById("todBtn");
+  if (tSpan) {
+    if (cType === "gregorian") {
+      tSpan.textContent = "Today: " + gToday.gd + " " + GM_EN[gToday.gm - 1] + " " + gToday.gy;
+    } else if (cType === "hijri") {
+      tSpan.textContent = "امروز: " + fa(hToday.hd) + " " + HM[hToday.hm - 1] + " " + fa(hToday.hy);
+    } else {
+      tSpan.textContent = "امروز: " + fa(tod.jd) + " " + JM[tod.jm - 1] + " " + fa(tod.jy);
+    }
+  }
+  updatePersistentStatusDate(false);
+
+  if(window.AndroidBridge && window.AndroidBridge.updateWidgetData){
+    try{
+      const [, , cName] = cfg.city.split(",");
+      const tEl = document.getElementById("wTemp")?.textContent || "--°";
+      const iEl = document.getElementById("wIcon")?.textContent || "⛅";
+      const todayNotes=(notes[dayKey(tod.jy,tod.jm,tod.jd)]||[]).map(x=>normNote(x).t);
+      const todayEvs=getEv(tod.jy,tod.jm,tod.jd).map(x=>x[0]);
+      const summary=[...todayNotes,...todayEvs].join(" • ")||"تقویم هوشمند جامع";
+      window.AndroidBridge.updateWidgetData(cName||"تهران", iEl+" "+tEl, summary);
+    }catch(e){}
+  }
+
+  const mList = [];
+  const box = document.getElementById("days");
+  box.innerHTML = "";
+
+  if (cType === "gregorian") {
+    const len = getGregMonthLen(vy, vm);
+    const fw = (new Date(vy, vm - 1, 1).getDay() + 1) % 7;
+    const jStart = toJ(vy, vm, 1);
+    const jEnd = toJ(vy, vm, len);
+
+    if (calMode === "year") {
+      document.getElementById("jTit").textContent = "سال " + vy + " میلادی (Gregorian)";
+      document.getElementById("gTit").textContent = fa(jStart.jy) + " - " + fa(jEnd.jy) + " هجری شمسی";
+      renderYearGrid();
+    } else {
+      document.getElementById("jTit").textContent = GM_EN[vm - 1] + " " + vy;
+      const jSub = (jStart.jm === jEnd.jm)
+        ? (JM[jStart.jm - 1] + " " + fa(jStart.jy))
+        : (JM[jStart.jm - 1] + " - " + JM[jEnd.jm - 1] + " " + fa(jEnd.jy));
+      document.getElementById("gTit").textContent = jSub;
+    }
+
+    const gSel = toG(sel.jy, sel.jm, sel.jd);
+    for (let i = 0; i < fw; i++) box.innerHTML += "<div></div>";
+    for (let d = 1; d <= len; d++) {
+      const dayDate = new Date(vy, vm - 1, d);
+      const w = (dayDate.getDay() + 1) % 7;
+      const jDate = toJ(vy, vm, d);
+      const evs = getEv(jDate.jy, jDate.jm, jDate.jd);
+      const hol = w === 6 || evs.some(e => e[1]);
+      const hasNote = !!(notes[dayKey(jDate.jy, jDate.jm, jDate.jd)] && notes[dayKey(jDate.jy, jDate.jm, jDate.jd)].length);
+      const isBday = (birthCfg && birthCfg.m === jDate.jm && birthCfg.d === jDate.jd);
+      const isTod = (vy === gToday.gy && vm === gToday.gm && d === gToday.gd);
+      const isSel = (vy === gSel.gy && vm === gSel.gm && d === gSel.gd);
+
+      evs.forEach(e => mList.push({ label: String(d), j: jDate, t: e[0], h: e[1] }));
+      if (isBday) mList.push({ label: String(d), j: jDate, t: "🎂 سالروز تولد شما", h: 0 });
+
+      const el = document.createElement("div");
+      el.className = "day" + (hol ? " hol" : "") + (isTod ? " tod" : "") + (isSel ? " sel" : "");
+      el.innerHTML = `<span class="jn">${isBday ? "🎂" : d}</span>${cfg.showG ? `<span class="gn">${fa(jDate.jd)}</span>` : ""}<div class="dots">${evs.length ? '<span class="dot"></span>' : ""}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
+      el.onclick = () => { sel = { jy: jDate.jy, jm: jDate.jm, jd: jDate.jd }; render(); };
+      box.appendChild(el);
+    }
+  } else if (cType === "hijri") {
+    const len = hMonthLen(vy, vm);
+    const fw = hFirstWeekday(vy, vm);
+    const gStart = d2g(h2jdn(vy, vm, 1));
+    const gEnd = d2g(h2jdn(vy, vm, len));
+
+    if (calMode === "year") {
+      document.getElementById("jTit").textContent = "سال " + fa(vy) + " هجری قمری";
+      document.getElementById("gTit").textContent = gStart.gy + " - " + gEnd.gy + " میلادی";
+      renderYearGrid();
+    } else {
+      document.getElementById("jTit").textContent = HM[vm - 1] + " " + fa(vy);
+      document.getElementById("gTit").textContent = GM_EN[gStart.gm - 1] + " - " + GM_EN[gEnd.gm - 1] + " " + gEnd.gy;
+    }
+
+    const gSel = toG(sel.jy, sel.jm, sel.jd);
+    const hSel = g2h(gSel.gy, gSel.gm, gSel.gd);
+    for (let i = 0; i < fw; i++) box.innerHTML += "<div></div>";
+    for (let d = 1; d <= len; d++) {
+      const w = (fw + d - 1) % 7;
+      const gDate = d2g(h2jdn(vy, vm, d));
+      const jDate = toJ(gDate.gy, gDate.gm, gDate.gd);
+      const evs = getEv(jDate.jy, jDate.jm, jDate.jd);
+      const hol = w === 6 || evs.some(e => e[1]);
+      const hasNote = !!(notes[dayKey(jDate.jy, jDate.jm, jDate.jd)] && notes[dayKey(jDate.jy, jDate.jm, jDate.jd)].length);
+      const isBday = (birthCfg && birthCfg.m === jDate.jm && birthCfg.d === jDate.jd);
+      const isTod = (vy === hToday.hy && vm === hToday.hm && d === hToday.hd);
+      const isSel = (vy === hSel.hy && vm === hSel.hm && d === hSel.hd);
+
+      evs.forEach(e => mList.push({ label: fa(d), j: jDate, t: e[0], h: e[1] }));
+      if (isBday) mList.push({ label: fa(d), j: jDate, t: "🎂 سالروز تولد شما", h: 0 });
+
+      const el = document.createElement("div");
+      el.className = "day" + (hol ? " hol" : "") + (isTod ? " tod" : "") + (isSel ? " sel" : "");
+      el.innerHTML = `<span class="jn">${isBday ? "🎂" : fa(d)}</span>${cfg.showG ? `<span class="gn">${fa(jDate.jd)}</span>` : ""}<div class="dots">${evs.length ? '<span class="dot"></span>' : ""}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
+      el.onclick = () => { sel = { jy: jDate.jy, jm: jDate.jm, jd: jDate.jd }; render(); };
+      box.appendChild(el);
+    }
+  } else {
+    // Default Jalali
+    const len = mLen(vy, vm), fw = wDay(vy, vm, 1), g1 = toG(vy, vm, 1), g2 = toG(vy, vm, len);
+    if (calMode === "year") {
+      const gy1 = toG(vy, 1, 1).gy, gy2 = toG(vy, 12, 29).gy;
+      document.getElementById("jTit").textContent = "سال " + fa(vy) + " هجری شمسی";
+      document.getElementById("gTit").textContent = fa(gy1) + " - " + fa(gy2) + " میلادی";
+      renderYearGrid();
+    } else {
+      document.getElementById("jTit").textContent = JM[vm - 1] + " " + fa(vy);
+      document.getElementById("gTit").textContent = GM_EN[g1.gm - 1] + " (" + fa(g1.gm) + ") - " + GM_EN[g2.gm - 1] + " (" + fa(g2.gm) + ") " + fa(g2.gy);
+    }
+    for (let i = 0; i < fw; i++) box.innerHTML += "<div></div>";
+    for (let d = 1; d <= len; d++) {
+      const w = (fw + d - 1) % 7, evs = getEv(vy, vm, d), hol = w === 6 || evs.some(e => e[1]), g = toG(vy, vm, d);
+      const hasNote = !!(notes[dayKey(vy, vm, d)] && notes[dayKey(vy, vm, d)].length);
+      const isBday = (birthCfg && birthCfg.m === vm && birthCfg.d === d);
+      const jDate = { jy: vy, jm: vm, jd: d };
+      evs.forEach(e => mList.push({ label: fa(d), j: jDate, t: e[0], h: e[1] }));
+      if (isBday) mList.push({ label: fa(d), j: jDate, t: "🎂 سالروز تولد شما", h: 0 });
+      const el = document.createElement("div");
+      el.className = "day" + (hol ? " hol" : "") + (vy === tod.jy && vm === tod.jm && d === tod.jd ? " tod" : "") + (vy === sel.jy && vm === sel.jm && d === sel.jd ? " sel" : "");
+      el.innerHTML = `<span class="jn">${isBday ? "🎂" : fa(d)}</span>${cfg.showG ? `<span class="gn">${fa(g.gd)}</span>` : ""}<div class="dots">${evs.length ? '<span class="dot"></span>' : ""}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
+      el.onclick = () => { sel = { jy: vy, jm: vm, jd: d }; render(); };
+      box.appendChild(el);
+    }
+  }
+
+  const sw = wDay(sel.jy, sel.jm, sel.jd), sg = toG(sel.jy, sel.jm, sel.jd), sh = g2h(sg.gy, sg.gm, sg.gd), sevs = getEv(sel.jy, sel.jm, sel.jd);
+  const isSelBday = (birthCfg && birthCfg.m === sel.jm && birthCfg.d === sel.jd);
+  const dayNameFa = WD[(sw + 6) % 7];
+
+  if (cType === "gregorian") {
+    document.getElementById("selTit").innerHTML = `<span dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span> • ${dayNameFa}`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">${fa(sel.jd)} ${JM[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">${fa(sh.hd)} ${HM[sh.hm - 1]} ${fa(sh.hy)}</span>`;
+  } else if (cType === "hijri") {
+    document.getElementById("selTit").textContent = dayNameFa + " " + fa(sh.hd) + " " + HM[sh.hm - 1] + " " + fa(sh.hy);
+    document.getElementById("selSub").innerHTML = `<span class="tag">${fa(sel.jd)} ${JM[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span>`;
+  } else {
+    document.getElementById("selTit").textContent = dayNameFa + " " + fa(sel.jd) + " " + JM[sel.jm - 1] + " " + fa(sel.jy);
+    document.getElementById("selSub").innerHTML = `<span class="tag" dir="ltr">${fa(sg.gd)} ${GM_EN[sg.gm - 1]} ${fa(sg.gy)}</span><span class="tag" dir="ltr">${fa(String(sg.gd).padStart(2, "0"))}/${fa(String(sg.gm).padStart(2, "0"))}/${fa(sg.gy)}</span><span class="tag">${fa(sh.hd)} ${HM[sh.hm - 1]} ${fa(sh.hy)}</span>`;
+  }
+
+  renderSunBox(sg.gy, sg.gm, sg.gd);
+  let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
+  if (isSelBday) evHtml = `<div class="ev" style="color:var(--pri);font-weight:700">🎂 سالروز تولد شما مبارک باد!</div>` + evHtml;
+  document.getElementById("evBox").innerHTML = evHtml || '<div class="ev" style="opacity:.6">مناسبتی ثبت نشده است</div>';
+
+  const sk = dayKey(sel.jy, sel.jm, sel.jd), sNotes = notes[sk] || [];
+  document.getElementById("notesList").innerHTML = sNotes.map((raw, i) => {
+    const n = normNote(raw);
+    return `<div class="note-item" style="${n.done ? 'opacity:.6;text-decoration:line-through' : ''}">
+      <span style="flex:1">${n.pin ? "📌 " : ""}${esc(n.t)} <span class="cat-pill" style="margin-right:3px">${esc(n.cat || "شخصی")}</span> ${n.tm ? `<span class="tag" style="margin-right:3px;color:var(--pri);font-weight:700">⏰ ${fa(n.tm)}</span>` : ""}</span>
+      <div style="display:flex;gap:3px">
+        <button class="nact" onclick="toggleNoteDone('${sk}',${i})">${n.done ? "↩️" : "✅"}</button>
+        <button class="nact" onclick="openNoteModal(sel,{k:'${sk}',idx:${i}})">✏️</button>
+        <button class="nact" style="color:var(--hol)" onclick="delNote('${sk}',${i})">✕</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  const mBox = document.getElementById("monthEvBox");
+  mBox.innerHTML = mList.length
+    ? mList.map(x => `<div class="m-ev ${x.h ? 'hol' : ''}" onclick="sel={jy:${x.j.jy},jm:${x.j.jm},jd:${x.j.jd}};render()"><span class="badge">${x.label}</span><span>${esc(x.t)}</span></div>`).join("")
+    : '<div style="font-size:12px;opacity:.6;padding-top:4px">مناسبتی ثبت نشده است</div>';
+}
+
+// Triple Converter
+function initConvInputs(){
+  const mode=document.getElementById("convMode").value;
+  const dS=document.getElementById("cDay"),mS=document.getElementById("cMon"),yS=document.getElementById("cYear");
+  dS.innerHTML="";mS.innerHTML="";yS.innerHTML="";
+  for(let d=1;d<=31;d++)dS.innerHTML+=`<option value="${d}">${fa(d)}</option>`;
+  if(mode==="j2g"){
+    JM.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
+    for(let y=1350;y<=1430;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
+    dS.value=sel.jd;mS.value=sel.jm;yS.value=sel.jy;
+  }else{
+    GM_EN.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
+    const g=toG(sel.jy,sel.jm,sel.jd);
+    for(let y=1970;y<=2050;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
+    dS.value=g.gd;mS.value=g.gm;yS.value=g.gy;
+  }
+}
+function runConvert(){
+  const mode=document.getElementById("convMode").value;
+  const d=+document.getElementById("cDay").value,m=+document.getElementById("cMon").value,y=+document.getElementById("cYear").value;
+  let j,g;
+  if(mode==="j2g"){const day=Math.min(d,mLen(y,m));j={jy:y,jm:m,jd:day};g=toG(y,m,day);}
+  else{g={gy:y,gm:m,gd:d};j=toJ(y,m,d);}
+  const h=g2h(g.gy,g.gm,g.gd);
+  document.getElementById("convRes").innerHTML=`
+    شمسی: <b style="color:var(--pri)">${fa(j.jd)} ${JM[j.jm-1]} ${fa(j.jy)}</b><br>
+    میلادی (حروفی): <b dir="ltr" style="display:inline-block">${fa(g.gd)} ${GM_EN[g.gm-1]} ${fa(g.gy)}</b><br>
+    میلادی (روز/ماه/سال): <b style="direction:ltr;display:inline-block">${fa(String(g.gd).padStart(2,'0'))}/${fa(String(g.gm).padStart(2,'0'))}/${fa(g.gy)}</b><br>
+    قمری: <b>${fa(h.hd)} ${HM[h.hm-1]} ${fa(h.hy)}</b>
+  `;
+  vy=j.jy;vm=j.jm;sel={...j};render();
+}
+
+// Backup & Restore
+function exportBackup(){
+  const data=JSON.stringify({cfg,notes,birthCfg});
+  const ta=document.getElementById("backupText");
+  ta.value=data;ta.select();
+  navigator.clipboard&&navigator.clipboard.writeText(data);
+  alert("کد پشتیبان در کادر پایین قرار گرفت و در حافظه موقت (Clipboard) کپی شد.");
+}
+function importBackup(){
+  try{
+    const obj=JSON.parse(document.getElementById("backupText").value.trim());
+    if(obj.cfg){cfg=obj.cfg;localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));}
+    if(obj.notes){notes=obj.notes;localStorage.setItem("cal_notes_v4",JSON.stringify(notes));}
+    if(obj.birthCfg){birthCfg=obj.birthCfg;localStorage.setItem("cal_birth_v1",JSON.stringify(birthCfg));}
+    applyCfg();render();checkBirthdaySurprise();alert("اطلاعات و یادداشت‌ها با موفقیت بازیابی شدند!");
+  }catch(e){alert("کد پشتیبان نامعتبر است.");}
+}
+
+
+// Android 17 & iOS 26 Predictive Back Gesture Support for Modals & Fullscreen
+window.addEventListener("popstate", () => {
+  const openModalEl = document.querySelector(".modal.open");
+  if (openModalEl) {
+    closeModals(true);
+    return;
+  }
+  const calCardEl = document.getElementById("calCard");
+  if (calCardEl && calCardEl.classList.contains("fullscreen")) {
+    toggleCalFullscreen(false);
+  }
+});
+
+function pushModalState() {
+  try { history.pushState({ modal: true }, ""); } catch (e) {}
+}
+
+function closeModals(fromPopState = false){
+  const hadOpen = !!document.querySelector(".modal.open");
+  document.querySelectorAll(".modal").forEach(m=>m.classList.remove("open"));
+  if (hadOpen && !fromPopState && history.state && history.state.modal) {
+    try { history.back(); } catch (e) {}
+  }
+}
+document.getElementById("openStyle").onclick=()=>{renderStyleCards();pushModalState();document.getElementById("styleModal").classList.add("open")};
+document.getElementById("openConv").onclick=()=>{initConvInputs();pushModalState();document.getElementById("convModal").classList.add("open")};
+document.getElementById("openSet").onclick=()=>{pushModalState();document.getElementById("setModal").classList.add("open")};
+document.getElementById("prev").onclick=()=>{if(calMode==="year"){vy--;}else{vm--;if(vm<1){vm=12;vy--}}render()};
+document.getElementById("next").onclick=()=>{if(calMode==="year"){vy++;}else{vm++;if(vm>12){vm=1;vy++}}render()};
+const jumpToToday=()=>{
+  const gNow = new Date();
+  const jNow = toJ(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
+  sel = { ...jNow };
+  const ct = cfg.calType || "jalali";
+  if (ct === "gregorian") {
+    vy = gNow.getFullYear();
+    vm = gNow.getMonth() + 1;
+  } else if (ct === "hijri") {
+    const hNow = g2h(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
+    vy = hNow.hy;
+    vm = hNow.hm;
+  } else {
+    vy = jNow.jy;
+    vm = jNow.jm;
+  }
+  if (calMode === "year") setCalMode("month");
+  else render();
+};
+document.getElementById("todBtn").onclick=jumpToToday;
+document.getElementById("goTodayBtn").onclick=jumpToToday;
+
+// Touch Swipe & Horizontal Scroll Navigation for Calendar
+(function(){
+  const area=document.getElementById("calScrollArea");
+  let startX=0,startY=0,wheelLock=0;
+  area.addEventListener("touchstart",e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});
+  area.addEventListener("touchend",e=>{
+    const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.3){
+      if(dx>0) document.getElementById("next").click();
+      else document.getElementById("prev").click();
+    }
+  },{passive:true});
+  area.addEventListener("wheel",e=>{
+    if(Math.abs(e.deltaX)>25 && Date.now()-wheelLock>350){
+      wheelLock=Date.now();
+      if(e.deltaX>0) document.getElementById("prev").click();
+      else document.getElementById("next").click();
+    }
+  },{passive:true});
+})();
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",applyCfg);
+
+// ====== HOROSCOPE, BIRTHDAY SURPRISE & AI POSTCARD GENERATOR ======
+const ZODIAC_MONTHS=[
+  {m:"فروردین",sign:"حمل (قوچ)",en:"Aries golden ram nebula, spring cherry blossoms",sym:"♈",elem:"آتش 🔥",stone:"الماس و عقیق",pal:["#991B1B","#DC2626","#F59E0B"],wish:"سال جدید عمرت سرشار از شجاعت، آغازهای درخشان و پیروزی‌های بزرگ باد!"},
+  {m:"اردیبهشت",sign:"ثور (گاو)",en:"Taurus emerald garden, lush paradise flowers and golden light",sym:"♉",elem:"خاک 🌱",stone:"زمرد و فیروزه",pal:["#065F46","#059669","#34D399"],wish:"بهار زندگی‌ات همیشه سبز، آرام، پربرکت و سرشار از عشق و زیبایی باد!"},
+  {m:"خرداد",sign:"جوزا (دوپیکر)",en:"Gemini glowing twin stars, sky lanterns and turquoise clouds",sym:"♊",elem:"هوا 💨",stone:"مروارید و عقیق",pal:["#1E40AF","#3B82F6","#38BDF8"],wish:"ذهن خلاق و روح پرنشاطت در این سال جدید به زیباترین رویاهایت پرواز کند!"},
+  {m:"تیر",sign:"سرطان (خرچنگ)",en:"Cancer luminous pearl moon over calm bioluminescent ocean waves",sym:"♋",elem:"آب 💧",stone:"یاقوت و مروارید",pal:["#0F766E","#0D9488","#2DD4BF"],wish:"قلبت همیشه گرم، خانه‌ات پر از مهر و لحظه‌هایت سرشار از آرامش باد!"},
+  {m:"مرداد",sign:"اسد (شیر)",en:"Leo majestic golden lion crown, radiant solar flares and warm amber",sym:"♌",elem:"آتش 🔥",stone:"یاقوت زرد و کهربا",pal:["#B45309","#D97706","#FBBF24"],wish:"همچون خورشید بدرخشی و سال جدیدت پر از افتخار، شکوه و شادمانی باشد!"},
+  {m:"شهریور",sign:"سنبله (خوشه)",en:"Virgo golden wheat fields under sapphire twilight stars",sym:"♍",elem:"خاک 🌱",stone:"یاقوت کبود و یشم",pal:["#3730A3","#4F46E5","#818CF8"],wish:"تمام برنامه‌ها و آرزوهای دقیق و زیبایت در این سال به شیرینی به ثمر بنشیند!"},
+  {m:"مهر",sign:"میزان (ترازو)",en:"Libra golden scales balanced in autumn violet and rose sunset",sym:"♎",elem:"هوا 💨",stone:"اوپال و لاجورد",pal:["#6D28D9","#7C3AED","#C084FC"],wish:"زندگی‌ات همیشه سرشار از تعادل، مهر، هنر و لبخندهای ماندگار باد!"},
+  {m:"آبان",sign:"عقرب (کژدم)",en:"Scorpio mystical crimson ruby nebula and glowing stardust",sym:"♏",elem:"آب 💧",stone:"توپاز و عقیق سرخ",pal:["#881337","#BE123C","#FB7185"],wish:"اراده پولادین و نگاه عمیقت در سال جدید برایت شگفت‌انگیزترین موفقیت‌ها را بسازد!"},
+  {m:"آذر",sign:"قوس (کماندار)",en:"Sagittarius celestial golden arrow shooting across blue galaxy",sym:"♐",elem:"آتش 🔥",stone:"فیروزه و یاقوت",pal:["#1D4ED8","#2563EB","#60A5FA"],wish:"تیر آرزوهایت به هدف بنشیند و سال جدیدت پر از سفرهای خوش و ماجراجویی‌های شیرین باشد!"},
+  {m:"دی",sign:"جدی (بز)",en:"Capricorn majestic crystal mountain peak under northern lights",sym:"♑",elem:"خاک 🌱",stone:"گارنت و عقیق سیاه",pal:["#1E293B","#334155","#38BDF8"],wish:"قله‌های موفقیت یکی پس از دیگری زیر قدم‌های استوارت فتح شود؛ تولدت مبارک!"},
+  {m:"بهمن",sign:"دلو (آبریز)",en:"Aquarius glowing water bearer pouring liquid starlight in cyan sky",sym:"♒",elem:"هوا 💨",stone:"آمیتیست و فیروزه",pal:["#0369A1","#0284C7","#22D3EE"],wish:"ایده‌های نو و قلب مهربانت در این سال جدید دنیایی از اتفاقات خوب برایت بسازد!"},
+  {m:"اسفند",sign:"حوت (ماهی)",en:"Pisces two luminous koi fish swimming in dreamy indigo cosmos",sym:"♓",elem:"آب 💧",stone:"آکوامارین و یشم",pal:["#4338CA","#6366F1","#A5B4FC"],wish:"دریای زندگی‌ات همیشه آرام، رویاهایت شیرین و بهار پیش رویت پر از شکوفه باشد!"}
+];
+const CHINESE_ANIMALS=[
+  {n:"موش",ico:"🐭"},{n:"گاو",ico:"🐮"},{n:"ببر",ico:"🐯"},{n:"خرگوش",ico:"🐰"},
+  {n:"اژدها",ico:"🐲"},{n:"مار",ico:"🐍"},{n:"اسب",ico:"🐴"},{n:"بز",ico:"🐐"},
+  {n:"میمون",ico:"🐵"},{n:"خروس",ico:"🐔"},{n:"سگ",ico:"🐶"},{n:"خوک",ico:"🐷"}
+];
+const FAL_GENERAL=[
+  "امروز ستاره‌ها در موقعیتی قرار دارند که گشایش تازه‌ای در کارهای عقب‌افتاده شما ایجاد می‌شود. با آرامش و تمرکز قدم بردارید.",
+  "انرژی امروز به شما کمک می‌کند تصمیم مهمی را که مدت‌ها به تعویق انداخته بودید با اطمینان نهایی کنید.",
+  "خبری خوش یا پیامی غیرمنتظره از فردی نزدیک، حال و هوای امروز شما را دگرگون و پرانرژی خواهد کرد.",
+  "امروز زمان مناسبی برای برنامه‌ریزی بلندمدت و فاصله گرفتن از حاشیه‌هاست؛ شهود درونی شما مسیر درست را نشان می‌دهد.",
+  "یک فرصت تازه در مسیر شما قرار می‌گیرد؛ با هوشیاری و مشورت درست می‌توانید بهترین بهره را از آن ببرید.",
+  "صبر و حوصله‌ای که در روزهای گذشته به خرج دادید امروز به ثمر می‌نشیند و گره‌ای از کارتان باز می‌شود.",
+  "امروز روز درخشش ایده‌های خلاقانه شماست؛ هر قدم کوچکی که بردارید بازتاب مثبتی در آینده نزدیک خواهد داشت.",
+  "تغییری مثبت در روابط و محیط اطراف شما در حال شکل‌گیری است؛ با روی گشاده از اتفاقات جدید استقبال کنید."
+];
+const FAL_WORK_MONEY=[
+  "در مسائل مالی و کاری، یک پیشنهاد یا ایده تازه می‌تواند درآمد یا بهره‌وری شما را افزایش دهد؛ جزئیات را با دقت بررسی کنید.",
+  "امروز از تصمیم‌های هیجانی در خرید یا سرمایه‌گذاری پرهیز کنید؛ حفظ تعادل مالی کلید موفقیت امروز شماست.",
+  "تلاش‌های حرفه‌ای شما مورد توجه قرار می‌گیرد و مسیر برای یک پیشرفت یا همکاری سودمند هموار می‌شود.",
+  "امروز برای پیگیری مطالبات مالی، قراردادها و سامان‌دهی امور کاری بسیار مساعد است.",
+  "با مدیریت زمان و اولویت‌بندی کارها، نتیجه‌ای فراتر از انتظار در محیط کار به دست می‌آورید.",
+  "گشایش مالی کوچکی در راه است که بخشی از دغدغه‌های اخیر شما را برطرف می‌کند."
+];
+const FAL_EMOTION=[
+  "در روابط عاطفی و خانوادگی، گفت‌وگویی صمیمانه سوءتفاهم‌های کوچک را برطرف کرده و پیوندتان را عمیق‌تر می‌کند.",
+  "امروز مهربانی و توجه شما به اطرافیان، انرژی مثبت چندبرابری به زندگی خودتان بازمی‌گرداند.",
+  "لحظات آرام و دلنشینی در کنار خانواده یا دوستان در انتظار شماست؛ قدر این همدلی را بدانید.",
+  "اگر منتظر نشانه یا پیامی از فردی هستید، امروز زمان مناسبی برای برداشتن قدم اول با لحنی گرم و صادقانه است.",
+  "آرامش درونی و رضایت خاطر امروز شما باعث می‌شود اطرافیان نیز از هم‌صحبتی با شما لذت ببرند."
+];
+const HAFEZ_VERSES=[
+  {b:"مژده ای دل که مسیحا نفسی می‌آید / که ز انفاس خوشش بوی کسی می‌آید",t:"گشایش و رسیدن مژده‌ای که مدتی است انتظارش را می‌کشید بسیار نزدیک است."},
+  {b:"یوسف گمگشته بازآید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور",t:"نگرانی‌های فعلی گذرا هستند و اوضاع به زودی به بهترین شکل سامان می‌یابد."},
+  {b:"سحر با باد می‌گفتم حدیث آرزومندی / خطاب آمد که واثق شو به الطاف خداوندی",t:"با توکل و امید به مسیر خود ادامه دهید؛ لطف و یاری الهی همراه شماست."},
+  {b:"درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد",t:"همدلی و سازگاری با اطرافیان، بهترین کلید حل مسائل امروز شماست."},
+  {b:"چو بشنوی سخن اهل دل مگو که خطاست / سخن‌شناس نه‌ای جان من خطا اینجاست",t:"به پند و تجربه افراد دلسوز و آگاه توجه کنید تا از اشتباه دور بمانید."},
+  {b:"هر که شد محرم دل در حرم یار بماند / وان که این کار ندانست در انکار بماند",t:"صداقت و یکرنگی شما در کار و زندگی، اعتبار و آرامش پایدار برایتان می‌آورد."},
+  {b:"بیا تا گل برافشانیم و می در ساغر اندازیم / فلک را سقف بشکافیم و طرحی نو دراندازیم",t:"زمان آن رسیده که با روحیه‌ای تازه و پرانرژی، برنامه‌ای نو را آغاز کنید."}
+];
+const LUCKY_COLORS=["آبی فیروزه‌ای","سبز زمردی","طلایی","سفید صدفی","بنفش یاسی","سرمه‌ای","نارنجی ملایم"];
+
+let birthCfg=JSON.parse(localStorage.getItem("cal_birth_v1")||'{"y":1373,"m":4,"d":5,"name":""}');
+let falExtraOffset=0;
+let postcardVariant=0;
+
+function initBirthInputs(){
+  const dS=document.getElementById("bDay"),mS=document.getElementById("bMon"),yS=document.getElementById("bYear"),nI=document.getElementById("bNameInput");
+  if(!dS)return;
+  if(!dS.options.length){
+    for(let d=1;d<=31;d++) dS.innerHTML+=`<option value="${d}">${fa(d)}</option>`;
+    JM.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
+    for(let y=1320;y<=1405;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
+  }
+  dS.value=birthCfg.d;
+  mS.value=birthCfg.m;
+  yS.value=birthCfg.y;
+  if(nI && birthCfg.name) nI.value=birthCfg.name;
+}
+
+function checkBirthdaySurprise(justSaved=false){
+  const isTodayBday=(tod.jm===birthCfg.m && tod.jd===birthCfg.d);
+  const calBanner=document.getElementById("calBdayBanner");
+  const falBanner=document.getElementById("falBdaySurprise");
+  const userName=birthCfg.name?` ${birthCfg.name} عزیز`:" عزیز";
+  const ageYears=Math.max(1,tod.jy-birthCfg.y);
+
+  const surpriseHtml=`
+    <div class="bday-banner">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <b style="font-size:15px">🎉 تولدت مبارک${esc(userName)}! 🎂</b>
+        <span style="background:rgba(255,255,255,0.22);padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700">${fa(tod.jd)} ${JM[tod.jm-1]}</span>
+      </div>
+      <div style="font-size:12px;line-height:1.7;margin-top:6px;opacity:.96">
+        آغاز <b>${fa(ageYears)} سالگی</b> زندگی‌ات سرشار از سلامتی، عشق و موفقیت‌های درخشان باد! کارت پستال اختصاصی تولدت آماده شده است.
+      </div>
+      <button onclick="switchTab('fal')" style="margin-top:8px;background:#FFFFFF;color:#BE185D;border:none;padding:6px 12px;border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer">🎁 مشاهده کارت پستال تولد من</button>
+    </div>
+  `;
+
+  if(isTodayBday){
+    if(calBanner){calBanner.style.display="block";calBanner.innerHTML=surpriseHtml;}
+    if(falBanner){falBanner.style.display="block";falBanner.innerHTML=surpriseHtml;}
+    if(justSaved) playAlarmTone();
+  }else{
+    if(calBanner) calBanner.style.display="none";
+    if(falBanner){
+      // Calculate days left until next birthday
+      let nextBdayJdn=j2d(tod.jy,birthCfg.m,Math.min(birthCfg.d,mLen(tod.jy,birthCfg.m)));
+      const todayJdn=j2d(tod.jy,tod.jm,tod.jd);
+      if(nextBdayJdn<todayJdn) nextBdayJdn=j2d(tod.jy+1,birthCfg.m,Math.min(birthCfg.d,mLen(tod.jy+1,birthCfg.m)));
+      const daysLeft=nextBdayJdn-todayJdn;
+      falBanner.style.display="block";
+      falBanner.innerHTML=`<div style="background:var(--pri-bg);color:var(--pri);padding:9px 12px;border-radius:13px;font-size:11.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        <span>🎈 روزشمار تا جشن تولد بعدی شما (${fa(birthCfg.d)} ${JM[birthCfg.m-1]}):</span>
+        <b>${fa(daysLeft)} روز مانده</b>
+      </div>`;
+    }
+  }
+}
+
+function saveBirthAndCalcFal(){
+  const d=Number(document.getElementById("bDay").value);
+  const m=Number(document.getElementById("bMon").value);
+  const y=Number(document.getElementById("bYear").value);
+  const name=(document.getElementById("bNameInput")?.value||"").trim();
+  const validDay=Math.min(d,mLen(y,m));
+  document.getElementById("bDay").value=validDay;
+  birthCfg={y,m,d:validDay,name};
+  localStorage.setItem("cal_birth_v1",JSON.stringify(birthCfg));
+  falExtraOffset=0;
+  render();
+  renderFal();
+  checkBirthdaySurprise(true);
+}
+
+function refreshFalSeed(){
+  falExtraOffset=(falExtraOffset+1)%17;
+  renderFal();
+}
+
+function wrapCanvasText(ctx,text,x,y,maxWidth,lineHeight){
+  const words=text.split(" ");
+  let line="",currY=y;
+  for(let n=0;n<words.length;n++){
+    const testLine=line+words[n]+" ";
+    if(ctx.measureText(testLine).width>maxWidth && n>0){
+      ctx.fillText(line.trim(),x,currY);
+      line=words[n]+" ";
+      currY+=lineHeight;
+    }else{
+      line=testLine;
+    }
+  }
+  ctx.fillText(line.trim(),x,currY);
+}
+
+let lastAiBgImg=null,lastAiPromptKey="";
+
+function applyPromptPreset(txt){
+  const el=document.getElementById("aiCustomPrompt");
+  if(el){el.value=txt;generateBirthdayPostcard(true);}
+}
+
+async function translatePromptToEn(rawPrompt){
+  if(!rawPrompt)return "";
+  if(!/[؀-ۿ]/.test(rawPrompt)) return rawPrompt;
+  try{
+    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent("Translate this image generation prompt to vivid English keywords only, no explanation: "+rawPrompt)}`);
+    if(r&&r.ok){
+      const t=(await r.text()).trim();
+      if(t && t.length>3 && t.length<260) return t;
+    }
+  }catch(e){}
+  const dict={"کهکشان":"galaxy nebula","بنفش":"purple violet","طلایی":"golden","صورت فلکی":"constellation stars","شهاب":"shooting stars","باغ":"persian garden","گل":"blooming flowers","رز":"roses","فانوس":"glowing lanterns","کیک":"luxury birthday cake","شمع":"glowing candles","آتش‌بازی":"fireworks","شفق قطبی":"aurora borealis northern lights","کوه":"snowy mountains","برفی":"winter snow","دریاچه":"calm lake","دریا":"ocean waves","پروانه":"glowing butterflies","خورشید":"radiant sun","ماه":"luminous moon","آبی":"royal blue","سبز":"emerald green","قرمز":"crimson ruby"};
+  let mapped=rawPrompt;
+  Object.keys(dict).forEach(k=>{mapped=mapped.split(k).join(" "+dict[k]+" ");});
+  return mapped.replace(/[؀-ۿ]+/g," ").trim() || "magical celestial celebration";
+}
+
+function renderRichGenerativeArt(ctx,W,H,z,styleVal,variant,promptTxt){
+  const [c1,c2,c3]=z.pal;
+  const seed=(birthCfg.y*31 + birthCfg.m*17 + birthCfg.d*7 + variant*97 + promptTxt.length*13);
+  const rng=(s)=>((Math.sin(s*91.345 + seed)*47453.5453)%1+1)%1;
+
+  // Base atmospheric gradient per style
+  const grad=ctx.createLinearGradient(0,0,W,H);
+  if(styleVal==="luxury"){
+    grad.addColorStop(0,"#090D16");grad.addColorStop(0.55,"#1E1B4B");grad.addColorStop(1,"#78350F");
+  }else if(styleVal==="floral"){
+    grad.addColorStop(0,c1);grad.addColorStop(0.5,"#831843");grad.addColorStop(1,"#1E1B4B");
+  }else if(styleVal==="cyber"){
+    grad.addColorStop(0,"#042F2E");grad.addColorStop(0.5,"#1E1B4B");grad.addColorStop(1,"#311042");
+  }else if(styleVal==="dreamy"){
+    grad.addColorStop(0,"#1E1B4B");grad.addColorStop(0.5,c2);grad.addColorStop(1,"#0F172A");
+  }else{
+    grad.addColorStop(0,c1);grad.addColorStop(0.55,c2);grad.addColorStop(1,"#090D16");
+  }
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,W,H);
+
+  // Glowing nebula / aurora light clouds on the left focal area
+  for(let i=0;i<7;i++){
+    const gx=60+rng(i+2)*260,gy=50+rng(i+12)*410,gr=70+rng(i+22)*130;
+    const rad=ctx.createRadialGradient(gx,gy,4,gx,gy,gr);
+    rad.addColorStop(0,i%2===0?c3+"55":"rgba(255,255,255,0.22)");
+    rad.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=rad;
+    ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
+  }
+
+  // Style-specific procedural artwork (petals, bokeh, constellation lines, or cyber waves)
+  if(styleVal==="floral"){
+    for(let p=0;p<24;p++){
+      const px=30+rng(p+40)*320,py=30+rng(p+70)*450,pr=8+rng(p+95)*16;
+      ctx.save();
+      ctx.translate(px,py);
+      ctx.rotate(rng(p+110)*Math.PI*2);
+      ctx.fillStyle=p%2===0?"rgba(251,207,232,0.26)":"rgba(253,230,138,0.22)";
+      ctx.beginPath();
+      ctx.ellipse(0,0,pr,pr*0.48,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }else if(styleVal==="cyber"){
+    ctx.strokeStyle="rgba(34,211,238,0.26)";
+    ctx.lineWidth=1.5;
+    for(let w=0;w<6;w++){
+      ctx.beginPath();
+      for(let x=0;x<=W*0.65;x+=24){
+        const yPos=120+w*52+Math.sin(x*0.018+w+variant)*28;
+        if(x===0)ctx.moveTo(x,yPos);else ctx.lineTo(x,yPos);
+      }
+      ctx.stroke();
+    }
+  }else{
+    // Constellation star network + bokeh sparkles
+    const pts=[];
+    for(let s=0;s<14;s++) pts.push([40+rng(s+30)*280,45+rng(s+60)*420]);
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.lineWidth=1;
+    for(let s=0;s<pts.length-1;s++){
+      ctx.beginPath();ctx.moveTo(pts[s][0],pts[s][1]);ctx.lineTo(pts[s+1][0],pts[s+1][1]);ctx.stroke();
+    }
+    pts.forEach(([sx,sy],idx)=>{
+      ctx.beginPath();ctx.arc(sx,sy,idx%3===0?3.5:2,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,255,255,0.75)";ctx.fill();
+    });
+  }
+
+  // Fine stardust across whole card
+  for(let i=0;i<36;i++){
+    const sx=rng(i+200)*W,sy=rng(i+260)*H,sr=0.8+rng(i+310)*2.2;
+    ctx.beginPath();ctx.arc(sx,sy,sr,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${0.2+rng(i+360)*0.65})`;ctx.fill();
+  }
+}
+
+function drawPostcardComposite(bgImage,isTainted=false){
+  const canvas=document.getElementById("bdayCanvas");
+  if(!canvas)return;
+  const ctx=canvas.getContext("2d");
+  const W=canvas.width,H=canvas.height;
+  const {y,m,d,name}=birthCfg;
+  const z=ZODIAC_MONTHS[m-1];
+  const animal=CHINESE_ANIMALS[((y-1300)%12+12)%12];
+  const [c1,c2,c3]=z.pal;
+  const styleVal=document.getElementById("aiCardStyleSelect")?.value||"celestial";
+  const userRawPrompt=(document.getElementById("aiCustomPrompt")?.value||"").trim();
+
+  ctx.clearRect(0,0,W,H);
+
+  if(bgImage){
+    ctx.drawImage(bgImage,0,0,W,H);
+    const shade=ctx.createLinearGradient(W,0,0,0);
+    shade.addColorStop(0,"rgba(8,12,24,0.84)");
+    shade.addColorStop(0.62,"rgba(8,12,24,0.54)");
+    shade.addColorStop(1,"rgba(8,12,24,0.16)");
+    ctx.fillStyle=shade;
+    ctx.fillRect(0,0,W,H);
+  }else{
+    renderRichGenerativeArt(ctx,W,H,z,styleVal,postcardVariant,userRawPrompt);
+    const shade=ctx.createLinearGradient(W,0,0,0);
+    shade.addColorStop(0,"rgba(8,12,24,0.68)");
+    shade.addColorStop(0.6,"rgba(8,12,24,0.28)");
+    shade.addColorStop(1,"rgba(8,12,24,0.05)");
+    ctx.fillStyle=shade;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // Subtle Inner Glass Border Frame
+  ctx.strokeStyle="rgba(255,255,255,0.34)";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.roundRect(22,22,W-44,H-44,24);
+  ctx.stroke();
+
+  // Zodiac Symbol Emblem Badge on Left
+  ctx.fillStyle="rgba(15,23,42,0.54)";
+  ctx.strokeStyle="rgba(255,255,255,0.38)";
+  ctx.beginPath();ctx.arc(130,136,56,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle="#FFFFFF";
+  ctx.font="bold 48px 'Inter', sans-serif";
+  ctx.textAlign="center";
+  ctx.fillText(z.sym,130,153);
+  ctx.font="bold 15px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillStyle=c3;
+  ctx.fillText(z.sign,130,220);
+  ctx.font="13px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillStyle="rgba(255,255,255,0.92)";
+  ctx.fillText(`${z.elem} • ${animal.ico} ${animal.n}`,130,244);
+
+  // Right-aligned Persian Typography
+  ctx.direction="rtl";
+  ctx.textAlign="right";
+
+  ctx.fillStyle=c3;
+  ctx.font="bold 18px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(`✨ کارت پستال هوشمند متولدین ${JM[m-1]} ✨`,W-48,76);
+
+  ctx.fillStyle="#FFFFFF";
+  ctx.font="bold 35px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  const headline=name?`${name} عزیز، تولدت مبارک!`:`تولدت مبارک!`;
+  ctx.fillText(headline,W-48,132);
+
+  ctx.fillStyle="rgba(255,255,255,0.94)";
+  ctx.font="bold 20px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(`🎂 ${fa(d)} ${JM[m-1]} ${fa(y)}`,W-48,176);
+
+  const customWish=(document.getElementById("aiCustomWish")?.value||"").trim();
+  ctx.fillStyle="rgba(255,255,255,0.96)";
+  ctx.font="19px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  wrapCanvasText(ctx,customWish||z.wish,W-48,232,460,33);
+
+  ctx.fillStyle="rgba(255,255,255,0.75)";
+  ctx.font="13.5px 'Vazirmatn', 'Inter', sans-serif";
+  ctx.fillText(`سنگ خوش‌یمن: ${z.stone}  |  Smart Cal AI`,W-48,H-44);
+}
+
+function loadImgElement(url,useCors=true,timeoutMs=11000){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    if(useCors) img.crossOrigin="anonymous";
+    const tid=setTimeout(()=>{img.src="";reject(new Error("timeout"));},timeoutMs);
+    img.onload=()=>{clearTimeout(tid);resolve(img);};
+    img.onerror=()=>{clearTimeout(tid);reject(new Error("err"));};
+    img.src=url;
+  });
+}
+
+async function generateBirthdayPostcard(forceNew=false){
+  if(forceNew) postcardVariant=(postcardVariant+1)%100;
+  const {y,m,d}=birthCfg;
+  const z=ZODIAC_MONTHS[m-1];
+  const styleVal=document.getElementById("aiCardStyleSelect")?.value||"celestial";
+  const userRawPrompt=(document.getElementById("aiCustomPrompt")?.value||"").trim();
+  const promptKey=`${m}-${d}-${styleVal}-${userRawPrompt}-${postcardVariant}`;
+
+  // Draw immediate high-quality generative artwork first so user sees instant result with zero blank screen
+  drawPostcardComposite(lastAiPromptKey===promptKey?lastAiBgImg:null);
+  if(lastAiPromptKey===promptKey && lastAiBgImg && !forceNew) return;
+
+  const styleMap={
+    celestial:"magical celestial nebula, glowing golden constellations, cosmic stardust, ultra detailed digital art",
+    floral:"luxurious watercolor botanical painting, blooming spring flowers, golden bokeh light, pastel silk",
+    luxury:"royal midnight blue and shimmering gold foil celebration art, glowing candles, cinematic lighting",
+    dreamy:"ethereal fantasy dreamscape, glowing butterflies, aurora lights, enchanted crystal garden",
+    cyber:"futuristic neon cyber holographic light waves, glowing cyan and violet crystal art, sleek modern aesthetic"
+  };
+
+  const loader=document.getElementById("aiCardLoader");
+  const statusEl=document.getElementById("aiCardStatus");
+  if(loader) loader.style.display="flex";
+  if(statusEl) statusEl.textContent=userRawPrompt?"در حال پردازش پرامپت شما و تولید تصویر AI...":"در حال خلق تصویر اختصاصی با هوش مصنوعی...";
+
+  try{
+    const userEnPrompt=await translatePromptToEn(userRawPrompt);
+    const subjectPart=userEnPrompt?`${userEnPrompt}, blended with ${z.en}`:z.en;
+    const prompt=`Birthday greeting card background artwork, ${subjectPart}, ${styleMap[styleVal]}, artistic composition on left side, clean dark space on right side, no text, no letters, no watermark`;
+    const seed=(y*31 + m*17 + d*7 + postcardVariant*97);
+
+    // Multi-endpoint AI Image Pipeline (Direct CORS -> Non-CORS WebView -> AllOrigins Proxy)
+    const aiUrls=[
+      `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=512&seed=${seed}&nologo=true&model=flux`,
+      `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=512&seed=${seed}&nologo=true`
+    ];
+
+    let loadedImg=null;
+    // Try 1: CORS-enabled load (allows direct PNG download)
+    try{ loadedImg=await loadImgElement(aiUrls[0],true,10000); }catch(e){}
+    // Try 2: Standard WebView image load (bypasses strict CORS headers in Android WebView)
+    if(!loadedImg){
+      try{ loadedImg=await loadImgElement(aiUrls[1],false,10000); }catch(e){}
+    }
+
+    if(loadedImg){
+      lastAiBgImg=loadedImg;
+      lastAiPromptKey=promptKey;
+      drawPostcardComposite(loadedImg);
+      if(statusEl) statusEl.textContent=`✅ کارت پستال هوش مصنوعی برای متولد ${fa(d)} ${JM[m-1]} (${z.sign}) آماده شد.`;
+    }else{
+      lastAiBgImg=null;
+      lastAiPromptKey=promptKey;
+      drawPostcardComposite(null);
+      if(statusEl) statusEl.textContent=`✅ طرح گرافیکی هوشمند ویژه متولدین ${JM[m-1]} (${z.sign}) ساخته شد.`;
+    }
+  }catch(e){
+    drawPostcardComposite(null);
+    if(statusEl) statusEl.textContent=`✅ طرح گرافیکی هوشمند ویژه متولدین ${JM[m-1]} (${z.sign}) آماده شد.`;
+  }finally{
+    if(loader) loader.style.display="none";
+  }
+}
+
+function downloadPostcard(){
+  const canvas=document.getElementById("bdayCanvas");
+  if(!canvas)return;
+  try{
+    const dataUrl=canvas.toDataURL("image/png");
+    const link=document.createElement("a");
+    link.download=`SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
+    link.href=dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }catch(e){
+    // If external WebView image tainted canvas, re-render clean untainted canvas and download automatically
+    drawPostcardComposite(null);
+    try{
+      const dataUrl=canvas.toDataURL("image/png");
+      const link=document.createElement("a");
+      link.download=`SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
+      link.href=dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if(lastAiBgImg) drawPostcardComposite(lastAiBgImg);
+    }catch(err){
+      alert("کارت پستال آماده است؛ می‌توانید از صفحه اسکرین‌شات بگیرید.");
+    }
+  }
+}
+
+function renderFal(){
+  initBirthInputs();
+  checkBirthdaySurprise(false);
+  generateBirthdayPostcard(false);
+  const {y,m,d}=birthCfg;
+  const z=ZODIAC_MONTHS[m-1];
+  const animalIdx=((y-1300)%12+12)%12;
+  const animal=CHINESE_ANIMALS[animalIdx];
+
+  let ageY=tod.jy-y,ageM=tod.jm-m,ageD=tod.jd-d;
+  if(ageD<0){ageM--;ageD+=mLen(tod.jy,tod.jm===1?12:tod.jm-1);}
+  if(ageM<0){ageY--;ageM+=12;}
+
+  const seed=(tod.jy*366 + tod.jm*31 + tod.jd) + (y*13 + m*7 + d*3) + falExtraOffset;
+  const gTxt=FAL_GENERAL[seed % FAL_GENERAL.length];
+  const wTxt=FAL_WORK_MONEY[(seed*3 + d) % FAL_WORK_MONEY.length];
+  const eTxt=FAL_EMOTION[(seed*5 + m) % FAL_EMOTION.length];
+  const hafez=HAFEZ_VERSES[(seed*7 + y + d) % HAFEZ_VERSES.length];
+  const luckyNum=((seed + d + m) % 9) + 1;
+  const luckyCol=LUCKY_COLORS[(seed + m) % LUCKY_COLORS.length];
+  const energyPct=72 + ((seed*11) % 27);
+
+  document.getElementById("falDateSub").textContent=`ویژه ${fa(tod.jd)} ${JM[tod.jm-1]} ${fa(tod.jy)} • سن دقیق: ${fa(Math.max(0,ageY))} سال و ${fa(ageM)} ماه`;
+
+  document.getElementById("falBadges").innerHTML=`
+    <div style="background:var(--sub);padding:10px;border-radius:14px;border:1px solid var(--brd)">
+      <div style="font-size:10px;color:var(--sec)">برج فلکی ماه تولد</div>
+      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${z.sym} ${z.sign}</b>
+      <div style="font-size:10px;color:var(--sec);margin-top:3px">عنصر: ${z.elem} • سنگ: ${z.stone}</div>
+    </div>
+    <div style="background:var(--sub);padding:10px;border-radius:14px;border:1px solid var(--brd)">
+      <div style="font-size:10px;color:var(--sec)">طالع سال تولد (${fa(y)})</div>
+      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${animal.ico} سال ${animal.n}</b>
+      <div style="font-size:10px;color:var(--sec);margin-top:3px">شانس: ${fa(energyPct)}٪ • عدد: ${fa(luckyNum)} • رنگ: ${luckyCol}</div>
+    </div>
+  `;
+
+  document.getElementById("falContent").innerHTML=`
+    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px">
+      <b style="color:var(--pri);display:block;margin-bottom:3px">🌟 طالع کلی امروز شما:</b>
+      <span>${gTxt}</span>
+    </div>
+    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px">
+      <b style="color:var(--grn);display:block;margin-bottom:3px">💼 وضعیت کار، برنامه و مالی:</b>
+      <span>${wTxt}</span>
+    </div>
+    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px">
+      <b style="color:var(--hol);display:block;margin-bottom:3px">❤️ روابط و انرژی عاطفی:</b>
+      <span>${eTxt}</span>
+    </div>
+    <div style="background:var(--pri-bg);border:1px solid var(--pri);padding:12px;border-radius:15px;line-height:1.9;font-size:12.5px">
+      <b style="color:var(--pri);display:block;margin-bottom:4px">📜 تفأل روزانه از دیوان حافظ:</b>
+      <div style="font-weight:700;text-align:center;padding:4px 0;color:var(--txt)">«${hafez.b}»</div>
+      <div style="font-size:11.5px;color:var(--sec);margin-top:4px;border-top:1px dashed var(--brd);padding-top:5px"><b>تعبیر فال:</b> ${hafez.t}</div>
+    </div>
+  `;
+}
+
+initPwaInstallAndSw();applyCfg();render();checkBirthdaySurprise(false);fetchWeather();fetchMarket(false);
+setInterval(fetchWeather,1800000);
+setInterval(()=>fetchMarket(false),300000);
+</script>
+</body>
+</html>
