@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartcal-pwa-v18";
+const CACHE_NAME = "smartcal-pwa-v21";
 const ASSETS = ["./", "./index.html"];
 
 self.addEventListener("install", e => {
@@ -19,7 +19,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
   if (url.origin === location.origin) {
     e.respondWith(
-      fetch(e.request).then(res => {
+      fetch(e.request, { cache: "no-store" }).then(res => {
         if (res && res.status === 200) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
@@ -31,13 +31,28 @@ self.addEventListener("fetch", e => {
 });
 
 self.addEventListener("notificationclick", e => {
-  e.notification.close();
+  const n = e.notification;
+  const isStatusNotif = n && n.tag === "smartcal-daily-status";
+  const title = n.title;
+  const opts = {
+    body: n.body,
+    icon: n.icon,
+    badge: n.badge,
+    tag: n.tag,
+    renotify: false,
+    silent: true,
+    requireInteraction: true
+  };
+  n.close();
   e.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
-      for (const client of list) {
-        if ("focus" in client) return client.focus();
-      }
-      if (clients.openWindow) return clients.openWindow("./");
-    })
+    Promise.all([
+      isStatusNotif ? self.registration.showNotification(title, opts).catch(() => {}) : Promise.resolve(),
+      clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
+        for (const client of list) {
+          if ("focus" in client) return client.focus();
+        }
+        if (clients.openWindow) return clients.openWindow("./");
+      })
+    ])
   );
 });

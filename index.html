@@ -401,6 +401,10 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
       <span id="todBtnTxt">امروز</span>
     </div>
     <div class="actions">
+      <button class="ibtn" id="topStatusNotifBtn" onclick="activateOrRefreshStatusNotif()" title="فعال‌سازی و بروزرسانی اعلان دائمی تاریخ در نوار وضعیت">
+        <span id="topStatusDayBadge" style="background:var(--pri);color:var(--onpri);min-width:20px;height:20px;border-radius:6px;display:inline-grid;place-items:center;font-size:11px;font-weight:900;padding:0 3px">۲۷</span>
+        <span id="topStatusNotifTxt">اعلان</span>
+      </button>
       <button class="ibtn" id="openStyle" title="انتخاب سبک طراحی">
         <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20 2.5 2.5 0 0 0 2.5-2.5c0-.6-.2-1.2-.6-1.6-.4-.4-.6-1-.6-1.6a2.5 2.5 0 0 1 2.5-2.5H16a6 6 0 0 0 6-6c0-5.5-4.5-9.8-10-9.8z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1" fill="currentColor"/></svg>
         <span>طراحی</span>
@@ -413,6 +417,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>نصب</span>
       </button>
+      <button class="ibtn" id="quickLangBtn" onclick="cycleAppLanguage()" title="تغییر زبان: فارسی / کوردی / English" style="padding:0 8px;font-weight:800;color:var(--pri)">🌐 FA</button>
       <button class="ibtn" id="openSet" title="تنظیمات و پشتیبان‌گیری">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>تنظیمات</span>
@@ -843,8 +848,9 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
       <div>
         <b style="font-size:11.5px;color:var(--sec)">زبان برنامه (Language)</b>
         <select id="setLang" style="margin-top:4px" onchange="saveSettings()">
-          <option value="fa">🇮🇷 فارسی</option>
-          <option value="ku">☀️ کوردی (سۆرانی)</option>
+          <option value="fa">🇮🇷 فارسی (Persian)</option>
+          <option value="ku">☀️ کوردی (Kurdish)</option>
+          <option value="en">🇬🇧 English (انگلیسی)</option>
         </select>
       </div>
       <div>
@@ -918,9 +924,24 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
     <div class="set-item"><span>تشخیص خودکار موقعیت مکانی هنگام ورود</span><input type="checkbox" id="setAutoLoc" style="width:20px;height:20px" onchange="saveSettings()"></div>
     <div class="set-item"><span>نمایش باکس آب‌وهوا</span><input type="checkbox" id="setShowW" style="width:20px;height:20px" onchange="saveSettings()"></div>
     <div class="set-item"><span>نمایش تاریخ فرعی در خانه‌های تقویم</span><input type="checkbox" id="setShowG" style="width:20px;height:20px" onchange="saveSettings()"></div>
-    <div class="set-item"><span>نمایش روزشمار در اعلان بالای گوشی</span><input type="checkbox" id="setStatusNotif" style="width:20px;height:20px" onchange="togglePersistentDateNotif(this.checked)"></div>
-    <div style="font-size:10.5px;color:var(--sec);background:var(--sub);padding:8px 10px;border-radius:10px;line-height:1.6">
-      💡 <b>نکته حذف نام دامنه از بالای اعلان:</b> به دلیل سیاست امنیتی مرورگرهای موبایل، نام سایت در اعلان‌های وب نمایش داده می‌شود. اگر برنامه را از منوی مرورگر گزینه <b>Install App (نصب برنامه)</b> نصب کنید، نام برنامه (Smart Cal) جایگزین می‌شود. همچنین یک <b>ویجت زنده درون‌برنامه‌ای</b> در بالای تقویم تعبیه شده که بدون هیچ نوشته‌ی اضافی کار می‌کند.
+    <div style="background:var(--sub);padding:12px;border-radius:15px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div>
+          <b style="font-size:12.5px;color:var(--pri);display:block">🔔 اعلان همیشگی تاریخ در استاتوس‌بار (Status Bar)</b>
+          <span id="statusNotifPermState" style="font-size:10.5px;color:var(--sec)">نمایش آیکون عدد روز در نوار بالای گوشی و کارت تاریخ</span>
+        </div>
+        <input type="checkbox" id="setStatusNotif" style="width:22px;height:22px;cursor:pointer;flex-shrink:0" onchange="togglePersistentDateNotif(this.checked)">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);padding:8px 10px;border-radius:12px;border:1px solid var(--brd)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img id="previewNotifIcon" alt="icon" style="width:38px;height:38px;border-radius:10px;border:1px solid var(--brd)">
+          <div style="background:#0F172A;padding:5px 8px;border-radius:8px;display:flex;align-items:center;gap:6px" title="پیش‌نمایش آیکون استاتوس‌بار بالای گوشی">
+            <img id="previewStatusBadge" alt="badge" style="width:22px;height:22px;display:block">
+            <span style="font-size:10px;color:#E2E8F0">آیکون نوار وضعیت</span>
+          </div>
+        </div>
+        <button type="button" class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;height:32px;padding:0 10px;font-size:11px" onclick="activateOrRefreshStatusNotif()">🔄 ارسال / بروزرسانی اعلان</button>
+      </div>
     </div>
 
     <!-- Backup & Restore -->
@@ -936,6 +957,20 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 </div>
 
 <script>
+// Self-healing cache & Service Worker updater for v19
+(function(){
+  const VER = "v21";
+  if (localStorage.getItem("smartcal_sw_ver") !== VER) {
+    localStorage.setItem("smartcal_sw_ver", VER);
+    if ("caches" in window) {
+      caches.keys().then(keys => keys.forEach(k => { if (!k.includes(VER)) caches.delete(k); })).catch(()=>{});
+    }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.update())).catch(()=>{});
+    }
+  }
+})();
+
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const JM=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
@@ -946,8 +981,75 @@ const HM=["محرم","صفر","ربیع‌الاول","ربیع‌الثانی",
 const WD=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه","شنبه"];
 const WD_SAT_FA=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه"];
 const WD_SAT_KU=["شەممە","یەکشەممە","دووشەممە","سێشەممە","چوارشەممە","پێنجشەممە","هەینی"];
+const WD_SAT_EN=["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"];
+const WD_SUN_EN=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const WD_SHORT_FA=["ش","ی","د","س","چ","پ","ج"];
 const WD_SHORT_KU=["ش","ی","د","س","چ","پ","هـ"];
+const WD_SHORT_EN=["Sat","Sun","Mon","Tue","Wed","Thu","Fri"];
+const JM_EN=["Farvardin","Ordibehesht","Khordad","Tir","Mordad","Shahrivar","Mehr","Aban","Azar","Dey","Bahman","Esfand"];
+const KM_EN=["Xakelêwe","Gullan","Cozerdan","Pûşper","Gelawêj","Xermanan","Rezber","Gelarêzan","Sermawez","Befranbar","Rêbendan","Reşeme"];
+const HM_EN=["Muharram","Safar","Rabi' I","Rabi' II","Jumada I","Jumada II","Rajab","Sha'ban","Ramadan","Shawwal","Dhu al-Qi'dah","Dhu al-Hijjah"];
+const CITY_EN_MAP={"تهران":"Tehran","سنندج (سنە)":"Sanandaj","مهاباد":"Mahabad","کرمانشاه (کرماشان)":"Kermanshah","ایلام":"Ilam","سقز":"Saqqez","بوکان":"Bukan","مریوان":"Marivan","بانه":"Baneh","ارومیه (ورمێ)":"Urmia","مشهد":"Mashhad","اصفهان":"Isfahan","شیراز":"Shiraz","تبریز":"Tabriz","کرج":"Karaj","اهواز":"Ahvaz","رشت":"Rasht","اربیل (هەولێر)":"Erbil","سلیمانیه (سلێمانی)":"Sulaymaniyah","مکان فعلی":"Current Location"};
+const trCity=c=>{
+  const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
+  if(l==="en") return CITY_EN_MAP[c]||c;
+  return c;
+};
+const getJM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?JM_EN:JM);
+const getKM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?KM_EN:KM);
+const getHM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?HM_EN:HM);
+const getWD_SAT=()=>{
+  const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
+  return l==="en"?WD_SAT_EN:(l==="ku"?WD_SAT_KU:WD_SAT_FA);
+};
+const EV_TR_MAP={
+  "جشن نوروز (تعطیل رسمی)":{ku:"جەژنی نەورۆز (پشووی فەرمی)",en:"Nowruz New Year (Official Holiday)"},
+  "عید نوروز (تعطیل رسمی)":{ku:"جەژنی نەورۆز (پشووی فەرمی)",en:"Nowruz Holiday (Official Holiday)"},
+  "روز جمهوری اسلامی ایران (تعطیل رسمی)":{ku:"ڕۆژی کۆماری ئیسلامی (پشووی فەرمی)",en:"Islamic Republic Day (Official Holiday)"},
+  "جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)":{ku:"سێزدەبەدەر / ڕۆژی سروشت (پشووی فەرمی)",en:"Sizdah Bedar / Nature Day (Official Holiday)"},
+  "روز بزرگداشت سعدی":{ku:"ڕۆژی یادکردنەوەی سەعدی",en:"Saadi Shirazi Commemoration Day"},
+  "روز ملی خلیج فارس":{ku:"ڕۆژی نەتەوەیی کەنداوی فارس",en:"Persian Gulf National Day"},
+  "روز معلم":{ku:"ڕۆژی مامۆستا",en:"Teachers' Day"},
+  "روز بزرگداشت فردوسی":{ku:"ڕۆژی یادکردنەوەی فیردەوسی",en:"Ferdowsi Commemoration Day"},
+  "روز بزرگداشت حکیم عمر خیام":{ku:"ڕۆژی یادکردنەوەی عومەری خەییام",en:"Omar Khayyam Commemoration Day"},
+  "رحلت حضرت امام خمینی (ره) (تعطیل رسمی)":{ku:"کۆچی دوایی ئیمام خومەینی (پشووی فەرمی)",en:"Passing of Imam Khomeini (Official Holiday)"},
+  "قیام خونین ۱۵ خرداد (تعطیل رسمی)":{ku:"ڕاپەڕینی ١٥ی جۆزەردان (پشووی فەرمی)",en:"15 Khordad Uprising (Official Holiday)"},
+  "روز کارمند":{ku:"ڕۆژی فەرمانبەر",en:"Employees' Day"},
+  "روز شعر و ادب فارسی":{ku:"ڕۆژی شیعر و ئەدەبی فارسی",en:"Persian Poetry & Literature Day"},
+  "روز بزرگداشت مولوی":{ku:"ڕۆژی یادکردنەوەی مەولانا",en:"Rumi (Molavi) Commemoration Day"},
+  "روز بزرگداشت حافظ":{ku:"ڕۆژی یادکردنەوەی حافزی شیرازی",en:"Hafez Shirazi Commemoration Day"},
+  "روز دانش‌آموز":{ku:"ڕۆژی قوتابی",en:"Students' Day"},
+  "روز دانشجو":{ku:"ڕۆژی خوێندکاری زانکۆ",en:"University Students' Day"},
+  "شب یلدا":{ku:"شەوی یەلدا (شەوی چلە)",en:"Yalda Night (Winter Solstice)"},
+  "پیروزی انقلاب اسلامی (تعطیل رسمی)":{ku:"سەرکەوتنی شۆڕشی ئیسلامی (پشووی فەرمی)",en:"Islamic Revolution Victory (Official Holiday)"},
+  "روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس":{ku:"ڕۆژی ئەندازیار (خاجە نەسیرەدینی تووسی)",en:"Engineers' Day (Nasir al-Din al-Tusi)"},
+  "روز ملی شدن صنعت نفت ایران (تعطیل رسمی)":{ku:"خۆماڵیکردنی پیشەسازیی نەوت (پشووی فەرمی)",en:"Oil Nationalization Day (Official Holiday)"},
+  "شهادت امام جعفر صادق (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام جەعفەری سادق (پشووی فەرمی)",en:"Martyrdom of Imam Ja'far al-Sadiq (Holiday)"},
+  "عید سعید قربان (تعطیل رسمی)":{ku:"جەژنی قوربان (پشووی فەرمی)",en:"Eid al-Adha (Official Holiday)"},
+  "عید سعید غدیر خم (تعطیل رسمی)":{ku:"جەژنی غەدیری خوم (پشووی فەرمی)",en:"Eid al-Ghadir (Official Holiday)"},
+  "تاسوعای حسینی (تعطیل رسمی)":{ku:"تاسووعای حوسێنی (پشووی فەرمی)",en:"Tasu'a (Official Holiday)"},
+  "عاشورای حسینی (تعطیل رسمی)":{ku:"عاشوورای حوسێنی (پشووی فەرمی)",en:"Ashura (Official Holiday)"},
+  "اربعین حسینی (تعطیل رسمی)":{ku:"ئەربەعینی حوسێنی (پشووی فەرمی)",en:"Arba'een (Official Holiday)"},
+  "رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)":{ku:"کۆچی دوایی پێغەمبەر (د.خ) و ئیمام حەسەن (پشووی فەرمی)",en:"Passing of Prophet Muhammad & Imam Hasan (Holiday)"},
+  "شهادت امام رضا (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام ڕەزا (پشووی فەرمی)",en:"Martyrdom of Imam Reza (Official Holiday)"},
+  "شهادت امام حسن عسکری (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام حەسەنی عەسکەری (پشووی فەرمی)",en:"Martyrdom of Imam Hasan al-Askari (Holiday)"},
+  "میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)":{ku:"لەدایکبوونی پێغەمبەر (د.خ) و ئیمام سادق (پشووی فەرمی)",en:"Birth of Prophet Muhammad & Imam Sadiq (Holiday)"},
+  "شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)":{ku:"شەهیدبوونی فاتیمەی زەهرا (پشووی فەرمی)",en:"Martyrdom of Fatimah al-Zahra (Official Holiday)"},
+  "ولادت امام علی (ع) و روز پدر (تعطیل رسمی)":{ku:"لەدایکبوونی ئیمام عەلی و ڕۆژی باوک (پشووی فەرمی)",en:"Birth of Imam Ali & Father's Day (Official Holiday)"},
+  "مبعث رسول اکرم (ص) (تعطیل رسمی)":{ku:"مەبعەسی پێغەمبەر (د.خ) (پشووی فەرمی)",en:"Mab'ath of Prophet Muhammad (Official Holiday)"},
+  "ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)":{ku:"لەدایکبوونی ئیمام مەهدی / نیوەی شەعبان (پشووی فەرمی)",en:"Mid-Sha'ban / Birth of Imam Mahdi (Holiday)"},
+  "شهادت امام علی (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام عەلی (پشووی فەرمی)",en:"Martyrdom of Imam Ali (Official Holiday)"},
+  "عید سعید فطر (تعطیل رسمی)":{ku:"جەژنی ڕەمەزان (پشووی فەرمی)",en:"Eid al-Fitr (Official Holiday)"},
+  "تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)":{ku:"پشووی جەژنی ڕەمەزان (پشووی فەرمی)",en:"Eid al-Fitr Holiday (Official Holiday)"}
+};
+const trEvTitle=t=>{
+  const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
+  if(l==="fa") return t;
+  if(EV_TR_MAP[t]) return EV_TR_MAP[t][l]||t;
+  if(l==="en") return t.replace("(تعطیل رسمی)","(Official Holiday)").replace("(تعطیل)","(Holiday)");
+  if(l==="ku") return t.replace("(تعطیل رسمی)","(پشووی فەرمی)").replace("(تعطیل)","(پشوو)");
+  return t;
+};
 
 const FONT_STACKS={
   vazirmatn:"'Vazirmatn','Inter',system-ui,-apple-system,sans-serif",
@@ -983,8 +1085,16 @@ const UI_STYLES=[
   {id:"persian",name:"کلاسیک ایرانی",desc:"گرم، کاغذی و چشم‌نواز",bg:"linear-gradient(135deg,#F5EFE6,#E2D4BE)",rad:"8px"},
   {id:"nordic",name:"نوردیک یخی",desc:"آرام، خنثی و مینیمال",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"6px"}
 ];
-const fa=n=>String(n).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+const fa=n=>{
+  const s=String(n);
+  if(typeof cfg!=="undefined" && cfg && cfg.lang==="en") return s;
+  return s.replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+};
 const fmtNum=n=>fa(Math.round(n).toLocaleString("en-US"));
+const tr=(faTxt,kuTxt,enTxt)=>{
+  const l=(typeof cfg!=="undefined" && cfg && cfg.lang)||"fa";
+  return l==="en"?(enTxt??faTxt):(l==="ku"?(kuTxt??faTxt):faTxt);
+};
 const div=(a,b)=>~~(a/b),mod=(a,b)=>a-~~(a/b)*b;
 
 // Jalali & Gregorian Math
@@ -1092,7 +1202,7 @@ function getEv(y,m,d){
   const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
   if(yrMap[k])r.push(...yrMap[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
-  return r;
+  return r.map(e=>[trEvTitle(e[0]),e[1],e[2],e[3]]);
 }
 
 async function addCustomEvent(){
@@ -1225,29 +1335,46 @@ function setUiStyle(uiId){
   applyCfg();
 }
 
+const UI_STYLES_I18N={
+  ios26:{ku:["iOS 26 شوشەی شل","شوشەیی، شریتی خڕ و درەوشاوە"],en:["iOS 26 Liquid Glass","Spatial translucent glass & floating pill bar"]},
+  android17:{ku:["Android 17 Expressive","مەتریاڵ ٣ی زیندوو و جووڵەی نەرم"],en:["Android 17 Expressive","Material 3 dynamic squircle & spring physics"]},
+  classic:{ku:["کارتی مۆدێرن (Classic)","کارتی نەرم و خوێندراوە"],en:["Modern Card (Classic)","Soft readable cards with subtle shadow"]},
+  glass:{ku:["شوشەیی شەفەق (Glass)","پاشبنەمای شوشەیی ڕوون"],en:["Aurora Glass","Frosted translucent glassmorphism"]},
+  minimal:{ku:["مینیمالی سویسری (Swiss)","هێڵی ورد و بێ سێبەر"],en:["Swiss Minimal","Crisp borders, zero shadow, ultra-clean"]},
+  bento:{ku:["کەپسوولی و بێنتۆ (Bento)","دوگمەی خڕ و گۆشەی نەرم"],en:["Capsule & Bento","Circular day pills & rounded Bento grid"]},
+  neumorph:{ku:["نیومۆرفیسمی ٣ ڕەهەندی","سێبەری نەرمی سێ ڕەهەندی"],en:["3D Neumorphism","Soft extruded tactile shadows"]},
+  cyber:{ku:["نیۆنی گەردوونی","دۆخی شەوی درەوشاوە"],en:["Cosmic Cyber Neon","Glowing dark futuristic neon theme"]},
+  persian:{ku:["کلاسیکی ڕەسەن","گەرم و کاغەزی"],en:["Warm Parchment","Warm paper tones & classic elegance"]},
+  nordic:{ku:["نۆردیکی سەهۆڵی","ئارام و مینیمال"],en:["Nordic Frost","Calm slate & ice minimal palette"]}
+};
 function renderStyleCards(){
   const box=document.getElementById("styleCards");
   if(!box)return;
-  box.innerHTML=UI_STYLES.map(s=>`
+  const l=cfg.lang||"fa";
+  box.innerHTML=UI_STYLES.map(s=>{
+    const trS=UI_STYLES_I18N[s.id];
+    const name=l==="en"?(trS?.en[0]||s.name):(l==="ku"?(trS?.ku[0]||s.name):s.name);
+    const desc=l==="en"?(trS?.en[1]||s.desc):(l==="ku"?(trS?.ku[1]||s.desc):s.desc);
+    return `
     <div class="st-card ${cfg.ui===s.id?'act':''}" onclick="setUiStyle('${s.id}')">
       <div class="st-prev" style="background:${s.bg};border:1px solid var(--brd)">
         <span class="st-dot" style="background:var(--pri);border-radius:${s.rad}"></span>
         <span class="st-dot" style="background:var(--hol);border-radius:${s.rad}"></span>
         <span class="st-dot" style="background:var(--grn);border-radius:${s.rad}"></span>
       </div>
-      <b>${s.name}</b>
-      <span>${s.desc}</span>
-    </div>
-  `).join("");
+      <b>${name}</b>
+      <span>${desc}</span>
+    </div>`;
+  }).join("");
 }
 
 function syncCitySelect(){
   const selEl=document.getElementById("setCity");
   const all=[...DEFAULT_CITIES,...customCities];
-  selEl.innerHTML=all.map(c=>`<option value="${c.lat},${c.lon},${c.n}">${c.n}</option>`).join("");
+  selEl.innerHTML=all.map(c=>`<option value="${c.lat},${c.lon},${c.n}">${trCity(c.n)}</option>`).join("");
   if(![...selEl.options].some(o=>o.value===cfg.city)){
     const [lat,lon,n]=cfg.city.split(",");
-    selEl.innerHTML+=`<option value="${cfg.city}">${n}</option>`;
+    selEl.innerHTML+=`<option value="${cfg.city}">${trCity(n)}</option>`;
   }
   selEl.value=cfg.city;
 }
@@ -1272,7 +1399,7 @@ function renderSavedCities(){
   const all=[...DEFAULT_CITIES,...customCities];
   document.getElementById("savedCitiesList").innerHTML=all.map((c,idx)=>`
     <div class="tag" style="cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;${cfg.city.endsWith(','+c.n)?'background:var(--pri);color:var(--onpri);font-weight:700':''}" onclick="selectCity(${c.lat},${c.lon},'${c.n}')">
-      <span>${esc(c.n)}</span>
+      <span>${esc(trCity(c.n))}</span>
       ${idx>=DEFAULT_CITIES.length?`<span onclick="event.stopPropagation();removeCustomCity(${idx-DEFAULT_CITIES.length})" style="opacity:.8">✕</span>`:''}
     </div>
   `).join("");
@@ -1392,7 +1519,7 @@ function toggleCalFullscreen(forceState){
   const btn=document.getElementById("fsBtn");
   const nextState=forceState!==undefined?forceState:!card.classList.contains("fullscreen");
   card.classList.toggle("fullscreen",nextState);
-  btn.textContent=nextState?"✕ خروج از تمام‌صفحه":"⛶ تمام‌صفحه";
+  btn.textContent=nextState?tr("✕ خروج از تمام‌صفحه","✕ دەرچوون لە پڕشاشە","✕ Exit Fullscreen"):tr("⛶ تمام‌صفحه","⛶ پڕشاشە","⛶ Fullscreen");
 }
 function handleCalHeaderClick(){
   const card=document.getElementById("calCard");
@@ -1424,10 +1551,10 @@ function switchTab(t){
 
 let currentWeatherCode=null;
 function getSeasonMeta(jm){
-  if(jm<=3)return{id:"spring",name:"بهار 🌸",colorIdx:1};
-  if(jm<=6)return{id:"summer",name:"تابستان ☀️",colorIdx:4};
-  if(jm<=9)return{id:"autumn",name:"پاییز 🍂",colorIdx:3};
-  return{id:"winter",name:"زمستان ❄️",colorIdx:0};
+  if(jm<=3)return{id:"spring",name:tr("بهار 🌸","بەهار 🌸","Spring 🌸"),colorIdx:1};
+  if(jm<=6)return{id:"summer",name:tr("تابستان ☀️","هاوین ☀️","Summer ☀️"),colorIdx:4};
+  if(jm<=9)return{id:"autumn",name:tr("پاییز 🍂","پاییز 🍂","Autumn 🍂"),colorIdx:3};
+  return{id:"winter",name:tr("زمستان ❄️","زستان ❄️","Winter ❄️"),colorIdx:0};
 }
 function applyAtmosphereSync(){
   const body=document.body;
@@ -1435,15 +1562,15 @@ function applyAtmosphereSync(){
   const stEl=document.getElementById("atmStatusText");
   const season=getSeasonMeta(tod.jm);
   if(!cfg.autoAtm){
-    if(stEl)stEl.textContent="تنظیم خودکار رنگ و حال‌وهوای برنامه با فصل و هوای شهر";
+    if(stEl)stEl.textContent=tr("تنظیم خودکار رنگ و حال‌وهوای برنامه با فصل و هوای شهر","ڕێکخستنی خۆکاری ڕەنگ لەگەڵ وەرز و کەشوهەوا","Auto-sync app theme & atmosphere with season & weather");
     return;
   }
   let atmClass="atm-"+season.id,weatherLabel="",targetColor=season.colorIdx;
   if(currentWeatherCode!==null){
-    if(currentWeatherCode===0){atmClass="atm-clear";weatherLabel=" • هوای آفتابی ☀️";targetColor=4;}
-    else if((currentWeatherCode>=51&&currentWeatherCode<=67)||currentWeatherCode>=80){atmClass="atm-rain";weatherLabel=" • هوای بارانی 🌧️";targetColor=0;}
-    else if(currentWeatherCode>=71&&currentWeatherCode<=77){atmClass="atm-snow";weatherLabel=" • هوای برفی ❄️";targetColor=2;}
-    else{weatherLabel=" • هوای ابری ⛅";}
+    if(currentWeatherCode===0){atmClass="atm-clear";weatherLabel=tr(" • هوای آفتابی ☀️"," • کەشی هەتاوی ☀️"," • Sunny ☀️");targetColor=4;}
+    else if((currentWeatherCode>=51&&currentWeatherCode<=67)||currentWeatherCode>=80){atmClass="atm-rain";weatherLabel=tr(" • هوای بارانی 🌧️"," • کەشی باراناوی 🌧️"," • Rainy 🌧️");targetColor=0;}
+    else if(currentWeatherCode>=71&&currentWeatherCode<=77){atmClass="atm-snow";weatherLabel=tr(" • هوای برفی ❄️"," • کەشی بەفراوی ❄️"," • Snowy ❄️");targetColor=2;}
+    else{weatherLabel=tr(" • هوای ابری ⛅"," • کەشی هەوری ⛅"," • Cloudy ⛅");}
   }
   body.classList.add(atmClass);
   const sysDark=matchMedia("(prefers-color-scheme:dark)").matches;
@@ -1451,7 +1578,7 @@ function applyAtmosphereSync(){
   const c=COLORS[targetColor]||COLORS[0];
   document.documentElement.style.setProperty("--pri",isDark?c.d:c.l);
   document.documentElement.style.setProperty("--pri-bg",(isDark?c.d:c.l)+"26");
-  if(stEl)stEl.textContent=`فعال: فصل ${season.name}${weatherLabel}`;
+  if(stEl)stEl.textContent=`${tr("فعال: فصل","چالاک: وەرزی","Active:")} ${season.name}${weatherLabel}`;
 }
 
 
@@ -1669,10 +1796,9 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   return c.toDataURL("image/png");
 }
 
-// 2. Android Status Bar Monochrome Badge (Alpha-Mask Silhouette: Transparent background + White shape & cutout day number)
-// Fixes the "solid white square" in Android status bar!
+// 2. Redesigned Android Status Bar Day-Number Icon (Ultra-Crisp Monochrome Alpha-Mask Calendar Page with Huge Day Number)
 function generateStatusBarBadgeDataUrl(dayNumStr) {
-  const S = 96;
+  const S = 128;
   const c = document.createElement("canvas");
   c.width = S; c.height = S;
   const ctx = c.getContext("2d");
@@ -1680,43 +1806,153 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   ctx.clearRect(0, 0, S, S);
   ctx.fillStyle = "#FFFFFF";
 
-  // Top calendar binding tabs
+  // Top calendar binding rings (left & right)
   ctx.beginPath();
-  ctx.roundRect(24, 6, 10, 14, 4);
-  ctx.roundRect(62, 6, 10, 14, 4);
+  ctx.roundRect(28, 4, 14, 18, 6);
+  ctx.roundRect(86, 4, 14, 18, 6);
   ctx.fill();
 
-  // Main calendar body (white silhouette)
+  // Main rounded squircle calendar tile (fills 90% of status bar slot for maximum legibility)
   ctx.beginPath();
-  ctx.roundRect(10, 16, 76, 72, 16);
+  ctx.roundRect(8, 16, 112, 106, 24);
   ctx.fill();
 
-  // Punch out (transparent) thin header line & the large Day Number using destination-out
+  // Cut out transparent top header bar groove & ultra-bold Day Number in the center
   ctx.globalCompositeOperation = "destination-out";
   ctx.fillStyle = "#000000";
 
-  // Header separator slot
-  ctx.fillRect(16, 31, 64, 3);
+  // Top header separator line cutout
+  ctx.beginPath();
+  ctx.roundRect(18, 34, 92, 5, 2.5);
+  ctx.fill();
 
-  // Day number punched out in the center so Android status bar renders the exact number cleanly!
-  ctx.font = "900 48px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  // Huge, crystal-clear Day Number cutout (auto-scales for 1 or 2 digits)
+  const isTwoDigits = String(dayNumStr).length > 1;
+  const fontSize = isTwoDigits ? 68 : 76;
+  ctx.font = `900 ${fontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(dayNumStr, S / 2, 62);
+  ctx.fillText(dayNumStr, S / 2, 82);
 
   ctx.globalCompositeOperation = "source-over";
   return c.toDataURL("image/png");
 }
 
-let statusNotifEnabled = JSON.parse(localStorage.getItem("cal_status_notif_v1") || "true");
+// 3. Dedicated Notification Drawer Day-Date Card Icon (Clean, high-contrast calendar tile showing Month + Huge Day Number + Weekday)
+function generateNotifDrawerIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
+  const S = 256;
+  const c = document.createElement("canvas");
+  c.width = S; c.height = S;
+  const ctx = c.getContext("2d");
 
-function updateStatusDateBtnUI() {
-  const chk = document.getElementById("setStatusNotif");
-  if (chk) chk.checked = !!statusNotifEnabled;
+  const bgGrad = ctx.createLinearGradient(0, 0, S, S);
+  if (isDark) {
+    bgGrad.addColorStop(0, "#1E293B");
+    bgGrad.addColorStop(1, "#0F172A");
+  } else {
+    bgGrad.addColorStop(0, accentHex || "#1B6EF3");
+    bgGrad.addColorStop(1, "#312E81");
+  }
+  ctx.fillStyle = bgGrad;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, S, S, 56);
+  ctx.fill();
+
+  // Top Month Header Bar
+  ctx.fillStyle = isDark ? (accentHex || "#38BDF8") : "rgba(255,255,255,0.92)";
+  ctx.beginPath();
+  ctx.roundRect(18, 18, S - 36, 58, 26);
+  ctx.fill();
+
+  ctx.fillStyle = isDark ? "#0F172A" : "#1E1B4B";
+  ctx.font = "900 32px 'Vazirmatn', system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(monthName, S / 2, 48);
+
+  // Huge Day Number in Center
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "900 112px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(dayNumStr, S / 2, 146);
+
+  // Bottom Weekday Label
+  if (weekDayStr) {
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.font = "700 24px 'Vazirmatn', system-ui, sans-serif";
+    ctx.fillText(weekDayStr, S / 2, 222);
+  }
+  return c.toDataURL("image/png");
 }
 
-async function updatePersistentStatusDate(forcePrompt = false) {
-  updateStatusDateBtnUI();
+let statusNotifEnabled = JSON.parse(localStorage.getItem("cal_status_notif_v1") || "true");
+let lastNotifSignature = "";
+
+function updateStatusDateBtnUI(primaryDayStr = "") {
+  const chk = document.getElementById("setStatusNotif");
+  if (chk) chk.checked = !!statusNotifEnabled;
+
+  const badgeEl = document.getElementById("topStatusDayBadge");
+  if (badgeEl && primaryDayStr) badgeEl.textContent = primaryDayStr;
+
+  const topBtn = document.getElementById("topStatusNotifBtn");
+  const permStateEl = document.getElementById("statusNotifPermState");
+  const perm = ("Notification" in window) ? Notification.permission : "unsupported";
+
+  if (topBtn) {
+    if (statusNotifEnabled && perm === "granted") {
+      topBtn.style.borderColor = "var(--pri)";
+      topBtn.style.background = "var(--pri-bg)";
+    } else {
+      topBtn.style.borderColor = "var(--brd)";
+      topBtn.style.background = "var(--card)";
+    }
+  }
+
+  if (permStateEl) {
+    if (!("Notification" in window)) {
+      permStateEl.textContent = "مرورگر فعلی از اعلان سیستم پشتیبانی نمی‌کند (اپ را نصب کنید)";
+      permStateEl.style.color = "var(--hol)";
+    } else if (perm === "denied") {
+      permStateEl.textContent = "⚠️ مجوز اعلان در مرورگر مسدود شده است (از تنظیمات سایت مجوز دهید)";
+      permStateEl.style.color = "var(--hol)";
+    } else if (perm === "default") {
+      permStateEl.textContent = "👆 برای نمایش تاریخ در نوار بالای گوشی، دکمه «ارسال اعلان» را بزنید";
+      permStateEl.style.color = "var(--pri)";
+    } else {
+      permStateEl.textContent = statusNotifEnabled
+        ? "✅ فعال • آیکون تاریخ روز در نوار وضعیت بالای گوشی نمایش داده می‌شود"
+        : "غیرفعال شده توسط شما";
+      permStateEl.style.color = statusNotifEnabled ? "var(--grn)" : "var(--sec)";
+    }
+  }
+}
+
+async function activateOrRefreshStatusNotif() {
+  statusNotifEnabled = true;
+  localStorage.setItem("cal_status_notif_v1", "true");
+  lastNotifSignature = ""; // Force re-post even if date hasn't changed
+  if (!("Notification" in window)) {
+    if (isIosDevice() && !isStandalonePwa()) {
+      alert("در آیفون (iOS)، برای فعال شدن اعلان تاریخ در نوار بالا، ابتدا دکمه Share (⬆️) سافاری را بزنید و Add to Home Screen را انتخاب کنید.");
+    } else {
+      alert("مرورگر شما از اعلان وب پشتیبانی نمی‌کند.");
+    }
+    return;
+  }
+  if (Notification.permission === "default") {
+    await Notification.requestPermission().catch(() => null);
+  }
+  if (Notification.permission === "denied") {
+    alert("مجوز اعلان برای این سایت در مرورگر شما بسته شده است.
+
+لطفاً روی آیکون تنظیمات/قفل کنار نوار آدرس بالای مرورگر بزنید، وارد بخش Permissions (مجوزها) شوید و گزینه Notifications (اعلان‌ها) را روی Allow (مجاز) قرار دهید.");
+    updateStatusDateBtnUI();
+    return;
+  }
+  await updatePersistentStatusDate(true);
+}
+
+async function updatePersistentStatusDate(forcePost = false) {
   const cType = cfg.calType || "jalali";
   const g = toG(tod.jy, tod.jm, tod.jd);
   const h = g2h(g.gy, g.gm, g.gd);
@@ -1726,20 +1962,29 @@ async function updatePersistentStatusDate(forcePrompt = false) {
   const primaryDayStr = cType === "gregorian" ? String(g.gd) : (cType === "hijri" ? fa(h.hd) : fa(tod.jd));
   const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (cType === "hijri" ? HM[h.hm - 1] : (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]));
 
+  updateStatusDateBtnUI(primaryDayStr);
+
   const sysDark = matchMedia("(prefers-color-scheme:dark)").matches;
   const isDark = cfg.theme === "dark" || (cfg.theme === "auto" && sysDark);
   const cObj = COLORS[cfg.color] || COLORS[0];
   const accentHex = isDark ? cObj.d : cObj.l;
 
-  // 1. Generate clean full-bleed App Icon & transparent Status Bar Badge
-  const iconDataUrl = generateDayIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
+  // 1. Generate App Home Icon (512x512), Notification Drawer Tile Icon (256x256), and Status Bar Monochrome Day Badge (128x128)
+  const appIconDataUrl = generateDayIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
+  const notifTileIconUrl = generateNotifDrawerIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
   const badgeDataUrl = generateStatusBarBadgeDataUrl(primaryDayStr);
+
+  // Update Live Preview in Settings Modal
+  const prevIco = document.getElementById("previewNotifIcon");
+  if (prevIco) prevIco.src = notifTileIconUrl;
+  const prevBdg = document.getElementById("previewStatusBadge");
+  if (prevBdg) prevBdg.src = badgeDataUrl;
 
   document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
   const fav = document.getElementById("dynFavicon");
-  if (fav) fav.href = iconDataUrl;
+  if (fav) fav.href = appIconDataUrl;
   const appIco = document.getElementById("dynAppleIcon");
-  if (appIco) appIco.href = iconDataUrl;
+  if (appIco) appIco.href = appIconDataUrl;
 
   // 2. Update PWA App Badge
   if ("setAppBadge" in navigator) {
@@ -1747,14 +1992,14 @@ async function updatePersistentStatusDate(forcePrompt = false) {
     try { navigator.setAppBadge(badgeNum).catch(() => {}); } catch (e) {}
   }
 
-  // 3. Setup Dynamic Web App Manifest with separate 'any' and 'maskable' entries
+  // 3. Setup Dynamic Web App Manifest
   const uiKey = cfg.ui || "classic";
   const pair = UI_STATUS_HEX[uiKey] || UI_STATUS_HEX.classic;
   const themeHex = ((uiKey === "cyber") ? true : isDark) ? pair.dark : pair.light;
   const manifestObj = {
     name: "Smart Cal - تقویم هوشمند",
     short_name: "Smart Cal",
-    description: "تقویم هوشمند شمسی و میلادی همراه با آب‌وهوا و نرخ لحظه‌ای طلا و ارز",
+    description: "تقویم هوشمند شمسی، کوردی و میلادی همراه با آب‌وهوا و نرخ لحظه‌ای طلا و ارز",
     start_url: "./",
     display: "standalone",
     orientation: "portrait",
@@ -1763,9 +2008,9 @@ async function updatePersistentStatusDate(forcePrompt = false) {
     dir: "rtl",
     lang: "fa-IR",
     icons: [
-      { src: iconDataUrl, sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: iconDataUrl, sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: iconDataUrl, sizes: "512x512", type: "image/png", purpose: "maskable" }
+      { src: appIconDataUrl, sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: appIconDataUrl, sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: appIconDataUrl, sizes: "512x512", type: "image/png", purpose: "maskable" }
     ]
   };
   const manEl = document.getElementById("dynManifest");
@@ -1774,40 +2019,62 @@ async function updatePersistentStatusDate(forcePrompt = false) {
     manEl.href = URL.createObjectURL(blob);
   }
 
-  // 4. Clean & Concise Persistent Status Bar Notification (Only Jalali Date, Gregorian Date, and Weather!)
+  // 4. Persistent Status Bar Date Notification with Day-Number Icon
   if (!statusNotifEnabled) return;
   if (!("Notification" in window)) return;
 
-  if (Notification.permission === "default" && forcePrompt) {
+  if (Notification.permission === "default" && forcePost) {
     await Notification.requestPermission().catch(() => null);
+    updateStatusDateBtnUI(primaryDayStr);
   }
   if (Notification.permission !== "granted") return;
 
   const [, , cName] = cfg.city.split(",");
   const rawTemp = document.getElementById("wTemp")?.textContent || "";
   const rawDesc = document.getElementById("wDesc")?.textContent || "";
-  const iEl = document.getElementById("wIcon")?.getAttribute("data-emoji") || document.getElementById("wIcon")?.textContent?.trim() || "⛅";
+  const iEl = document.getElementById("wIcon")?.getAttribute("data-emoji") || "⛅";
   const hasRealTemp = rawTemp && !rawTemp.includes("--");
-  const weatherShort = hasRealTemp
-    ? `${cName || "تهران"} ${iEl} ${rawTemp}${rawDesc && !rawDesc.includes("دریافت") ? " (" + rawDesc + ")" : ""}`
-    : `${cName || "تهران"} ${iEl}`;
 
-  const jalaliLine = cType === "kurdish" ? `${weekDayName} ${fa(tod.jd)} ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}` : `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
-  const gregLine = `${g.gd} ${GM_EN[g.gm - 1]} ${g.gy}`;
+  const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
+  const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
+  const gregFull = `${g.gd} ${GM_EN[g.gm - 1]} ${g.gy}`;
+  const hijriFull = `${fa(h.hd)} ${HM[h.hm - 1]} ${fa(h.hy)}`;
 
-  const notifTitle = cType === "gregorian"
-    ? `${gregLine} • ${jalaliLine}`
-    : `${jalaliLine} • ${gregLine}`;
-  const notifBody = `${weatherShort}`;
+  let notifTitle = "";
+  let notifSubDates = "";
+  if (cType === "kurdish") {
+    notifTitle = `📅 ${kurdishFull}`;
+    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  🌍 ${gregFull}`;
+  } else if (cType === "gregorian") {
+    notifTitle = `📅 ${gregFull} (${weekDayName})`;
+    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  🌙 ${hijriFull}`;
+  } else if (cType === "hijri") {
+    notifTitle = `📅 ${weekDayName} ${hijriFull}`;
+    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  🌍 ${gregFull}`;
+  } else {
+    notifTitle = `📅 ${jalaliFull}`;
+    notifSubDates = `🌍 ${gregFull}  •  🌙 ${hijriFull}`;
+  }
+
+  const weatherLine = hasRealTemp
+    ? `
+${iEl} ${cName || "تهران"}: ${rawTemp}${rawDesc && !rawDesc.includes("دریافت") ? " (" + rawDesc + ")" : ""}`
+    : "";
+
+  const notifBody = `${notifSubDates}${weatherLine}`;
+  const sig = `${notifTitle}|${notifBody}|${primaryDayStr}`;
+  if (!forcePost && sig === lastNotifSignature) return;
+  lastNotifSignature = sig;
 
   const notifOpts = {
     body: notifBody,
-    icon: iconDataUrl,
+    icon: notifTileIconUrl,
     badge: badgeDataUrl,
     tag: "smartcal-daily-status",
     renotify: false,
     silent: true,
-    requireInteraction: true
+    requireInteraction: true,
+     ongoing: true
   };
 
   try {
@@ -1819,23 +2086,19 @@ async function updatePersistentStatusDate(forcePrompt = false) {
       }
     }
     new Notification(notifTitle, notifOpts);
-  } catch (e) {}
+  } catch (e) {
+    try { new Notification(notifTitle, notifOpts); } catch (err) {}
+  }
 }
 
 async function togglePersistentDateNotif(forceVal) {
   const nextVal = (typeof forceVal === "boolean") ? forceVal : !statusNotifEnabled;
   if (nextVal) {
-    statusNotifEnabled = true;
-    localStorage.setItem("cal_status_notif_v1", "true");
-    if (isIosDevice() && !isStandalonePwa() && !("Notification" in window)) {
-      alert("در آیفون (iOS)، برای نمایش اعلان همیشگی تاریخ در نوار وضعیت و صفحه قفل، ابتدا دکمه Share (⬆️) را بزنید و گزینه Add to Home Screen را انتخاب کنید تا برنامه روی صفحه اصلی نصب شود.");
-      updateStatusDateBtnUI();
-      return;
-    }
-    await updatePersistentStatusDate(true);
+    await activateOrRefreshStatusNotif();
   } else {
     statusNotifEnabled = false;
     localStorage.setItem("cal_status_notif_v1", "false");
+    lastNotifSignature = "";
     updateStatusDateBtnUI();
     if ("serviceWorker" in navigator) {
       try {
@@ -1849,19 +2112,28 @@ async function togglePersistentDateNotif(forceVal) {
   }
 }
 
-// Auto-trigger persistent status bar notification permission smoothly on first user tap if permission is still 'default'
+// Auto-trigger persistent status bar notification on first user tap or when returning to app
 document.addEventListener("click", function autoInitNotifOnce() {
-  if (statusNotifEnabled && "Notification" in window && Notification.permission === "default") {
-    updatePersistentStatusDate(true);
+  if (statusNotifEnabled && "Notification" in window) {
+    if (Notification.permission === "default") {
+      updatePersistentStatusDate(true);
+    } else if (Notification.permission === "granted") {
+      updatePersistentStatusDate(true);
+    }
   }
   document.removeEventListener("click", autoInitNotifOnce);
 }, { once: true });
 
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && statusNotifEnabled) {
+    updatePersistentStatusDate(true);
+  }
+});
+
 function renderWeekendChips() {
   const box = document.getElementById("weekendChipsBox");
   if (!box) return;
-  const isKu = cfg.lang === "ku";
-  const names = isKu ? WD_SAT_KU : WD_SAT_FA;
+  const names = getWD_SAT();
   const wk = Array.isArray(cfg.weekends) ? cfg.weekends : [6];
   [...box.querySelectorAll(".wk-chip")].forEach((el, idx) => {
     const wd = Number(el.getAttribute("data-wd"));
@@ -1883,30 +2155,176 @@ function toggleWeekendDay(wd) {
   render();
 }
 
+function cycleAppLanguage() {
+  const order = ["fa", "ku", "en"];
+  const cur = cfg.lang || "fa";
+  const next = order[(order.indexOf(cur) + 1) % order.length];
+  cfg.lang = next;
+  if (document.getElementById("setLang")) document.getElementById("setLang").value = next;
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  applyCfg();
+  render();
+  renderAllNotes();
+  if (lastWeatherDataObj) renderWeatherData(lastWeatherDataObj, lastWeatherCityName, false);
+  if (lastAqiValue !== null) renderAqi(lastAqiValue);
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+  renderFal(false);
+}
+
 function applyLanguageUI() {
-  const isKu = cfg.lang === "ku";
+  const l = cfg.lang || "fa";
+  const isEn = l === "en";
+  document.documentElement.lang = isEn ? "en" : (l === "ku" ? "ku" : "fa");
+  document.documentElement.dir = isEn ? "ltr" : "rtl";
+
+  const qBtn = document.getElementById("quickLangBtn");
+  if (qBtn) qBtn.textContent = l === "en" ? "🌐 EN" : (l === "ku" ? "🌐 KU" : "🌐 FA");
+
+  const setTxt = (sel, faT, kuT, enT) => {
+    const el = document.querySelector(sel);
+    if (el) el.textContent = tr(faT, kuT, enT);
+  };
+  const setPh = (sel, faT, kuT, enT) => {
+    const el = document.querySelector(sel);
+    if (el) el.placeholder = tr(faT, kuT, enT);
+  };
+
+  // Bottom Navigation
   const navCal = document.getElementById("nav-cal");
   const navMkt = document.getElementById("nav-mkt");
   const navFal = document.getElementById("nav-fal");
   const navNotes = document.getElementById("nav-notes");
-  if (navCal && navCal.lastChild) navCal.lastChild.textContent = isKu ? " ڕۆژژمێر" : " تقویم";
-  if (navMkt && navMkt.lastChild) navMkt.lastChild.textContent = isKu ? " زێڕ و دراو" : " طلا و ارز";
-  if (navFal && navFal.lastChild) navFal.lastChild.textContent = isKu ? " بەخت و فاڵ" : " طالع و فال";
-  if (navNotes && navNotes.lastChild) navNotes.lastChild.textContent = isKu ? " تێبینییەکان" : " یادداشت‌ها";
+  if (navCal && navCal.lastChild) navCal.lastChild.textContent = " " + tr("تقویم", "ڕۆژژمێر", "Calendar");
+  if (navMkt && navMkt.lastChild) navMkt.lastChild.textContent = " " + tr("طلا و ارز", "زێڕ و دراو", "Markets");
+  if (navFal && navFal.lastChild) navFal.lastChild.textContent = " " + tr("طالع و فال", "بەخت و فاڵ", "Horoscope");
+  if (navNotes && navNotes.lastChild) navNotes.lastChild.textContent = " " + tr("یادداشت‌ها", "تێبینییەکان", "Notes");
 
-  const mMonth = document.getElementById("modeMonth");
-  const mYear = document.getElementById("modeYear");
-  if (mMonth) mMonth.textContent = isKu ? "مانگانە" : "ماهانه";
-  if (mYear) mYear.textContent = isKu ? "ساڵانە" : "سالانه";
+  // Top Bar & Calendar Controls
+  setTxt("#topStatusNotifTxt", "اعلان", "ئاگاداری", "Notify");
+  setTxt("#openStyle span", "طراحی", "دیزاین", "Themes");
+  setTxt("#openConv span", "مبدل", "گۆڕەر", "Convert");
+  setTxt("#installPwaBtn span", "نصب", "داگرتن", "Install");
+  setTxt("#openSet span", "تنظیمات", "ڕێکخستن", "Settings");
+  setTxt("#modeMonth", "ماهانه", "مانگانە", "Monthly");
+  setTxt("#modeYear", "سالانه", "ساڵانە", "Yearly");
+  setTxt("#goTodayBtn span", "برو به امروز", "بڕۆ بۆ ئەمڕۆ", "Go to Today");
+  const card = document.getElementById("calCard");
+  const isFs = card && card.classList.contains("fullscreen");
+  setTxt("#fsBtn", isFs ? "✕ خروج از تمام‌صفحه" : "⛶ تمام‌صفحه", isFs ? "✕ دەرچوون لە پڕشاشە" : "⛶ پڕشاشە", isFs ? "✕ Exit Fullscreen" : "⛶ Fullscreen");
 
-  const goTodSpan = document.querySelector("#goTodayBtn span");
-  if (goTodSpan) goTodSpan.textContent = isKu ? "ئەمڕۆ" : "برو به امروز";
-  const stSpan = document.querySelector("#openStyle span");
-  if (stSpan) stSpan.textContent = isKu ? "دیزاین" : "طراحی";
-  const cvSpan = document.querySelector("#openConv span");
-  if (cvSpan) cvSpan.textContent = isKu ? "گۆڕەر" : "مبدل";
-  const setSpan = document.querySelector("#openSet span");
-  if (setSpan) setSpan.textContent = isKu ? "ڕێکخستن" : "تنظیمات";
+  // Weather Bar Buttons
+  setTxt("#autoLocBtn", "🎯 مکان من", "🎯 شوێنی من", "🎯 My Location");
+  const cityBtns = document.querySelectorAll("#weatherCard .w-city-btn");
+  if (cityBtns[1]) cityBtns[1].textContent = tr("📍 شهر", "📍 شار", "📍 City");
+  updateNotifBtnUI();
+
+  // Selected Day Notes & Month Events Card
+  const noteCardB = document.querySelectorAll("#view-cal .card")[1]?.querySelector(".note-box b");
+  if (noteCardB) noteCardB.textContent = tr("📝 یادداشت‌ها و هشدارها", "📝 تێبینی و ئاگادارکەرەوەکان", "📝 Notes & Reminders");
+  const noteCardBtns = document.querySelectorAll("#view-cal .card")[1]?.querySelectorAll(".note-box .ibtn");
+  if (noteCardBtns && noteCardBtns.length >= 3) {
+    noteCardBtns[0].textContent = tr("🗂️ آرشیو", "🗂️ ئەرشیف", "🗂️ Archive");
+    noteCardBtns[1].textContent = tr("+ یادداشت", "+ تێبینی", "+ Note");
+    noteCardBtns[2].textContent = tr("ثبت", "تۆمار", "Add");
+  }
+  setPh("#noteInput", "یادداشت سریع این روز...", "تێبینی خێرا بۆ ئەم ڕۆژە...", "Quick note for this day...");
+
+  const evCard = document.querySelectorAll("#view-cal .card")[2];
+  if (evCard) {
+    const evB = evCard.querySelector("div > b");
+    if (evB) evB.textContent = tr("مناسبت‌ها و تعطیلات این ماه", "بۆنە و پشووەکانی ئەم مانگە", "Events & Holidays This Month");
+    const evUpdBtn = evCard.querySelector("div > .ibtn");
+    if (evUpdBtn) evUpdBtn.textContent = tr("🔄 بروزرسانی مناسبت‌ها", "🔄 نوێکردنەوەی بۆنەکان", "🔄 Sync Holidays");
+    const addEvB = evCard.querySelector(".note-box > b");
+    if (addEvB) addEvB.textContent = tr("➕ افزودن رویداد، مناسبت یا هشدار زمانی به این روز", "➕ زیادکردنی بۆنە یان ئاگادارکەرەوە بۆ ئەم ڕۆژە", "➕ Add Custom Event or Timed Reminder");
+    setPh("#customEvInput", "عنوان رویداد یا مناسبت...", "ناونیشانی بۆنە...", "Event or occasion title...");
+    const holLbl = evCard.querySelector(".note-box label");
+    if (holLbl && holLbl.lastChild) holLbl.lastChild.textContent = " " + tr("تعطیل", "پشوو", "Holiday");
+    const addEvBtn = evCard.querySelector(".note-box .ibtn");
+    if (addEvBtn) addEvBtn.textContent = tr("افزودن", "زیادکردن", "Add");
+  }
+
+  // Market View
+  setTxt("#view-mkt .mkt-head b", "💰 نرخ لحظه‌ای طلا، سکه و ارز", "💰 نرخی زیندووی زێڕ و دراو", "💰 Live Gold, Coin & FX Rates");
+  setTxt("#mktRefreshBtn", "🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh");
+  const mktSecTitles = document.querySelectorAll("#view-mkt .card > b");
+  if (mktSecTitles[0]) mktSecTitles[0].textContent = tr("🪙 بازار طلا و سکه (تومان)", "🪙 بازاڕی زێڕ و سکە (تمەن)", "🪙 Gold & Coins Market (Toman)");
+  if (mktSecTitles[1]) mktSecTitles[1].textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Exchange Rates (Toman)");
+
+  // Notes Hub View
+  setTxt("#notesHubTitle", "📒 استودیو هوشمند یادداشت و وظایف", "📒 ستۆدیۆی زیرەکی تێبینی و ئەرکەکان", "📒 Smart Notes & Tasks Studio");
+  const notesHeadBtns = document.querySelectorAll("#view-notes .mkt-head .ibtn");
+  if (notesHeadBtns[0]) notesHeadBtns[0].textContent = tr("📤 خروجی", "📤 هەناردە", "📤 Export");
+  if (notesHeadBtns[1]) notesHeadBtns[1].textContent = tr("➕ یادداشت جدید", "➕ تێبینی نوێ", "➕ New Note");
+  const progSpan = document.querySelector("#view-notes .card > div:nth-of-type(2) span");
+  if (progSpan) progSpan.textContent = tr("📊 پیشرفت انجام کارها و یادآورها", "📊 پێشکەوتنی ئەنجامدانی ئەرکەکان", "📊 Tasks & Reminders Progress");
+  setPh("#hubQuickNoteInp", "✍️ ثبت هوشمند (مثلاً: فردا ساعت ۱۰ جلسه کاری #مهم)...", "✍️ تۆماری زیرەک (بۆ نموونە: سبەی کاتژمێر ١٠ کۆبوونەوە)...", "✍️ Smart entry (e.g. Meeting tomorrow at 10 #important)...");
+  const hubAddBtn = document.querySelector("#hubQuickNoteInp")?.parentElement?.querySelectorAll(".ibtn")[1];
+  if (hubAddBtn) hubAddBtn.textContent = tr("ثبت", "تۆمار", "Add");
+  setPh("#noteSearchInput", "🔍 جستجو در متن، تگ‌ها (#) یا دسته‌بندی یادداشت‌ها...", "🔍 گەڕان لە دەق، تاگەکان (#) یان پۆلێنی تێبینییەکان...", "🔍 Search notes, #tags, or categories...");
+  const fChips = document.querySelectorAll("#noteFilterChips .fchip");
+  const fLabels = [
+    tr("همه", "هەموو", "All"),
+    tr("📌 سنجاق‌شده", "📌 دەرزیلێدراو", "📌 Pinned"),
+    tr("🔥 اولویت بالا", "🔥 گرنگی باڵا", "🔥 High Priority"),
+    tr("⏰ دارای هشدار", "⏰ ئاگادارکەرەوە", "⏰ With Alarm"),
+    tr("⏳ در جریان", "⏳ لە کاردا", "⏳ Active"),
+    tr("✅ انجام‌شده", "✅ ئەنجامدراو", "✅ Completed")
+  ];
+  fChips.forEach((ch, idx) => { if (fLabels[idx]) ch.textContent = fLabels[idx]; });
+
+  // Horoscope & AI Postcard View
+  setTxt("#view-fal .mkt-head b", "🔮 طالع‌بینی، فال روزانه و کارت پستال تولد", "🔮 بورج، فاڵی ڕۆژانە و پۆستکارتی لەدایکبوون", "🔮 Horoscope, Daily Omen & AI Birthday Card");
+  setTxt("#falRefreshBtn", "🔮 نیت مجدد هوش مصنوعی", "🔮 نیەتی نوێ بە زیرەکی دەستکرد", "🔮 New AI Horoscope");
+  const bdayBoxB = document.querySelector("#view-fal .card > div:nth-of-type(3) > b");
+  if (bdayBoxB) bdayBoxB.textContent = tr("🎂 مشخصات و تاریخ تولد شما (شمسی):", "🎂 زانیاری و ڕێکەوتی لەدایکبوونت (هەتاوی):", "🎂 Your Name & Birth Date (Solar Hijri):");
+  setPh("#bNameInput", "نام شما برای درج روی کارت پستال (اختیاری)...", "ناوی تۆ بۆ سەر پۆستکارت (ئارەزوومەندانە)...", "Your name for the birthday card (optional)...");
+  const saveBdayBtn = document.querySelector("#view-fal .card > div:nth-of-type(3) > .pbtn");
+  if (saveBdayBtn) saveBdayBtn.textContent = tr("✨ ثبت تاریخ تولد و مشاهده طالع و کارت پستال", "✨ تۆمارکردنی لەدایکبوون و بینینی بەخت و پۆستکارت", "✨ Save Birth Date & View Horoscope & Card");
+  setTxt("#genAiCardBtn", "✨ تولید تصویر AI جدید", "✨ دروستکردنی وێنەی نوێی AI", "✨ Generate New AI Art");
+  const dlCardBtn = document.getElementById("genAiCardBtn")?.nextElementSibling;
+  if (dlCardBtn) dlCardBtn.textContent = tr("📥 ذخیره تصویر", "📥 پاشەکەوتی وێنە", "📥 Save Image");
+  setPh("#aiCustomPrompt", "✍️ پرامپت دلخواه شما برای هوش مصنوعی (مثلاً: کهکشان بنفش با کیک تولد طلایی)...", "✍️ پرۆمپتی دڵخوازی تۆ بۆ زیرەکی دەستکرد...", "✍️ Custom AI prompt (e.g. Purple galaxy with golden birthday cake & fireworks)...");
+  setPh("#aiCustomWish", "💌 متن پیام تبریک دلخواه روی کارت (خالی = متن هوشمند برج فلکی)", "💌 دەقی پیرۆزبایی دڵخواز لەسەر کارتەکە...", "💌 Custom greeting message on card (leave blank for zodiac wish)");
+
+  // Modals (Style, City, Note, Converter, Settings)
+  setTxt("#styleModal .s-head b", "🎨 طراحی، سبک‌ها و همگام‌سازی جوی", "🎨 دیزاین، ستایل و هاوکاتکردنی کەشوهەوا", "🎨 Themes, UI Styles & Weather Sync");
+  setTxt("#cityModal .s-head b", "📍 انتخاب یا افزودن شهر دلخواه", "📍 هەڵبژاردن یان زیادکردنی شار", "📍 Select or Search City");
+  setPh("#citySearchInput", "نام شهر را بنویسید...", "ناوی شار بنووسە...", "Enter city name (e.g. Tehran, London)...");
+  setTxt("#convModal .s-head b", "🔄 مبدل جامع تاریخ (شمسی / کوردی / میلادی / قمری)", "🔄 گۆڕەری گشتیی ڕێکەوت (هەتاوی / کوردی / زایینی / مانگی)", "🔄 Universal Date Converter (Jalali / Kurdish / Gregorian / Hijri)");
+  const convOpts = document.getElementById("convMode")?.options;
+  if (convOpts && convOpts.length >= 3) {
+    convOpts[0].textContent = tr("مبدأ: تاریخ هجری شمسی (جلالی)", "سەرچاوە: کۆچی هەتاوی (جەلالی)", "From: Solar Hijri (Jalali)");
+    convOpts[1].textContent = tr("مبدأ: تاریخ کوردی (کۆچی هەتاوی - ٢٧٢٦)", "سەرچاوە: ڕۆژژمێری کوردی (٢٧٢٦)", "From: Kurdish Calendar (2726)");
+    convOpts[2].textContent = tr("مبدأ: تاریخ میلادی (Gregorian)", "سەرچاوە: ڕێکەوتی زایینی (Gregorian)", "From: Gregorian Calendar");
+  }
+  setTxt("#convModal .pbtn", "تبدیل به هر ۴ تقویم و نمایش در صفحه", "گۆڕین بۆ هەر ٤ ڕۆژژمێر و پیشاندان", "Convert to All 4 Calendars & Jump to Date");
+
+  // Settings Modal Labels
+  setTxt("#setModalTit", "⚙️ تنظیمات، شخصی‌سازی و پشتیبان‌گیری", "⚙️ ڕێکخستن، تایبەتمەندکردن و پاڵپشتی", "⚙️ Settings, Customization & Backup");
+  const themeOpts = document.getElementById("setTheme")?.options;
+  if (themeOpts && themeOpts.length >= 3) {
+    themeOpts[0].textContent = tr("خودکار (گوشی)", "خۆکار (مۆبایل)", "Auto (System)");
+    themeOpts[1].textContent = tr("حالت روز (روشن)", "دۆخی ڕۆژ (ڕووناک)", "Light Mode");
+    themeOpts[2].textContent = tr("حالت شب (تیره)", "دۆخی شەو (تاریک)", "Dark Mode");
+  }
+  const calTypeOpts = document.getElementById("setCalType")?.options;
+  if (calTypeOpts && calTypeOpts.length >= 4) {
+    calTypeOpts[0].textContent = tr("☀️ هجری شمسی (فروردین، اردیبهشت... - ۱۴۰۵)", "☀️ کۆچی هەتاوی (فروردین... - ١٤٠٥)", "☀️ Solar Hijri / Jalali (1405)");
+    calTypeOpts[1].textContent = tr("🏔️ تقویم کوردی (خاکەلێوە، گوڵان... - ٢٧٢٦ کوردی)", "🏔️ ڕۆژژمێری کوردی (خاکەلێوە، گوڵان... - ٢٧٢٦)", "🏔️ Kurdish Solar Calendar (2726)");
+    calTypeOpts[2].textContent = tr("🌍 میلادی (Gregorian - 2026)", "🌍 زایینی (Gregorian - 2026)", "🌍 Gregorian Calendar (2026)");
+    calTypeOpts[3].textContent = tr("🌙 هجری قمری (Islamic - ۱۴۴۸)", "🌙 کۆچی مانگی (Islamic - ١٤٤٨)", "🌙 Islamic Hijri Calendar (1448)");
+  }
+  const fDayOpts = document.getElementById("setFirstDay")?.options;
+  if (fDayOpts && fDayOpts.length >= 3) {
+    fDayOpts[0].textContent = tr("شنبه (استاندارد ایران و کوردستان)", "شەممە (ستانداردی کوردستان و ئێران)", "Saturday (Iran & Kurdistan Standard)");
+    fDayOpts[1].textContent = tr("یکشنبه (Sunday - استاندارد آمریکا)", "یەکشەممە (Sunday - ستانداردی ئەمریکا)", "Sunday (US Standard)");
+    fDayOpts[2].textContent = tr("دوشنبه (Monday - استاندارد اروپا / بین‌المللی)", "دووشەممە (Monday - ستانداردی ئەورووپا)", "Monday (Europe / ISO Standard)");
+  }
+  const setItems = document.querySelectorAll("#setModal .set-item span");
+  if (setItems[0]) setItems[0].textContent = tr("تشخیص خودکار موقعیت مکانی هنگام ورود", "دیاریکردنی خۆکاری شوێن لە کاتی چوونەژوورەوە", "Auto-detect location on startup");
+  if (setItems[1]) setItems[1].textContent = tr("نمایش باکس آب‌وهوا", "پیشاندانی بەشی کەشوهەوا", "Show Weather & AQI Card");
+  if (setItems[2]) setItems[2].textContent = tr("نمایش تاریخ فرعی در خانه‌های تقویم", "پیشاندانی ڕێکەوتی لاوەکی لە خانەکاندا", "Show secondary dates in calendar cells");
 }
 
 function applyCfg(){
@@ -2052,23 +2470,22 @@ function getDynamicWeatherSvg(code, isDay = true, size = 34) {
 }
 
 function wCodeInfo(code, isDay = true){
-  const isKu = cfg?.lang === "ku";
   if(code===0) return isDay
-    ? ["☀️", isKu ? "ساماڵ و هەتاوی (ڕۆژ)" : "صاف و آفتابی (روز)"]
-    : ["🌙", isKu ? "ئاسمانی ساماڵ (شەو)" : "آسمان صاف و مهتابی (شب)"];
+    ? ["☀️", tr("صاف و آفتابی (روز)", "ساماڵ و هەتاوی (ڕۆژ)", "Clear & Sunny (Day)")]
+    : ["🌙", tr("آسمان صاف و مهتابی (شب)", "ئاسمانی ساماڵ (شەو)", "Clear Starry Sky (Night)")];
   if(code<=3) return isDay
-    ? ["⛅", isKu ? "نیمچە هەوری (ڕۆژ)" : "نیمه‌ابری (روز)"]
-    : ["☁️🌙", isKu ? "نیمچە هەوری (شەو)" : "نیمه‌ابری (شب)"];
-  if(code<=48) return [isDay ? "🌫️" : "🌫️🌙", isKu ? "تەم و مژ" : (isDay ? "مه‌آلود (روز)" : "مه‌آلود (شب)")];
-  if(code<=67) return ["🌧️", isKu ? "باراناوی" : (isDay ? "بارانی (روز)" : "بارانی (شب)")];
-  if(code<=77) return ["❄️", isKu ? "بەفراوی" : (isDay ? "برفی (روز)" : "برفی (شب)")];
-  return ["⛈️", isKu ? "ڕەهێڵە و هەورەبرووسکە" : "رگبار و رعدوبرق"];
+    ? ["⛅", tr("نیمه‌ابری (روز)", "نیمچە هەوری (ڕۆژ)", "Partly Cloudy (Day)")]
+    : ["☁️🌙", tr("نیمه‌ابری (شب)", "نیمچە هەوری (شەو)", "Partly Cloudy (Night)")];
+  if(code<=48) return [isDay ? "🌫️" : "🌫️🌙", tr(isDay ? "مه‌آلود (روز)" : "مه‌آلود (شب)", "تەم و مژ", isDay ? "Foggy (Day)" : "Foggy (Night)")];
+  if(code<=67) return ["🌧️", tr(isDay ? "بارانی (روز)" : "بارانی (شب)", "باراناوی", isDay ? "Rainy (Day)" : "Rainy (Night)")];
+  if(code<=77) return ["❄️", tr(isDay ? "برفی (روز)" : "برفی (شب)", "بەفراوی", isDay ? "Snowy (Day)" : "Snowy (Night)")];
+  return ["⛈️", tr("رگبار و رعدوبرق", "ڕەهێڵە و هەورەبرووسکە", "Thunderstorm & Showers")];
 }
 let wNotifEnabled=JSON.parse(localStorage.getItem("w_notif_v10")||"false");
 function updateNotifBtnUI(){
   const btn=document.getElementById("wNotifBtn");
   if(!btn)return;
-  btn.textContent=wNotifEnabled?"🔔 هشدار":"🔕 هشدار";
+  btn.textContent=wNotifEnabled?tr("🔔 هشدار","🔔 ئاگاداری","🔔 Alerts"):tr("🔕 هشدار","🔕 ئاگاداری","🔕 Alerts");
   btn.style.background=wNotifEnabled?"var(--pri)":"var(--card)";
   btn.style.color=wNotifEnabled?"var(--onpri)":"var(--pri)";
 }
@@ -2099,19 +2516,21 @@ function sendWeatherAlert(title,body){
     setTimeout(()=>{bar.style.boxShadow=old;},3000);
   }
 }
+let lastAqiValue = null;
 function aqiMeta(aqi){
-  const isKu = cfg?.lang === "ku";
-  if(aqi<=50)return[isKu?"پاک (تەندروست)":"پاک (سالم)","#059669","rgba(5,150,105,0.14)"];
-  if(aqi<=100)return[isKu?"گونجاو":"قابل قبول","#D97706","rgba(217,119,6,0.15)"];
-  if(aqi<=150)return[isKu?"ناتەندروست بۆ هەستیارەکان":"ناسالم برای گروه‌های حساس","#EA580C","rgba(234,88,12,0.16)"];
-  if(aqi<=200)return[isKu?"ناتەندروست بۆ هەمووان":"ناسالم برای همه","#DC2626","rgba(220,38,38,0.16)"];
-  return[isKu?"زۆر مەترسیدار":"بسیار ناسالم / خطرناک","#7F1D1D","rgba(127,29,29,0.22)"];
+  if(aqi<=50)return[tr("پاک (سالم)","پاک (تەندروست)","Good (Clean)"),"#059669","rgba(5,150,105,0.14)"];
+  if(aqi<=100)return[tr("قابل قبول","گونجاو","Moderate"),"#D97706","rgba(217,119,6,0.15)"];
+  if(aqi<=150)return[tr("ناسالم برای گروه‌های حساس","ناتەندروست بۆ هەستیارەکان","Unhealthy for Sensitive"),"#EA580C","rgba(234,88,12,0.16)"];
+  if(aqi<=200)return[tr("ناسالم برای همه","ناتەندروست بۆ هەمووان","Unhealthy"),"#DC2626","rgba(220,38,38,0.16)"];
+  return[tr("بسیار ناسالم / خطرناک","زۆر مەترسیدار","Hazardous"),"#7F1D1D","rgba(127,29,29,0.22)"];
 }
 function renderAqi(aqi){
+  if(aqi!==undefined) lastAqiValue = aqi;
   const lblEl=document.getElementById("aqiLabel"),sEl=document.getElementById("aqiStatus"),boxEl=document.getElementById("aqiBar");
+  const titleTxt = tr("شاخص کیفیت هوا (AQI):","پێوەری کوالێتی هەوا (AQI):","Air Quality Index (AQI):");
   if(!aqi&&aqi!==0){
-    if(lblEl)lblEl.innerHTML=`🌿 شاخص آلودگی هوا (AQI): <b id="aqiVal">--</b>`;
-    if(sEl)sEl.textContent="نامشخص";
+    if(lblEl)lblEl.innerHTML=`🌿 ${titleTxt} <b id="aqiVal">--</b>`;
+    if(sEl)sEl.textContent=tr("نامشخص","نادیار","N/A");
     return;
   }
   const val=Math.round(aqi);
@@ -2120,13 +2539,16 @@ function renderAqi(aqi){
   if(val>50&&val<=100)ico="🌤️";
   else if(val>100&&val<=150)ico="😷";
   else if(val>150)ico="🚨";
-  if(lblEl)lblEl.innerHTML=`${ico} شاخص کیفیت هوا (AQI): <b id="aqiVal" style="color:${col}">${fa(val)}</b>`;
+  if(lblEl)lblEl.innerHTML=`${ico} ${titleTxt} <b id="aqiVal" style="color:${col}">${fa(val)}</b>`;
   if(sEl){sEl.textContent=lbl;sEl.style.color=col;sEl.style.background=bg;}
   if(boxEl)boxEl.style.borderColor=col+"55";
 }
+let lastWeatherDataObj = null;
+let lastWeatherCityName = "";
 function renderWeatherData(data,cityName,isCached=false){
-  document.getElementById("wCity").textContent=cityName;
-  if(!data||!data.current_weather||!data.daily){document.getElementById("wDesc").textContent="عدم دریافت اطلاعات جوی";return;}
+  if(data) { lastWeatherDataObj = data; lastWeatherCityName = cityName; }
+  document.getElementById("wCity").textContent=trCity(cityName);
+  if(!data||!data.current_weather||!data.daily){document.getElementById("wDesc").textContent=tr("عدم دریافت اطلاعات جوی","نەبوونی زانیاری کەشوهەوا","Weather data unavailable");return;}
   const cw=data.current_weather;
   const isDay = isCurrentlyDaytime(cw);
   const [ico,txt]=wCodeInfo(cw.weathercode, isDay);
@@ -2144,24 +2566,27 @@ function renderWeatherData(data,cityName,isCached=false){
     try{
       const todayNotes=(notes[dayKey(tod.jy,tod.jm,tod.jd)]||[]).map(x=>normNote(x).t);
       const todayEvs=getEv(tod.jy,tod.jm,tod.jd).map(x=>x[0]);
-      const summary=[...todayNotes,...todayEvs].join(" • ")||"تقویم هوشمند جامع";
-      window.AndroidBridge.updateWidgetData(cityName, ico+" "+fa(Math.round(cw.temperature))+"°", summary);
+      const summary=[...todayNotes,...todayEvs].join(" • ")||"Smart Cal";
+      window.AndroidBridge.updateWidgetData(trCity(cityName), ico+" "+fa(Math.round(cw.temperature))+"°", summary);
     }catch(e){}
   }
 
   document.getElementById("wTemp").textContent=fa(Math.round(cw.temperature))+"°";
   document.getElementById("wDesc").textContent=txt;
   document.getElementById("wWind").textContent="💨 "+fa(Math.round(cw.windspeed||0))+" km/h";
-  document.getElementById("wHiLo").textContent="بیشینه "+fa(Math.round(data.daily.temperature_2m_max[0]))+"° / کمینه "+fa(Math.round(data.daily.temperature_2m_min[0]))+"°";
+  const hiLbl = tr("بیشینه","بەرزترین","H:");
+  const loLbl = tr("کمینه","نزمترین","L:");
+  document.getElementById("wHiLo").textContent=`${hiLbl} ${fa(Math.round(data.daily.temperature_2m_max[0]))}° / ${loLbl} ${fa(Math.round(data.daily.temperature_2m_min[0]))}°`;
   const nowT = new Date();
-  document.getElementById("wUpd").textContent=isCached?"در حال بروزرسانی زنده...":"بروزرسانی "+fa(String(nowT.getHours()).padStart(2,"0"))+":"+fa(String(nowT.getMinutes()).padStart(2,"0"));
+  const timeStr = fa(String(nowT.getHours()).padStart(2,"0"))+":"+fa(String(nowT.getMinutes()).padStart(2,"0"));
+  document.getElementById("wUpd").textContent=isCached?tr("در حال بروزرسانی زنده...","نوێکردنەوەی زیندوو...","Updating live..."):(tr("بروزرسانی ","نوێکرایەوە ","Updated ")+timeStr);
   if(!isCached) updatePersistentStatusDate(false);
   const dBox=document.getElementById("wForecast");dBox.innerHTML="";
-  const isKu = cfg?.lang === "ku";
+  const wdNames = getWD_SAT();
   for(let i=0;i<4;i++){
     const dt=new Date(data.daily.time[i]);
     const satIdx = (dt.getDay() + 1) % 7;
-    const dName=i===0?(isKu?"ئەمڕۆ":"امروز"):(isKu?WD_SAT_KU[satIdx]:WD[dt.getDay()]);
+    const dName=i===0?tr("امروز","ئەمڕۆ","Today"):wdNames[satIdx];
     const [dIco]=wCodeInfo(data.daily.weathercode[i], true);
     dBox.innerHTML+=`<div class="w-day">${dName} ${dIco}<b>${fa(Math.round(data.daily.temperature_2m_max[i]))}° / ${fa(Math.round(data.daily.temperature_2m_min[i]))}°</b></div>`;
   }
@@ -2723,18 +3148,41 @@ async function fetchMarket(manual = false) {
   }
 }
 
+let lastMarketPayload = null;
+const MKT_NAME_I18N = {
+  g18:   { fa: "طلای ۱۸ عیار (هر گرم)", ku: "زێڕی عەیار ١٨ (هەر گرامێک)", en: "18K Gold (per gram)" },
+  g24:   { fa: "طلای ۲۴ عیار (هر گرم)", ku: "زێڕی عەیار ٢٤ (هەر گرامێک)", en: "24K Gold (per gram)" },
+  emami: { fa: "سکه امامی (تمام)", ku: "سکەی ئیمامی (تەواو)", en: "Emami Full Gold Coin" },
+  nim:   { fa: "نیم‌سکه بهار آزادی", ku: "نیو سکەی بەهاری ئازادی", en: "Half Azadi Gold Coin" },
+  rob:   { fa: "ربع‌سکه بهار آزادی", ku: "چارەکە سکەی بەهاری ئازادی", en: "Quarter Azadi Gold Coin" },
+  ounce: { fa: "انس جهانی طلا", ku: "ئۆنسی جیهانیی زێڕ", en: "Global Gold Ounce (XAU)" },
+  usd:   { fa: "دلار آمریکا (بازار آزاد)", ku: "دۆلاری ئەمریکی (بازاڕی ئازاد)", en: "US Dollar (USD Free Market)" },
+  eur:   { fa: "یورو اروپا (EUR)", ku: "یۆرۆی ئەورووپا (EUR)", en: "Euro (EUR)" },
+  gbp:   { fa: "پوند انگلیس (GBP)", ku: "پاوەندی بەریتانی (GBP)", en: "British Pound (GBP)" },
+  aed:   { fa: "درهم امارات (AED)", ku: "دیرهەمی ئیمارات (AED)", en: "UAE Dirham (AED)" },
+  try:   { fa: "لیر ترکیه (TRY)", ku: "لیرەی تورکی (TRY)", en: "Turkish Lira (TRY)" },
+  cad:   { fa: "دلار کانادا (CAD)", ku: "دۆلاری کەنەدی (CAD)", en: "Canadian Dollar (CAD)" }
+};
 function renderMarket(d, isCached) {
+  if (d) lastMarketPayload = d;
+  if (!d) return;
+  const l = cfg.lang || "fa";
   const updEl = document.getElementById("mktUpd");
-  if (updEl) updEl.textContent = "آخرین بروزرسانی: ساعت " + d.time;
+  if (updEl) {
+    const cleanTime = String(d.time || "").split(" (")[0];
+    updEl.textContent = tr("آخرین بروزرسانی: ساعت " + d.time, "دوایین نوێکردنەوە: کاتژمێر " + cleanTime, "Last Updated: " + fa(cleanTime));
+  }
   const rowHtml = x => {
     const isNeg = String(x.c).startsWith("-");
     const isZero = String(x.c) === "0.00%";
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
+    const itemName = MKT_NAME_I18N[x.ico]?.[l] || x.n;
+    const unitStr = x.ico === "ounce" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
     return `<div class="mkt-row">
-      <div class="mkt-name">${getMarketSvg(x.ico)}<span>${x.n}</span></div>
+      <div class="mkt-name">${getMarketSvg(x.ico)}<span>${itemName}</span></div>
       <div class="mkt-val">
-        <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${x.u || "تومان"}</span></div>
+        <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${unitStr}</span></div>
         <span style="color:${badgeColor};font-size:11px;font-weight:700;direction:ltr;display:inline-block">${arrow}${fa(x.c)}</span>
       </div>
     </div>`;
@@ -3094,11 +3542,23 @@ function renderAllNotes(){
     });
   });
 
+  const trCat = c => {
+    const map = {
+      "شخصی": tr("شخصی","کەسی","Personal"),
+      "کاری": tr("کاری","کار","Work"),
+      "مالی": tr("مالی","دارایی","Finance"),
+      "خرید": tr("خرید","کڕین","Shopping"),
+      "مهم":  tr("مهم","گرنگ","Important")
+    };
+    return map[c] || c;
+  };
   const totalCount=flat.length;
   const doneCount=flat.filter(x=>x.done).length;
   const pct = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
-  if(statsEl) statsEl.textContent=totalCount?`مجموع ${fa(totalCount)} یادداشت ثبت‌شده (${fa(doneCount)} انجام‌شده)`:`هنوز یادداشتی ثبت نکرده‌اید`;
-  if(progPctEl) progPctEl.textContent = fa(pct) + "٪";
+  if(statsEl) statsEl.textContent=totalCount
+    ? tr(`مجموع ${fa(totalCount)} یادداشت ثبت‌شده (${fa(doneCount)} انجام‌شده)`, `کۆی ${fa(totalCount)} تێبینی تۆمارکراو (${fa(doneCount)} ئەنجامدراو)`, `Total ${totalCount} notes (${doneCount} completed)`)
+    : tr("هنوز یادداشتی ثبت نکرده‌اید", "هێشتا هیچ تێبینییەکت تۆمار نەکردووە", "No notes saved yet");
+  if(progPctEl) progPctEl.textContent = fa(pct) + (cfg.lang==="en" ? "%" : "٪");
   if(progBarEl) progBarEl.style.width = pct + "%";
 
   let filtered=flat.filter(item=>{
@@ -3116,24 +3576,26 @@ function renderAllNotes(){
 
   if(!filtered.length){
     box.innerHTML=`<div style="font-size:12px;color:var(--sec);text-align:center;padding:22px 10px;background:var(--sub);border-radius:14px">
-      ${totalCount?"یادداشتی با این فیلتر یا جستجو پیدا نشد.":"هنوز یادداشتی ثبت نکرده‌اید. از نوار ثبت هوشمند بالا یا دکمه «➕ یادداشت جدید» استفاده کنید."}
+      ${totalCount
+        ? tr("یادداشتی با این فیلتر یا جستجو پیدا نشد.","هیچ تێبینییەک بەم فلتەرە نەدۆزرایەوە.","No notes match this filter or search.")
+        : tr("هنوز یادداشتی ثبت نکرده‌اید. از نوار ثبت هوشمند بالا یا دکمه «➕ یادداشت جدید» استفاده کنید.","هێشتا هیچ تێبینییەکت تۆمار نەکردووە. لە شریتی سەرەوە تێبینی نوێ زیاد بکە.","No notes saved yet. Use the smart bar above or tap '+ New Note'.")}
     </div>`;
     return;
   }
 
   const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
   box.innerHTML=filtered.map(item=>{
-    const mArr = isKu ? KM : JM;
+    const mArr = isKu ? getKM() : getJM();
     const dispYr = cfg.calType === "kurdish" ? (item.y + 1321) : item.y;
     const prioClass = item.prio === "high" ? "prio-high" : (item.prio === "med" ? "prio-med" : "prio-low");
-    const prioBadge = item.prio === "high" ? `<span class="cat-pill" style="color:#EF4444;border-color:#EF4444">🔥 فوری</span>` : "";
+    const prioBadge = item.prio === "high" ? `<span class="cat-pill" style="color:#EF4444;border-color:#EF4444">🔥 ${tr("فوری","خێرا","Urgent")}</span>` : "";
     const customBg = item.col ? `style="background:${item.col}"` : "";
     return `
     <div class="ncard ${item.pin?'pinned':''} ${item.done?'done':''} ${prioClass}" ${customBg}>
       <div class="ncard-top">
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;cursor:pointer" onclick="jumpToNoteDate(${item.y},${item.m},${item.d})">
           <b style="color:var(--pri);font-size:12px">📅 ${fa(item.d)} ${mArr[item.m-1]} ${fa(dispYr)}</b>
-          <span class="cat-pill">${esc(item.cat||"شخصی")}</span>
+          <span class="cat-pill">${esc(trCat(item.cat||"شخصی"))}</span>
           ${prioBadge}
           ${item.tm?`<span class="cat-pill" style="color:var(--hol)">⏰ ${fa(item.tm)}</span>`:""}
         </div>
@@ -3191,8 +3653,9 @@ function renderWeekdayHeader() {
   const wdBox = document.getElementById("wdHeader");
   if (!wdBox) return;
   const fDay = Number(cfg.firstDay || 0);
-  const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
-  const shorts = isKu ? WD_SHORT_KU : WD_SHORT_FA;
+  const l = cfg.lang || "fa";
+  const isKu = (cfg.calType === "kurdish" || l === "ku");
+  const shorts = l === "en" ? WD_SHORT_EN : (isKu ? WD_SHORT_KU : WD_SHORT_FA);
   let htmlOut = "";
   for (let i = 0; i < 7; i++) {
     const wdIdx = (fDay + i) % 7;
@@ -3220,16 +3683,16 @@ function renderYearGrid(){
     } else if (cType === "hijri") {
       len = hMonthLen(vy, m);
       rawFw = hFirstWeekday(vy, m);
-      tit = HM[m - 1];
+      tit = getHM()[m - 1];
     } else if (cType === "kurdish") {
       const jyEquiv = vy - 1321;
       len = mLen(jyEquiv, m);
       rawFw = wDay(jyEquiv, m, 1);
-      tit = KM[m - 1];
+      tit = getKM()[m - 1];
     } else {
       len = mLen(vy, m);
       rawFw = wDay(vy, m, 1);
-      tit = isKu ? KM[m - 1] : JM[m - 1];
+      tit = isKu ? getKM()[m - 1] : getJM()[m - 1];
     }
     const offset = (rawFw - fDay + 7) % 7;
     let cells="";
@@ -3377,6 +3840,7 @@ function renderSunBox(gy, gm, gd) {
   const lat = parseFloat(latStr) || 35.6892, lon = parseFloat(lonStr) || 51.3890;
   const sun = calcSunTimes(gy, gm, gd, lat, lon);
   const pt = calcPrayerTimes(gy, gm, gd, lat, lon);
+  const cDisp = trCity(cityName);
   box.style.flexDirection = "column";
   box.style.alignItems = "stretch";
   box.innerHTML = `
@@ -3384,23 +3848,23 @@ function renderSunBox(gy, gm, gd) {
       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
         ${getSunSvg("rise")}
         <div>
-          <div style="font-size:10px;color:var(--sec)">طلوع آفتاب (${esc(cityName)})</div>
+          <div style="font-size:10px;color:var(--sec)">${tr("طلوع آفتاب","خۆرهەڵاتن","Sunrise")} (${esc(cDisp)})</div>
           <b style="font-size:13.5px;color:#F59E0B;letter-spacing:0.3px">${fa(sun.rise)}</b>
         </div>
       </div>
       <div style="width:1px;height:28px;background:var(--brd)"></div>
       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;justify-content:flex-end">
         <div style="text-align:left">
-          <div style="font-size:10px;color:var(--sec)">غروب آفتاب</div>
+          <div style="font-size:10px;color:var(--sec)">${tr("غروب آفتاب","خۆرئاوابوون","Sunset")}</div>
           <b style="font-size:13.5px;color:#F43F5E;letter-spacing:0.3px">${fa(sun.set)}</b>
         </div>
         ${getSunSvg("set")}
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;border-top:1px dashed var(--brd);padding-top:7px;margin-top:4px;text-align:center;font-size:10.5px">
-      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🕌 اذان صبح:</span> <b style="color:var(--pri)">${fa(pt.fajr)}</b></div>
-      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">☀️ اذان ظهر:</span> <b style="color:var(--pri)">${fa(pt.dhuhr)}</b></div>
-      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🌙 اذان مغرب:</span> <b style="color:var(--pri)">${fa(pt.maghrib)}</b></div>
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🕌 ${tr("اذان صبح:","بانگی بەیانی:","Fajr:")}</span> <b style="color:var(--pri)">${fa(pt.fajr)}</b></div>
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">☀️ ${tr("اذان ظهر:","بانگی نیوەڕۆ:","Dhuhr:")}</span> <b style="color:var(--pri)">${fa(pt.dhuhr)}</b></div>
+      <div style="background:var(--card);padding:4px 6px;border-radius:8px;border:1px solid var(--brd)"><span style="color:var(--sec)">🌙 ${tr("اذان مغرب:","بانگی ئێوارە:","Maghrib:")}</span> <b style="color:var(--pri)">${fa(pt.maghrib)}</b></div>
     </div>
   `;
 }
@@ -3416,15 +3880,16 @@ function render(){
   const kTodayYear = tod.jy + 1321;
 
   const tSpan = document.getElementById("todBtnTxt") || document.getElementById("todBtn");
+  const todLbl = tr("امروز: ", "ئەمڕۆ: ", "Today: ");
   if (tSpan) {
     if (cType === "gregorian") {
-      tSpan.textContent = "Today: " + gToday.gd + " " + GM_EN[gToday.gm - 1] + " " + gToday.gy;
+      tSpan.textContent = todLbl + fa(gToday.gd) + " " + GM_EN[gToday.gm - 1] + " " + fa(gToday.gy);
     } else if (cType === "hijri") {
-      tSpan.textContent = (isKu ? "ئەمڕۆ: " : "امروز: ") + fa(hToday.hd) + " " + HM[hToday.hm - 1] + " " + fa(hToday.hy);
+      tSpan.textContent = todLbl + fa(hToday.hd) + " " + getHM()[hToday.hm - 1] + " " + fa(hToday.hy);
     } else if (cType === "kurdish") {
-      tSpan.textContent = "ئەمڕۆ: " + fa(tod.jd) + "ی " + KM[tod.jm - 1] + " " + fa(kTodayYear);
+      tSpan.textContent = todLbl + fa(tod.jd) + (cfg.lang==="en"?" ":"ی ") + getKM()[tod.jm - 1] + " " + fa(kTodayYear);
     } else {
-      tSpan.textContent = (isKu ? "ئەمڕۆ: " : "امروز: ") + fa(tod.jd) + " " + (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]) + " " + fa(tod.jy);
+      tSpan.textContent = todLbl + fa(tod.jd) + " " + (isKu ? getKM()[tod.jm - 1] : getJM()[tod.jm - 1]) + " " + fa(tod.jy);
     }
   }
   updatePersistentStatusDate(false);
@@ -3534,20 +3999,21 @@ function render(){
     const offset = (rawFw - fDay + 7) % 7;
     const g1 = toG(jyActive, vm, 1), g2 = toG(jyActive, vm, len);
 
+    const mNamesDisp = (isKurdishCal || isKu) ? getKM() : getJM();
     if (calMode === "year") {
       const gy1 = toG(jyActive, 1, 1).gy, gy2 = toG(jyActive, 12, 29).gy;
       document.getElementById("jTit").textContent = isKurdishCal
-        ? ("ساڵی " + fa(vy) + "ی کوردی (کۆچی هەتاوی)")
-        : ("سال " + fa(vy) + " هجری شمسی");
+        ? tr("ساڵی " + fa(vy) + "ی کوردی", "ساڵی " + fa(vy) + "ی کوردی (کۆچی هەتاوی)", "Kurdish Year " + vy)
+        : tr("سال " + fa(vy) + " هجری شمسی", "ساڵی " + fa(vy) + "ی کۆچی هەتاوی", "Solar Hijri Year " + vy);
       document.getElementById("gTit").textContent = isKurdishCal
-        ? (fa(jyActive) + " شمسی • " + fa(gy1) + " - " + fa(gy2) + " میلادی")
-        : (fa(gy1) + " - " + fa(gy2) + " میلادی");
+        ? `${fa(jyActive)} ${tr("شمسی","هەتاوی","Solar")} • ${fa(gy1)} - ${fa(gy2)}`
+        : `${fa(gy1)} - ${fa(gy2)} ${tr("میلادی","زایینی","Gregorian")}`;
       renderYearGrid();
     } else {
-      document.getElementById("jTit").textContent = mNames[vm - 1] + " " + fa(vy);
+      document.getElementById("jTit").textContent = mNamesDisp[vm - 1] + " " + fa(vy);
       document.getElementById("gTit").textContent = isKurdishCal
-        ? (`${JM[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} - ${GM_EN[g2.gm - 1]} ${g2.gy}`)
-        : (`${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)} • ${KM[vm - 1]} ${fa(jyActive + 1321)}`);
+        ? (`${getJM()[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} - ${GM_EN[g2.gm - 1]} ${g2.gy}`)
+        : (`${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)} • ${getKM()[vm - 1]} ${fa(jyActive + 1321)}`);
     }
 
     for (let i = 0; i < offset; i++) box.innerHTML += "<div></div>";
@@ -3574,27 +4040,30 @@ function render(){
 
   const sw = wDay(sel.jy, sel.jm, sel.jd), sg = toG(sel.jy, sel.jm, sel.jd), sh = g2h(sg.gy, sg.gm, sg.gd), sevs = getEv(sel.jy, sel.jm, sel.jd);
   const isSelBday = (birthCfg && birthCfg.m === sel.jm && birthCfg.d === sel.jd);
-  const dayNameStr = isKu ? WD_SAT_KU[sw] : WD[(sw + 6) % 7];
+  const dayNameStr = getWD_SAT()[sw];
   const kYearSel = sel.jy + 1321;
+  const jmArr = getJM(), kmArr = getKM(), hmArr = getHM();
 
   if (cType === "gregorian") {
     document.getElementById("selTit").innerHTML = `<span dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span> • ${dayNameStr}`;
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${JM[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${KM[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag">🌙 ${fa(sh.hd)} ${HM[sh.hm - 1]} ${fa(sh.hy)}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag">🌙 ${fa(sh.hd)} ${hmArr[sh.hm - 1]} ${fa(sh.hy)}</span>`;
   } else if (cType === "hijri") {
-    document.getElementById("selTit").textContent = dayNameStr + " " + fa(sh.hd) + " " + HM[sh.hm - 1] + " " + fa(sh.hy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${JM[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${KM[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span>`;
+    document.getElementById("selTit").textContent = dayNameStr + " " + fa(sh.hd) + " " + hmArr[sh.hm - 1] + " " + fa(sh.hy);
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span>`;
   } else if (cType === "kurdish") {
-    document.getElementById("selTit").textContent = `${dayNameStr} ${fa(sel.jd)}ی ${KM[sel.jm - 1]}ی ${fa(kYearSel)} کوردی`;
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${JM[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span><span class="tag">🌙 ${fa(sh.hd)} ${HM[sh.hm - 1]} ${fa(sh.hy)}</span>`;
+    document.getElementById("selTit").textContent = cfg.lang==="en"
+      ? `${dayNameStr}, ${sel.jd} ${kmArr[sel.jm - 1]} ${kYearSel}`
+      : `${dayNameStr} ${fa(sel.jd)}ی ${kmArr[sel.jm - 1]}ی ${fa(kYearSel)} کوردی`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span><span class="tag">🌙 ${fa(sh.hd)} ${hmArr[sh.hm - 1]} ${fa(sh.hy)}</span>`;
   } else {
-    document.getElementById("selTit").textContent = dayNameStr + " " + fa(sel.jd) + " " + JM[sel.jm - 1] + " " + fa(sel.jy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">🏔️ ${fa(sel.jd)} ${KM[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${fa(sg.gd)} ${GM_EN[sg.gm - 1]} ${fa(sg.gy)}</span><span class="tag">🌙 ${fa(sh.hd)} ${HM[sh.hm - 1]} ${fa(sh.hy)}</span>`;
+    document.getElementById("selTit").textContent = dayNameStr + " " + fa(sel.jd) + " " + jmArr[sel.jm - 1] + " " + fa(sel.jy);
+    document.getElementById("selSub").innerHTML = `<span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${fa(sg.gd)} ${GM_EN[sg.gm - 1]} ${fa(sg.gy)}</span><span class="tag">🌙 ${fa(sh.hd)} ${hmArr[sh.hm - 1]} ${fa(sh.hy)}</span>`;
   }
 
   renderSunBox(sg.gy, sg.gm, sg.gd);
   let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
-  if (isSelBday) evHtml = `<div class="ev" style="color:var(--pri);font-weight:700">🎂 سالروز تولد شما مبارک باد!</div>` + evHtml;
-  document.getElementById("evBox").innerHTML = evHtml || `<div class="ev" style="opacity:.6">${isKu ? "هیچ بۆنەیەک تۆمار نەکراوە" : "مناسبتی ثبت نشده است"}</div>`;
+  if (isSelBday) evHtml = `<div class="ev" style="color:var(--pri);font-weight:700">🎂 ${tr("سالروز تولد شما مبارک باد!","ڕۆژی لەدایکبوونت پیرۆز بێت!","Happy Birthday to You!")}</div>` + evHtml;
+  document.getElementById("evBox").innerHTML = evHtml || `<div class="ev" style="opacity:.6">${tr("مناسبتی ثبت نشده است","هیچ بۆنەیەک تۆمار نەکراوە","No events recorded for this day")}</div>`;
 
   const sk = dayKey(sel.jy, sel.jm, sel.jd), sNotes = notes[sk] || [];
   document.getElementById("notesList").innerHTML = sNotes.map((raw, i) => {
@@ -3612,7 +4081,7 @@ function render(){
   const mBox = document.getElementById("monthEvBox");
   mBox.innerHTML = mList.length
     ? mList.map(x => `<div class="m-ev ${x.h ? 'hol' : ''}" onclick="sel={jy:${x.j.jy},jm:${x.j.jm},jd:${x.j.jd}};render()"><span class="badge">${x.label}</span><span>${esc(x.t)}</span></div>`).join("")
-    : `<div style="font-size:12px;opacity:.6;padding-top:4px">${isKu ? "بۆنەیەک تۆمار نەکراوە" : "مناسبتی ثبت نشده است"}</div>`;
+    : `<div style="font-size:12px;opacity:.6;padding-top:4px">${tr("مناسبتی ثبت نشده است","بۆنەیەک تۆمار نەکراوە","No events this month")}</div>`;
 }
 
 // Quadruple Converter (Jalali / Kurdish / Gregorian / Hijri)
@@ -3622,11 +4091,11 @@ function initConvInputs(){
   dS.innerHTML="";mS.innerHTML="";yS.innerHTML="";
   for(let d=1;d<=31;d++)dS.innerHTML+=`<option value="${d}">${fa(d)}</option>`;
   if(mode==="j2g"){
-    JM.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
+    getJM().forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
     for(let y=1340;y<=1435;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value=sel.jd;mS.value=sel.jm;yS.value=sel.jy;
   }else if(mode==="k2g"){
-    KM.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
+    getKM().forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
     for(let y=2660;y<=2760;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value=sel.jd;mS.value=sel.jm;yS.value=sel.jy+1321;
   }else{
@@ -3650,11 +4119,11 @@ function runConvert(){
   const h=g2h(g.gy,g.gm,g.gd);
   const ky=j.jy+1321;
   document.getElementById("convRes").innerHTML=`
-    ☀️ هجری شمسی: <b style="color:var(--pri)">${fa(j.jd)} ${JM[j.jm-1]} ${fa(j.jy)}</b><br>
-    🏔️ تقویم کوردی: <b style="color:var(--grn)">${fa(j.jd)}ی ${KM[j.jm-1]}ی ${fa(ky)} کوردی</b><br>
-    🌍 میلادی (حروفی): <b dir="ltr" style="display:inline-block">${fa(g.gd)} ${GM_EN[g.gm-1]} ${fa(g.gy)}</b><br>
-    🌍 میلادی (عددی): <b style="direction:ltr;display:inline-block">${fa(String(g.gd).padStart(2,'0'))}/${fa(String(g.gm).padStart(2,'0'))}/${fa(g.gy)}</b><br>
-    🌙 هجری قمری: <b>${fa(h.hd)} ${HM[h.hm-1]} ${fa(h.hy)}</b>
+    ☀️ ${tr("هجری شمسی:","کۆچی هەتاوی:","Solar Hijri (Jalali):")} <b style="color:var(--pri)">${fa(j.jd)} ${getJM()[j.jm-1]} ${fa(j.jy)}</b><br>
+    🏔️ ${tr("تقویم کوردی:","ڕۆژژمێری کوردی:","Kurdish Calendar:")} <b style="color:var(--grn)">${fa(j.jd)} ${getKM()[j.jm-1]} ${fa(ky)}</b><br>
+    🌍 ${tr("میلادی (حروفی):","زایینی:","Gregorian:")} <b dir="ltr" style="display:inline-block">${fa(g.gd)} ${GM_EN[g.gm-1]} ${fa(g.gy)}</b><br>
+    🌍 ${tr("میلادی (عددی):","زایینی (ژمارە):","Gregorian (Numeric):")} <b style="direction:ltr;display:inline-block">${fa(String(g.gd).padStart(2,'0'))}/${fa(String(g.gm).padStart(2,'0'))}/${fa(g.gy)}</b><br>
+    🌙 ${tr("هجری قمری:","کۆچی مانگی:","Islamic Hijri:")} <b>${fa(h.hd)} ${getHM()[h.hm-1]} ${fa(h.hy)}</b>
   `;
   sel={...j};
   syncViewToCalType(cfg.calType||"jalali");
@@ -3857,15 +4326,15 @@ function checkBirthdaySurprise(justSaved=false){
   }else{
     if(calBanner) calBanner.style.display="none";
     if(falBanner){
-      // Calculate days left until next birthday
       let nextBdayJdn=j2d(tod.jy,birthCfg.m,Math.min(birthCfg.d,mLen(tod.jy,birthCfg.m)));
       const todayJdn=j2d(tod.jy,tod.jm,tod.jd);
       if(nextBdayJdn<todayJdn) nextBdayJdn=j2d(tod.jy+1,birthCfg.m,Math.min(birthCfg.d,mLen(tod.jy+1,birthCfg.m)));
       const daysLeft=nextBdayJdn-todayJdn;
+      const mNameB = (cfg.lang==="ku"||cfg.calType==="kurdish") ? getKM()[birthCfg.m-1] : getJM()[birthCfg.m-1];
       falBanner.style.display="block";
       falBanner.innerHTML=`<div style="background:var(--pri-bg);color:var(--pri);padding:9px 12px;border-radius:13px;font-size:11.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-        <span>🎈 روزشمار تا جشن تولد بعدی شما (${fa(birthCfg.d)} ${JM[birthCfg.m-1]}):</span>
-        <b>${fa(daysLeft)} روز مانده</b>
+        <span>🎈 ${tr("روزشمار تا جشن تولد بعدی شما","ڕۆژژمێر تا ڕۆژی لەدایکبوونی داهاتووت","Countdown to your next Birthday")} (${fa(birthCfg.d)} ${mNameB}):</span>
+        <b>${fa(daysLeft)} ${tr("روز مانده","ڕۆژ ماوە","days left")}</b>
       </div>`;
     }
   }
@@ -4332,44 +4801,87 @@ function renderFal(skipPostcard = false){
   const energyPct = 74 + ((seed*11) % 25);
   const aiBadge = customAiFalData ? `<span class="cat-pill" style="background:var(--pri);color:var(--onpri);border:none">🤖 تولیدشده با هوش مصنوعی</span>` : `<span class="cat-pill">✨ طالع روزانه</span>`;
 
-  document.getElementById("falDateSub").textContent=`ویژه ${fa(tod.jd)} ${JM[tod.jm-1]} ${fa(tod.jy)} • سن دقیق: ${fa(Math.max(0,ageY))} سال و ${fa(ageM)} ماه`;
+  const ZODIAC_EN_SIGN=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  const ZODIAC_EN_ELEM=["Fire 🔥","Earth 🌱","Air 💨","Water 💧","Fire 🔥","Earth 🌱","Air 💨","Water 💧","Fire 🔥","Earth 🌱","Air 💨","Water 💧"];
+  const ZODIAC_EN_STONE=["Diamond & Agate","Emerald & Turquoise","Pearl & Agate","Ruby & Pearl","Yellow Sapphire & Amber","Sapphire & Jade","Opal & Lapis","Topaz & Carnelian","Turquoise & Ruby","Garnet & Onyx","Amethyst & Turquoise","Aquamarine & Jade"];
+  const ANIMAL_EN=["Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat","Monkey","Rooster","Dog","Pig"];
+  const FAL_GEN_EN=[
+    "Today the stars align to bring fresh breakthroughs in your pending plans. Move forward with calm confidence.",
+    "Today's energy empowers you to finalize an important decision with clarity and poise.",
+    "Uplifting news or an unexpected message from someone close will energize your day.",
+    "A great day for long-term planning and tuning out distractions; trust your inner intuition.",
+    "A new opportunity is opening up on your path—wise consultation will help you make the most of it."
+  ];
+  const FAL_WORK_EN=[
+    "In career and finances, a fresh proposal or idea can boost your productivity and income; review details carefully.",
+    "Avoid impulsive spending or risky investments today; financial balance is your key to success.",
+    "Your professional efforts are being noticed, paving the way for a rewarding collaboration."
+  ];
+  const FAL_EMO_EN=[
+    "In relationships and family life, a warm conversation clears up small misunderstandings and deepens your bond.",
+    "Your kindness and attention to loved ones today will return multiplied positive energy to your life.",
+    "Peaceful and joyful moments await you alongside family or friends; cherish the harmony."
+  ];
+  const HAFEZ_EN=[
+    {b:"Glad tidings, O heart, a Messiah-breathed breeze arrives / Carrying the sweet fragrance of the beloved.",t:"A long-awaited breakthrough and joyful news are very close at hand."},
+    {b:"Lost Joseph shall return to Canaan, grieve not / The hut of sorrows shall bloom into a rose garden, grieve not.",t:"Current worries are temporary; circumstances will soon arrange themselves for the best."},
+    {b:"Plant the tree of friendship that fulfills the heart's desire / Uproot the sapling of enmity that brings endless sorrow.",t:"Empathy and harmony with those around you are the best keys to resolving today's matters."}
+  ];
+
+  const isEn = cfg.lang === "en";
+  const gDisp = (isEn && !customAiFalData) ? FAL_GEN_EN[seed % FAL_GEN_EN.length] : gTxt;
+  const wDisp = (isEn && !customAiFalData) ? FAL_WORK_EN[(seed*3 + d + falExtraOffset) % FAL_WORK_EN.length] : wTxt;
+  const eDisp = (isEn && !customAiFalData) ? FAL_EMO_EN[(seed*5 + m + falExtraOffset*2) % FAL_EMO_EN.length] : eTxt;
+  const hEnObj = HAFEZ_EN[(seed*7 + y + d + falExtraOffset*3) % HAFEZ_EN.length];
+  const beytDisp = (isEn && !customAiFalData) ? hEnObj.b : hafezBeyt;
+  const tabirDisp = (isEn && !customAiFalData) ? hEnObj.t : hafezTabir;
+  const signDisp = isEn ? ZODIAC_EN_SIGN[m-1] : z.sign;
+  const elemDisp = isEn ? ZODIAC_EN_ELEM[m-1] : z.elem;
+  const stoneDisp = isEn ? ZODIAC_EN_STONE[m-1] : z.stone;
+  const animDisp = isEn ? ANIMAL_EN[animalIdx] : animal.n;
+
+  document.getElementById("falDateSub").textContent = tr(
+    `ویژه ${fa(tod.jd)} ${JM[tod.jm-1]} ${fa(tod.jy)} • سن دقیق: ${fa(Math.max(0,ageY))} سال و ${fa(ageM)} ماه`,
+    `تایبەت بە ${fa(tod.jd)}ی ${KM[tod.jm-1]} ${fa(tod.jy+1321)} • تەمەن: ${fa(Math.max(0,ageY))} ساڵ و ${fa(ageM)} مانگ`,
+    `For ${tod.jd} ${JM_EN[tod.jm-1]} ${tod.jy} • Exact Age: ${Math.max(0,ageY)} yrs, ${ageM} mos`
+  );
 
   document.getElementById("falBadges").innerHTML=`
     <div style="background:var(--sub);padding:10px;border-radius:14px;border:1px solid var(--brd)">
-      <div style="font-size:10px;color:var(--sec)">برج فلکی ماه تولد</div>
-      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${z.sym} ${z.sign}</b>
-      <div style="font-size:10px;color:var(--sec);margin-top:3px">عنصر: ${z.elem} • سنگ: ${z.stone}</div>
+      <div style="font-size:10px;color:var(--sec)">${tr("برج فلکی ماه تولد","بورجی مانگی لەدایکبوون","Birth Month Zodiac")}</div>
+      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${z.sym} ${signDisp}</b>
+      <div style="font-size:10px;color:var(--sec);margin-top:3px">${tr("عنصر:","توخم:","Element:")} ${elemDisp} • ${tr("سنگ:","بەرد:","Gem:")} ${stoneDisp}</div>
     </div>
     <div style="background:var(--sub);padding:10px;border-radius:14px;border:1px solid var(--brd)">
-      <div style="font-size:10px;color:var(--sec)">طالع سال تولد (${fa(y)})</div>
-      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${animal.ico} سال ${animal.n}</b>
-      <div style="font-size:10px;color:var(--sec);margin-top:3px">شانس: ${fa(energyPct)}٪ • عدد: ${fa(luckyNum)} • رنگ: ${esc(luckyCol)}</div>
+      <div style="font-size:10px;color:var(--sec)">${tr("طالع سال تولد","بورجی ساڵی لەدایکبوون","Birth Year Sign")} (${fa(y)})</div>
+      <b style="font-size:13px;color:var(--pri);display:block;margin-top:2px">${animal.ico} ${tr("سال","ساڵی","Year of")} ${animDisp}</b>
+      <div style="font-size:10px;color:var(--sec);margin-top:3px">${tr("انرژی:","وزە:","Energy:")} ${fa(energyPct)}% • ${tr("عدد:","ژمارە:","Lucky #:")} ${fa(luckyNum)}</div>
     </div>
   `;
 
   document.getElementById("falContent").innerHTML=`
     <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <b style="color:var(--pri)">🌟 طالع کلی امروز شما:</b>
+        <b style="color:var(--pri)">🌟 ${tr("طالع کلی امروز شما:","بەختی گشتیی ئەمڕۆت:","Daily General Horoscope:")}</b>
         ${aiBadge}
       </div>
-      <span>${esc(gTxt)}</span>
+      <span>${esc(gDisp)}</span>
     </div>
     <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
-      <b style="color:var(--grn);display:block;margin-bottom:3px">💼 وضعیت کار، برنامه و مالی:</b>
-      <span>${esc(wTxt)}</span>
+      <b style="color:var(--grn);display:block;margin-bottom:3px">💼 ${tr("وضعیت کار، برنامه و مالی:","دۆخی کار و دارایی:","Career, Plans & Finance:")}</b>
+      <span>${esc(wDisp)}</span>
     </div>
     <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
-      <b style="color:var(--hol);display:block;margin-bottom:3px">❤️ روابط و انرژی عاطفی:</b>
-      <span>${esc(eTxt)}</span>
+      <b style="color:var(--hol);display:block;margin-bottom:3px">❤️ ${tr("روابط و انرژی عاطفی:","پەیوەندی و سۆزداری:","Love & Emotional Energy:")}</b>
+      <span>${esc(eDisp)}</span>
     </div>
     <div style="background:var(--pri-bg);border:1px solid var(--pri);padding:12px;border-radius:15px;line-height:1.9;font-size:12.5px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <b style="color:var(--pri)">📜 تفأل روزانه از دیوان حافظ:</b>
-        <button class="ibtn" style="height:24px;padding:0 8px;font-size:10px;border-radius:8px" onclick="refreshFalSeed()">🔄 نیت مجدد</button>
+        <b style="color:var(--pri)">📜 ${tr("تفأل روزانه از دیوان حافظ:","فاڵی ڕۆژانەی حافزی شیرازی:","Daily Omen from Hafez:")}</b>
+        <button class="ibtn" style="height:24px;padding:0 8px;font-size:10px;border-radius:8px" onclick="refreshFalSeed()">🔄 ${tr("نیت مجدد","نیەتی نوێ","New Omen")}</button>
       </div>
-      <div style="font-weight:700;text-align:center;padding:4px 0;color:var(--txt)">«${esc(hafezBeyt)}»</div>
-      <div style="font-size:11.5px;color:var(--sec);margin-top:4px;border-top:1px dashed var(--brd);padding-top:5px"><b>تعبیر فال:</b> ${esc(hafezTabir)}</div>
+      <div style="font-weight:700;text-align:center;padding:4px 0;color:var(--txt)">«${esc(beytDisp)}»</div>
+      <div style="font-size:11.5px;color:var(--sec);margin-top:4px;border-top:1px dashed var(--brd);padding-top:5px"><b>${tr("تعبیر فال:","مانای فاڵ:","Interpretation:")}</b> ${esc(tabirDisp)}</div>
     </div>
   `;
 }
