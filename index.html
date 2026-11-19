@@ -1750,6 +1750,31 @@ function dismissInstallBanner() {
 }
 
 // 1. Minimalist Dynamic 512x512 App Icon (Android & iOS) showing Weekday (روز) & Day Date (تاریخ روز)
+function drawExactCenteredText(ctx, text, cx, cy, fontStr, fillStyle) {
+  ctx.save();
+  ctx.font = fontStr;
+  ctx.fillStyle = fillStyle;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.direction = "ltr";
+  const str = String(text ?? "").trim();
+  const m = ctx.measureText(str);
+  const hasBBox = (m.actualBoundingBoxLeft !== undefined && m.actualBoundingBoxRight !== undefined &&
+                   m.actualBoundingBoxAscent !== undefined && m.actualBoundingBoxDescent !== undefined);
+  let x, y;
+  if (hasBBox) {
+    const glyphW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+    const glyphH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    x = cx - glyphW / 2 + m.actualBoundingBoxLeft;
+    y = cy - glyphH / 2 + m.actualBoundingBoxAscent;
+  } else {
+    x = cx - m.width / 2;
+    y = cy + 12;
+  }
+  ctx.fillText(str, x, y);
+  ctx.restore();
+}
+
 function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
   const S = 512;
   const c = document.createElement("canvas");
@@ -1763,7 +1788,7 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   const mutedText = isDark ? "#94A3B8" : "#64748B";
   const accent = accentHex || "#1B6EF3";
 
-  // Full-bleed background so iOS home screen squircle clips cleanly without white corners
+  // Full-bleed background so iOS squircle clips cleanly
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
@@ -1779,29 +1804,40 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   // Top accent bar centered at x = S / 2
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(S / 2 - 42, 96, 84, 8, 4);
+  ctx.roundRect(S / 2 - 42, 94, 84, 8, 4);
   ctx.fill();
 
-  ctx.direction = "ltr";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  // Weekday centered at top area
+  drawExactCenteredText(
+    ctx,
+    weekDayStr || monthName,
+    S / 2,
+    146,
+    "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    mutedText
+  );
 
-  // Weekday label centered at y = 148
-  ctx.fillStyle = mutedText;
-  ctx.font = "700 34px 'Inter', 'Vazirmatn', system-ui, sans-serif";
-  ctx.fillText(String(weekDayStr || monthName).trim(), S / 2, 148);
-
-  // Day number centered in middle of icon (y = 276) with font-size scaled cleanly for 1 or 2 digits
+  // Day number dead-center at (S / 2, S / 2 + 12)
   const dayStrClean = String(dayNumStr).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 148 : 168;
-  ctx.fillStyle = primaryText;
-  ctx.font = `800 ${numFontSize}px 'Inter', 'Vazirmatn', system-ui, sans-serif`;
-  ctx.fillText(dayStrClean, S / 2, 276);
+  const numFontSize = dayStrClean.length >= 2 ? 142 : 162;
+  drawExactCenteredText(
+    ctx,
+    dayStrClean,
+    S / 2,
+    S / 2 + 12,
+    `800 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
+    primaryText
+  );
 
-  // Month label centered near bottom of card (y = 396)
-  ctx.fillStyle = accent;
-  ctx.font = "700 30px 'Inter', 'Vazirmatn', system-ui, sans-serif";
-  ctx.fillText(String(monthName).trim(), S / 2, 396);
+  // Month label centered near bottom of card
+  drawExactCenteredText(
+    ctx,
+    monthName,
+    S / 2,
+    396,
+    "700 28px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    accent
+  );
 
   return c.toDataURL("image/png");
 }
