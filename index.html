@@ -400,6 +400,26 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 .nav-badge{position:absolute;top:2px;left:18%;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--hol);color:#fff;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
 .nbtn{position:relative}
 
+
+@font-face {
+  font-family: 'Dastkhat';
+  src: url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Regular.woff2') format('woff2'),
+       url('https://raw.githubusercontent.com/dastyar-io/dastkhat-font/main/dist/Dastkhat-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/fonts/woff2/Dastkhat-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Dastkhat';
+  src: url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Bold.woff2') format('woff2'),
+       url('https://raw.githubusercontent.com/dastyar-io/dastkhat-font@main/dist/Dastkhat-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/fonts/woff2/Dastkhat-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 </style>
 </head>
 <body>
@@ -887,6 +907,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
         <option value="sahel">۳. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)</option>
         <option value="notosans">۴. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)</option>
         <option value="notonaskh">۵. نوتو نسخ اصیل (Noto Naskh - کلاسیک و ادبی)</option>
+        <option value="dastkhat">۶. دستخط (Dastkhat - مدرن و خوش‌خوان)</option>
       </select>
     </div>
 
@@ -1073,7 +1094,8 @@ const FONT_STACKS={
   estedad:"'Estedad','Plus Jakarta Sans','Vazirmatn',system-ui,sans-serif",
   sahel:"'Sahel','Rubik','Vazirmatn',system-ui,sans-serif",
   notosans:"'Noto Sans Arabic','Inter','Vazirmatn',system-ui,sans-serif",
-  notonaskh:"'Noto Naskh Arabic','Inter','Vazirmatn',serif"
+  notonaskh:"'Noto Naskh Arabic','Inter','Vazirmatn',serif",
+  dastkhat:"'Dastkhat','Vazirmatn','Inter',system-ui,-apple-system,sans-serif"
 };
 
 const KURDISH_EV={
@@ -2000,25 +2022,26 @@ async function updatePersistentStatusDate(forcePost = false) {
   const iEl = document.getElementById("wIcon")?.getAttribute("data-emoji") || "⛅";
   const hasRealTemp = rawTemp && !rawTemp.includes("--");
 
+  const gregMonthWithNum = `${GM_EN[g.gm - 1]} (${fa(g.gm)})`;
   const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
   const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
-  const gregFull = `${g.gd} ${GM_EN[g.gm - 1]} ${g.gy}`;
+  const gregFull = `${fa(g.gd)} ${gregMonthWithNum} ${fa(g.gy)}`;
   const hijriFull = `${fa(h.hd)} ${HM[h.hm - 1]} ${fa(h.hy)}`;
 
   let notifTitle = "";
   let notifSubDates = "";
   if (cType === "kurdish") {
-    notifTitle = `📅 ${kurdishFull}`;
-    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  🌍 ${gregFull}`;
+    notifTitle = `${kurdishFull}`;
+    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  ${gregFull}`;
   } else if (cType === "gregorian") {
-    notifTitle = `📅 ${gregFull} (${weekDayName})`;
-    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
+    notifTitle = `${gregFull} (${weekDayName})`;
+    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
   } else if (cType === "hijri") {
-    notifTitle = `📅 ${weekDayName} ${hijriFull}`;
-    notifSubDates = `☀️ ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  🌍 ${gregFull}`;
+    notifTitle = `${weekDayName} ${hijriFull}`;
+    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  ${gregFull}`;
   } else {
-    notifTitle = `📅 ${jalaliFull}`;
-    notifSubDates = `🌍 ${gregFull}`;
+    notifTitle = `${jalaliFull}`;
+    notifSubDates = `${gregFull}`;
   }
 
   const weatherLine = "";
@@ -4116,7 +4139,7 @@ function render(){
       const showCalTag = (isKurdishCal && cfg.lang !== "ku") || (!isKurdishCal && cfg.lang !== "fa");
       document.getElementById("jTit").textContent = mNamesDisp[vm - 1] + " " + fa(vy) + (showCalTag ? calTag : "");
       document.getElementById("gTit").textContent = isKurdishCal
-        ? (`${getJM()[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} - ${GM_EN[g2.gm - 1]} ${g2.gy}`)
+        ? (`${getJM()[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)}`)
         : (`${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)} • ${getKM()[vm - 1]} ${fa(jyActive + 1321)}`);
     }
 
@@ -4149,16 +4172,16 @@ function render(){
   const jmArr = getJM(), kmArr = getKM(), hmArr = getHM();
 
   if (cType === "gregorian") {
-    document.getElementById("selTit").innerHTML = `<span dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span> • ${dayNameStr}`;
+    document.getElementById("selTit").innerHTML = `<span dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span> • ${dayNameStr}`;
     document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span>`;
   } else if (cType === "hijri") {
     document.getElementById("selTit").textContent = dayNameStr + " " + fa(sh.hd) + " " + hmArr[sh.hm - 1] + " " + fa(sh.hy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span>`;
   } else if (cType === "kurdish") {
     document.getElementById("selTit").textContent = cfg.lang==="en"
       ? `${dayNameStr}, ${sel.jd} ${kmArr[sel.jm - 1]} ${kYearSel}`
       : `${dayNameStr} ${fa(sel.jd)}ی ${kmArr[sel.jm - 1]}ی ${fa(kYearSel)} کوردی`;
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} ${sg.gy}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span>`;
   } else {
     document.getElementById("selTit").textContent = dayNameStr + " " + fa(sel.jd) + " " + jmArr[sel.jm - 1] + " " + fa(sel.jy);
     document.getElementById("selSub").innerHTML = `<span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${fa(sg.gd)} ${GM_EN[sg.gm - 1]} ${fa(sg.gy)}</span>`;
