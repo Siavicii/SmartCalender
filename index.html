@@ -859,9 +859,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <div class="modal" id="setModal">
   <div class="sheet">
     <div class="s-head"><b id="setModalTit">⚙️ تنظیمات، زبان و طراحی</b><button class="ibtn" onclick="closeModals()">✕</button></div>
-    <div style="display:flex;justify-content:flex-end">
-      <button type="button" class="ibtn" id="quickLangBtn" onclick="cycleAppLanguage()" style="width:100%;justify-content:center;font-weight:800;color:var(--pri)">🌐 FA</button>
-    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div>
         <b style="font-size:11.5px;color:var(--sec)">زبان برنامه (Language)</b>
@@ -978,7 +976,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v24";
+  const VER = "v25";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1718,100 +1716,54 @@ function dismissInstallBanner() {
   if (banner) banner.classList.remove("show");
 }
 
-// 1. Full-bleed 512x512 App & Notification Icon (Respects iOS full-bleed & Android Adaptive/Maskable 80% safe zone)
+// 1. Minimalist Dynamic 512x512 App Icon (Android & iOS) showing Weekday (روز) & Day Date (تاریخ روز)
 function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
   const S = 512;
   const c = document.createElement("canvas");
   c.width = S; c.height = S;
   const ctx = c.getContext("2d");
 
-  // 1. Deep Futuristic Full-Bleed Cosmic Background
-  const bgGrad = ctx.createLinearGradient(0, 0, S, S);
-  if (isDark) {
-    bgGrad.addColorStop(0, "#090D1A");
-    bgGrad.addColorStop(0.5, "#17153B");
-    bgGrad.addColorStop(1, "#0F172A");
-  } else {
-    bgGrad.addColorStop(0, accentHex || "#1B6EF3");
-    bgGrad.addColorStop(0.55, "#4338CA");
-    bgGrad.addColorStop(1, "#1E1B4B");
-  }
-  ctx.fillStyle = bgGrad;
+  const bgColor = isDark ? "#0F131A" : "#FFFFFF";
+  const surfaceColor = isDark ? "#171C26" : "#F8FAFC";
+  const borderColor = isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.10)";
+  const primaryText = isDark ? "#F8FAFC" : "#0F172A";
+  const mutedText = isDark ? "#94A3B8" : "#64748B";
+  const accent = accentHex || "#1B6EF3";
+
+  // Full-bleed minimalist background (works cleanly on both iOS home screen and Android maskable icons)
+  ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // 2. Ambient AI Glow Orbs (Top-Right & Bottom-Left)
-  const orb1 = ctx.createRadialGradient(410, 100, 10, 410, 100, 210);
-  orb1.addColorStop(0, "rgba(56, 189, 248, 0.48)");
-  orb1.addColorStop(1, "rgba(56, 189, 248, 0)");
-  ctx.fillStyle = orb1;
-  ctx.beginPath(); ctx.arc(410, 100, 210, 0, Math.PI * 2); ctx.fill();
-
-  const orb2 = ctx.createRadialGradient(110, 410, 10, 110, 410, 200);
-  orb2.addColorStop(0, "rgba(236, 72, 153, 0.38)");
-  orb2.addColorStop(1, "rgba(236, 72, 153, 0)");
-  ctx.fillStyle = orb2;
-  ctx.beginPath(); ctx.arc(110, 410, 200, 0, Math.PI * 2); ctx.fill();
-
-  // 3. Smart Orbital AI Ring inside Maskable Safe Zone
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
-  ctx.lineWidth = 2.5;
+  // Subtle minimalist frame in safe zone
+  ctx.fillStyle = surfaceColor;
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(S / 2, S / 2, 198, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
-
-  // 4. Frosted 3D Glass Squircle Card (Safe Zone: 76..436)
-  const cardGrad = ctx.createLinearGradient(76, 76, 436, 436);
-  cardGrad.addColorStop(0, "rgba(255, 255, 255, 0.22)");
-  cardGrad.addColorStop(1, "rgba(255, 255, 255, 0.07)");
-  ctx.fillStyle = cardGrad;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.42)";
-  ctx.lineWidth = 4.5;
-  ctx.beginPath();
-  ctx.roundRect(76, 76, 360, 360, 84);
+  ctx.roundRect(68, 68, 376, 376, 84);
   ctx.fill();
   ctx.stroke();
 
-  // 5. Top Floating Neon Pill Header for Month Name
-  const pillGrad = ctx.createLinearGradient(104, 96, 408, 184);
-  pillGrad.addColorStop(0, "#38BDF8");
-  pillGrad.addColorStop(0.5, accentHex || "#6366F1");
-  pillGrad.addColorStop(1, "#EC4899");
-  ctx.fillStyle = pillGrad;
+  // Top minimalist accent rule + Weekday name (روز)
+  ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(106, 98, 300, 82, 41);
+  ctx.roundRect(216, 102, 80, 8, 4);
   ctx.fill();
 
-  // AI Sparkle Star on Top-Left of Pill
-  ctx.fillStyle = "#FEF08A";
-  ctx.font = "bold 30px 'Inter', sans-serif";
+  ctx.fillStyle = mutedText;
+  ctx.font = "700 38px 'Vazirmatn', 'Inter', system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("✦", 142, 139);
-  ctx.fillText("✦", 370, 139);
+  ctx.fillText(weekDayStr || monthName, S / 2, 152);
 
-  // Month Name inside Neon Pill
-  ctx.fillStyle = "#FFFFFF";
-  ctx.font = "900 44px 'Vazirmatn', system-ui, sans-serif";
-  ctx.shadowColor = "rgba(0,0,0,0.28)";
-  ctx.shadowBlur = 8;
-  ctx.fillText(monthName, S / 2, 141);
+  // Clean, prominent Day Date number (تاریخ روز)
+  ctx.fillStyle = primaryText;
+  ctx.font = "800 172px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(dayNumStr, S / 2, 286);
 
-  // 6. Large Glowing Day Number in Center
-  ctx.fillStyle = "#FFFFFF";
-  ctx.shadowColor = "rgba(0,0,0,0.35)";
-  ctx.shadowBlur = 18;
-  ctx.shadowOffsetY = 6;
-  ctx.font = "900 168px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(dayNumStr, S / 2, 292);
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetY = 0;
-
-  // 7. Bottom Smart Weekday & AI Indicator Bar
-  ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
-  ctx.font = "700 28px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(weekDayStr ? `• ${weekDayStr} •` : "• SMART CAL AI •", S / 2, 396);
+  // Minimalist month caption at bottom of card
+  ctx.fillStyle = accent;
+  ctx.font = "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(monthName, S / 2, 396);
 
   return c.toDataURL("image/png");
 }
@@ -1865,42 +1817,31 @@ function generateNotifDrawerIconDataUrl(dayNumStr, monthName, accentHex, isDark,
   c.width = S; c.height = S;
   const ctx = c.getContext("2d");
 
-  const bgGrad = ctx.createLinearGradient(0, 0, S, S);
-  if (isDark) {
-    bgGrad.addColorStop(0, "#1E293B");
-    bgGrad.addColorStop(1, "#0F172A");
-  } else {
-    bgGrad.addColorStop(0, accentHex || "#1B6EF3");
-    bgGrad.addColorStop(1, "#312E81");
-  }
-  ctx.fillStyle = bgGrad;
+  ctx.fillStyle = isDark ? "#0F131A" : "#FFFFFF";
   ctx.beginPath();
-  ctx.roundRect(0, 0, S, S, 56);
+  ctx.roundRect(0, 0, S, S, 52);
   ctx.fill();
 
-  // Top Month Header Bar
-  ctx.fillStyle = isDark ? (accentHex || "#38BDF8") : "rgba(255,255,255,0.92)";
+  ctx.strokeStyle = isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.10)";
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(18, 18, S - 36, 58, 26);
-  ctx.fill();
+  ctx.roundRect(14, 14, S - 28, S - 28, 42);
+  ctx.stroke();
 
-  ctx.fillStyle = isDark ? "#0F172A" : "#1E1B4B";
-  ctx.font = "900 32px 'Vazirmatn', system-ui, sans-serif";
+  ctx.fillStyle = isDark ? "#94A3B8" : "#64748B";
+  ctx.font = "700 24px 'Vazirmatn', system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(monthName, S / 2, 48);
+  ctx.fillText(weekDayStr || monthName, S / 2, 54);
 
-  // Huge Day Number in Center
-  ctx.fillStyle = "#FFFFFF";
-  ctx.font = "900 112px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(dayNumStr, S / 2, 146);
+  ctx.fillStyle = isDark ? "#F8FAFC" : "#0F172A";
+  ctx.font = "800 96px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.fillText(dayNumStr, S / 2, 134);
 
-  // Bottom Weekday Label
-  if (weekDayStr) {
-    ctx.fillStyle = "rgba(255,255,255,0.88)";
-    ctx.font = "700 24px 'Vazirmatn', system-ui, sans-serif";
-    ctx.fillText(weekDayStr, S / 2, 222);
-  }
+  ctx.fillStyle = accentHex || "#1B6EF3";
+  ctx.font = "700 22px 'Vazirmatn', system-ui, sans-serif";
+  ctx.fillText(monthName, S / 2, 206);
+
   return c.toDataURL("image/png");
 }
 
@@ -2001,8 +1942,14 @@ async function updatePersistentStatusDate(forcePost = false) {
   document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
   const fav = document.getElementById("dynFavicon");
   if (fav) fav.href = appIconDataUrl;
-  const appIco = document.getElementById("dynAppleIcon");
-  if (appIco) appIco.href = appIconDataUrl;
+  let appIco = document.getElementById("dynAppleIcon");
+  if (!appIco) {
+    appIco = document.createElement("link");
+    appIco.id = "dynAppleIcon";
+    appIco.rel = "apple-touch-icon";
+    document.head.appendChild(appIco);
+  }
+  appIco.href = appIconDataUrl;
 
   // 2. Update PWA App Badge
   if ("setAppBadge" in navigator) {
