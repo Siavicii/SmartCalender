@@ -4147,7 +4147,7 @@ function render(){
       document.getElementById("jTit").textContent = isKurdishCal
         ? tr("ساڵی " + fa(vy) + "ی کوردی", "ساڵی " + fa(vy) + "ی کوردی (کۆچی هەتاوی)", "Kurdish Year " + vy)
         : tr("سال " + fa(vy) + " هجری شمسی", "ساڵی " + fa(vy) + "ی کۆچی هەتاوی", "Solar Hijri Year " + vy);
-      document.getElementById("gTit").textContent = isKurdishCal
+      document.getElementById("gTit").innerHTML = isKurdishCal
         ? `${fa(jyActive)} ${tr("شمسی","هەتاوی","Solar")} • ${fa(gy1)} - ${fa(gy2)}`
         : `<span dir="ltr">${toLatDigits(gy1)} - ${toLatDigits(gy2)}</span> ${tr("میلادی","زایینی","Gregorian")}`;
       renderYearGrid();
@@ -5034,7 +5034,65 @@ function renderFal(skipPostcard = false){
   `;
 }
 
-initPwaInstallAndSw();applyCfg();render();checkBirthdaySurprise(false);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
+initPwaInstallAndSw();
+// Automatic GitHub Pages / Web Update Checker (detects new commits/updates without manual cache clear)
+(function(){
+  if (!("serviceWorker" in navigator)) return;
+  let reloading = false;
+  const triggerSeamlessReload = () => {
+    if (reloading) return;
+    reloading = true;
+    try { sessionStorage.setItem("smartcal_just_updated", "1"); } catch(e){}
+    window.location.reload();
+  };
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    triggerSeamlessReload();
+  });
+
+  navigator.serviceWorker.addEventListener("message", e => {
+    if (e.data && e.data.type === "SW_UPDATED") {
+      triggerSeamlessReload();
+    }
+  });
+
+  let knownStamp = localStorage.getItem("smartcal_remote_stamp") || "";
+  const checkRemoteUpdate = async () => {
+    if (location.protocol !== "https:" && location.protocol !== "http:") return;
+    try {
+      const resp = await fetch("./index.html?_chk=" + Date.now(), { cache: "no-store" });
+      if (!resp || !resp.ok) return;
+      const etag = resp.headers.get("etag") || "";
+      const lastMod = resp.headers.get("last-modified") || "";
+      const text = await resp.text();
+      // Compute lightweight content fingerprint of remote index.html
+      let h = 0;
+      for (let i = 0; i < text.length; i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0;
+      const stamp = `${etag}|${lastMod}|${text.length}:${h}`;
+      if (knownStamp && stamp !== knownStamp) {
+        knownStamp = stamp;
+        localStorage.setItem("smartcal_remote_stamp", stamp);
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.update()));
+        triggerSeamlessReload();
+      } else {
+        knownStamp = stamp;
+        localStorage.setItem("smartcal_remote_stamp", stamp);
+      }
+    } catch(e){}
+  };
+
+  setTimeout(checkRemoteUpdate, 1500);
+  setInterval(checkRemoteUpdate, 120000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") checkRemoteUpdate();
+  });
+})();
+applyCfg();render();checkBirthdaySurprise(false);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
 setInterval(fetchWeather,1800000);
 setInterval(()=>fetchMarket(false),300000);
 </script>
