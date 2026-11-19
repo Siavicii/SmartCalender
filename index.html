@@ -4155,7 +4155,7 @@ function render(){
       const calTag = isKurdishCal ? tr(" [کوردی]", " [کوردی]", " [Kurdish]") : tr(" [شمسی]", " [هەتاوی]", " [Jalali]");
       const showCalTag = (isKurdishCal && cfg.lang !== "ku") || (!isKurdishCal && cfg.lang !== "fa");
       document.getElementById("jTit").textContent = mNamesDisp[vm - 1] + " " + fa(vy) + (showCalTag ? calTag : "");
-      document.getElementById("gTit").textContent = isKurdishCal
+      document.getElementById("gTit").innerHTML = isKurdishCal
         ? (`${getJM()[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)}`)
         : (`<span dir="ltr">${GM_EN[g1.gm - 1]} (${toLatDigits(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${toLatDigits(g2.gm)}) ${toLatDigits(g2.gy)}</span> • ${getKM()[vm - 1]} ${fa(jyActive + 1321)}`);
     }
