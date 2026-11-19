@@ -532,9 +532,12 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 
     <!-- Selected Day + Personal Notes -->
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
         <b id="selTit" style="font-size:14px"></b>
-        <button type="button" class="copy-date-btn" id="copySelectedDateBtn" onclick="copySelectedDateFormats()">📋 کپی تاریخ</button>
+        <div style="display:flex;gap:4px">
+          <button type="button" class="copy-date-btn" id="copyJalaliDateBtn" onclick="copySingleDate('j')">📋 شمسی</button>
+          <button type="button" class="copy-date-btn" id="copyGregDateBtn" onclick="copySingleDate('g')">📋 میلادی</button>
+        </div>
       </div>
       <div class="sub-dates" id="selSub"></div>
       <div id="sunTimesBox" style="margin-top:9px;padding:8px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:8px"></div>
@@ -647,6 +650,8 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
           <button class="fchip" onclick="setNoteFilter('alarm',this)">⏰ دارای هشدار</button>
           <button class="fchip" onclick="setNoteFilter('active',this)">⏳ در جریان</button>
           <button class="fchip" onclick="setNoteFilter('done',this)">✅ انجام‌شده</button>
+          <button class="fchip" id="fchipSelDay" onclick="setNoteFilter('selday',this)">📅 روز انتخابی</button>
+          <button class="fchip" id="fchipCurMonth" onclick="setNoteFilter('curmonth',this)">🗓️ این ماه</button>
         </div>
       </div>
 
@@ -979,6 +984,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
         </div>
         <button type="button" class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;height:32px;padding:0 10px;font-size:11px" onclick="activateOrRefreshStatusNotif()">🔄 ارسال / بروزرسانی اعلان</button>
       </div>
+      <div style="font-size:10px;color:var(--sec);line-height:1.6">💡 در برخی مرورگرها یا نسخه‌های موبایل ممکن است اعلان دائمی پس از مدتی توسط سیستم بسته شود؛ با باز کردن برنامه یا زدن دکمه «ارسال / بروزرسانی اعلان» دوباره تازه می‌شود.</div>
     </div>
 
     <!-- Backup & Restore -->
@@ -997,7 +1003,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v25";
+  const VER = "v26";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1124,6 +1130,10 @@ const UI_STYLES=[
   {id:"persian",name:"کلاسیک ایرانی",desc:"گرم، کاغذی و چشم‌نواز",bg:"linear-gradient(135deg,#F5EFE6,#E2D4BE)",rad:"8px"},
   {id:"nordic",name:"نوردیک یخی",desc:"آرام، خنثی و مینیمال",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"6px"}
 ];
+
+const toLatDigits = s => String(s ?? "").replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+const fmtGregDateEn = (gd, gm, gy) => `${toLatDigits(gd)} ${GM_EN[gm - 1]} (${toLatDigits(gm)}) ${toLatDigits(gy)}`;
+
 const fa=n=>{
   const s=String(n);
   if(typeof cfg!=="undefined" && cfg && cfg.lang==="en") return s;
@@ -2022,10 +2032,10 @@ async function updatePersistentStatusDate(forcePost = false) {
   const iEl = document.getElementById("wIcon")?.getAttribute("data-emoji") || "⛅";
   const hasRealTemp = rawTemp && !rawTemp.includes("--");
 
-  const gregMonthWithNum = `${GM_EN[g.gm - 1]} (${fa(g.gm)})`;
+  const gregMonthWithNum = `${GM_EN[g.gm - 1]} (${toLatDigits(g.gm)})`;
   const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
   const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
-  const gregFull = `${fa(g.gd)} ${gregMonthWithNum} ${fa(g.gy)}`;
+  const gregFull = `${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}`;
   const hijriFull = `${fa(h.hd)} ${HM[h.hm - 1]} ${fa(h.hy)}`;
 
   let notifTitle = "";
@@ -2260,7 +2270,9 @@ function applyLanguageUI() {
     tr("🔥 اولویت بالا", "🔥 گرنگی باڵا", "🔥 High Priority"),
     tr("⏰ دارای هشدار", "⏰ ئاگادارکەرەوە", "⏰ With Alarm"),
     tr("⏳ در جریان", "⏳ لە کاردا", "⏳ Active"),
-    tr("✅ انجام‌شده", "✅ ئەنجامدراو", "✅ Completed")
+    tr("✅ انجام‌شده", "✅ ئەنجامدراو", "✅ Completed"),
+    tr("📅 روز انتخابی", "📅 ڕۆژی هەڵبژێردراو", "📅 Selected Day"),
+    tr("🗓️ این ماه", "🗓️ ئەم مانگە", "🗓️ This Month")
   ];
   fChips.forEach((ch, idx) => { if (fLabels[idx]) ch.textContent = fLabels[idx]; });
 
@@ -2317,7 +2329,8 @@ function applyLanguageUI() {
   if (setItems[2]) setItems[2].textContent = tr("نمایش باکس آب‌وهوا", "پیشاندانی بەشی کەشوهەوا", "Show Weather & AQI Card");
   if (setItems[3]) setItems[3].textContent = tr("نمایش تاریخ فرعی در خانه‌های تقویم", "پیشاندانی ڕێکەوتی لاوەکی لە خانەکاندا", "Show secondary dates in calendar cells");
   setTxt("#resetDefaultsBtn", "♻️ بازنشانی تنظیمات پیش‌فرض", "♻️ گەڕاندنەوەی ڕێکخستنی بنەڕەتی", "♻️ Reset to Default Settings");
-  setTxt("#copySelectedDateBtn", "📋 کپی تاریخ", "📋 کۆپی ڕێکەوت", "📋 Copy Date");
+  setTxt("#copyJalaliDateBtn", "📋 شمسی", "📋 هەتاوی", "📋 Jalali");
+  setTxt("#copyGregDateBtn", "📋 میلادی", "📋 زایینی", "📋 Gregorian");
 }
 
 function applyCfg(){
@@ -3586,6 +3599,8 @@ function renderAllNotes(){
     if(currentNoteFilter==="alarm" && !item.tm) return false;
     if(currentNoteFilter==="active" && item.done) return false;
     if(currentNoteFilter==="done" && !item.done) return false;
+    if(currentNoteFilter==="selday" && !(item.y===sel.jy && item.m===sel.jm && item.d===sel.jd)) return false;
+    if(currentNoteFilter==="curmonth" && !(item.y===sel.jy && item.m===sel.jm)) return false;
     return true;
   });
 
@@ -3607,6 +3622,7 @@ function renderAllNotes(){
     const dispYr = cfg.calType === "kurdish" ? (item.y + 1321) : item.y;
     const prioClass = item.prio === "high" ? "prio-high" : (item.prio === "med" ? "prio-med" : "prio-low");
     const prioBadge = item.prio === "high" ? `<span class="cat-pill" style="color:#EF4444;border-color:#EF4444">🔥 ${tr("فوری","خێرا","Urgent")}</span>` : "";
+    const fuBadge = ((item.cat === "کاری" || item.cat === "مالی") && !item.done) ? `<span class="cat-pill" style="color:var(--sec)">📌 ${tr("در حال پیگیری","لە بەدواداچووندا","In Follow-up")}</span>` : "";
     const customBg = item.col ? `style="background:${item.col}"` : "";
     return `
     <div class="ncard ${item.pin?'pinned':''} ${item.done?'done':''} ${prioClass}" ${customBg}>
@@ -3614,7 +3630,7 @@ function renderAllNotes(){
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;cursor:pointer" onclick="jumpToNoteDate(${item.y},${item.m},${item.d})">
           <b style="color:var(--pri);font-size:12px">📅 ${fa(item.d)} ${mArr[item.m-1]} ${fa(dispYr)}</b>
           <span class="cat-pill">${esc(trCat(item.cat||"شخصی"))}</span>
-          ${prioBadge}
+          ${prioBadge}${fuBadge}
           ${item.tm?`<span class="cat-pill" style="color:var(--hol)">⏰ ${fa(item.tm)}</span>`:""}
         </div>
         <div class="ncard-actions">
@@ -3932,19 +3948,20 @@ function resetDefaultSettings() {
 }
 
 
-function copySelectedDateFormats() {
+function copySingleDate(kind = 'j') {
   const g = toG(sel.jy, sel.jm, sel.jd);
   const jStr = `${fa(sel.jy)}/${fa(String(sel.jm).padStart(2,'0'))}/${fa(String(sel.jd).padStart(2,'0'))}`;
-  const gStr = `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`;
-  const out = `${jStr}  |  ${gStr}`;
-  const btn = document.getElementById("copySelectedDateBtn");
+  const gStr = `${toLatDigits(g.gy)}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`;
+  const textToCopy = kind === 'g' ? gStr : jStr;
+  const btnId = kind === 'g' ? "copyGregDateBtn" : "copyJalaliDateBtn";
+  const btn = document.getElementById(btnId);
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(out).catch(() => {});
+    navigator.clipboard.writeText(textToCopy).catch(() => {});
   }
   if (btn) {
     const oldTxt = btn.textContent;
     btn.textContent = tr("✅ کپی شد", "✅ کۆپی کرا", "✅ Copied");
-    setTimeout(() => { btn.textContent = oldTxt; }, 1600);
+    setTimeout(() => { btn.textContent = oldTxt; }, 1500);
   }
 }
 
@@ -4132,7 +4149,7 @@ function render(){
         : tr("سال " + fa(vy) + " هجری شمسی", "ساڵی " + fa(vy) + "ی کۆچی هەتاوی", "Solar Hijri Year " + vy);
       document.getElementById("gTit").textContent = isKurdishCal
         ? `${fa(jyActive)} ${tr("شمسی","هەتاوی","Solar")} • ${fa(gy1)} - ${fa(gy2)}`
-        : `${fa(gy1)} - ${fa(gy2)} ${tr("میلادی","زایینی","Gregorian")}`;
+        : `<span dir="ltr">${toLatDigits(gy1)} - ${toLatDigits(gy2)}</span> ${tr("میلادی","زایینی","Gregorian")}`;
       renderYearGrid();
     } else {
       const calTag = isKurdishCal ? tr(" [کوردی]", " [کوردی]", " [Kurdish]") : tr(" [شمسی]", " [هەتاوی]", " [Jalali]");
@@ -4140,7 +4157,7 @@ function render(){
       document.getElementById("jTit").textContent = mNamesDisp[vm - 1] + " " + fa(vy) + (showCalTag ? calTag : "");
       document.getElementById("gTit").textContent = isKurdishCal
         ? (`${getJM()[vm - 1]} ${fa(jyActive)} • ${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)}`)
-        : (`${GM_EN[g1.gm - 1]} (${fa(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${fa(g2.gm)}) ${fa(g2.gy)} • ${getKM()[vm - 1]} ${fa(jyActive + 1321)}`);
+        : (`<span dir="ltr">${GM_EN[g1.gm - 1]} (${toLatDigits(g1.gm)}) - ${GM_EN[g2.gm - 1]} (${toLatDigits(g2.gm)}) ${toLatDigits(g2.gy)}</span> • ${getKM()[vm - 1]} ${fa(jyActive + 1321)}`);
     }
 
     for (let i = 0; i < offset; i++) box.innerHTML += "<div></div>";
@@ -4159,7 +4176,7 @@ function render(){
 
       const el = document.createElement("div");
       el.className = "day" + (hol ? " hol" : "") + (isTod ? " tod" : "") + (isSel ? " sel" : "");
-      el.innerHTML = `<span class="jn">${isBday ? "🎂" : fa(d)}</span>${cfg.showG ? `<span class="gn">${fa(g.gd)}</span>` : ""}<div class="dots">${evs.some(e => e[1]) ? '<span class="dot hol-ev"></span>' : (evs.length ? '<span class="dot"></span>' : "")}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
+      el.innerHTML = `<span class="jn">${isBday ? "🎂" : fa(d)}</span>${cfg.showG ? `<span class="gn" dir="ltr">${toLatDigits(g.gd)}</span>` : ""}<div class="dots">${evs.some(e => e[1]) ? '<span class="dot hol-ev"></span>' : (evs.length ? '<span class="dot"></span>' : "")}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
       el.onclick = () => { sel = { jy: jyActive, jm: vm, jd: d }; render(); };
       box.appendChild(el);
     }
@@ -4172,19 +4189,19 @@ function render(){
   const jmArr = getJM(), kmArr = getKM(), hmArr = getHM();
 
   if (cType === "gregorian") {
-    document.getElementById("selTit").innerHTML = `<span dir="ltr">${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span> • ${dayNameStr}`;
+    document.getElementById("selTit").innerHTML = `<span dir="ltr">${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span> • ${dayNameStr}`;
     document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span>`;
   } else if (cType === "hijri") {
     document.getElementById("selTit").textContent = dayNameStr + " " + fa(sh.hd) + " " + hmArr[sh.hm - 1] + " " + fa(sh.hy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span>`;
   } else if (cType === "kurdish") {
     document.getElementById("selTit").textContent = cfg.lang==="en"
       ? `${dayNameStr}, ${sel.jd} ${kmArr[sel.jm - 1]} ${kYearSel}`
       : `${dayNameStr} ${fa(sel.jd)}ی ${kmArr[sel.jm - 1]}ی ${fa(kYearSel)} کوردی`;
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${sg.gd} ${GM_EN[sg.gm - 1]} (${fa(sg.gm)}) ${fa(sg.gy)}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag" dir="ltr">🌍 ${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span>`;
   } else {
     document.getElementById("selTit").textContent = dayNameStr + " " + fa(sel.jd) + " " + jmArr[sel.jm - 1] + " " + fa(sel.jy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${fa(sg.gd)} ${GM_EN[sg.gm - 1]} ${fa(sg.gy)}</span>`;
+    document.getElementById("selSub").innerHTML = `<span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span>`;
   }
 
   renderSunBox(sg.gy, sg.gm, sg.gd);
@@ -4228,7 +4245,7 @@ function initConvInputs(){
     for(let y=2660;y<=2760;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value=sel.jd;mS.value=sel.jm;yS.value=sel.jy+1321;
   }else{
-    GM_EN.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${fa(i+1)} - ${m}</option>`);
+    GM_EN.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${toLatDigits(i+1)} - ${m}</option>`);
     const g=toG(sel.jy,sel.jm,sel.jd);
     for(let y=1960;y<=2060;y++)yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value=g.gd;mS.value=g.gm;yS.value=g.gy;
@@ -4250,8 +4267,8 @@ function runConvert(){
   document.getElementById("convRes").innerHTML=`
     ☀️ ${tr("هجری شمسی:","کۆچی هەتاوی:","Solar Hijri (Jalali):")} <b style="color:var(--pri)">${fa(j.jd)} ${getJM()[j.jm-1]} ${fa(j.jy)}</b><br>
     🏔️ ${tr("تقویم کوردی:","ڕۆژژمێری کوردی:","Kurdish Calendar:")} <b style="color:var(--grn)">${fa(j.jd)} ${getKM()[j.jm-1]} ${fa(ky)}</b><br>
-    🌍 ${tr("میلادی (حروفی):","زایینی:","Gregorian:")} <b dir="ltr" style="display:inline-block">${fa(g.gd)} ${GM_EN[g.gm-1]} ${fa(g.gy)}</b><br>
-    🌍 ${tr("میلادی (عددی):","زایینی (ژمارە):","Gregorian (Numeric):")} <b style="direction:ltr;display:inline-block">${fa(String(g.gd).padStart(2,'0'))}/${fa(String(g.gm).padStart(2,'0'))}/${fa(g.gy)}</b>
+    🌍 ${tr("میلادی (حروفی):","زایینی:","Gregorian:")} <b dir="ltr" style="display:inline-block">${toLatDigits(g.gd)} ${GM_EN[g.gm-1]} (${toLatDigits(g.gm)}) ${toLatDigits(g.gy)}</b><br>
+    🌍 ${tr("میلادی (عددی):","زایینی (ژمارە):","Gregorian (Numeric):")} <b style="direction:ltr;display:inline-block">${String(g.gd).padStart(2,'0')}/${String(g.gm).padStart(2,'0')}/${toLatDigits(g.gy)}</b>
   `;
   sel={...j};
   syncViewToCalType(cfg.calType||"jalali");
@@ -4268,6 +4285,7 @@ function exportBackup(){
 }
 function importBackup(){
   try{
+    localStorage.setItem("cal_safety_snapshot_v26", JSON.stringify({cfg,notes,birthCfg,ts:Date.now()}));
     const obj=JSON.parse(document.getElementById("backupText").value.trim());
     if(obj.cfg){cfg=obj.cfg;localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));}
     if(obj.notes){notes=obj.notes;localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
