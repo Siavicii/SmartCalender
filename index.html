@@ -420,9 +420,91 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
   font-display: swap;
 }
 
+
+/* Sleek Minimalist Splash Screen (Seamless Edge-to-Edge, No Boxy Square) */
+#smartSplash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--status-bg, var(--bg));
+  color: var(--txt);
+  transition: opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.36s ease;
+  pointer-events: none;
+  padding: env(safe-area-inset-top, 0px) 24px env(safe-area-inset-bottom, 0px);
+}
+#smartSplash.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+.splash-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.splash-day-num {
+  font-family: 'Plus Jakarta Sans', 'Vazirmatn', 'Inter', sans-serif;
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: var(--pri);
+}
+.splash-sub-row {
+  font-family: 'Vazirmatn', 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sec);
+  letter-spacing: 0.2px;
+}
+.splash-title {
+  font-family: 'Vazirmatn', 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt);
+  margin-top: 4px;
+}
+.splash-bar {
+  width: 72px;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--brd);
+  overflow: hidden;
+  position: relative;
+  margin-top: 6px;
+}
+.splash-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  border-radius: 99px;
+  background: var(--pri);
+  animation: splashSlide 1.1s infinite ease-in-out;
+}
+@keyframes splashSlide {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(240%); }
+}
+
 </style>
 </head>
 <body>
+
+<div id="smartSplash" aria-hidden="true">
+  <div class="splash-mark">
+    <div class="splash-day-num" id="splashDayNum"></div>
+    <div class="splash-sub-row" id="splashMetaRow"></div>
+  </div>
+  <div class="splash-title" id="splashAppTitle">Smart Cal</div>
+  <div class="splash-bar"></div>
+</div>
+
 <div class="app">
   <!-- Top Bar (Cleaned: Today pill + Style, Converter & Settings neatly fitted across FA / KU / EN) -->
   <div class="bar">
@@ -1004,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v27";
+  const VER = "v28";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -5200,6 +5282,44 @@ function renderFal(skipPostcard = false){
 }
 
 initPwaInstallAndSw();
+(function initMinimalSplash(){
+  const el = document.getElementById("smartSplash");
+  if (!el) return;
+  const gNow = new Date();
+  const jNow = toJ(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
+  const cType = (typeof cfg !== "undefined" && cfg?.calType) || "jalali";
+  const isKu = (cType === "kurdish" || cfg?.lang === "ku");
+  const isEn = (cfg?.lang === "en");
+
+  const dayEl = document.getElementById("splashDayNum");
+  const metaEl = document.getElementById("splashMetaRow");
+  const titleEl = document.getElementById("splashAppTitle");
+
+  if (dayEl) {
+    dayEl.textContent = cType === "gregorian" ? String(gNow.getDate()) : fa(jNow.jd);
+  }
+  if (metaEl) {
+    const mName = cType === "gregorian" ? GM_EN[gNow.getMonth()] : (isKu ? KM[jNow.jm - 1] : JM[jNow.jm - 1]);
+    const yDisp = cType === "gregorian" ? toLatDigits(gNow.getFullYear()) : (cType === "kurdish" ? fa(jNow.jy + 1321) : fa(jNow.jy));
+    metaEl.textContent = `${mName} ${yDisp}`;
+  }
+  if (titleEl) {
+    titleEl.textContent = isEn ? "Smart Calendar" : (isKu ? "ڕۆژژمێری زیرەک • Smart Cal" : "تقویم هوشمند • Smart Cal");
+  }
+
+  const dismissSplash = () => {
+    el.classList.add("hide");
+    setTimeout(() => { if (el && el.parentNode) el.remove(); }, 450);
+  };
+
+  if (document.readyState === "complete") {
+    setTimeout(dismissSplash, 380);
+  } else {
+    window.addEventListener("load", () => setTimeout(dismissSplash, 380), { once: true });
+    setTimeout(dismissSplash, 1400);
+  }
+})();
+
 // Automatic GitHub Pages / Web Update Checker (detects new commits/updates without manual cache clear)
 (function(){
   if (!("serviceWorker" in navigator)) return;
@@ -5257,7 +5377,71 @@ initPwaInstallAndSw();
     if (document.visibilityState === "visible") checkRemoteUpdate();
   });
 })();
-applyCfg();render();checkBirthdaySurprise(false);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
+
+// ====== رصد لحظه‌ای تغییر روز در نیمه‌شب (۰۰:۰۰) و همگام‌سازی خودکار تقویم، آیکون و اعلان ======
+let lastDaySignature = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+
+function syncTodayReference(forceRenderAndIcon = false) {
+  const dCur = new Date();
+  const sig = `${dCur.getFullYear()}-${dCur.getMonth() + 1}-${dCur.getDate()}`;
+  const prevTod = { ...tod };
+  const nextTod = toJ(dCur.getFullYear(), dCur.getMonth() + 1, dCur.getDate());
+
+  const dayChanged = (sig !== lastDaySignature) ||
+    (nextTod.jy !== prevTod.jy || nextTod.jm !== prevTod.jm || nextTod.jd !== prevTod.jd);
+
+  tod.jy = nextTod.jy;
+  tod.jm = nextTod.jm;
+  tod.jd = nextTod.jd;
+
+  if (dayChanged) {
+    lastDaySignature = sig;
+    // اگر کاربر روی روز قبل ایستاده بود، انتخاب را به امروز منتقل کن
+    if (sel.jy === prevTod.jy && sel.jm === prevTod.jm && sel.jd === prevTod.jd) {
+      sel = { ...nextTod };
+    }
+    // اگر نمای تقویم روی ماه/سالِ روز قبل بود، به امروز منتقل کن
+    const ct = (typeof cfg !== "undefined" && cfg?.calType) || "jalali";
+    const gPrev = toG(prevTod.jy, prevTod.jm, prevTod.jd);
+    if (ct === "gregorian") {
+      if (vy === gPrev.gy && vm === gPrev.gm) { vy = dCur.getFullYear(); vm = dCur.getMonth() + 1; }
+    } else if (ct === "kurdish") {
+      if (vy === (prevTod.jy + 1321) && vm === prevTod.jm) { vy = nextTod.jy + 1321; vm = nextTod.jm; }
+    } else {
+      if (vy === prevTod.jy && vm === prevTod.jm) { vy = nextTod.jy; vm = nextTod.jm; }
+    }
+    lastNotifSignature = "";
+    applyCfg();
+    render();
+    updatePersistentStatusDate(true);
+    checkBirthdaySurprise(false);
+    return true;
+  }
+
+  if (forceRenderAndIcon) {
+    render();
+    updatePersistentStatusDate(false);
+  }
+  return false;
+}
+
+setInterval(() => {
+  syncTodayReference(false);
+}, 15000);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    syncTodayReference(true);
+  }
+});
+window.addEventListener("focus", () => {
+  syncTodayReference(true);
+});
+window.addEventListener("pageshow", () => {
+  syncTodayReference(true);
+});
+
+applyCfg();render();checkBirthdaySurprise(false);syncTodayReference(true);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
 setInterval(fetchWeather,1800000);
 setInterval(()=>fetchMarket(false),300000);
 </script>
