@@ -541,6 +541,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
       </div>
       <div class="sub-dates" id="selSub"></div>
       <div id="sunTimesBox" style="margin-top:9px;padding:8px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:8px"></div>
+      <div id="yearTahvilBox" style="margin-top:8px;padding:9px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd)"></div>
       <div id="evBox"></div>
       <div id="upcomingAgendaBox" class="agenda-strip"></div>
       <div class="note-box">
@@ -1003,7 +1004,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v26";
+  const VER = "v27";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1757,45 +1758,50 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
 
   const bgColor = isDark ? "#0F131A" : "#FFFFFF";
   const surfaceColor = isDark ? "#171C26" : "#F8FAFC";
-  const borderColor = isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.10)";
+  const borderColor = isDark ? "rgba(255,255,255,0.14)" : "rgba(15,23,42,0.10)";
   const primaryText = isDark ? "#F8FAFC" : "#0F172A";
   const mutedText = isDark ? "#94A3B8" : "#64748B";
   const accent = accentHex || "#1B6EF3";
 
-  // Full-bleed minimalist background (works cleanly on both iOS home screen and Android maskable icons)
+  // Full-bleed background so iOS home screen squircle clips cleanly without white corners
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Subtle minimalist frame in safe zone
+  // Inner card frame centered inside safe zone
   ctx.fillStyle = surfaceColor;
   ctx.strokeStyle = borderColor;
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.roundRect(68, 68, 376, 376, 84);
+  ctx.roundRect(64, 64, 384, 384, 86);
   ctx.fill();
   ctx.stroke();
 
-  // Top minimalist accent rule + Weekday name (روز)
+  // Top accent bar centered at x = S / 2
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(216, 102, 80, 8, 4);
+  ctx.roundRect(S / 2 - 42, 96, 84, 8, 4);
   ctx.fill();
 
-  ctx.fillStyle = mutedText;
-  ctx.font = "700 38px 'Vazirmatn', 'Inter', system-ui, sans-serif";
+  ctx.direction = "ltr";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(weekDayStr || monthName, S / 2, 152);
 
-  // Clean, prominent Day Date number (تاریخ روز)
+  // Weekday label centered at y = 148
+  ctx.fillStyle = mutedText;
+  ctx.font = "700 34px 'Inter', 'Vazirmatn', system-ui, sans-serif";
+  ctx.fillText(String(weekDayStr || monthName).trim(), S / 2, 148);
+
+  // Day number centered in middle of icon (y = 276) with font-size scaled cleanly for 1 or 2 digits
+  const dayStrClean = String(dayNumStr).trim();
+  const numFontSize = dayStrClean.length >= 2 ? 148 : 168;
   ctx.fillStyle = primaryText;
-  ctx.font = "800 172px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(dayNumStr, S / 2, 286);
+  ctx.font = `800 ${numFontSize}px 'Inter', 'Vazirmatn', system-ui, sans-serif`;
+  ctx.fillText(dayStrClean, S / 2, 276);
 
-  // Minimalist month caption at bottom of card
+  // Month label centered near bottom of card (y = 396)
   ctx.fillStyle = accent;
-  ctx.font = "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(monthName, S / 2, 396);
+  ctx.font = "700 30px 'Inter', 'Vazirmatn', system-ui, sans-serif";
+  ctx.fillText(String(monthName).trim(), S / 2, 396);
 
   return c.toDataURL("image/png");
 }
@@ -3868,6 +3874,128 @@ function calcPrayerTimes(gy, gm, gd, lat, lon) {
   return { fajr: fmtH(fajr), sunrise: fmtH(sunrise), dhuhr: fmtH(dhuhr), sunset: fmtH(sunset), maghrib: fmtH(maghrib) };
 }
 
+
+// ====== لحظه تحویل سال (اعتدال بهاری دقیق نجومی) و حیوان سال (۱۲ حیوان تقویم شرق آسیا و ایران) ======
+const YEAR_ANIMALS_12 = [
+  { fa: "موش (موش)", ku: "مشک", en: "Rat", ico: "🐭" },
+  { fa: "گاو (بقر)", ku: "گا", en: "Ox", ico: "🐮" },
+  { fa: "ببر (پلنگ)", ku: "پڵنگ", en: "Tiger", ico: "🐯" },
+  { fa: "خرگوش", ku: "کەروێشک", en: "Rabbit", ico: "🐰" },
+  { fa: "نهنگ (اژدها)", ku: "نەهەنگ", en: "Dragon", ico: "🐲" },
+  { fa: "مار", ku: "مار", en: "Snake", ico: "🐍" },
+  { fa: "اسب", ku: "ئەسپ", en: "Horse", ico: "🐴" },
+  { fa: "گوسفند (بز)", ku: "مەڕ", en: "Goat", ico: "🐐" },
+  { fa: "میمون (حمدونه)", ku: "مەیموون", en: "Monkey", ico: "🐵" },
+  { fa: "مرغ (خروس)", ku: "کەڵەشێر", en: "Rooster", ico: "🐔" },
+  { fa: "سگ", ku: "سەگ", en: "Dog", ico: "🐶" },
+  { fa: "خوک", ku: "بەراز", en: "Pig", ico: "🐷" }
+];
+
+// Official Iranian Calendar Reference Table + Meeus Astronomical Equinox Fallback (Iran Standard Time UTC+03:30)
+const OFFICIAL_TAHVIL_IRST = {
+  1400: { jm: 12, jd: 30, jyRef: 1399, h: 13, m: 7, s: 28 },
+  1401: { jm: 12, jd: 29, jyRef: 1400, h: 19, m: 3, s: 26 },
+  1402: { jm: 1,  jd: 1,  jyRef: 1402, h: 0,  m: 54, s: 28 },
+  1403: { jm: 1,  jd: 1,  jyRef: 1403, h: 6,  m: 36, s: 26 },
+  1404: { jm: 12, jd: 30, jyRef: 1403, h: 12, m: 31, s: 30 },
+  1405: { jm: 12, jd: 29, jyRef: 1404, h: 18, m: 15, s: 59 },
+  1406: { jm: 1,  jd: 1,  jyRef: 1406, h: 0,  m: 2,  s: 56 },
+  1407: { jm: 1,  jd: 1,  jyRef: 1407, h: 5,  m: 51, s: 19 },
+  1408: { jm: 1,  jd: 1,  jyRef: 1408, h: 11, m: 38, s: 31 },
+  1409: { jm: 12, jd: 29, jyRef: 1408, h: 17, m: 24, s: 40 },
+  1410: { jm: 12, jd: 29, jyRef: 1409, h: 23, m: 12, s: 12 }
+};
+
+function getYearAnimalInfo(jy) {
+  // 1405 is Year of the Horse (اسب - index 6): (1405 - 1399) % 12 = 6
+  const idx = (((jy - 1399) % 12) + 12) % 12;
+  return YEAR_ANIMALS_12[idx];
+}
+
+function calcVernalEquinoxIRST(jy) {
+  if (OFFICIAL_TAHVIL_IRST[jy]) {
+    const o = OFFICIAL_TAHVIL_IRST[jy];
+    const g = toG(o.jyRef, o.jm, o.jd);
+    return {
+      targetJy: jy,
+      jy: o.jyRef, jm: o.jm, jd: o.jd,
+      gy: g.gy, gm: g.gm, gd: g.gd,
+      h: o.h, m: o.m, s: o.s
+    };
+  }
+  // Jean Meeus Astronomical Algorithm for March Equinox (JDE0)
+  const gy = jy + 621;
+  const Y = (gy - 2000) / 1000;
+  const Y2 = Y * Y, Y3 = Y2 * Y, Y4 = Y3 * Y;
+  let JDE0 = 2451623.80984 + 365242.37404 * Y + 0.05169 * Y2 - 0.00411 * Y3 - 0.00057 * Y4;
+  // Periodic terms (Meeus Table 27.C)
+  const T = (JDE0 - 2451545.0) / 36525;
+  const W = 35999.373 * T - 2.47;
+  const dL = 1 + 0.0334 * Math.cos(W * Math.PI / 180) + 0.0007 * Math.cos(2 * W * Math.PI / 180);
+  const S = 485 * Math.cos((324.96 + 1934.136 * T) * Math.PI / 180)
+          + 203 * Math.cos((337.23 + 32964.467 * T) * Math.PI / 180)
+          + 199 * Math.cos((342.08 + 20.186 * T) * Math.PI / 180)
+          + 182 * Math.cos((27.85 + 445267.112 * T) * Math.PI / 180);
+  JDE0 += (0.00001 * S) / dL;
+  // Convert TT to UT (~69s deltaT) then to IRST (UTC + 3.5h)
+  const unixMs = (JDE0 - 2440587.5) * 86400000 - 69000 + (3.5 * 3600000);
+  const dt = new Date(unixMs);
+  const uGy = dt.getUTCFullYear(), uGm = dt.getUTCMonth() + 1, uGd = dt.getUTCDate();
+  const jEquiv = toJ(uGy, uGm, uGd);
+  return {
+    targetJy: jy,
+    jy: jEquiv.jy, jm: jEquiv.jm, jd: jEquiv.jd,
+    gy: uGy, gm: uGm, gd: uGd,
+    h: dt.getUTCHours(), m: dt.getUTCMinutes(), s: dt.getUTCSeconds()
+  };
+}
+
+function renderYearTahvilCard(activeJy) {
+  const box = document.getElementById("yearTahvilBox");
+  if (!box) return;
+  const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
+  const isEn = (cfg.lang === "en");
+  const animal = getYearAnimalInfo(activeJy);
+  const eq = calcVernalEquinoxIRST(activeJy);
+  const animName = isEn ? animal.en : (isKu ? animal.ku : animal.fa);
+  const dispYear = cfg.calType === "kurdish" ? (activeJy + 1321) : activeJy;
+  const eqMonthName = isKu ? getKM()[eq.jm - 1] : getJM()[eq.jm - 1];
+  const eqJyDisp = cfg.calType === "kurdish" ? (eq.jy + 1321) : eq.jy;
+  const wdName = getWD_SAT()[wDay(eq.jy, eq.jm, eq.jd)];
+
+  const hh = String(eq.h).padStart(2, "0");
+  const mm = String(eq.m).padStart(2, "0");
+  const ss = String(eq.s).padStart(2, "0");
+  const timeFormatted = isEn ? `${hh}:${mm}:${ss}` : `${fa(hh)}:${fa(mm)}:${fa(ss)}`;
+  const gregStr = `${toLatDigits(eq.gd)} ${GM_EN[eq.gm - 1]} (${toLatDigits(eq.gm)}) ${toLatDigits(eq.gy)}`;
+  const leapStatus = isLeap(activeJy)
+    ? tr("کبیسه (۳۶۶ روز)", "ساڵی پڕ (٣٦٦ ڕۆژ)", "Leap Year (366 days)")
+    : tr("عادی (۳۶۵ روز)", "ساڵی ئاسایی (٣٦٥ ڕۆژ)", "Common Year (365 days)");
+
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:7px">
+        <span style="font-size:22px;line-height:1">${animal.ico}</span>
+        <div>
+          <div style="font-size:10.5px;color:var(--sec)">${tr("نوع سال", "جۆری ساڵ", "Year Sign")} (${fa(dispYear)})</div>
+          <b style="font-size:13px;color:var(--pri)">${tr("سال", "ساڵی", "Year of the")} ${esc(animName)}</b>
+        </div>
+      </div>
+      <span class="tag" style="font-size:10.5px;font-weight:700">${leapStatus}</span>
+    </div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--brd);display:flex;flex-direction:column;gap:3px;font-size:11.5px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="color:var(--sec)">🌸 ${tr("لحظه تحویل سال", "کاتی گۆڕینی ساڵ", "Vernal Equinox")} ${fa(dispYear)}:</span>
+        <b style="color:var(--grn);direction:ltr;display:inline-block">⏰ ${timeFormatted}</b>
+      </div>
+      <div style="font-size:11px;color:var(--txt);display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+        <span>📅 ${wdName} ${fa(eq.jd)} ${eqMonthName} ${fa(eqJyDisp)}</span>
+        <span dir="ltr" style="color:var(--sec);font-weight:700">${gregStr}</span>
+      </div>
+    </div>
+  `;
+}
+
 function renderSunBox(gy, gm, gd) {
   const box = document.getElementById("sunTimesBox");
   if (!box) return;
@@ -4205,6 +4333,7 @@ function render(){
   }
 
   renderSunBox(sg.gy, sg.gm, sg.gd);
+  renderYearTahvilCard(sel.jy);
   renderUpcomingAgenda();
   updateOpenNotesBadge();
   let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
