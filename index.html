@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v36";
+  const VER = "v38";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1946,7 +1946,7 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   );
 
   // Prominent Day Number centered in the middle of the icon
-  const dayStrClean = String(dayNumStr ?? "").trim();
+  const dayStrClean = ((typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(dayNumStr ?? "") : String(dayNumStr ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d])).trim();
   const numFontSize = dayStrClean.length >= 2 ? 156 : 176;
   drawExactCenteredText(
     ctx,
@@ -2120,7 +2120,9 @@ async function updatePersistentStatusDate(forcePost = false) {
   const sw = wDay(tod.jy, tod.jm, tod.jd);
   const isKu = (cType === "kurdish" || cfg.lang === "ku");
   const weekDayName = isKu ? WD_SAT_KU[sw] : WD[(sw + 6) % 7];
-  const primaryDayStr = cType === "gregorian" ? String(g.gd) : (cType === "hijri" ? fa(h.hd) : fa(tod.jd));
+  const toFaNum = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+  const fmtIconNum = n => (cfg && cfg.lang === "en") ? String(n) : toFaNum(n);
+  const primaryDayStr = cType === "gregorian" ? fmtIconNum(g.gd) : (cType === "hijri" ? fmtIconNum(h.hd) : fmtIconNum(tod.jd));
   const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (cType === "hijri" ? HM[h.hm - 1] : (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]));
 
   updateStatusDateBtnUI(primaryDayStr);
