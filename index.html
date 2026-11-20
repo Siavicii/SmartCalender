@@ -1115,7 +1115,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v51";
+  const VER = "v53";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -4817,15 +4817,135 @@ const FAL_EMOTION=[
   "اگر منتظر نشانه یا پیامی از فردی هستید، امروز زمان مناسبی برای برداشتن قدم اول با لحنی گرم و صادقانه است.",
   "آرامش درونی و رضایت خاطر امروز شما باعث می‌شود اطرافیان نیز از هم‌صحبتی با شما لذت ببرند."
 ];
-const HAFEZ_VERSES=[
-  {b:"مژده ای دل که مسیحا نفسی می‌آید / که ز انفاس خوشش بوی کسی می‌آید",t:"گشایش و رسیدن خبر خوشی که منتظرش بودید نزدیک است. اگر در کاری مکث یا نگرانی داشته‌اید، به‌زودی نشانه‌های امیدوارکننده و گره‌گشایی را می‌بینید."},
-  {b:"یوسف گمگشته بازآید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور",t:"دلتنگی و شرایط سخت فعلی ماندگار نیست. صبور باشید؛ اتفاقی که از دست‌رفته یا دور به نظر می‌رسد، به شکلی بهتر به مسیرتان برمی‌گردد."},
-  {b:"سحر با باد می‌گفتم حدیث آرزومندی / خطاب آمد که واثق شو به الطاف خداوندی",t:"با امید و آرامش به تلاش خود ادامه دهید. نتیجه کارهایتان بیش از آنچه فکر می‌کنید با همراهی و شانس خوب همراه خواهد شد."},
-  {b:"درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد",t:"در روابط کاری و شخصی، گفت‌وگو و همدلی را جایگزین کدورت کنید. یک رابطه‌ی سالم و صادقانه امروز بیشترین سود را برای شما دارد."},
-  {b:"چو بشنوی سخن اهل دل مگو که خطاست / سخن‌شناس نه‌ای جان من خطا اینجاست",t:"پیش از قضاوت یا رد کردن یک پیشنهاد، به نظر افراد باتجربه و دلسوز گوش دهید؛ نکته مهمی در حرف‌هایشان پنهان است."},
-  {b:"هر که شد محرم دل در حرم یار بماند / وان که این کار ندانست در انکار بماند",t:"صداقت، شفافیت و وفاداری به تعهداتتان امروز اعتبار شما را بالا می‌برد و اعتماد دیگران را جلب می‌کند."},
-  {b:"بیا تا گل برافشانیم و می در ساغر اندازیم / فلک را سقف بشکافیم و طرحی نو دراندازیم",t:"زمان خوبی برای شروع یک برنامه‌ی تازه، تغییر روتین یا برداشتن قدمی جسورانه است؛ از فضای تکراری فاصله بگیرید."}
+const HAFEZ_THEMES = [
+  { key: "goshayesh", label: "گشایش و خبر خوش", intro: "در این فال، نشانه گشایش و خبر خوش دیده می‌شود؛", body: "اگر در کاری مکث یا نگرانی داشته‌اید، به‌زودی گره‌ای باز می‌شود و نتیجه زحمتتان روشن‌تر خواهد شد." },
+  { key: "sabr_omid", label: "امید و صبوری", intro: "پیام این بیت، امیدواری و حفظ آرامش در مسیر پیشِ رو است؛", body: "شرایط فعلی ماندگار نیست و با حوصله و توکل، اتفاقات به نفع شما شکل می‌گیرند." },
+  { key: "mohabbat", label: "مهر، صلح و همدلی", intro: "این بیت شما را به گفت‌وگوی صمیمانه و رفع دلخوری دعوت می‌کند؛", body: "در روابط عاطفی، خانوادگی یا کاری، نرمش و صداقت راه را برای تفاهم بیشتر باز می‌کند." },
+  { key: "tasmim", label: "تصمیم سنجیده و شجاعت", intro: "این فال بر هوشیاری و اقدام به‌موقع تاکید دارد؛", body: "پیش از تصمیم نهایی مشورت کنید، اما وقتی مسیر روشن شد با اعتمادبه‌نفس قدم بردارید." },
+  { key: "kar_mali", label: "برکت و برنامه‌ریزی", intro: "در مسائل کاری و مالی، نظم و دقت کلید پیشرفت شماست؛", body: "از تصمیم‌های عجولانه پرهیز کنید و روی کارهای عملی و قابل اتکا تمرکز نمایید." },
+  { key: "daroun_ravan", label: "آرامش درون و خودشناسی", intro: "این بیت یادآور بازگشت به آرامش درونی و قدر دانستن لحظه‌هاست؛", body: "از حاشیه‌ها و مقایسه خود با دیگران فاصله بگیرید تا ذهن و دلتان سبک‌تر شود." }
 ];
+
+const HAFEZ_FALLBACK_VERSES = [
+  { b: "مژده ای دل که مسیحا نفسی می‌آید / که ز انفاس خوشش بوی کسی می‌آید", th: "goshayesh" },
+  { b: "یوسف گمگشته بازآید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور", th: "sabr_omid" },
+  { b: "سحر با باد می‌گفتم حدیث آرزومندی / خطاب آمد که واثق شو به الطاف خداوندی", th: "sabr_omid" },
+  { b: "درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد", th: "mohabbat" },
+  { b: "چو بشنوی سخن اهل دل مگو که خطاست / سخن‌شناس نه‌ای جان من خطا اینجاست", th: "tasmim" },
+  { b: "هر که شد محرم دل در حرم یار بماند / وان که این کار ندانست در انکار بماند", th: "mohabbat" },
+  { b: "بیا تا گل برافشانیم و می در ساغر اندازیم / فلک را سقف بشکافیم و طرحی نو دراندازیم", th: "tasmim" },
+  { b: "الا یا ایها الساقی ادر کاسا و ناولها / که عشق آسان نمود اول ولی افتاد مشکل‌ها", th: "kar_mali" },
+  { b: "دل می‌رود ز دستم صاحب دلان خدا را / دردا که راز پنهان خواهد شد آشکارا", th: "daroun_ravan" },
+  { b: "صبا به لطف بگو آن غزال رعنا را / که سر به کوه و بیابان تو داده‌ای ما را", th: "sabr_omid" },
+  { b: "روز وصل دوستداران یاد باد / یاد باد آن روزگاران یاد باد", th: "daroun_ravan" },
+  { b: "دوش دیدم که ملایک در میخانه زدند / گل آدم بسرشتند و به پیمانه زدند", th: "goshayesh" },
+  { b: "صلاح کار کجا و من خراب کجا / ببین تفاوت ره از کجاست تا به کجا", th: "tasmim" },
+  { b: "رسید مژده که ایام غم نخواهد ماند / چنان نماند چنین نیز هم نخواهد ماند", th: "sabr_omid" },
+  { b: "عشق و شباب و رندی مجموعه مراد است / چون جمع شد معانی گوی بیان توان زد", th: "daroun_ravan" },
+  { b: "زلف آشفته و خوی کرده و خندان‌لب و مست / پیرهن چاک و غزل‌خوان و صراحی در دست", th: "goshayesh" },
+  { b: "ساقیا آمدن عید مبارک بادت / وان مواعید که کردی مرواد از یادت", th: "goshayesh" },
+  { b: "غلام همت آنم که زیر چرخ کبود / ز هر چه رنگ تعلق پذیرد آزاد است", th: "daroun_ravan" },
+  { b: "دوش وقت سحر از غصه نجاتم دادند / وندر آن ظلمت شب آب حیاتم دادند", th: "goshayesh" },
+  { b: "حافظا علم و ادب ورز که در مجلس شاه / هر که را نیست ادب لایق صحبت نشود", th: "kar_mali" }
+];
+
+let fullDivanGhazals = [];
+let fullDivanLoading = false;
+
+function buildMeaningfulHafezTabir(beyt, themeKey) {
+  const thObj = HAFEZ_THEMES.find(x => x.key === themeKey) || HAFEZ_THEMES[0];
+  let cleanB = String(beyt || "").trim();
+  let extraHint = "";
+  if (/غم|اندوه|گریه|اشک|خزان|شب|ظلمت|درد|رنج/.test(cleanB)) {
+    extraHint = " این بیت نشان می‌دهد سختی و دل‌تنگیش گذراست و پس از آن آرامش از راه می‌رسد.";
+  } else if (/وصل|مژده|بهار|گل|دولت|اقبال|بشارت|سحر/.test(cleanB)) {
+    extraHint = " حال‌وهوای این بیت نویدبخش گشایش، تازگی و دریافت خبر خوش است.";
+  } else if (/عقل|تدبیر|پند|پیمان|عهد|وفا|یار/.test(cleanB)) {
+    extraHint = " پایبندی به قول، صداقت و مشورت خردمندانه در این روز برای شما راهگشاست.";
+  }
+  return `${thObj.intro} ${thObj.body}${extraHint}`;
+}
+
+async function loadFullHafezDivan() {
+  if (fullDivanGhazals.length > 0 || fullDivanLoading) return fullDivanGhazals;
+  const cached = JSON.parse(localStorage.getItem("smartcal_hafez_divan_v1") || "null");
+  if (Array.isArray(cached) && cached.length >= 100) {
+    fullDivanGhazals = cached;
+    return fullDivanGhazals;
+  }
+  fullDivanLoading = true;
+  const sources = [
+    "https://raw.githubusercontent.com/amnghd/hafez/master/hafez.json",
+    "https://cdn.jsdelivr.net/gh/amnghd/hafez@master/hafez.json",
+    "https://raw.githubusercontent.com/mhpo/Hafez/master/hafez.json"
+  ];
+  for (const url of sources) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 6500);
+      const r = await fetch(url, { cache: "force-cache", signal: ctrl.signal });
+      clearTimeout(tid);
+      if (r && r.ok) {
+        const raw = await r.json();
+        const extracted = [];
+        if (Array.isArray(raw)) {
+          raw.forEach((item, idx) => {
+            if (typeof item === "string" && item.trim()) {
+              const lines = item.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+              if (lines.length >= 2) extracted.push({ ghazalNo: idx + 1, b: lines[0] + " / " + lines[1] });
+            } else if (item && typeof item === "object") {
+              const verses = item.verses || item.beyts || item.lines || item.poem;
+              if (Array.isArray(verses) && verses.length >= 2) {
+                const v0 = typeof verses[0] === "string" ? verses[0] : (verses[0]?.text || "");
+                const v1 = typeof verses[1] === "string" ? verses[1] : (verses[1]?.text || "");
+                if (v0 && v1) extracted.push({ ghazalNo: item.number || item.id || (idx + 1), b: `${v0.trim()} / ${v1.trim()}` });
+              } else if (item.beyt || item.verse) {
+                extracted.push({ ghazalNo: idx + 1, b: String(item.beyt || item.verse).trim() });
+              }
+            }
+          });
+        } else if (raw && typeof raw === "object") {
+          Object.keys(raw).forEach((k, idx) => {
+            const val = raw[k];
+            if (Array.isArray(val) && val.length >= 2) {
+              extracted.push({ ghazalNo: idx + 1, b: `${String(val[0]).trim()} / ${String(val[1]).trim()}` });
+            }
+          });
+        }
+        if (extracted.length >= 100) {
+          fullDivanGhazals = extracted;
+          try { localStorage.setItem("smartcal_hafez_divan_v1", JSON.stringify(extracted)); } catch (e) {}
+          break;
+        }
+      }
+    } catch (e) {}
+  }
+  fullDivanLoading = false;
+  return fullDivanGhazals;
+}
+
+function getDailyRandomHafezOmen(extraRoll = 0) {
+  const daySeed = (tod.jy * 372 + tod.jm * 31 + tod.jd) + (birthCfg.y * 13 + birthCfg.m * 7 + birthCfg.d * 3);
+  const combinedSeed = Math.abs(daySeed + extraRoll * 7919);
+  const themeObj = HAFEZ_THEMES[combinedSeed % HAFEZ_THEMES.length];
+
+  if (Array.isArray(fullDivanGhazals) && fullDivanGhazals.length >= 100) {
+    const pick = fullDivanGhazals[combinedSeed % fullDivanGhazals.length];
+    return {
+      beyt: pick.b,
+      tabir: buildMeaningfulHafezTabir(pick.b, themeObj.key),
+      sourceLabel: `غزل شماره ${fa(pick.ghazalNo)} از کل دیوان حافظ`
+    };
+  }
+  const fb = HAFEZ_FALLBACK_VERSES[combinedSeed % HAFEZ_FALLBACK_VERSES.length];
+  return {
+    beyt: fb.b,
+    tabir: buildMeaningfulHafezTabir(fb.b, fb.th || themeObj.key),
+    sourceLabel: "دیوان حافظ (بیت برگزیده امروز)"
+  };
+}
+
+let dailyHafezRollCount = 0;
 const TAROT_CARDS=[
   {name:"خورشید (The Sun)",sym:"☀️",kw:"روشنایی، موفقیت و انرژی مثبت",msg:"امروز وضوح، اعتمادبه‌نفس و نتیجه‌ی روشن در کارها همراه شماست. هر قدمی که با انگیزه بردارید، بازتاب مثبتی دارد."},
   {name:"ستاره (The Star)",sym:"⭐",kw:"امید، الهام و مسیر درست",msg:"پس از یک دوره‌ی شلوغ یا نامطمئن، آرامش و جهت درست به شما نشان داده می‌شود. به ایده‌های الهام‌بخش خود اعتماد کنید."},
@@ -4920,70 +5040,16 @@ let aiFalLoading = false;
 let customAiFalData = null;
 
 async function refreshFalSeed(){
-  if (aiFalLoading) return;
-  falExtraOffset = (falExtraOffset + 1 + Math.floor(Math.random() * 5)) % 97;
-
-  const btn = document.getElementById("falRefreshBtn");
+  falExtraOffset = (falExtraOffset + 1 + Math.floor(Math.random() * 13)) % 997;
+  dailyHafezRollCount += 1;
+  customAiFalData = null;
+  if (!fullDivanGhazals.length) {
+    await loadFullHafezDivan();
+  }
+  renderFal(true);
   const contentBox = document.getElementById("falContent");
-  const { y, m, d, name } = birthCfg;
-  const z = ZODIAC_MONTHS[m - 1];
-  const animal = CHINESE_ANIMALS[((y - 1300) % 12 + 12) % 12];
-
-  // Immediately scroll down to the horoscope cards so the user sees the new omen right away!
   if (contentBox) {
     contentBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  aiFalLoading = true;
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = "⏳ در حال دریافت فال هوش مصنوعی...";
-    btn.style.opacity = "0.8";
-  }
-
-  if (contentBox) {
-    contentBox.innerHTML = `
-      <div style="background:var(--pri-bg);border:1px dashed var(--pri);padding:18px 14px;border-radius:16px;text-align:center;font-size:12.5px;line-height:1.9">
-        <div style="font-size:26px;margin-bottom:6px">🔮✨</div>
-        <b style="color:var(--pri);display:block">هوش مصنوعی در حال تنظیم طالع جدید و تفأل به دیوان حافظ برای شماست...</b>
-        <span style="font-size:11px;color:var(--sec)">بر اساس متولد ${fa(d)} ${JM[m - 1]} ${fa(y)} (${z.sign} • سال ${animal.n})</span>
-      </div>
-    `;
-  }
-
-  try {
-    const prompt = `به عنوان یک طالع‌بین و حافظ‌شناس برجسته ایرانی، برای فردی متولد ${d} ${JM[m - 1]} ${y} (برج فلکی: ${z.sign}، عنصر: ${z.elem}، حیوان سال: ${animal.n}${name ? "، نام: " + name : ""}) در روز ${tod.jd} ${JM[tod.jm - 1]} ${tod.jy} یک طالع روزانه کاملاً جدید، دقیق و الهام‌بخش بنویس. خروجی را دقیقاً و فقط به صورت JSON معتبر بدون هیچ متن اضافی با این کلیدها برگردان:
-{"general":"طالع کلی امروز در ۲ جمله ساده و قابل فهم","work":"وضعیت کار و مالی امروز در ۲ جمله ساده و قابل فهم","emotion":"وضعیت عاطفی و روابط در ۲ جمله ساده و قابل فهم","hafez_beyt":"یک بیت معروف از حافظ","hafez_tabir":"تعبیر ساده و روان این بیت برای امروز بدون کلمات مبهم","tarot_card":"نام یک کارت تاروت","tarot_msg":"پیام کارت تاروت برای امروز در ۲ جمله ساده","astral_msg":"پیام صور فلکی امروز متناسب با برج فرد در ۲ جمله ساده","lucky_num":7,"lucky_color":"نام یک رنگ خوش‌یمن"}`;
-
-    const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 7500);
-    const r = await fetch("https://text.pollinations.ai/" + encodeURIComponent(prompt) + "?seed=" + Math.floor(Math.random() * 100000), {
-      cache: "no-store",
-      signal: ctrl.signal
-    });
-    clearTimeout(tid);
-
-    if (r && r.ok) {
-      const rawTxt = await r.text();
-      const jsonMatch = rawTxt.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        if (parsed.general && parsed.work && parsed.emotion) {
-          customAiFalData = parsed;
-        }
-      }
-    }
-  } catch (e) {
-    customAiFalData = null;
-  } finally {
-    aiFalLoading = false;
-    renderFal(true);
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = "✅ فال جدید دریافت شد";
-      btn.style.opacity = "1";
-      setTimeout(() => { if (btn) btn.innerHTML = "🔮 نیت مجدد هوش مصنوعی"; }, 2000);
-    }
   }
 }
 
@@ -5353,9 +5419,12 @@ function renderFal(skipPostcard = false){
   const gTxt = customAiFalData?.general || FAL_GENERAL[seed % FAL_GENERAL.length];
   const wTxt = customAiFalData?.work || FAL_WORK_MONEY[(seed*3 + d + falExtraOffset) % FAL_WORK_MONEY.length];
   const eTxt = customAiFalData?.emotion || FAL_EMOTION[(seed*5 + m + falExtraOffset*2) % FAL_EMOTION.length];
-  const hafezObj = HAFEZ_VERSES[(seed*7 + y + d + falExtraOffset*3) % HAFEZ_VERSES.length];
-  const hafezBeyt = customAiFalData?.hafez_beyt || hafezObj.b;
-  const hafezTabir = customAiFalData?.hafez_tabir || hafezObj.t;
+  if (!fullDivanGhazals.length && !fullDivanLoading) {
+    loadFullHafezDivan().then(() => { if (fullDivanGhazals.length) renderFal(true); });
+  }
+  const hafezObj = getDailyRandomHafezOmen(dailyHafezRollCount);
+  const hafezBeyt = hafezObj.beyt;
+  const hafezTabir = hafezObj.tabir;
   const luckyNum = customAiFalData?.lucky_num || (((seed + d + m) % 9) + 1);
   const luckyCol = customAiFalData?.lucky_color || LUCKY_COLORS[(seed + m + falExtraOffset) % LUCKY_COLORS.length];
   const energyPct = 74 + ((seed*11) % 25);
@@ -5455,7 +5524,7 @@ function renderFal(skipPostcard = false){
 
     <div style="background:var(--pri-bg);border:1px solid var(--pri);padding:12px;border-radius:15px;line-height:1.9;font-size:12.5px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <b style="color:var(--pri)">📜 ${tr("فال حافظ و تعبیر ساده","فاڵی حافز و ڕوونکردنەوەی سادە","Hafez Omen & Plain Meaning")}</b>
+        <b style="color:var(--pri)">📜 ${tr("فال حافظ • " + hafezObj.sourceLabel,"فاڵی حافز • " + hafezObj.sourceLabel,"Hafez Omen • " + hafezObj.sourceLabel)}</b>
         <button class="ibtn" style="height:24px;padding:0 8px;font-size:10px;border-radius:8px" onclick="refreshFalSeed()">🔄 ${tr("نیت مجدد","نیەتی نوێ","New Omen")}</button>
       </div>
       <div style="font-weight:700;text-align:center;padding:5px 6px;color:var(--txt);background:var(--card);border-radius:10px;border:1px solid var(--brd)">«${esc(beytDisp)}»</div>
