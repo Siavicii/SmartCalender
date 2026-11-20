@@ -1087,7 +1087,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v43";
+  const VER = "v46";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1679,7 +1679,7 @@ function switchTab(t){
   document.getElementById("nav-"+t).classList.add("act");
   if(t==="notes") renderAllNotes();
   if(t==="mkt") fetchMarket(false);
-  if(t==="fal") renderFal();
+  if(t==="fal") { renderFal(); refreshFalSeed(); }
 }
 
 
@@ -2244,28 +2244,36 @@ async function updatePersistentStatusDate(forcePost = false) {
   if (!forcePost && sig === lastNotifSignature) return;
   lastNotifSignature = sig;
 
-  const notifOpts = {
+  const swNotifOpts = {
     body: notifBody,
-    icon: notifTileIconUrl,
-    badge: badgeDataUrl,
+    icon: "./icon-192-v42.png",
+    badge: "./icon-192-v42.png",
     tag: "smartcal-daily-status",
     renotify: false,
     silent: true,
-    requireInteraction: true,
-     ongoing: true
+    requireInteraction: true
+  };
+  const winNotifOpts = {
+    body: notifBody,
+    icon: "./icon-192-v42.png",
+    tag: "smartcal-daily-status",
+    silent: true
   };
 
   try {
-    if ("serviceWorker" in navigator) {
-      const reg = await navigator.serviceWorker.getRegistration();
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
+      const reg = await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise(res => setTimeout(() => res(null), 1500))
+      ]) || await navigator.serviceWorker.getRegistration().catch(() => null);
       if (reg && reg.showNotification) {
-        await reg.showNotification(notifTitle, notifOpts);
+        await reg.showNotification(notifTitle, swNotifOpts);
         return;
       }
     }
-    new Notification(notifTitle, notifOpts);
+    new Notification(notifTitle, winNotifOpts);
   } catch (e) {
-    try { new Notification(notifTitle, notifOpts); } catch (err) {}
+    try { new Notification(notifTitle, winNotifOpts); } catch (err) {}
   }
 }
 
@@ -4130,6 +4138,13 @@ function calcVernalEquinoxIRST(jy) {
 function renderYearTahvilCard(activeJy) {
   const box = document.getElementById("yearTahvilBox");
   if (!box) return;
+  const isFinalDayOfYear = (sel.jm === 12 && sel.jd === mLen(sel.jy, 12));
+  if (!isFinalDayOfYear) {
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+  box.style.display = "block";
   const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
   const isEn = (cfg.lang === "en");
   const animal = getYearAnimalInfo(activeJy);
@@ -4725,17 +4740,31 @@ const FAL_EMOTION=[
   "آرامش درونی و رضایت خاطر امروز شما باعث می‌شود اطرافیان نیز از هم‌صحبتی با شما لذت ببرند."
 ];
 const HAFEZ_VERSES=[
-  {b:"مژده ای دل که مسیحا نفسی می‌آید / که ز انفاس خوشش بوی کسی می‌آید",t:"گشایش و رسیدن مژده‌ای که مدتی است انتظارش را می‌کشید بسیار نزدیک است."},
-  {b:"یوسف گمگشته بازآید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور",t:"نگرانی‌های فعلی گذرا هستند و اوضاع به زودی به بهترین شکل سامان می‌یابد."},
-  {b:"سحر با باد می‌گفتم حدیث آرزومندی / خطاب آمد که واثق شو به الطاف خداوندی",t:"با توکل و امید به مسیر خود ادامه دهید؛ لطف و یاری الهی همراه شماست."},
-  {b:"درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد",t:"همدلی و سازگاری با اطرافیان، بهترین کلید حل مسائل امروز شماست."},
-  {b:"چو بشنوی سخن اهل دل مگو که خطاست / سخن‌شناس نه‌ای جان من خطا اینجاست",t:"به پند و تجربه افراد دلسوز و آگاه توجه کنید تا از اشتباه دور بمانید."},
-  {b:"هر که شد محرم دل در حرم یار بماند / وان که این کار ندانست در انکار بماند",t:"صداقت و یکرنگی شما در کار و زندگی، اعتبار و آرامش پایدار برایتان می‌آورد."},
-  {b:"بیا تا گل برافشانیم و می در ساغر اندازیم / فلک را سقف بشکافیم و طرحی نو دراندازیم",t:"زمان آن رسیده که با روحیه‌ای تازه و پرانرژی، برنامه‌ای نو را آغاز کنید."}
+  {b:"مژده ای دل که مسیحا نفسی می‌آید / که ز انفاس خوشش بوی کسی می‌آید",t:"گشایش و رسیدن خبر خوشی که منتظرش بودید نزدیک است. اگر در کاری مکث یا نگرانی داشته‌اید، به‌زودی نشانه‌های امیدوارکننده و گره‌گشایی را می‌بینید."},
+  {b:"یوسف گمگشته بازآید به کنعان غم مخور / کلبه احزان شود روزی گلستان غم مخور",t:"دلتنگی و شرایط سخت فعلی ماندگار نیست. صبور باشید؛ اتفاقی که از دست‌رفته یا دور به نظر می‌رسد، به شکلی بهتر به مسیرتان برمی‌گردد."},
+  {b:"سحر با باد می‌گفتم حدیث آرزومندی / خطاب آمد که واثق شو به الطاف خداوندی",t:"با امید و آرامش به تلاش خود ادامه دهید. نتیجه کارهایتان بیش از آنچه فکر می‌کنید با همراهی و شانس خوب همراه خواهد شد."},
+  {b:"درخت دوستی بنشان که کام دل به بار آرد / نهال دشمنی برکن که رنج بی‌شمار آرد",t:"در روابط کاری و شخصی، گفت‌وگو و همدلی را جایگزین کدورت کنید. یک رابطه‌ی سالم و صادقانه امروز بیشترین سود را برای شما دارد."},
+  {b:"چو بشنوی سخن اهل دل مگو که خطاست / سخن‌شناس نه‌ای جان من خطا اینجاست",t:"پیش از قضاوت یا رد کردن یک پیشنهاد، به نظر افراد باتجربه و دلسوز گوش دهید؛ نکته مهمی در حرف‌هایشان پنهان است."},
+  {b:"هر که شد محرم دل در حرم یار بماند / وان که این کار ندانست در انکار بماند",t:"صداقت، شفافیت و وفاداری به تعهداتتان امروز اعتبار شما را بالا می‌برد و اعتماد دیگران را جلب می‌کند."},
+  {b:"بیا تا گل برافشانیم و می در ساغر اندازیم / فلک را سقف بشکافیم و طرحی نو دراندازیم",t:"زمان خوبی برای شروع یک برنامه‌ی تازه، تغییر روتین یا برداشتن قدمی جسورانه است؛ از فضای تکراری فاصله بگیرید."}
+];
+const TAROT_CARDS=[
+  {name:"خورشید (The Sun)",sym:"☀️",kw:"روشنایی، موفقیت و انرژی مثبت",msg:"امروز وضوح، اعتمادبه‌نفس و نتیجه‌ی روشن در کارها همراه شماست. هر قدمی که با انگیزه بردارید، بازتاب مثبتی دارد."},
+  {name:"ستاره (The Star)",sym:"⭐",kw:"امید، الهام و مسیر درست",msg:"پس از یک دوره‌ی شلوغ یا نامطمئن، آرامش و جهت درست به شما نشان داده می‌شود. به ایده‌های الهام‌بخش خود اعتماد کنید."},
+  {name:"ارابه (The Chariot)",sym:"🏛️",kw:"پیشرفت، اراده و حرکت رو به جلو",msg:"با تمرکز و کنترل هیجانات می‌توانید مانعی را پشت سر بگذارید و در کار یا برنامه‌های شخصی جلو بیفتید."},
+  {name:"جهان (The World)",sym:"🌍",kw:"تکمیل یک مرحله و رضایت درونی",msg:"یک کار یا مسیر مهم به سرانجام خوشی می‌رسد. فرصتی مناسب برای جمع‌بندی و جشن گرفتن دستاوردهای کوچک است."},
+  {name:"اعتدال (Temperance)",sym:"⚖️",kw:"تعادل، میانه روی و هماهنگی",msg:"امروز بهترین نتیجه از میانه‌روی و پرهیز از افراط به‌دست می‌آید؛ زمان‌بندی آرام و سنجیده انتخاب کنید."},
+  {name:"قدرت (Strength)",sym:"🦁",kw:"صبوری، شکیبایی و توان درونی",msg:"قدرت واقعی امروز در آرامش و بردباری شماست. با نرمی و درایت می‌توانید موقعیت‌های حساس را به خوبی مدیریت کنید."}
+];
+const ASTRAL_READINGS=[
+  {title:"هم‌نشینی ماه و عطارد",msg:"ذهن شما برای تصمیم‌گیری‌های دقیق، مذاکره و مرتب کردن برنامه‌ها آماده است؛ از وضوح فکری امروز استفاده کنید."},
+  {title:"انرژی سیاره‌ی زهره",msg:"توجه به زیبایی، روابط صمیمی و ایجاد فضای دلنشین در محیط کار یا خانه، حال و هوای امروز را متعادل می‌کند."},
+  {title:"پرتوی مشتری و گشایش",msg:"نگاه خوش‌بینانه و آینده‌نگر به شما کمک می‌کند فرصت‌های رشد و یادگیری را ساده‌تر تشخیص دهید."},
+  {title:"نظم کیهانی زحل",msg:"ساختار منظم، پایبندی به قول‌ها و پایان‌دادن به کارهای نیمه‌تمام امروز بیشترین ارزش را دارد."}
 ];
 const LUCKY_COLORS=["آبی فیروزه‌ای","سبز زمردی","طلایی","سفید صدفی","بنفش یاسی","سرمه‌ای","نارنجی ملایم"];
 
-let birthCfg=JSON.parse(localStorage.getItem("cal_birth_v1")||'{"y":1373,"m":4,"d":5,"name":""}');
+let birthCfg=JSON.parse(localStorage.getItem("cal_birth_v1")||'{"y":1380,"m":1,"d":1,"name":""}');
 let falExtraOffset=0;
 let postcardVariant=0;
 
@@ -4846,7 +4875,7 @@ async function refreshFalSeed(){
 
   try {
     const prompt = `به عنوان یک طالع‌بین و حافظ‌شناس برجسته ایرانی، برای فردی متولد ${d} ${JM[m - 1]} ${y} (برج فلکی: ${z.sign}، عنصر: ${z.elem}، حیوان سال: ${animal.n}${name ? "، نام: " + name : ""}) در روز ${tod.jd} ${JM[tod.jm - 1]} ${tod.jy} یک طالع روزانه کاملاً جدید، دقیق و الهام‌بخش بنویس. خروجی را دقیقاً و فقط به صورت JSON معتبر بدون هیچ متن اضافی با این کلیدها برگردان:
-{"general":"طالع کلی امروز در ۲ جمله","work":"وضعیت کار و مالی امروز در ۲ جمله","emotion":"وضعیت عاطفی و روابط در ۲ جمله","hafez_beyt":"یک بیت واقعی و معروف از غزلیات حافظ","hafez_tabir":"تعبیر دقیق این بیت برای نیت امروز در ۲ جمله","lucky_num":7,"lucky_color":"نام یک رنگ خوش‌یمن"}`;
+{"general":"طالع کلی امروز در ۲ جمله ساده و قابل فهم","work":"وضعیت کار و مالی امروز در ۲ جمله ساده و قابل فهم","emotion":"وضعیت عاطفی و روابط در ۲ جمله ساده و قابل فهم","hafez_beyt":"یک بیت معروف از حافظ","hafez_tabir":"تعبیر ساده و روان این بیت برای امروز بدون کلمات مبهم","tarot_card":"نام یک کارت تاروت","tarot_msg":"پیام کارت تاروت برای امروز در ۲ جمله ساده","astral_msg":"پیام صور فلکی امروز متناسب با برج فرد در ۲ جمله ساده","lucky_num":7,"lucky_color":"نام یک رنگ خوش‌یمن"}`;
 
     const ctrl = new AbortController();
     const tid = setTimeout(() => ctrl.abort(), 7500);
@@ -4861,7 +4890,7 @@ async function refreshFalSeed(){
       const jsonMatch = rawTxt.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        if (parsed.general && parsed.work && parsed.emotion && parsed.hafez_beyt) {
+        if (parsed.general && parsed.work && parsed.emotion) {
           customAiFalData = parsed;
         }
       }
@@ -5312,29 +5341,47 @@ function renderFal(skipPostcard = false){
     </div>
   `;
 
+  const tCard = TAROT_CARDS[(seed * 4 + d + falExtraOffset) % TAROT_CARDS.length];
+  const aRead = ASTRAL_READINGS[(seed * 2 + m + falExtraOffset) % ASTRAL_READINGS.length];
+  const tarotTitleDisp = customAiFalData?.tarot_card ? `${tCard.sym} ${esc(customAiFalData.tarot_card)}` : `${tCard.sym} ${esc(tCard.name)}`;
+  const tarotMsgDisp = customAiFalData?.tarot_msg || tCard.msg;
+  const astralMsgDisp = customAiFalData?.astral_msg || `${aRead.msg} (${tr("عنصر برج شما:","توخمی بورجەکەت:","Zodiac element:")} ${elemDisp})`;
+
   document.getElementById("falContent").innerHTML=`
-    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <b style="color:var(--pri)">🌟 ${tr("طالع کلی امروز شما:","بەختی گشتیی ئەمڕۆت:","Daily General Horoscope:")}</b>
+    <div style="background:var(--sub);padding:12px;border-radius:15px;line-height:1.85;font-size:12.5px;border:1px solid var(--brd)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="color:var(--pri)">🌟 ${tr("طالع روزانه شما","طالع و بەختی ئەمڕۆت","Your Daily Horoscope")}</b>
         ${aiBadge}
       </div>
-      <span>${esc(gDisp)}</span>
+      <div style="margin-bottom:8px"><b>${tr("• کلی:","• گشتی:","• Overview:")}</b> ${esc(gDisp)}</div>
+      <div style="margin-bottom:8px"><b>${tr("• کار و مالی:","• کار و دارایی:","• Work & Money:")}</b> ${esc(wDisp)}</div>
+      <div><b>${tr("• روابط و احساسات:","• پەیوەندی و هەست:","• Relationships:")}</b> ${esc(eDisp)}</div>
     </div>
-    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
-      <b style="color:var(--grn);display:block;margin-bottom:3px">💼 ${tr("وضعیت کار، برنامه و مالی:","دۆخی کار و دارایی:","Career, Plans & Finance:")}</b>
-      <span>${esc(wDisp)}</span>
-    </div>
-    <div style="background:var(--sub);padding:11px 12px;border-radius:14px;line-height:1.8;font-size:12.5px;border:1px solid var(--brd)">
-      <b style="color:var(--hol);display:block;margin-bottom:3px">❤️ ${tr("روابط و انرژی عاطفی:","پەیوەندی و سۆزداری:","Love & Emotional Energy:")}</b>
-      <span>${esc(eDisp)}</span>
-    </div>
-    <div style="background:var(--pri-bg);border:1px solid var(--pri);padding:12px;border-radius:15px;line-height:1.9;font-size:12.5px">
+
+    <div style="background:var(--sub);padding:12px;border-radius:15px;line-height:1.85;font-size:12.5px;border:1px solid var(--brd)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <b style="color:var(--pri)">📜 ${tr("تفأل روزانه از دیوان حافظ:","فاڵی ڕۆژانەی حافزی شیرازی:","Daily Omen from Hafez:")}</b>
+        <b style="color:var(--pri)">🌌 ${tr("پیام صور فلکی و برج شما","پەیامی ئەستێرە و بورجەکەت","Celestial & Zodiac Reading")}</b>
+        <span class="cat-pill">${z.sym} ${esc(signDisp)}</span>
+      </div>
+      <div style="font-size:11.5px;color:var(--sec);margin-bottom:4px">${esc(aRead.title)} • ${tr("رنگ مناسب:","ڕەنگی گونجاو:","Lucky Color:")} <b>${esc(luckyCol)}</b></div>
+      <span>${esc(astralMsgDisp)}</span>
+    </div>
+
+    <div style="background:var(--sub);padding:12px;border-radius:15px;line-height:1.85;font-size:12.5px;border:1px solid var(--brd)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <b style="color:var(--grn)">🃏 ${tr("فال کارت تاروت امروز","فاڵی کارتی تارۆتی ئەمڕۆ","Today's Tarot Card")}</b>
+        <span class="cat-pill">${tarotTitleDisp}</span>
+      </div>
+      <span>${esc(tarotMsgDisp)}</span>
+    </div>
+
+    <div style="background:var(--pri-bg);border:1px solid var(--pri);padding:12px;border-radius:15px;line-height:1.9;font-size:12.5px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="color:var(--pri)">📜 ${tr("فال حافظ و تعبیر ساده","فاڵی حافز و ڕوونکردنەوەی سادە","Hafez Omen & Plain Meaning")}</b>
         <button class="ibtn" style="height:24px;padding:0 8px;font-size:10px;border-radius:8px" onclick="refreshFalSeed()">🔄 ${tr("نیت مجدد","نیەتی نوێ","New Omen")}</button>
       </div>
-      <div style="font-weight:700;text-align:center;padding:4px 0;color:var(--txt)">«${esc(beytDisp)}»</div>
-      <div style="font-size:11.5px;color:var(--sec);margin-top:4px;border-top:1px dashed var(--brd);padding-top:5px"><b>${tr("تعبیر فال:","مانای فاڵ:","Interpretation:")}</b> ${esc(tabirDisp)}</div>
+      <div style="font-weight:700;text-align:center;padding:5px 6px;color:var(--txt);background:var(--card);border-radius:10px;border:1px solid var(--brd)">«${esc(beytDisp)}»</div>
+      <div style="font-size:12px;color:var(--txt);margin-top:8px;line-height:1.85"><b>${tr("تعبیر ساده و قابل فهم:","تێگەیشتنی سادە:","Plain Meaning:")}</b> ${esc(tabirDisp)}</div>
     </div>
   `;
 }
