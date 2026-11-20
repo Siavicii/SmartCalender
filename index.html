@@ -646,9 +646,17 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 
     <!-- Month Events (Updatable) -->
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;flex-wrap:wrap">
         <b style="font-size:13px;color:var(--sec)">مناسبت‌ها و تعطیلات این ماه</b>
-        <button class="ibtn" style="height:28px;font-size:11px;padding:0 8px" onclick="updateHolidaysOnline()">🔄 بروزرسانی مناسبت‌ها</button>
+        <div style="display:flex;gap:5px;align-items:center">
+          <button type="button" class="w-city-btn" onclick="detectAndSyncUserCountry(true)" title="تشخیص خودکار کشور محل حضور">🌐 تشخیص کشور</button>
+          <button class="ibtn" style="height:28px;font-size:11px;padding:0 8px" onclick="updateHolidaysOnline()">🔄 بروزرسانی مناسبت‌ها</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:7px 9px;border-radius:12px;background:var(--sub);border:1px solid var(--brd)">
+        <select id="countryEvSelect" onchange="onCountryChange(this.value)" style="flex:1;min-width:130px;padding:5px 8px;font-size:11.5px;background:var(--card)"></select>
+        <button type="button" class="fchip act" id="toggleWorldDaysBtn" style="font-size:10.5px;padding:4px 8px" onclick="toggleWorldDaysFilter()">✅ روزهای جهانی</button>
+        <button type="button" class="fchip act" id="toggleCountryHolBtn" style="font-size:10.5px;padding:4px 8px" onclick="toggleCountryHolFilter()">✅ تعطیلات کشور</button>
       </div>
       <div id="evSyncStatus" style="font-size:10px;color:var(--sec);margin-bottom:4px"></div>
       <div id="monthEvBox"></div>
@@ -774,41 +782,18 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
         <button class="pbtn" style="padding:9px;font-size:12px" onclick="saveBirthAndCalcFal()">✨ ثبت تاریخ تولد و مشاهده طالع و کارت پستال</button>
       </div>
 
-      <!-- AI Birthday Postcard Generator Section -->
-      <div style="background:var(--sub);padding:12px;border-radius:16px;margin-bottom:12px;border:1px solid var(--brd)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
-          <div>
-            <b style="font-size:13px;color:var(--pri)">🤖 کارت پستال هوش مصنوعی اختصاصی تولد</b>
-            <div style="font-size:10.5px;color:var(--sec);margin-top:2px" id="aiCardStatus">تصویرسازی اختصاصی AI بر اساس برج فلکی، ماه و روز تولد شما</div>
-          </div>
+      <!-- Redesigned Clean Birthday Postcard Studio -->
+      <div style="background:var(--sub);padding:12px;border-radius:16px;margin-bottom:12px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+          <b style="font-size:13px;color:var(--pri)">🎁 کارت پستال اختصاصی تولد</b>
           <div style="display:flex;gap:5px">
-            <button class="ibtn" id="genAiCardBtn" style="height:30px;font-size:11px;background:var(--pri);color:var(--onpri);border:none" onclick="generateBirthdayPostcard(true)">✨ تولید تصویر AI جدید</button>
-            <button class="ibtn" style="height:30px;font-size:11px" onclick="downloadPostcard()">📥 ذخیره تصویر</button>
+            <button type="button" class="ibtn" id="genAiCardBtn" style="height:29px;font-size:11px;background:var(--pri);color:var(--onpri);border:none" onclick="generateBirthdayPostcard(true)">🎨 طرح جدید</button>
+            <button type="button" class="ibtn" style="height:29px;font-size:11px" onclick="downloadPostcard()">📥 ذخیره</button>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
-          <select id="aiCardStyleSelect" onchange="generateBirthdayPostcard(true)" style="background:var(--card);font-size:11.5px;padding:6px 8px">
-            <option value="celestial">🌌 سبک کیهانی و صورت فلکی درخشان</option>
-            <option value="floral">🌸 سبک نقاشی آبرنگ و گل‌های بهاری</option>
-            <option value="luxury">✨ سبک لوکس طلایی و جشن سلطنتی</option>
-            <option value="dreamy">🦋 سبک رویایی و فانتزی نورانی</option>
-            <option value="cyber">🔮 سبک آینده‌نگر و نئونی هوش مصنوعی</option>
-          </select>
-          <textarea id="aiCustomPrompt" rows="2" placeholder="✍️ پرامپت دلخواه شما برای هوش مصنوعی (مثلاً: کهکشان بنفش با کیک تولد طلایی و شمع‌های نورانی یا Persian royal garden with golden fireworks)..." style="background:var(--card);font-size:11.5px;padding:7px 9px"></textarea>
-          <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px">
-            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('کهکشان بنفش با صورت فلکی طلایی و شهاب‌سنگ‌های درخشان')">🌌 کهکشان و شهاب‌سنگ</button>
-            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('باغ ایرانی رویایی پر از گل‌های رز و فانوس‌های نورانی')">🌺 باغ ایرانی رویایی</button>
-            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('کیک تولد لوکس طلایی با آتش‌بازی و نورپردازی سینمایی')">🎂 جشن و آتش‌بازی</button>
-            <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="applyPromptPreset('آسمان شفق قطبی بر فراز کوه‌های برفی و دریاچه آرام')">🏔️ شفق قطبی</button>
-          </div>
-          <input type="text" id="aiCustomWish" oninput="drawPostcardComposite(lastAiBgImg)" placeholder="💌 متن پیام تبریک دلخواه روی کارت (خالی = متن هوشمند برج فلکی)" style="background:var(--card);font-size:11.5px;padding:6px 8px">
-        </div>
-        <div class="postcard-wrap" style="position:relative">
-          <div id="aiCardLoader" style="display:none;position:absolute;inset:0;background:rgba(15,23,42,0.72);border-radius:18px;color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12px;z-index:5;backdrop-filter:blur(4px)">
-            <span style="font-size:26px">🎨</span>
-            <b>هوش مصنوعی در حال خلق تصویر اختصاصی شماست...</b>
-          </div>
-          <canvas id="bdayCanvas" width="768" height="512" class="postcard-canvas"></canvas>
+        <input type="text" id="aiCustomWish" oninput="drawPostcardComposite()" placeholder="💌 متن تبریک دلخواه روی کارت (خالی = تبریک متناسب با برج شما)" style="background:var(--card);font-size:11.5px;padding:7px 10px">
+        <div class="postcard-wrap" style="margin-top:2px">
+          <canvas id="bdayCanvas" width="800" height="480" class="postcard-canvas"></canvas>
         </div>
       </div>
 
@@ -1115,7 +1100,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v53";
+  const VER = "v55";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1356,6 +1341,312 @@ const BASE_YEAR_EV={
 let dynamicYearEv=JSON.parse(localStorage.getItem("cal_dyn_ev_v11")||"{}");
 let customUserEv=JSON.parse(localStorage.getItem("cal_user_ev_v11")||"{}");
 
+
+// ====== مناسبت‌های جهانی و بین‌المللی + تعطیلات کشور محل حضور کاربر ======
+const WORLD_DAYS_GM = {
+  "1-1":  [["🌐 آغاز سال نو میلادی (New Year's Day)", 0]],
+  "1-27": [["🕊️ روز جهانی یادبود هولوکاست", 0]],
+  "2-4":  [["🎗️ روز جهانی مبارزه با سرطان", 0]],
+  "2-14": [["💝 روز جهانی ولنتاین / عشق", 0]],
+  "2-20": [["⚖️ روز جهانی عدالت اجتماعی", 0]],
+  "2-21": [["🗣️ روز جهانی زبان مادری (یونسکو)", 0]],
+  "3-8":  [["🌸 روز جهانی زن (International Women's Day)", 0]],
+  "3-14": [["🔢 روز جهانی عدد پی (Pi Day) و ریاضیات", 0]],
+  "3-20": [["😊 روز جهانی شادی", 0]],
+  "3-21": [["🌳 روز جهانی جنگل‌ها و شعر (نوروز جهانی)", 0]],
+  "3-22": [["💧 روز جهانی آب", 0]],
+  "4-7":  [["🩺 روز جهانی بهداشت", 0]],
+  "4-22": [["🌍 روز جهانی زمین (Earth Day)", 0]],
+  "4-23": [["📚 روز جهانی کتاب و حق مؤلف", 0]],
+  "5-1":  [["🛠️ روز جهانی کارگر", 0]],
+  "5-3":  [["📰 روز جهانی آزادی مطبوعات", 0]],
+  "5-15": [["👨‍👩‍👧‍👦 روز جهانی خانواده", 0]],
+  "6-5":  [["🌿 روز جهانی محیط زیست", 0]],
+  "6-8":  [["🌊 روز جهانی اقیانوس‌ها", 0]],
+  "6-21": [["🧘 روز جهانی یوگا و انقلاب تابستانی", 0]],
+  "7-11": [["👥 روز جهانی جمعیت", 0]],
+  "7-20": [["♟️ روز جهانی شطرنج", 0]],
+  "7-30": [["🤝 روز جهانی دوستی", 0]],
+  "8-12": [["🧑 روز جهانی جوانان", 0]],
+  "8-19": [["📸 روز جهانی عکاسی و انسان‌دوستی", 0]],
+  "9-8":  [["📖 روز جهانی سوادآموزی", 0]],
+  "9-15": [["🏛️ روز جهانی دموکراسی", 0]],
+  "9-21": [["🕊️ روز جهانی صلح", 0]],
+  "9-27": [["✈️ روز جهانی گردشگری", 0]],
+  "10-1": [["☕ روز جهانی قهوه و سالمندان", 0]],
+  "10-5": [["👩‍🏫 روز جهانی معلم", 0]],
+  "10-10":[["🧠 روز جهانی سلامت روان", 0]],
+  "10-16":[["🌾 روز جهانی غذا", 0]],
+  "10-24":[["🇺🇳 روز سازمان ملل متحد", 0]],
+  "11-14":[["🩺 روز جهانی دیابت", 0]],
+  "11-20":[["👶 روز جهانی کودک", 0]],
+  "11-25":[["🚫 روز جهانی منع خشونت علیه زنان", 0]],
+  "12-1": [["🎗️ روز جهانی مبارزه با ایدز", 0]],
+  "12-3": [["♿ روز جهانی افراد دارای معلولیت", 0]],
+  "12-10":[["📜 روز جهانی حقوق بشر", 0]],
+  "12-25":[["🎄 کریسمس (Christmas Day)", 0]]
+};
+
+const COUNTRY_CATALOG = [
+  { code: "IR", fa: "ایران", ku: "ئێران", en: "Iran",
+    fallback: {
+      "1-1": [["جشن نوروز (تعطیل رسمی)", 1]],
+      "1-2": [["عید نوروز (تعطیل رسمی)", 1]],
+      "1-3": [["عید نوروز (تعطیل رسمی)", 1]],
+      "1-4": [["عید نوروز (تعطیل رسمی)", 1]],
+      "1-12": [["روز جمهوری اسلامی ایران (تعطیل رسمی)", 1]],
+      "1-13": [["روز طبیعت / سیزده‌بدر (تعطیل رسمی)", 1]],
+      "3-14": [["رحلت امام خمینی (تعطیل رسمی)", 1]],
+      "3-15": [["قیام ۱۵ خرداد (تعطیل رسمی)", 1]],
+      "11-22": [["پیروزی انقلاب اسلامی (تعطیل رسمی)", 1]],
+      "12-29": [["روز ملی شدن صنعت نفت (تعطیل رسمی)", 1]]
+    }
+  },
+  { code: "IQ", fa: "عراق / اقلیم کوردستان", ku: "عێراق / هەرێمی کوردستان", en: "Iraq / Kurdistan",
+    fallback: {
+      "1-1": [["رأس السنة الميلادية / سەری ساڵی زایینی", 1]],
+      "1-6": [["عيد الجيش العراقي / ڕۆژی سوپا", 1]],
+      "3-21": [["عيد نوروز / جەژنی نەورۆز", 1]],
+      "5-1": [["عيد العمال العالمي / ڕۆژی کرێکاران", 1]]
+    }
+  },
+  { code: "TR", fa: "ترکیه", ku: "تورکیا", en: "Turkey",
+    fallback: {
+      "1-1": [["Yılbaşı (تعطیل رسمی ترکیه)", 1]],
+      "4-23": [["Ulusal Egemenlik ve Çocuk Bayramı", 1]],
+      "5-19": [["Atatürk'ü Anma, Gençlik ve Spor Bayramı", 1]],
+      "8-30": [["Zafer Bayramı (روز پیروزی)", 1]],
+      "10-29": [["Cumhuriyet Bayramı (روز جمهوری)", 1]]
+    }
+  },
+  { code: "AE", fa: "امارات متحده عربی", ku: "ئیمارات", en: "United Arab Emirates",
+    fallback: {
+      "1-1": [["New Year's Day (رأس السنة)", 1]],
+      "12-2": [["UAE National Day (عید الاتحاد)", 1]],
+      "12-3": [["UAE National Day Holiday", 1]]
+    }
+  },
+  { code: "DE", fa: "آلمان", ku: "ئەڵمانیا", en: "Germany",
+    fallback: {
+      "1-1": [["Neujahr (سال نو)", 1]],
+      "5-1": [["Tag der Arbeit (روز کارگر)", 1]],
+      "10-3": [["Tag der Deutschen Einheit (اتحاد آلمان)", 1]],
+      "12-25": [["1. Weihnachtstag (کریسمس)", 1]],
+      "12-26": [["2. Weihnachtstag", 1]]
+    }
+  },
+  { code: "GB", fa: "بریتانیا", ku: "بەریتانیا", en: "United Kingdom",
+    fallback: {
+      "1-1": [["New Year's Day", 1]],
+      "12-25": [["Christmas Day", 1]],
+      "12-26": [["Boxing Day", 1]]
+    }
+  },
+  { code: "US", fa: "ایالات متحده آمریکا", ku: "ویلایەتە یەکگرتووەکانی ئەمریکا", en: "United States",
+    fallback: {
+      "1-1": [["New Year's Day", 1]],
+      "7-4": [["Independence Day (روز استقلال آمریکا)", 1]],
+      "11-11": [["Veterans Day", 1]],
+      "12-25": [["Christmas Day", 1]]
+    }
+  },
+  { code: "CA", fa: "کانادا", ku: "کەنەدا", en: "Canada",
+    fallback: {
+      "1-1": [["New Year's Day", 1]],
+      "7-1": [["Canada Day (روز کانادا)", 1]],
+      "12-25": [["Christmas Day", 1]]
+    }
+  },
+  { code: "FR", fa: "فرانسه", ku: "فەرەنسا", en: "France",
+    fallback: {
+      "1-1": [["Jour de l'an", 1]],
+      "5-1": [["Fête du Travail", 1]],
+      "7-14": [["Bastille Day (روز باستیل)", 1]],
+      "12-25": [["Noël (کریسمس)", 1]]
+    }
+  },
+  { code: "SE", fa: "سوئد", ku: "سوێد", en: "Sweden",
+    fallback: {
+      "1-1": [["Nyårsdagen", 1]],
+      "6-6": [["Sveriges nationaldag (روز ملی سوئد)", 1]],
+      "12-25": [["Juldagen (کریسمس)", 1]]
+    }
+  },
+  { code: "NO", fa: "نروژ", ku: "نەرویج", en: "Norway",
+    fallback: {
+      "1-1": [["Første nyttårsdag", 1]],
+      "5-17": [["Grunnlovsdag (روز قانون اساسی نروژ)", 1]],
+      "12-25": [["Første juledag", 1]]
+    }
+  },
+  { code: "NL", fa: "هلند", ku: "هۆڵەندا", en: "Netherlands",
+    fallback: {
+      "1-1": [["Nieuwjaarsdag", 1]],
+      "4-27": [["Koningsdag (روز پادشاه)", 1]],
+      "12-25": [["Eerste kerstdag", 1]]
+    }
+  },
+  { code: "AU", fa: "استرالیا", ku: "ئوسترالیا", en: "Australia",
+    fallback: {
+      "1-1": [["New Year's Day", 1]],
+      "1-26": [["Australia Day", 1]],
+      "4-25": [["ANZAC Day", 1]],
+      "12-25": [["Christmas Day", 1]]
+    }
+  },
+  { code: "QA", fa: "قطر", ku: "قەتەر", en: "Qatar",
+    fallback: {
+      "12-18": [["National Day (روز ملی قطر)", 1]]
+    }
+  },
+  { code: "SA", fa: "عربستان سعودی", ku: "سعوودیە", en: "Saudi Arabia",
+    fallback: {
+      "2-22": [["Founding Day (روز تأسیس)", 1]],
+      "9-23": [["National Day (روز ملی عربستان)", 1]]
+    }
+  }
+];
+
+let countryHolidaysCache = JSON.parse(localStorage.getItem("smartcal_country_hol_v1") || "{}");
+if (typeof cfg.countryCode !== "string" || !cfg.countryCode) cfg.countryCode = "IR";
+if (cfg.showWorldDays === undefined) cfg.showWorldDays = true;
+if (cfg.showCountryHol === undefined) cfg.showCountryHol = true;
+
+function getCountryMeta(code) {
+  return COUNTRY_CATALOG.find(c => c.code === code) || COUNTRY_CATALOG[0];
+}
+
+function getCountryLabel(cObj) {
+  const l = cfg.lang || "fa";
+  return l === "en" ? cObj.en : (l === "ku" ? cObj.ku : cObj.fa);
+}
+
+async function fetchCountryHolidaysForYear(code, gy) {
+  const cacheKey = `${code}_${gy}`;
+  if (Array.isArray(countryHolidaysCache[cacheKey]) && countryHolidaysCache[cacheKey].length) {
+    return countryHolidaysCache[cacheKey];
+  }
+  try {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 5500);
+    const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${gy}/${code}`, { cache: "force-cache", signal: ctrl.signal });
+    clearTimeout(tid);
+    if (r && r.ok) {
+      const arr = await r.json();
+      if (Array.isArray(arr) && arr.length) {
+        const mapped = arr.map(it => {
+          const [yy, mm, dd] = String(it.date || "").split("-").map(Number);
+          return { gy: yy, gm: mm, gd: dd, name: it.localName || it.name || "تعطیل رسمی" };
+        }).filter(x => x.gy && x.gm && x.gd);
+        countryHolidaysCache[cacheKey] = mapped;
+        try { localStorage.setItem("smartcal_country_hol_v1", JSON.stringify(countryHolidaysCache)); } catch (e) {}
+        return mapped;
+      }
+    }
+  } catch (e) {}
+  return [];
+}
+
+async function detectAndSyncUserCountry(forceDetect = false) {
+  if (!forceDetect && localStorage.getItem("smartcal_country_detected_v1") === "1" && cfg.countryCode) {
+    const gNow = new Date();
+    await fetchCountryHolidaysForYear(cfg.countryCode, gNow.getFullYear());
+    render();
+    return;
+  }
+  let detectedCode = "";
+  try {
+    const ipData = await fetch("https://ipwho.is/").then(r => r.json()).catch(() => null);
+    if (ipData && ipData.success && ipData.country_code) {
+      detectedCode = String(ipData.country_code).toUpperCase();
+    }
+  } catch (e) {}
+  if (!detectedCode) {
+    const cityPart = String(cfg.city || "");
+    if (/اربیل|هەولێر|سلیمانیه|سلێمانی|بغداد/.test(cityPart)) detectedCode = "IQ";
+    else if (/استانبول|آنکارا|ازمیر|Istanbul|Ankara/.test(cityPart)) detectedCode = "TR";
+    else if (/دبی|ابوظبی|Dubai|Abu Dhabi/.test(cityPart)) detectedCode = "AE";
+    else if (/لندن|London/.test(cityPart)) detectedCode = "GB";
+    else detectedCode = "IR";
+  }
+  if (COUNTRY_CATALOG.some(c => c.code === detectedCode)) {
+    cfg.countryCode = detectedCode;
+  }
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  localStorage.setItem("smartcal_country_detected_v1", "1");
+  const gNow = new Date();
+  await fetchCountryHolidaysForYear(cfg.countryCode, gNow.getFullYear());
+  syncCountrySelectorUI();
+  render();
+}
+
+function syncCountrySelectorUI() {
+  const selEl = document.getElementById("countryEvSelect");
+  if (selEl) {
+    selEl.innerHTML = COUNTRY_CATALOG.map(c => `<option value="${c.code}">${getCountryLabel(c)}</option>`).join("");
+    selEl.value = cfg.countryCode || "IR";
+  }
+  const wBtn = document.getElementById("toggleWorldDaysBtn");
+  if (wBtn) {
+    wBtn.classList.toggle("act", !!cfg.showWorldDays);
+    wBtn.textContent = (cfg.showWorldDays ? "✅ " : "") + tr("روزهای جهانی", "ڕۆژە جیهانییەکان", "World Days");
+  }
+  const cBtn = document.getElementById("toggleCountryHolBtn");
+  if (cBtn) {
+    cBtn.classList.toggle("act", !!cfg.showCountryHol);
+    cBtn.textContent = (cfg.showCountryHol ? "✅ " : "") + tr("تعطیلات کشور", "پشووی وڵات", "Country Holidays");
+  }
+}
+
+async function onCountryChange(newCode) {
+  cfg.countryCode = newCode || "IR";
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  const gNow = new Date();
+  await fetchCountryHolidaysForYear(cfg.countryCode, gNow.getFullYear());
+  syncCountrySelectorUI();
+  render();
+}
+
+function toggleWorldDaysFilter() {
+  cfg.showWorldDays = !cfg.showWorldDays;
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  syncCountrySelectorUI();
+  render();
+}
+
+function toggleCountryHolFilter() {
+  cfg.showCountryHol = !cfg.showCountryHol;
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  syncCountrySelectorUI();
+  render();
+}
+
+function getExtraWorldAndCountryEv(jy, jm, jd) {
+  const out = [];
+  const g = toG(jy, jm, jd);
+  const gmKey = `${g.gm}-${g.gd}`;
+
+  if (cfg.showWorldDays !== false && WORLD_DAYS_GM[gmKey]) {
+    WORLD_DAYS_GM[gmKey].forEach(item => out.push([item[0], item[1]]));
+  }
+
+  if (cfg.showCountryHol !== false) {
+    const cCode = cfg.countryCode || "IR";
+    const cMeta = getCountryMeta(cCode);
+    const cLabel = getCountryLabel(cMeta);
+    const apiList = countryHolidaysCache[`${cCode}_${g.gy}`] || [];
+    const matchedApi = apiList.filter(x => x.gm === g.gm && x.gd === g.gd);
+    if (matchedApi.length) {
+      matchedApi.forEach(x => out.push([`🏳️ ${x.name} (${cLabel})`, 1]));
+    } else if (cMeta.fallback) {
+      const fbKey = cCode === "IR" ? `${jm}-${jd}` : `${g.gm}-${g.gd}`;
+      const fbList = cMeta.fallback[fbKey] || [];
+      fbList.forEach(item => out.push([`🏳️ ${item[0]} (${cLabel})`, item[1]]));
+    }
+  }
+  return out;
+}
+
 function getEv(y,m,d){
   const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
   if(BASE_EV[k])r.push(...BASE_EV[k]);
@@ -1363,6 +1654,7 @@ function getEv(y,m,d){
   const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
   if(yrMap[k])r.push(...yrMap[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
+  if (typeof getExtraWorldAndCountryEv === "function") r.push(...getExtraWorldAndCountryEv(y,m,d));
   return r.map(e=>[trEvTitle(e[0]),e[1],e[2],e[3]]);
 }
 
@@ -2355,6 +2647,7 @@ function toggleWeekendDay(wd) {
   }
   localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
   renderWeekendChips();
+  if (typeof syncCountrySelectorUI === "function") syncCountrySelectorUI();
   render();
 }
 
@@ -2492,9 +2785,9 @@ function applyLanguageUI() {
   setPh("#bNameInput", "نام شما برای درج روی کارت پستال (اختیاری)...", "ناوی تۆ بۆ سەر پۆستکارت (ئارەزوومەندانە)...", "Your name for the birthday card (optional)...");
   const saveBdayBtn = document.querySelector("#view-fal .card > div:nth-of-type(3) > .pbtn");
   if (saveBdayBtn) saveBdayBtn.textContent = tr("✨ ثبت تاریخ تولد و مشاهده طالع و کارت پستال", "✨ تۆمارکردنی لەدایکبوون و بینینی بەخت و پۆستکارت", "✨ Save Birth Date & View Horoscope & Card");
-  setTxt("#genAiCardBtn", "✨ تولید تصویر AI جدید", "✨ دروستکردنی وێنەی نوێی AI", "✨ Generate New AI Art");
+  setTxt("#genAiCardBtn", "🎨 طرح جدید", "🎨 دیزاینی نوێ", "🎨 New Theme");
   const dlCardBtn = document.getElementById("genAiCardBtn")?.nextElementSibling;
-  if (dlCardBtn) dlCardBtn.textContent = tr("📥 ذخیره تصویر", "📥 پاشەکەوتی وێنە", "📥 Save Image");
+  if (dlCardBtn) dlCardBtn.textContent = tr("📥 ذخیره", "📥 پاشەکەوت", "📥 Save");
   setPh("#aiCustomPrompt", "✍️ پرامپت دلخواه شما برای هوش مصنوعی (مثلاً: کهکشان بنفش با کیک تولد طلایی)...", "✍️ پرۆمپتی دڵخوازی تۆ بۆ زیرەکی دەستکرد...", "✍️ Custom AI prompt (e.g. Purple galaxy with golden birthday cake & fireworks)...");
   setPh("#aiCustomWish", "💌 متن پیام تبریک دلخواه روی کارت (خالی = متن هوشمند برج فلکی)", "💌 دەقی پیرۆزبایی دڵخواز لەسەر کارتەکە...", "💌 Custom greeting message on card (leave blank for zodiac wish)");
 
@@ -5053,352 +5346,131 @@ async function refreshFalSeed(){
   }
 }
 
-function wrapCanvasText(ctx,text,x,y,maxWidth,lineHeight){
-  const words=text.split(" ");
-  let line="",currY=y;
-  for(let n=0;n<words.length;n++){
-    const testLine=line+words[n]+" ";
-    if(ctx.measureText(testLine).width>maxWidth && n>0){
-      ctx.fillText(line.trim(),x,currY);
-      line=words[n]+" ";
-      currY+=lineHeight;
-    }else{
-      line=testLine;
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = String(text || "").split(/\s+/).filter(Boolean);
+  let line = "", currY = y;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line ? line + " " + words[i] : words[i];
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      ctx.fillText(line, x, currY);
+      line = words[i];
+      currY += lineHeight;
+    } else {
+      line = testLine;
     }
   }
-  ctx.fillText(line.trim(),x,currY);
+  if (line) ctx.fillText(line, x, currY);
+  return currY;
 }
 
-let lastAiBgImg=null,lastAiPromptKey="";
+let lastAiBgImg = null;
+const POSTCARD_THEMES = [
+  { name: "شب کهکشانی", bg1: "#1E1B4B", bg2: "#0F172A", accent: "#FBBF24", badgeBg: "rgba(251,191,36,0.16)" },
+  { name: "شفق طلایی",   bg1: "#451A03", bg2: "#18181B", accent: "#FDE047", badgeBg: "rgba(253,224,71,0.16)" },
+  { name: "زمردی آرام",   bg1: "#064E3B", bg2: "#0F172A", accent: "#34D399", badgeBg: "rgba(52,211,153,0.16)" },
+  { name: "یاقوتی شاعرانه", bg1: "#4C0519", bg2: "#1E1B4B", accent: "#FDA4AF", badgeBg: "rgba(253,164,175,0.16)" }
+];
 
-function applyPromptPreset(txt){
-  const el=document.getElementById("aiCustomPrompt");
-  if(el){el.value=txt;generateBirthdayPostcard(true);}
-}
-
-async function translatePromptToEn(rawPrompt){
-  if(!rawPrompt)return "";
-  if(!/[؀-ۿ]/.test(rawPrompt)) return rawPrompt;
-  // Dictionary for instant zero-latency Persian & Kurdish prompt translation + optional AI expansion
-  const dict={
-    "کهکشان":"cosmic galaxy nebula","بنفش":"deep purple violet","طلایی":"shimmering golden","صورت فلکی":"glowing constellation stars","شهاب":"shooting stars",
-    "باغ":"royal persian garden","گل":"blooming flowers","رز":"velvet roses","فانوس":"glowing lanterns","کیک":"luxury birthday cake","شمع":"glowing candles",
-    "آتش‌بازی":"festive fireworks","شفق قطبی":"aurora borealis northern lights","کوه":"majestic snowy mountains","برفی":"winter snow","دریاچه":"calm mirror lake",
-    "دریا":"bioluminescent ocean waves","پروانه":"glowing butterflies","خورشید":"radiant sun","ماه":"luminous crescent moon","آبی":"royal sapphire blue",
-    "سبز":"emerald green","قرمز":"crimson ruby","کوردستان":"kurdistan zagros mountains nature","نوروز":"newroz spring fire celebration","بهار":"spring blossoms",
-    "پاییز":"autumn golden leaves","زمستان":"winter crystal snow","تابستان":"warm summer sun","فرشته":"ethereal angel wings","قصر":"magical crystal palace",
-    "جنگل":"enchanted glowing forest","باران":"gentle glowing rain","ستاره":"sparkling stars","قلب":"glowing heart"
-  };
-  let mapped=rawPrompt;
-  Object.keys(dict).forEach(k=>{mapped=mapped.split(k).join(" "+dict[k]+" ");});
-  const localEn = mapped.replace(/[؀-ۿ]+/g," ").replace(/\s+/g," ").trim();
-
-  try{
-    const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 3200);
-    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent("Translate to short vivid English image prompt keywords only: "+rawPrompt)}`, {signal: ctrl.signal});
-    clearTimeout(tid);
-    if(r&&r.ok){
-      const t=(await r.text()).trim();
-      if(t && t.length>3 && t.length<250) return t;
-    }
-  }catch(e){}
-  return localEn || "magical celestial birthday celebration artwork";
-}
-
-function renderRichGenerativeArt(ctx,W,H,z,styleVal,variant,promptTxt){
-  let [c1,c2,c3]=z.pal;
-  const pLow = (promptTxt || "").toLowerCase();
-  // Dynamically adapt palette & scene elements to the user's prompt keywords!
-  if (/بنفش|کهکشان|purple|galaxy|nebula/.test(pLow)) { c1="#2E1065"; c2="#7E22CE"; c3="#F472B6"; }
-  else if (/باغ|سبز|گل|بهار|garden|green|flower|spring/.test(pLow)) { c1="#064E3B"; c2="#059669"; c3="#FDE047"; }
-  else if (/طلایی|کیک|جشن|آتش|gold|cake|firework|luxury/.test(pLow)) { c1="#451A03"; c2="#B45309"; c3="#FDE047"; }
-  else if (/شفق|کوه|برف|آبی|aurora|mountain|snow|blue/.test(pLow)) { c1="#0F172A"; c2="#0284C7"; c3="#2DD4BF"; }
-  else if (/قرمز|رز|عشق|red|rose|love/.test(pLow)) { c1="#4C0519"; c2="#E11D48"; c3="#FECDD3"; }
-
-  let hash = 0;
-  const fullStr = `${birthCfg.y}-${birthCfg.m}-${birthCfg.d}-${variant}-${promptTxt}-${styleVal}`;
-  for (let i = 0; i < fullStr.length; i++) hash = ((hash << 5) - hash + fullStr.charCodeAt(i)) | 0;
-  const seed = Math.abs(hash) + 1;
-  const rng = (s) => ((Math.sin(s * 91.345 + seed) * 47453.5453) % 1 + 1) % 1;
-
-  const grad=ctx.createLinearGradient(0,0,W,H);
-  if(styleVal==="luxury" && !promptTxt){
-    grad.addColorStop(0,"#090D16");grad.addColorStop(0.55,"#1E1B4B");grad.addColorStop(1,"#78350F");
-  }else if(styleVal==="floral" && !promptTxt){
-    grad.addColorStop(0,c1);grad.addColorStop(0.5,"#831843");grad.addColorStop(1,"#1E1B4B");
-  }else if(styleVal==="cyber" && !promptTxt){
-    grad.addColorStop(0,"#042F2E");grad.addColorStop(0.5,"#1E1B4B");grad.addColorStop(1,"#311042");
-  }else{
-    grad.addColorStop(0,c1);grad.addColorStop(0.55,c2);grad.addColorStop(1,"#090D16");
-  }
-  ctx.fillStyle=grad;
-  ctx.fillRect(0,0,W,H);
-
-  // Glowing nebula / aurora clouds
-  for(let i=0;i<8;i++){
-    const gx=50+rng(i+2)*320,gy=40+rng(i+12)*430,gr=75+rng(i+22)*140;
-    const rad=ctx.createRadialGradient(gx,gy,4,gx,gy,gr);
-    rad.addColorStop(0,i%2===0?c3+"66":"rgba(255,255,255,0.24)");
-    rad.addColorStop(1,"rgba(0,0,0,0)");
-    ctx.fillStyle=rad;
-    ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);ctx.fill();
-  }
-
-  // Prompt-specific visual elements on the left artwork stage
-  if (/کوه|شفق|mountain|aurora|برف/.test(pLow)) {
-    // Draw majestic layered mountain silhouettes + aurora ribbons
-    ctx.strokeStyle = "rgba(45, 212, 191, 0.42)";
-    ctx.lineWidth = 18;
-    ctx.beginPath();
-    ctx.moveTo(20, 110);
-    ctx.bezierCurveTo(110, 40, 210, 170, 340, 85);
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
-    ctx.beginPath();
-    ctx.moveTo(0, H); ctx.lineTo(95, 270); ctx.lineTo(195, 355); ctx.lineTo(295, 250); ctx.lineTo(420, H);
-    ctx.closePath(); ctx.fill();
-  } else if (/کیک|جشن|آتش|cake|firework/.test(pLow)) {
-    // Draw golden firework bursts
-    for (let b = 0; b < 5; b++) {
-      const bx = 70 + rng(b + 50) * 240, by = 70 + rng(b + 80) * 240;
-      for (let ray = 0; ray < 14; ray++) {
-        const ang = (ray / 14) * Math.PI * 2;
-        const rLen = 22 + rng(b * 20 + ray) * 32;
-        ctx.strokeStyle = ray % 2 === 0 ? "#FDE047" : "#F472B6";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(bx, by);
-        ctx.lineTo(bx + Math.cos(ang) * rLen, by + Math.sin(ang) * rLen);
-        ctx.stroke();
-      }
-    }
-  } else if (styleVal==="floral" || /باغ|گل|رز|garden|flower|rose/.test(pLow)) {
-    for(let p=0;p<28;p++){
-      const px=30+rng(p+40)*330,py=30+rng(p+70)*450,pr=9+rng(p+95)*18;
-      ctx.save();
-      ctx.translate(px,py);
-      ctx.rotate(rng(p+110)*Math.PI*2);
-      ctx.fillStyle=p%2===0?"rgba(251,207,232,0.34)":"rgba(253,230,138,0.28)";
-      ctx.beginPath();
-      ctx.ellipse(0,0,pr,pr*0.5,0,0,Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-    }
-  } else if (styleVal==="cyber") {
-    ctx.strokeStyle="rgba(34,211,238,0.32)";
-    ctx.lineWidth=1.8;
-    for(let w=0;w<7;w++){
-      ctx.beginPath();
-      for(let x=0;x<=W*0.65;x+=24){
-        const yPos=110+w*48+Math.sin(x*0.02+w+variant)*30;
-        if(x===0)ctx.moveTo(x,yPos);else ctx.lineTo(x,yPos);
-      }
-      ctx.stroke();
-    }
-  } else {
-    const pts=[];
-    for(let s=0;s<15;s++) pts.push([40+rng(s+30)*280,45+rng(s+60)*420]);
-    ctx.strokeStyle="rgba(255,255,255,0.22)";
-    ctx.lineWidth=1.2;
-    for(let s=0;s<pts.length-1;s++){
-      ctx.beginPath();ctx.moveTo(pts[s][0],pts[s][1]);ctx.lineTo(pts[s+1][0],pts[s+1][1]);ctx.stroke();
-    }
-    pts.forEach(([sx,sy],idx)=>{
-      ctx.beginPath();ctx.arc(sx,sy,idx%3===0?4:2.2,0,Math.PI*2);
-      ctx.fillStyle="rgba(255,255,255,0.85)";ctx.fill();
-    });
-  }
-
-  for(let i=0;i<42;i++){
-    const sx=rng(i+200)*W,sy=rng(i+260)*H,sr=0.8+rng(i+310)*2.4;
-    ctx.beginPath();ctx.arc(sx,sy,sr,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${0.25+rng(i+360)*0.65})`;ctx.fill();
-  }
-}
-
-function drawPostcardComposite(bgImage,isTainted=false){
-  const canvas=document.getElementById("bdayCanvas");
-  if(!canvas)return;
-  const ctx=canvas.getContext("2d");
-  const W=canvas.width,H=canvas.height;
-  const {y,m,d,name}=birthCfg;
-  const z=ZODIAC_MONTHS[m-1];
-  const animal=CHINESE_ANIMALS[((y-1300)%12+12)%12];
-  const [c1,c2,c3]=z.pal;
-  const styleVal=document.getElementById("aiCardStyleSelect")?.value||"celestial";
-  const userRawPrompt=(document.getElementById("aiCustomPrompt")?.value||"").trim();
+function drawPostcardComposite() {
+  const canvas = document.getElementById("bdayCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const { y, m, d, name } = birthCfg;
+  const z = ZODIAC_MONTHS[m - 1] || ZODIAC_MONTHS[0];
+  const animal = CHINESE_ANIMALS[((y - 1300) % 12 + 12) % 12];
+  const th = POSTCARD_THEMES[postcardVariant % POSTCARD_THEMES.length];
   const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
-  const mName = isKu ? KM[m-1] : JM[m-1];
+  const mName = isKu ? KM[m - 1] : JM[m - 1];
 
-  ctx.clearRect(0,0,W,H);
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, th.bg1);
+  grad.addColorStop(1, th.bg2);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
 
-  if(bgImage){
-    ctx.drawImage(bgImage,0,0,W,H);
-    const shade=ctx.createLinearGradient(W,0,0,0);
-    shade.addColorStop(0,"rgba(8,12,24,0.84)");
-    shade.addColorStop(0.62,"rgba(8,12,24,0.54)");
-    shade.addColorStop(1,"rgba(8,12,24,0.16)");
-    ctx.fillStyle=shade;
-    ctx.fillRect(0,0,W,H);
-  }else{
-    renderRichGenerativeArt(ctx,W,H,z,styleVal,postcardVariant,userRawPrompt);
-    const shade=ctx.createLinearGradient(W,0,0,0);
-    shade.addColorStop(0,"rgba(8,12,24,0.68)");
-    shade.addColorStop(0.6,"rgba(8,12,24,0.28)");
-    shade.addColorStop(1,"rgba(8,12,24,0.05)");
-    ctx.fillStyle=shade;
-    ctx.fillRect(0,0,W,H);
-  }
+  const glow1 = ctx.createRadialGradient(130, 120, 10, 130, 120, 210);
+  glow1.addColorStop(0, th.badgeBg);
+  glow1.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = glow1;
+  ctx.beginPath(); ctx.arc(130, 120, 210, 0, Math.PI * 2); ctx.fill();
 
-  ctx.strokeStyle="rgba(255,255,255,0.34)";
-  ctx.lineWidth=2;
-  drawRoundedRectSafe(ctx, 22,22,W-44,H-44,24);
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 2;
+  drawRoundedRectSafe(ctx, 18, 18, W - 36, H - 36, 24);
   ctx.stroke();
 
-  ctx.fillStyle="rgba(15,23,42,0.54)";
-  ctx.strokeStyle="rgba(255,255,255,0.38)";
-  ctx.beginPath();ctx.arc(130,136,56,0,Math.PI*2);ctx.fill();ctx.stroke();
-  ctx.fillStyle="#FFFFFF";
-  ctx.font="bold 48px 'Inter', sans-serif";
-  ctx.textAlign="center";
-  ctx.fillText(z.sym,130,153);
-  ctx.font="bold 15px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillStyle=c3;
-  ctx.fillText(z.sign,130,220);
-  ctx.font="13px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillStyle="rgba(255,255,255,0.92)";
-  ctx.fillText(`${z.elem} • ${animal.ico} ${animal.n}`,130,244);
+  const leftCx = 136;
+  ctx.fillStyle = th.badgeBg;
+  ctx.strokeStyle = th.accent;
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(leftCx, 148, 54, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-  ctx.direction="rtl";
-  ctx.textAlign="right";
+  ctx.save();
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 46px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(z.sym, leftCx, 150);
 
-  ctx.fillStyle=c3;
-  ctx.font="bold 18px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(`✨ کارت پستال هوشمند متولدین ${mName} ✨`,W-48,76);
+  ctx.fillStyle = th.accent;
+  ctx.font = "700 17px 'Vazirmatn', sans-serif";
+  ctx.fillText(z.sign, leftCx, 232);
 
-  ctx.fillStyle="#FFFFFF";
-  ctx.font="bold 35px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  const headline=name?(isKu?`${name}ی ئازیز، ڕۆژی لەدایکبوونت پیرۆز!`:`${name} عزیز، تولدت مبارک!`):(isKu?`ڕۆژی لەدایکبوونت پیرۆز!`:`تولدت مبارک!`);
-  ctx.fillText(headline,W-48,132);
+  ctx.fillStyle = "rgba(255,255,255,0.82)";
+  ctx.font = "500 14px 'Vazirmatn', sans-serif";
+  ctx.fillText(`${animal.ico} سال ${animal.n}`, leftCx, 262);
+  ctx.restore();
 
-  ctx.fillStyle="rgba(255,255,255,0.94)";
-  ctx.font="bold 20px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  ctx.fillText(`🎂 ${fa(d)} ${mName} ${fa(isKu ? y + 1321 : y)}`,W-48,176);
+  ctx.strokeStyle = "rgba(255,255,255,0.14)";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(256, 64); ctx.lineTo(256, H - 64); ctx.stroke();
 
-  const customWish=(document.getElementById("aiCustomWish")?.value||"").trim();
-  ctx.fillStyle="rgba(255,255,255,0.96)";
-  ctx.font="19px 'Vazirmatn', 'Inter', system-ui, sans-serif";
-  wrapCanvasText(ctx,customWish||z.wish,W-48,232,460,33);
+  ctx.save();
+  ctx.direction = "rtl";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "top";
+  const rightX = W - 48;
+  const maxTextW = W - 48 - 284;
 
-  ctx.fillStyle="rgba(255,255,255,0.75)";
-  ctx.font="13.5px 'Vazirmatn', 'Inter', sans-serif";
-  ctx.fillText(`سنگ خوش‌یمن: ${z.stone}  |  Smart Cal AI`,W-48,H-44);
+  ctx.fillStyle = th.accent;
+  ctx.font = "700 17px 'Vazirmatn', sans-serif";
+  ctx.fillText(`🎂 ${fa(d)} ${mName} ${fa(isKu ? y + 1321 : y)}`, rightX, 62);
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "800 34px 'Vazirmatn', sans-serif";
+  const greetTitle = name ? `${name} عزیز، تولدت مبارک!` : `تولدت مبارک!`;
+  ctx.fillText(greetTitle, rightX, 102);
+
+  const customWish = (document.getElementById("aiCustomWish")?.value || "").trim();
+  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.font = "500 19px 'Vazirmatn', sans-serif";
+  wrapCanvasText(ctx, customWish || z.wish, rightX, 166, maxTextW, 34);
+
+  ctx.fillStyle = "rgba(255,255,255,0.62)";
+  ctx.font = "500 14px 'Vazirmatn', sans-serif";
+  ctx.fillText(`سنگ خوش‌یمن: ${z.stone}`, rightX, H - 64);
+  ctx.restore();
 }
 
-function loadImgElement(url,useCors=false,timeoutMs=9500){
-  return new Promise((resolve,reject)=>{
-    const img=new Image();
-    if(useCors) img.crossOrigin="anonymous";
-    const tid=setTimeout(()=>{img.src="";reject(new Error("timeout"));},timeoutMs);
-    img.onload=()=>{clearTimeout(tid);if(img.naturalWidth>64)resolve(img);else reject(new Error("empty"));};
-    img.onerror=()=>{clearTimeout(tid);reject(new Error("err"));};
-    img.src=url;
-  });
+function generateBirthdayPostcard(forceNew = false) {
+  if (forceNew) postcardVariant = (postcardVariant + 1) % POSTCARD_THEMES.length;
+  drawPostcardComposite();
 }
 
-async function generateBirthdayPostcard(forceNew=false){
-  if(forceNew) postcardVariant = (postcardVariant + 1 + Math.floor(Math.random() * 17)) % 999;
-  const {y,m,d}=birthCfg;
-  const z=ZODIAC_MONTHS[m-1];
-  const styleVal=document.getElementById("aiCardStyleSelect")?.value||"celestial";
-  const userRawPrompt=(document.getElementById("aiCustomPrompt")?.value||"").trim();
-  const promptKey=`${m}-${d}-${styleVal}-${userRawPrompt}-${postcardVariant}`;
-
-  // 1. Immediately render high-res prompt-reactive procedural canvas so user gets instant visual response
-  drawPostcardComposite(lastAiPromptKey===promptKey?lastAiBgImg:null);
-  if(lastAiPromptKey===promptKey && lastAiBgImg && !forceNew) return;
-
-  const styleMap={
-    celestial:"magical celestial nebula, glowing golden constellations, cosmic stardust, 8k digital art",
-    floral:"luxurious watercolor botanical painting, blooming spring flowers, golden bokeh light",
-    luxury:"royal midnight blue and shimmering gold foil celebration art, glowing candles, cinematic lighting",
-    dreamy:"ethereal fantasy dreamscape, glowing butterflies, aurora lights, enchanted crystal garden",
-    cyber:"futuristic neon cyber holographic light waves, glowing cyan and violet crystal art"
-  };
-
-  const loader=document.getElementById("aiCardLoader");
-  const statusEl=document.getElementById("aiCardStatus");
-  if(loader && forceNew) loader.style.display="flex";
-  if(statusEl) statusEl.textContent=userRawPrompt?"🎨 هوش مصنوعی در حال پردازش پرامپت شما و خلق تصویر جدید...":"🎨 در حال خلق تصویر اختصاصی با هوش مصنوعی...";
-
-  try{
-    const userEnPrompt=await translatePromptToEn(userRawPrompt);
-    const subjectPart=userEnPrompt?`${userEnPrompt}, ${z.en}`:z.en;
-    const cleanPrompt=`Birthday greeting card background artwork, ${subjectPart}, ${styleMap[styleVal]}, vibrant colors, no text, no watermark`;
-    const seed = Math.abs((y*31 + m*17 + d*7 + postcardVariant*131 + Date.now()%997));
-
-    // Race multiple AI Image endpoints concurrently (Flux, Turbo, and Default Pollinations CDN) without restrictive CORS block
-    const endpoints=[
-      `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=768&height=512&seed=${seed}&nologo=true&model=flux`,
-      `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=768&height=512&seed=${seed}&nologo=true&model=turbo`,
-      `https://pollinations.ai/p/${encodeURIComponent(cleanPrompt)}?width=768&height=512&seed=${seed}&nologo=true`
-    ];
-
-    let loadedImg = null;
-    for (const url of endpoints) {
-      try {
-        loadedImg = await loadImgElement(url, false, 8500);
-        if (loadedImg) break;
-      } catch (e) {}
-    }
-
-    if(loadedImg){
-      lastAiBgImg=loadedImg;
-      lastAiPromptKey=promptKey;
-      drawPostcardComposite(loadedImg);
-      if(statusEl) statusEl.textContent=`✅ تصویر هوش مصنوعی بر اساس پرامپت شما و برج ${z.sign} تولید شد.`;
-    }else{
-      lastAiBgImg=null;
-      lastAiPromptKey=promptKey;
-      drawPostcardComposite(null);
-      if(statusEl) statusEl.textContent=`✅ کارت پستال گرافیکی هوشمند بر اساس پرامپت شما (${z.sign}) طراحی شد.`;
-    }
-  }catch(e){
-    drawPostcardComposite(null);
-    if(statusEl) statusEl.textContent=`✅ کارت پستال گرافیکی هوشمند ویژه متولدین ${JM[m-1]} آماده شد.`;
-  }finally{
-    if(loader) loader.style.display="none";
-  }
-}
-
-function downloadPostcard(){
-  const canvas=document.getElementById("bdayCanvas");
-  if(!canvas)return;
-  try{
-    const dataUrl=canvas.toDataURL("image/png");
-    const link=document.createElement("a");
-    link.download=`SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
-    link.href=dataUrl;
+function downloadPostcard() {
+  const canvas = document.getElementById("bdayCanvas");
+  if (!canvas) return;
+  try {
+    const dataUrl = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.download = `SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
+    link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }catch(e){
-    // If external WebView image tainted canvas, re-render clean untainted canvas and download automatically
-    drawPostcardComposite(null);
-    try{
-      const dataUrl=canvas.toDataURL("image/png");
-      const link=document.createElement("a");
-      link.download=`SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
-      link.href=dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      if(lastAiBgImg) drawPostcardComposite(lastAiBgImg);
-    }catch(err){
-      alert("کارت پستال آماده است؛ می‌توانید از صفحه اسکرین‌شات بگیرید.");
-    }
+  } catch (e) {
+    alert("امکان ذخیره مستقیم فایل وجود ندارد؛ می‌توانید از کارت اسکرین‌شات بگیرید.");
   }
 }
 
@@ -5715,7 +5787,7 @@ window.addEventListener("pageshow", () => {
   syncTodayReference(true);
 });
 
-applyCfg();render();checkBirthdaySurprise(false);syncTodayReference(true);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
+applyCfg();render();checkBirthdaySurprise(false);syncTodayReference(true);fetchWeather(true);fetchMarket(false);setTimeout(()=>{detectUserLocation(false);if(typeof detectAndSyncUserCountry==="function")detectAndSyncUserCountry(false);},600);
 setInterval(fetchWeather,1800000);
 setInterval(() => {
   if (typeof updatePersistentStatusDate === "function") {
