@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v35";
+  const VER = "v36";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1893,101 +1893,77 @@ function isDaylightNow() {
   return hr >= 6 && hr < 18;
 }
 
+function isPhoneDarkMode() {
+  const sysDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const tMode = (typeof cfg !== "undefined" && cfg && cfg.theme) || "auto";
+  if (tMode === "dark") return true;
+  if (tMode === "light") return false;
+  return sysDark;
+}
+
 function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
   const S = 512;
   const c = document.createElement("canvas");
   c.width = S; c.height = S;
   const ctx = c.getContext("2d");
 
-  const isDay = isDaylightNow();
-  const useNightVisual = !isDay;
+  const useDarkIcon = (typeof isDark === "boolean") ? isDark : isPhoneDarkMode();
 
-  const bgColor = useNightVisual ? "#0B101B" : "#F8FAFC";
-  const surfaceColor = useNightVisual ? "#131C2E" : "#FFFFFF";
-  const borderColor = useNightVisual ? "rgba(148,163,184,0.18)" : "rgba(15,23,42,0.10)";
-  const primaryText = useNightVisual ? "#F8FAFC" : "#0F172A";
-  const mutedText = useNightVisual ? "#94A3B8" : "#64748B";
-  const accent = useNightVisual ? "#6EA8FF" : (accentHex || "#1B6EF3");
+  const bgColor = useDarkIcon ? "#090D16" : "#F4F6FA";
+  const surfaceColor = useDarkIcon ? "#131B2B" : "#FFFFFF";
+  const borderColor = useDarkIcon ? "rgba(148,163,184,0.22)" : "rgba(15,23,42,0.12)";
+  const primaryText = useDarkIcon ? "#F8FAFC" : "#0F172A";
+  const mutedText = useDarkIcon ? "#94A3B8" : "#64748B";
+  const accent = useDarkIcon ? "#6EA8FF" : (accentHex || "#1B6EF3");
 
-  // Full-bleed background
+  // Full-bleed background matching phone light/dark mode
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Subtle top/bottom ambient glow for Day (warm solar/sky) vs Night (deep twilight/starlight)
-  const ambGrad = ctx.createLinearGradient(0, 0, 0, S);
-  if (useNightVisual) {
-    ambGrad.addColorStop(0, "rgba(56, 189, 248, 0.12)");
-    ambGrad.addColorStop(1, "rgba(15, 23, 42, 0.0)");
-  } else {
-    ambGrad.addColorStop(0, "rgba(251, 191, 36, 0.18)");
-    ambGrad.addColorStop(1, "rgba(27, 110, 243, 0.05)");
-  }
-  ctx.fillStyle = ambGrad;
-  ctx.fillRect(0, 0, S, S);
-
-  // Inner card frame centered inside safe zone
+  // Inner calendar card
   ctx.fillStyle = surfaceColor;
   ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.roundRect(64, 64, 384, 384, 86);
+  ctx.roundRect(56, 56, 400, 400, 88);
   ctx.fill();
   ctx.stroke();
 
-  // Top accent bar centered at x = S / 2
+  // Top accent bar centered
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(S / 2 - 42, 94, 84, 8, 4);
+  ctx.roundRect(S / 2 - 48, 86, 96, 10, 5);
   ctx.fill();
 
-  // Day/Night indicator badge on top-right of inner card
-  ctx.save();
-  if (useNightVisual) {
-    ctx.fillStyle = "#FBBF24";
-    ctx.beginPath();
-    ctx.arc(396, 112, 11, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = surfaceColor;
-    ctx.beginPath();
-    ctx.arc(401, 108, 10, 0, Math.PI * 2);
-    ctx.fill();
-  } else {
-    ctx.fillStyle = "#F59E0B";
-    ctx.beginPath();
-    ctx.arc(396, 112, 11, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-
-  // Weekday centered at top area
+  // Weekday label at top
   drawExactCenteredText(
     ctx,
-    weekDayStr || monthName,
+    weekDayStr || "",
     S / 2,
-    146,
+    138,
     "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     mutedText
   );
 
-  // Day number dead-center at (S / 2, S / 2 + 12)
-  const dayStrClean = String(dayNumStr).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 142 : 162;
+  // Prominent Day Number centered in the middle of the icon
+  const dayStrClean = String(dayNumStr ?? "").trim();
+  const numFontSize = dayStrClean.length >= 2 ? 156 : 176;
   drawExactCenteredText(
     ctx,
     dayStrClean,
     S / 2,
-    S / 2 + 12,
-    `800 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
+    S / 2 + 16,
+    `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     primaryText
   );
 
-  // Month label centered near bottom of card
+  // Month name at bottom of card
   drawExactCenteredText(
     ctx,
-    monthName,
+    monthName || "",
     S / 2,
-    396,
-    "700 28px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    404,
+    "700 30px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     accent
   );
 
@@ -5497,6 +5473,17 @@ function syncTodayReference(forceRenderAndIcon = false) {
 setInterval(() => {
   syncTodayReference(false);
 }, 15000);
+
+(function scheduleExactMidnightSync(){
+  const nNow = new Date();
+  const nextMidnight = new Date(nNow.getFullYear(), nNow.getMonth(), nNow.getDate() + 1, 0, 0, 1, 0);
+  const msToMidnight = Math.max(500, nextMidnight.getTime() - nNow.getTime());
+  setTimeout(() => {
+    syncTodayReference(true);
+    if (typeof updatePersistentStatusDate === "function") updatePersistentStatusDate(true);
+    scheduleExactMidnightSync();
+  }, msToMidnight);
+})();
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") {
