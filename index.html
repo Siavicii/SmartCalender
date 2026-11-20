@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v29";
+  const VER = "v31";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1857,11 +1857,39 @@ function drawExactCenteredText(ctx, text, cx, cy, fontStr, fillStyle) {
   ctx.restore();
 }
 
+function timeStrToMinutes(tStr) {
+  if (!tStr || !tStr.includes(":")) return null;
+  const parts = tStr.split(":").map(Number);
+  if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
+  return parts[0] * 60 + parts[1];
+}
+
 function isDaylightNow() {
+  const nowObj = new Date();
+  const curMins = nowObj.getHours() * 60 + nowObj.getMinutes();
+
+  // 1. Primary priority: Geographic coordinates (lat, lon) -> Astronomical Sunrise & Sunset for today
+  if (typeof cfg !== "undefined" && cfg && cfg.city && typeof calcSunTimes === "function") {
+    const parts = String(cfg.city).split(",");
+    const lat = parseFloat(parts[0]);
+    const lon = parseFloat(parts[1]);
+    if (!isNaN(lat) && !isNaN(lon)) {
+      const sun = calcSunTimes(nowObj.getFullYear(), nowObj.getMonth() + 1, nowObj.getDate(), lat, lon);
+      const riseMins = timeStrToMinutes(sun?.rise);
+      const setMins = timeStrToMinutes(sun?.set);
+      if (riseMins !== null && setMins !== null) {
+        return curMins >= riseMins && curMins < setMins;
+      }
+    }
+  }
+
+  // 2. Secondary priority: Live weather `is_day` from selected location
   if (typeof lastWeatherDataObj !== "undefined" && lastWeatherDataObj && lastWeatherDataObj.current_weather && lastWeatherDataObj.current_weather.is_day !== undefined) {
     return Number(lastWeatherDataObj.current_weather.is_day) === 1;
   }
-  const hr = new Date().getHours();
+
+  // 3. Fallback: Local clock (06:00 - 18:00)
+  const hr = nowObj.getHours();
   return hr >= 6 && hr < 18;
 }
 
@@ -1872,14 +1900,14 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   const ctx = c.getContext("2d");
 
   const isDay = isDaylightNow();
-  const useNightVisual = !isDay || Boolean(isDark);
+  const useNightVisual = !isDay;
 
   const bgColor = useNightVisual ? "#0B101B" : "#F8FAFC";
   const surfaceColor = useNightVisual ? "#131C2E" : "#FFFFFF";
   const borderColor = useNightVisual ? "rgba(148,163,184,0.18)" : "rgba(15,23,42,0.10)";
   const primaryText = useNightVisual ? "#F8FAFC" : "#0F172A";
   const mutedText = useNightVisual ? "#94A3B8" : "#64748B";
-  const accent = useNightVisual ? (accentHex || "#6EA8FF") : (accentHex || "#1B6EF3");
+  const accent = useNightVisual ? "#6EA8FF" : (accentHex || "#1B6EF3");
 
   // Full-bleed background
   ctx.fillStyle = bgColor;
@@ -1888,11 +1916,11 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   // Subtle top/bottom ambient glow for Day (warm solar/sky) vs Night (deep twilight/starlight)
   const ambGrad = ctx.createLinearGradient(0, 0, 0, S);
   if (useNightVisual) {
-    ambGrad.addColorStop(0, "rgba(56, 189, 248, 0.10)");
+    ambGrad.addColorStop(0, "rgba(56, 189, 248, 0.12)");
     ambGrad.addColorStop(1, "rgba(15, 23, 42, 0.0)");
   } else {
-    ambGrad.addColorStop(0, "rgba(251, 191, 36, 0.14)");
-    ambGrad.addColorStop(1, "rgba(27, 110, 243, 0.04)");
+    ambGrad.addColorStop(0, "rgba(251, 191, 36, 0.18)");
+    ambGrad.addColorStop(1, "rgba(27, 110, 243, 0.05)");
   }
   ctx.fillStyle = ambGrad;
   ctx.fillRect(0, 0, S, S);
@@ -1912,10 +1940,9 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   ctx.roundRect(S / 2 - 42, 94, 84, 8, 4);
   ctx.fill();
 
-  // Day/Night micro indicator badge on top-right of inner card
+  // Day/Night indicator badge on top-right of inner card
   ctx.save();
   if (useNightVisual) {
-    // Crescent moon indicator
     ctx.fillStyle = "#FBBF24";
     ctx.beginPath();
     ctx.arc(396, 112, 11, 0, Math.PI * 2);
@@ -1925,10 +1952,9 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
     ctx.arc(401, 108, 10, 0, Math.PI * 2);
     ctx.fill();
   } else {
-    // Sun indicator
     ctx.fillStyle = "#F59E0B";
     ctx.beginPath();
-    ctx.arc(396, 112, 10, 0, Math.PI * 2);
+    ctx.arc(396, 112, 11, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.restore();
