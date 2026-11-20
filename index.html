@@ -1271,7 +1271,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v59";
+  const VER = "v59.1";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3283,106 +3283,148 @@ let lastFxRatios = {
 };
 
 function getMarketSvg(type) {
-  const s = (inner) => `<svg viewBox="0 0 40 40" width="34" height="34" style="flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.18))">${inner}</svg>`;
-  const defs = `
-    <defs>
-      <linearGradient id="gBar" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#FDE68A"/><stop offset="45%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#B45309"/>
-      </linearGradient>
-      <linearGradient id="gBarTop" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FBBF24"/>
-      </linearGradient>
-      <radialGradient id="coinGold" cx="35%" cy="35%" r="65%">
-        <stop offset="0%" stop-color="#FEF08A"/><stop offset="55%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#92400E"/>
-      </radialGradient>
-      <linearGradient id="usdGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#DCFCE7"/><stop offset="100%" stop-color="#86EFAC"/>
-      </linearGradient>
-      <linearGradient id="eurGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#DBEAFE"/><stop offset="100%" stop-color="#93C5FD"/>
-      </linearGradient>
-      <linearGradient id="gbpGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#F3E8FF"/><stop offset="100%" stop-color="#D8B4FE"/>
-      </linearGradient>
-      <linearGradient id="aedGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FCD34D"/>
-      </linearGradient>
-      <linearGradient id="tryGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#FFE4E6"/><stop offset="100%" stop-color="#FDA4AF"/>
-      </linearGradient>
-      <linearGradient id="cadGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#FEE2E2"/><stop offset="100%" stop-color="#FCA5A5"/>
-      </linearGradient>
-    </defs>`;
+  const frame = (inner) => `
+    <span style="width:38px;height:28px;border-radius:8px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(148,163,184,0.28);box-shadow:0 3px 8px rgba(0,0,0,0.18);background:#1E293B">
+      <svg viewBox="0 0 48 36" width="38" height="28" style="display:block;width:100%;height:100%">${inner}</svg>
+    </span>`;
+  const badge = (inner, gradId, c1, c2, borderHex) => `
+    <span style="width:36px;height:36px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.22)">
+      <svg viewBox="0 0 44 44" width="36" height="36" style="display:block">
+        <defs>
+          <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="40" height="40" rx="12" fill="url(#${gradId})" stroke="${borderHex}" stroke-width="1.4"/>
+        ${inner}
+      </svg>
+    </span>`;
 
-  if (type === "g18") return s(defs + `
-    <polygon points="8,28 14,14 26,14 32,28" fill="url(#gBar)" stroke="#92400E" stroke-width="1"/>
-    <polygon points="14,14 16,11 24,11 26,14" fill="url(#gBarTop)"/>
-    <text x="20" y="24" font-size="7.5" font-weight="bold" fill="#78350F" text-anchor="middle">18K</text>
-    <path d="M9,12 L11,10 M31,12 L29,10 M20,7 L20,9" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/>
-  `);
-  if (type === "g24") return s(defs + `
-    <polygon points="4,30 9,19 21,19 25,30" fill="url(#gBar)" stroke="#78350F" stroke-width="0.9"/>
-    <polygon points="15,30 20,19 32,19 36,30" fill="url(#gBar)" stroke="#78350F" stroke-width="0.9"/>
-    <polygon points="10,20 15,10 25,10 30,20" fill="url(#gBarTop)" stroke="#92400E" stroke-width="0.9"/>
-    <text x="20" y="17.5" font-size="6.5" font-weight="bold" fill="#78350F" text-anchor="middle">999.9</text>
-  `);
-  if (type === "emami") return s(defs + `
-    <circle cx="20" cy="20" r="16" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.3"/>
-    <circle cx="20" cy="20" r="12.5" fill="none" stroke="#FEF08A" stroke-width="1" stroke-dasharray="2,1.5"/>
-    <circle cx="20" cy="17" r="4" fill="#B45309" opacity="0.75"/>
-    <path d="M13,26 C13,22 27,22 27,26" fill="#B45309" opacity="0.75"/>
-  `);
-  if (type === "nim") return s(defs + `
-    <circle cx="20" cy="20" r="14" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
-    <circle cx="20" cy="20" r="10.8" fill="none" stroke="#FEF08A" stroke-width="0.9" stroke-dasharray="2,1.5"/>
-    <text x="20" y="23" font-size="9" font-weight="bold" fill="#78350F" text-anchor="middle">½</text>
-  `);
-  if (type === "rob") return s(defs + `
-    <circle cx="20" cy="20" r="12" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
-    <circle cx="20" cy="20" r="9" fill="none" stroke="#FEF08A" stroke-width="0.8"/>
-    <text x="20" y="22.8" font-size="8.5" font-weight="bold" fill="#78350F" text-anchor="middle">¼</text>
-  `);
-  if (type === "ounce") return s(defs + `
-    <circle cx="20" cy="20" r="15.5" fill="url(#coinGold)" stroke="#92400E" stroke-width="1.2"/>
-    <ellipse cx="20" cy="20" rx="7" ry="15" fill="none" stroke="#FEF3C7" stroke-width="1"/>
-    <line x1="5" y1="20" x2="35" y2="20" stroke="#FEF3C7" stroke-width="1"/>
-    <text x="20" y="23" font-size="8" font-weight="bold" fill="#78350F" text-anchor="middle">XAU</text>
-  `);
-  if (type === "usd") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#usdGrad)" stroke="#15803D" stroke-width="1.3"/>
-    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#166534" stroke-width="0.8" stroke-dasharray="2,1"/>
-    <circle cx="20" cy="20" r="6" fill="#BBF7D0" stroke="#15803D" stroke-width="0.9"/>
-    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#14532D" text-anchor="middle">$</text>
-  `);
-  if (type === "eur") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#eurGrad)" stroke="#1D4ED8" stroke-width="1.3"/>
-    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#1E40AF" stroke-width="0.8"/>
-    <circle cx="20" cy="20" r="6" fill="#BFDBFE" stroke="#1D4ED8" stroke-width="0.9"/>
-    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#1E3A8A" text-anchor="middle">€</text>
-  `);
-  if (type === "gbp") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#gbpGrad)" stroke="#6D28D9" stroke-width="1.3"/>
-    <rect x="6" y="12" width="28" height="16" rx="2" fill="none" stroke="#5B21B6" stroke-width="0.8"/>
-    <circle cx="20" cy="20" r="6" fill="#E9D5FF" stroke="#6D28D9" stroke-width="0.9"/>
-    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#4C1D95" text-anchor="middle">£</text>
-  `);
-  if (type === "aed") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#aedGrad)" stroke="#B45309" stroke-width="1.3"/>
-    <rect x="3" y="9" width="7" height="22" rx="1.5" fill="#DC2626" opacity="0.85"/>
-    <text x="23" y="23" font-size="9.5" font-weight="bold" fill="#78350F" text-anchor="middle">AED</text>
-  `);
-  if (type === "try") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#tryGrad)" stroke="#BE123C" stroke-width="1.3"/>
-    <circle cx="20" cy="20" r="6" fill="#FECDD3" stroke="#BE123C" stroke-width="0.9"/>
-    <text x="20" y="23.5" font-size="11" font-weight="bold" fill="#881337" text-anchor="middle">₺</text>
-  `);
-  if (type === "cad") return s(defs + `
-    <rect x="3" y="9" width="34" height="22" rx="3.5" fill="url(#cadGrad)" stroke="#DC2626" stroke-width="1.3"/>
-    <rect x="3" y="9" width="6" height="22" fill="#EF4444" opacity="0.7"/>
-    <rect x="31" y="9" width="6" height="22" fill="#EF4444" opacity="0.7"/>
-    <text x="20" y="23.5" font-size="10" font-weight="bold" fill="#991B1B" text-anchor="middle">C$</text>
-  `);
+  // ====== بازطراحی آیکون‌های طلا و سکه ======
+  if (type === "g18") {
+    return badge(`
+      <polygon points="10,30 15,15 29,15 34,30" fill="#FEF08A" stroke="#78350F" stroke-width="1.2"/>
+      <polygon points="15,15 17.5,11 26.5,11 29,15" fill="#FFFBEB" stroke="#92400E" stroke-width="1"/>
+      <text x="22" y="25.5" font-size="8.5" font-weight="900" fill="#78350F" text-anchor="middle">18K</text>
+      <circle cx="33" cy="11" r="2" fill="#FFFFFF"/>
+    `, "g18Grad", "#FBBF24", "#B45309", "#FDE68A");
+  }
+  if (type === "g24") {
+    return badge(`
+      <polygon points="6,31 11,19 22,19 26,31" fill="#FDE68A" stroke="#78350F" stroke-width="1"/>
+      <polygon points="18,31 22.5,19 33.5,19 38,31" fill="#F59E0B" stroke="#78350F" stroke-width="1"/>
+      <polygon points="12,19 16.5,10 27.5,10 32,19" fill="#FEF9C3" stroke="#92400E" stroke-width="1"/>
+      <text x="22" y="17" font-size="6.8" font-weight="900" fill="#78350F" text-anchor="middle">24K</text>
+    `, "g24Grad", "#F59E0B", "#92400E", "#FEF08A");
+  }
+  if (type === "emami") {
+    return badge(`
+      <circle cx="22" cy="22" r="14.5" fill="#FEF08A" stroke="#78350F" stroke-width="1.5"/>
+      <circle cx="22" cy="22" r="11" fill="none" stroke="#B45309" stroke-width="1.2" stroke-dasharray="2.2,1.6"/>
+      <circle cx="22" cy="18.5" r="3.6" fill="#92400E"/>
+      <path d="M15,28.5 C15,24.5 29,24.5 29,28.5" fill="#92400E"/>
+    `, "emamiGrad", "#FBBF24", "#92400E", "#FEF3C7");
+  }
+  if (type === "nim") {
+    return badge(`
+      <circle cx="22" cy="22" r="13.5" fill="#FDE68A" stroke="#78350F" stroke-width="1.4"/>
+      <circle cx="22" cy="22" r="10" fill="none" stroke="#B45309" stroke-width="1.1"/>
+      <text x="22" y="25.5" font-size="10.5" font-weight="900" fill="#78350F" text-anchor="middle">½</text>
+    `, "nimGrad", "#F59E0B", "#B45309", "#FDE68A");
+  }
+  if (type === "rob") {
+    return badge(`
+      <circle cx="22" cy="22" r="12" fill="#FEF08A" stroke="#78350F" stroke-width="1.4"/>
+      <circle cx="22" cy="22" r="8.8" fill="none" stroke="#B45309" stroke-width="1.1"/>
+      <text x="22" y="25" font-size="9.5" font-weight="900" fill="#78350F" text-anchor="middle">¼</text>
+    `, "robGrad", "#FBBF24", "#B45309", "#FEF08A");
+  }
+  if (type === "ounce") {
+    return badge(`
+      <circle cx="22" cy="22" r="14" fill="#FEF9C3" stroke="#78350F" stroke-width="1.3"/>
+      <ellipse cx="22" cy="22" rx="6.5" ry="14" fill="none" stroke="#B45309" stroke-width="1.1"/>
+      <line x1="8" y1="22" x2="36" y2="22" stroke="#B45309" stroke-width="1.1"/>
+      <rect x="11" y="17.5" width="22" height="9" rx="3" fill="#78350F"/>
+      <text x="22" y="24.5" font-size="7.2" font-weight="900" fill="#FEF08A" text-anchor="middle">XAU</text>
+    `, "ozGrad", "#D97706", "#78350F", "#FDE68A");
+  }
+
+  // ====== پرچم کشورها برای ارزهای خارجی ======
+  // دلار آمریکا (پرچم آمریکا)
+  if (type === "usd") {
+    return frame(`
+      <rect x="0" y="0" width="48" height="36" fill="#FFFFFF"/>
+      <rect x="0" y="0" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="5.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="11" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="16.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="22" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="27.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="33" width="48" height="3" fill="#B91C1C"/>
+      <rect x="0" y="0" width="21" height="19.5" fill="#1E3A8A"/>
+      <g fill="#FFFFFF">
+        <circle cx="4.5" cy="4.2" r="1.1"/><circle cx="10.5" cy="4.2" r="1.1"/><circle cx="16.5" cy="4.2" r="1.1"/>
+        <circle cx="7.5" cy="8.2" r="1.1"/><circle cx="13.5" cy="8.2" r="1.1"/>
+        <circle cx="4.5" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="16.5" cy="12.2" r="1.1"/>
+        <circle cx="7.5" cy="16.2" r="1.1"/><circle cx="13.5" cy="16.2" r="1.1"/>
+      </g>
+    `);
+  }
+  // یورو اروپا (پرچم اتحادیه اروپا با ۱۲ ستاره)
+  if (type === "eur") {
+    return frame(`
+      <rect x="0" y="0" width="48" height="36" fill="#1D4ED8"/>
+      <g fill="#FACC15">
+        <circle cx="24" cy="7.5" r="1.4"/><circle cx="24" cy="28.5" r="1.4"/>
+        <circle cx="13.5" cy="18" r="1.4"/><circle cx="34.5" cy="18" r="1.4"/>
+        <circle cx="16.5" cy="10.5" r="1.3"/><circle cx="31.5" cy="10.5" r="1.3"/>
+        <circle cx="16.5" cy="25.5" r="1.3"/><circle cx="31.5" cy="25.5" r="1.3"/>
+        <circle cx="19.8" cy="8.2" r="1.25"/><circle cx="28.2" cy="8.2" r="1.25"/>
+        <circle cx="19.8" cy="27.8" r="1.25"/><circle cx="28.2" cy="27.8" r="1.25"/>
+      </g>
+    `);
+  }
+  // پوند انگلیس (پرچم بریتانیا - Union Jack)
+  if (type === "gbp") {
+    return frame(`
+      <rect x="0" y="0" width="48" height="36" fill="#1E3A8A"/>
+      <line x1="0" y1="0" x2="48" y2="36" stroke="#FFFFFF" stroke-width="6.2"/>
+      <line x1="48" y1="0" x2="0" y2="36" stroke="#FFFFFF" stroke-width="6.2"/>
+      <line x1="0" y1="0" x2="48" y2="36" stroke="#DC2626" stroke-width="2.6"/>
+      <line x1="48" y1="0" x2="0" y2="36" stroke="#DC2626" stroke-width="2.6"/>
+      <rect x="19" y="0" width="10" height="36" fill="#FFFFFF"/>
+      <rect x="0" y="13" width="48" height="10" fill="#FFFFFF"/>
+      <rect x="21" y="0" width="6" height="36" fill="#DC2626"/>
+      <rect x="0" y="15" width="48" height="6" fill="#DC2626"/>
+    `);
+  }
+  // درهم امارات (پرچم امارات متحده عربی)
+  if (type === "aed") {
+    return frame(`
+      <rect x="12" y="0" width="36" height="12" fill="#16A34A"/>
+      <rect x="12" y="12" width="36" height="12" fill="#FFFFFF"/>
+      <rect x="12" y="24" width="36" height="12" fill="#111827"/>
+      <rect x="0" y="0" width="13" height="36" fill="#DC2626"/>
+    `);
+  }
+  // لیر ترکیه (پرچم ترکیه با هلال و ستاره)
+  if (type === "try") {
+    return frame(`
+      <rect x="0" y="0" width="48" height="36" fill="#DC2626"/>
+      <circle cx="19.5" cy="18" r="8.2" fill="#FFFFFF"/>
+      <circle cx="21.7" cy="18" r="6.5" fill="#DC2626"/>
+      <polygon points="30.5,14.5 31.6,17.2 34.5,17.2 32.2,18.9 33.1,21.6 30.5,19.9 27.9,21.6 28.8,18.9 26.5,17.2 29.4,17.2" fill="#FFFFFF"/>
+    `);
+  }
+  // دلار کانادا (پرچم کانادا با برگ افرا)
+  if (type === "cad") {
+    return frame(`
+      <rect x="0" y="0" width="12.5" height="36" fill="#DC2626"/>
+      <rect x="12.5" y="0" width="23" height="36" fill="#FFFFFF"/>
+      <rect x="35.5" y="0" width="12.5" height="36" fill="#DC2626"/>
+      <polygon points="24,8.5 26.2,14.5 30,13.2 28.5,17.8 32,19.5 26,21.2 25.2,27.5 24,23.5 22.8,27.5 22,21.2 16,19.5 19.5,17.8 18,13.2 21.8,14.5" fill="#DC2626"/>
+    `);
+  }
   return `<span>${type}</span>`;
 }
 
