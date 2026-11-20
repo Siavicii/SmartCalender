@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v33";
+  const VER = "v34";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2205,8 +2205,13 @@ async function updatePersistentStatusDate(forcePost = false) {
     ]
   };
   const manEl = document.getElementById("dynManifest");
-  if (manEl && manEl.getAttribute("href") !== "./manifest.json") {
-    manEl.setAttribute("href", "./manifest.json");
+  if (manEl) {
+    try {
+      const jsonStr = JSON.stringify(manifestObj);
+      manEl.setAttribute("href", "data:application/manifest+json;charset=utf-8," + encodeURIComponent(jsonStr));
+    } catch (e) {
+      manEl.setAttribute("href", "./manifest.json");
+    }
   }
 
   // 4. Persistent Status Bar Date Notification with Day-Number Icon
