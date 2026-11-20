@@ -11,8 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
-<link rel="apple-touch-icon" id="dynAppleIcon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v42.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v42.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v42.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -1086,7 +1087,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v40";
+  const VER = "v43";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1832,6 +1833,26 @@ function dismissInstallBanner() {
 }
 
 // 1. Minimalist Dynamic 512x512 App Icon (Android & iOS) showing Weekday (روز) & Day Date (تاریخ روز)
+function drawRoundedRectSafe(ctx, x, y, w, h, r) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.beginPath();
+    drawRoundedRectSafe(ctx, x, y, w, h, r);
+    return;
+  }
+  const rad = Math.min(r || 0, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rad, y);
+  ctx.lineTo(x + w - rad, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + rad);
+  ctx.lineTo(x + w, y + h - rad);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - rad, y + h);
+  ctx.lineTo(x + rad, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - rad);
+  ctx.lineTo(x, y + rad);
+  ctx.quadraticCurveTo(x, y, x + rad, y);
+  ctx.closePath();
+}
+
 function drawExactCenteredText(ctx, text, cx, cy, fontStr, fillStyle) {
   ctx.save();
   ctx.font = fontStr;
@@ -1922,45 +1943,43 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
 
   // Safe-zone centered card with balanced margins for all launcher masks
   ctx.fillStyle = surfaceColor;
-  ctx.beginPath();
-  ctx.roundRect(92, 92, 328, 328, 72);
+  drawRoundedRectSafe(ctx, 84, 84, 344, 344, 76);
   ctx.fill();
 
   // Top accent bar centered inside safe zone
   ctx.fillStyle = accent;
-  ctx.beginPath();
-  ctx.roundRect(S / 2 - 42, 114, 84, 8, 4);
+  drawRoundedRectSafe(ctx, S / 2 - 46, 108, 92, 9, 4.5);
   ctx.fill();
 
-  // Weekday label at top of safe card
+  // Weekday label cleanly spaced below top bar
   drawExactCenteredText(
     ctx,
     weekDayStr || "",
     S / 2,
-    154,
-    "700 26px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    158,
+    "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     mutedText
   );
 
-  // Prominent Day Number centered in the middle of the icon
+  // Prominent Day Number centered in the middle of the card
   const dayStrClean = ((typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(dayNumStr ?? "") : String(dayNumStr ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d])).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 136 : 154;
+  const numFontSize = dayStrClean.length >= 2 ? 124 : 142;
   drawExactCenteredText(
     ctx,
     dayStrClean,
     S / 2,
-    S / 2 + 12,
+    264,
     `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     primaryText
   );
 
-  // Month name near bottom of safe card
+  // Month name cleanly spaced below day number
   drawExactCenteredText(
     ctx,
     monthName || "",
     S / 2,
-    386,
-    "700 26px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    370,
+    "700 30px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     accent
   );
 
@@ -1978,14 +1997,12 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   ctx.fillStyle = "#FFFFFF";
 
   // Top calendar binding rings (left & right)
-  ctx.beginPath();
-  ctx.roundRect(28, 4, 14, 18, 6);
-  ctx.roundRect(86, 4, 14, 18, 6);
+  drawRoundedRectSafe(ctx, 28, 4, 14, 18, 6);
+  drawRoundedRectSafe(ctx, 86, 4, 14, 18, 6);
   ctx.fill();
 
   // Main rounded squircle calendar tile (fills 90% of status bar slot for maximum legibility)
-  ctx.beginPath();
-  ctx.roundRect(8, 16, 112, 106, 24);
+  drawRoundedRectSafe(ctx, 8, 16, 112, 106, 24);
   ctx.fill();
 
   // Cut out transparent top header bar groove & ultra-bold Day Number in the center
@@ -1993,8 +2010,7 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   ctx.fillStyle = "#000000";
 
   // Top header separator line cutout
-  ctx.beginPath();
-  ctx.roundRect(18, 34, 92, 5, 2.5);
+  drawRoundedRectSafe(ctx, 18, 34, 92, 5, 2.5);
   ctx.fill();
 
   // Huge, crystal-clear Day Number cutout (auto-scales for 1 or 2 digits)
@@ -2017,14 +2033,12 @@ function generateNotifDrawerIconDataUrl(dayNumStr, monthName, accentHex, isDark,
   const ctx = c.getContext("2d");
 
   ctx.fillStyle = isDark ? "#0F131A" : "#FFFFFF";
-  ctx.beginPath();
-  ctx.roundRect(0, 0, S, S, 52);
+  drawRoundedRectSafe(ctx, 0, 0, S, S, 52);
   ctx.fill();
 
   ctx.strokeStyle = isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.10)";
   ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.roundRect(14, 14, S - 28, S - 28, 42);
+  drawRoundedRectSafe(ctx, 14, 14, S - 28, S - 28, 42);
   ctx.stroke();
 
   ctx.fillStyle = isDark ? "#94A3B8" : "#64748B";
@@ -2070,7 +2084,7 @@ function updateStatusDateBtnUI(primaryDayStr = "") {
 
   if (permStateEl) {
     if (!("Notification" in window)) {
-      permStateEl.textContent = "مرورگر فعلی از اعلان سیستم پشتیبانی نمی‌کند (اپ را نصب کنید)";
+      permStateEl.textContent = isIosDevice() ? "در iOS نمایش اعلان در نوار بالا نیازمند iOS 16.4+ و نصب از Safari است" : "مرورگر فعلی از اعلان سیستم پشتیبانی نمی‌کند";
       permStateEl.style.color = "var(--hol)";
     } else if (perm === "denied") {
       permStateEl.textContent = "⚠️ مجوز اعلان در مرورگر مسدود شده است (از تنظیمات سایت مجوز دهید)";
@@ -2092,11 +2106,12 @@ async function activateOrRefreshStatusNotif() {
   localStorage.setItem("cal_status_notif_v1", "true");
   lastNotifSignature = ""; // Force re-post even if date hasn't changed
   if (!("Notification" in window)) {
-    if (isIosDevice() && !isStandalonePwa()) {
-      alert("در آیفون (iOS)، برای فعال شدن اعلان تاریخ در نوار بالا، ابتدا دکمه Share (⬆️) سافاری را بزنید و Add to Home Screen را انتخاب کنید.");
+    if (isIosDevice()) {
+      alert("در سیستم‌عامل iOS، نمایش اعلان وب فقط در نسخه‌های جدیدتر (iOS 16.4 به بالا) و پس از افزودن برنامه به صفحه اصلی (Add to Home Screen) در سافاری امکان‌پذیر است؛ در این دستگاه از نمایش تاریخ در خود برنامه و ویجت/آیکون استفاده می‌شود.");
     } else {
-      alert("مرورگر شما از اعلان وب پشتیبانی نمی‌کند.");
+      alert("مرورگر فعلی از اعلان سیستم پشتیبانی نمی‌کند.");
     }
+    updateStatusDateBtnUI();
     return;
   }
   if (Notification.permission === "default") {
@@ -5066,8 +5081,7 @@ function drawPostcardComposite(bgImage,isTainted=false){
 
   ctx.strokeStyle="rgba(255,255,255,0.34)";
   ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.roundRect(22,22,W-44,H-44,24);
+  drawRoundedRectSafe(ctx, 22,22,W-44,H-44,24);
   ctx.stroke();
 
   ctx.fillStyle="rgba(15,23,42,0.54)";
