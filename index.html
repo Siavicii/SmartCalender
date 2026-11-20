@@ -94,7 +94,12 @@ input,select,textarea,button{font-family:var(--app-font)}
 .note-tag{font-size:10px;padding:2px 6px;border-radius:6px;background:var(--pri-bg);color:var(--pri);font-weight:700}
 html{background-color:var(--bg);min-height:100%;height:100%;overscroll-behavior-y:none;transition:background-color .25s}
 body{background:var(--bg);background-attachment:fixed;color:var(--txt);padding:calc(12px + env(safe-area-inset-top, 0px)) calc(12px + env(safe-area-inset-right, 0px)) calc(84px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));display:flex;justify-content:center;min-height:100dvh;overscroll-behavior-y:none;transition:background .25s,color .25s}
-.app{width:100%;max-width:450px;display:flex;flex-direction:column;gap:12px}
+.app{width:100%;max-width:460px;display:flex;flex-direction:column;gap:12px}
+@media (min-width:900px){
+  body{padding-top:20px;padding-bottom:96px}
+  .app{max-width:540px}
+  .nav-in{max-width:540px}
+}
 
 /* Top Bar (Responsive across FA, KU, EN without overflow) */
 .bar{display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;max-width:100%;min-width:0}
@@ -1271,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v59.3";
+  const VER = "v59.5";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2161,7 +2166,19 @@ const isIosDevice = () => /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 function initPwaInstallAndSw() {
   // Register Service Worker (./sw.js) for offline support & persistent status-bar notifications on Android & iOS
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).then(reg => {
+      reg.update().catch(() => {});
+      if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      reg.addEventListener("updatefound", () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener("statechange", () => {
+          if (nw.state === "installed" && navigator.serviceWorker.controller) {
+            nw.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+    }).catch(() => {});
   }
 
   if (isStandalonePwa()) return;
@@ -5780,15 +5797,21 @@ initPwaInstallAndSw();
   const checkRemoteUpdate = async () => {
     if (location.protocol !== "https:" && location.protocol !== "http:") return;
     try {
-      const resp = await fetch("./index.html?_chk=" + Date.now(), { cache: "no-store" });
-      if (!resp || !resp.ok) return;
-      const etag = resp.headers.get("etag") || "";
-      const lastMod = resp.headers.get("last-modified") || "";
-      const text = await resp.text();
-      // Compute lightweight content fingerprint of remote index.html
-      let h = 0;
-      for (let i = 0; i < text.length; i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0;
-      const stamp = `${etag}|${lastMod}|${text.length}:${h}`;
+      const vResp = await fetch("./version.json?_v=" + Date.now(), { cache: "no-store" }).catch(() => null);
+      let stamp = "";
+      if (vResp && vResp.ok) {
+        const vText = await vResp.text();
+        stamp = "ver:" + vText.trim();
+      } else {
+        const resp = await fetch("./index.html?_chk=" + Date.now(), { cache: "no-store" });
+        if (!resp || !resp.ok) return;
+        const etag = resp.headers.get("etag") || "";
+        const lastMod = resp.headers.get("last-modified") || "";
+        const text = await resp.text();
+        let h = 0;
+        for (let i = 0; i < text.length; i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0;
+        stamp = `${etag}|${lastMod}|${text.length}:${h}`;
+      }
       if (knownStamp && stamp !== knownStamp) {
         knownStamp = stamp;
         localStorage.setItem("smartcal_remote_stamp", stamp);
@@ -5797,7 +5820,10 @@ initPwaInstallAndSw();
           await Promise.all(keys.map(k => caches.delete(k)));
         }
         const regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r => r.update()));
+        for (const r of regs) {
+          if (r.waiting) r.waiting.postMessage({ type: "SKIP_WAITING" });
+          await r.update().catch(() => {});
+        }
         triggerSeamlessReload();
       } else {
         knownStamp = stamp;
