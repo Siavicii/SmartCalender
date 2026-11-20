@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
 <link rel="icon" id="dynFavicon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
 <link rel="apple-touch-icon" id="dynAppleIcon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
-<link rel="manifest" id="dynManifest" href='data:application/manifest+json,{"name":"Smart%20Cal","short_name":"Smart%20Cal","display":"standalone","start_url":"./","background_color":"#F4F6FA","theme_color":"#F4F6FA"}'>
+<link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
 @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v31";
+  const VER = "v32";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2206,8 +2206,12 @@ async function updatePersistentStatusDate(forcePost = false) {
   };
   const manEl = document.getElementById("dynManifest");
   if (manEl) {
-    const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
-    manEl.href = URL.createObjectURL(blob);
+    try {
+      const jsonStr = JSON.stringify(manifestObj);
+      manEl.setAttribute("href", "data:application/manifest+json;charset=utf-8," + encodeURIComponent(jsonStr));
+    } catch (e) {
+      manEl.setAttribute("href", "./manifest.json");
+    }
   }
 
   // 4. Persistent Status Bar Date Notification with Day-Number Icon
