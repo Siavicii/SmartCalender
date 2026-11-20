@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v28";
+  const VER = "v29";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1857,21 +1857,44 @@ function drawExactCenteredText(ctx, text, cx, cy, fontStr, fillStyle) {
   ctx.restore();
 }
 
+function isDaylightNow() {
+  if (typeof lastWeatherDataObj !== "undefined" && lastWeatherDataObj && lastWeatherDataObj.current_weather && lastWeatherDataObj.current_weather.is_day !== undefined) {
+    return Number(lastWeatherDataObj.current_weather.is_day) === 1;
+  }
+  const hr = new Date().getHours();
+  return hr >= 6 && hr < 18;
+}
+
 function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
   const S = 512;
   const c = document.createElement("canvas");
   c.width = S; c.height = S;
   const ctx = c.getContext("2d");
 
-  const bgColor = isDark ? "#0F131A" : "#FFFFFF";
-  const surfaceColor = isDark ? "#171C26" : "#F8FAFC";
-  const borderColor = isDark ? "rgba(255,255,255,0.14)" : "rgba(15,23,42,0.10)";
-  const primaryText = isDark ? "#F8FAFC" : "#0F172A";
-  const mutedText = isDark ? "#94A3B8" : "#64748B";
-  const accent = accentHex || "#1B6EF3";
+  const isDay = isDaylightNow();
+  const useNightVisual = !isDay || Boolean(isDark);
 
-  // Full-bleed background so iOS squircle clips cleanly
+  const bgColor = useNightVisual ? "#0B101B" : "#F8FAFC";
+  const surfaceColor = useNightVisual ? "#131C2E" : "#FFFFFF";
+  const borderColor = useNightVisual ? "rgba(148,163,184,0.18)" : "rgba(15,23,42,0.10)";
+  const primaryText = useNightVisual ? "#F8FAFC" : "#0F172A";
+  const mutedText = useNightVisual ? "#94A3B8" : "#64748B";
+  const accent = useNightVisual ? (accentHex || "#6EA8FF") : (accentHex || "#1B6EF3");
+
+  // Full-bleed background
   ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, S, S);
+
+  // Subtle top/bottom ambient glow for Day (warm solar/sky) vs Night (deep twilight/starlight)
+  const ambGrad = ctx.createLinearGradient(0, 0, 0, S);
+  if (useNightVisual) {
+    ambGrad.addColorStop(0, "rgba(56, 189, 248, 0.10)");
+    ambGrad.addColorStop(1, "rgba(15, 23, 42, 0.0)");
+  } else {
+    ambGrad.addColorStop(0, "rgba(251, 191, 36, 0.14)");
+    ambGrad.addColorStop(1, "rgba(27, 110, 243, 0.04)");
+  }
+  ctx.fillStyle = ambGrad;
   ctx.fillRect(0, 0, S, S);
 
   // Inner card frame centered inside safe zone
@@ -1888,6 +1911,27 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   ctx.beginPath();
   ctx.roundRect(S / 2 - 42, 94, 84, 8, 4);
   ctx.fill();
+
+  // Day/Night micro indicator badge on top-right of inner card
+  ctx.save();
+  if (useNightVisual) {
+    // Crescent moon indicator
+    ctx.fillStyle = "#FBBF24";
+    ctx.beginPath();
+    ctx.arc(396, 112, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = surfaceColor;
+    ctx.beginPath();
+    ctx.arc(401, 108, 10, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    // Sun indicator
+    ctx.fillStyle = "#F59E0B";
+    ctx.beginPath();
+    ctx.arc(396, 112, 10, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
 
   // Weekday centered at top area
   drawExactCenteredText(
@@ -5443,6 +5487,12 @@ window.addEventListener("pageshow", () => {
 
 applyCfg();render();checkBirthdaySurprise(false);syncTodayReference(true);fetchWeather(true);fetchMarket(false);setTimeout(()=>detectUserLocation(false),600);
 setInterval(fetchWeather,1800000);
+setInterval(() => {
+  if (typeof updatePersistentStatusDate === "function") {
+    updatePersistentStatusDate(true);
+  }
+}, 600000);
+
 setInterval(()=>fetchMarket(false),300000);
 </script>
 </body>

@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartcal-pwa-v28";
+const CACHE_NAME = "smartcal-pwa-v29";
 const ASSETS = ["./", "./index.html"];
 
 self.addEventListener("install", e => {
