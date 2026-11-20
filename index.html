@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v50.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v50.png">
-<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v50.png">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v51.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v51.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v51.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -518,9 +518,9 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
         <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20 2.5 2.5 0 0 0 2.5-2.5c0-.6-.2-1.2-.6-1.6-.4-.4-.6-1-.6-1.6a2.5 2.5 0 0 1 2.5-2.5H16a6 6 0 0 0 6-6c0-5.5-4.5-9.8-10-9.8z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor"/><circle cx="12" cy="7.5" r="1" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1" fill="currentColor"/></svg>
         <span>طراحی</span>
       </button>
-      <button class="ibtn" id="openConv" title="مبدل تاریخ شمسی و میلادی">
+      <button class="ibtn" id="openConv" title="مبدل تاریخ و محاسبه فاصله دو تاریخ">
         <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        <span>مبدل</span>
+        <span>مبدل و فاصله</span>
       </button>
       <button class="ibtn" id="installPwaBtn" onclick="triggerPwaInstall()" style="display:none;background:var(--pri);color:var(--onpri);border:none" title="نصب وب‌اپلیکیشن روی گوشی">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1115,7 +1115,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v50";
+  const VER = "v51";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2017,25 +2017,26 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   const ctx = c.getContext("2d");
 
   ctx.clearRect(0, 0, S, S);
-  ctx.fillStyle = "#FFFFFF";
 
-  // Sleek circular/squircle emblem with a refined inner ring cutout
-  ctx.beginPath();
-  ctx.arc(S / 2, S / 2, 54, 0, Math.PI * 2);
+  // Full-bleed high-impact squircle silhouette with top accent bar cutout & massive centered day number
+  ctx.fillStyle = "#FFFFFF";
+  drawRoundedRectSafe(ctx, 4, 4, 120, 120, 32);
   ctx.fill();
 
   ctx.globalCompositeOperation = "destination-out";
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.arc(S / 2, S / 2, 44, 0, Math.PI * 2);
-  ctx.stroke();
+  ctx.fillStyle = "#000000";
 
-  const isTwoDigits = String(dayNumStr).length > 1;
-  const fontSize = isTwoDigits ? 54 : 62;
+  // Top header notch cutout
+  drawRoundedRectSafe(ctx, 32, 14, 64, 7, 3.5);
+  ctx.fill();
+
+  const cleanStr = String(dayNumStr ?? "").trim();
+  const isTwoDigits = cleanStr.length >= 2;
+  const fontSize = isTwoDigits ? 68 : 78;
   ctx.font = `900 ${fontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(dayNumStr, S / 2, S / 2 + 2);
+  ctx.fillText(cleanStr, S / 2, 74);
 
   ctx.globalCompositeOperation = "source-over";
   return c.toDataURL("image/png");
@@ -2410,7 +2411,7 @@ function applyLanguageUI() {
 
   // Top Bar & Calendar Controls
   setTxt("#topStyleBtn span", "طراحی", "دیزاین", "Style");
-    setTxt("#openConv span", "مبدل", "گۆڕەر", "Convert");
+    setTxt("#openConv span", "مبدل و فاصله", "گۆڕەر و ماوە", "Convert & Diff");
   setTxt("#installPwaBtn span", "نصب", "داگرتن", "Install");
   setTxt("#openSet span", "تنظیمات", "ڕێکخستن", "Settings");
   setTxt("#modeMonth", "ماهانه", "مانگانە", "Monthly");
