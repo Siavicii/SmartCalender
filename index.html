@@ -510,7 +510,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 setTimeout(function(){
   var sp = document.getElementById("smartSplash");
   if (sp) { sp.classList.add("hide"); setTimeout(function(){ if(sp.parentNode) sp.remove(); }, 400); }
-}, 1200);
+}, 800);
 </script>
 <div class="app">
   <!-- Top Bar (Cleaned: Today pill + Style, Converter & Settings neatly fitted across FA / KU / EN) -->
@@ -1106,7 +1106,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v56";
+  const VER = "v57";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2867,6 +2867,7 @@ function applyCfg(){
   if(document.getElementById("styleSwatches")) document.getElementById("styleSwatches").innerHTML=swHtml;
   if(document.getElementById('setAutoAtm')) document.getElementById('setAutoAtm').checked=!!cfg.autoAtm;
   renderWeekendChips();
+  if (typeof syncCountrySelectorUI === "function") syncCountrySelectorUI();
   applyLanguageUI();
   renderStyleCards();
   applyAtmosphereSync();
@@ -5794,7 +5795,14 @@ window.addEventListener("pageshow", () => {
   syncTodayReference(true);
 });
 
-applyCfg();render();checkBirthdaySurprise(false);syncTodayReference(true);fetchWeather(true);fetchMarket(false);setTimeout(()=>{detectUserLocation(false);if(typeof detectAndSyncUserCountry==="function")detectAndSyncUserCountry(false);},600);
+try { applyCfg(); } catch(e) { console.error("applyCfg err:", e); }
+try { render(); } catch(e) { console.error("render err:", e); }
+(function(){ var sp = document.getElementById("smartSplash"); if (sp) { sp.classList.add("hide"); setTimeout(function(){ if(sp.parentNode) sp.remove(); }, 350); } })();
+try { checkBirthdaySurprise(false); } catch(e) {}
+try { syncTodayReference(true); } catch(e) {}
+try { fetchWeather(true); } catch(e) {}
+try { fetchMarket(false); } catch(e) {}
+setTimeout(()=>{ try { detectUserLocation(false); } catch(e) {} try { if(typeof detectAndSyncUserCountry==="function") detectAndSyncUserCountry(false); } catch(e) {} }, 600);
 setInterval(fetchWeather,1800000);
 setInterval(() => {
   if (typeof updatePersistentStatusDate === "function") {
