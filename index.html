@@ -1106,7 +1106,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v57";
+  const VER = "v58";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1394,125 +1394,62 @@ const WORLD_DAYS_GM = {
 };
 
 const COUNTRY_CATALOG = [
-  { code: "IR", fa: "ایران", ku: "ئێران", en: "Iran",
-    fallback: {
-      "1-1": [["جشن نوروز (تعطیل رسمی)", 1]],
-      "1-2": [["عید نوروز (تعطیل رسمی)", 1]],
-      "1-3": [["عید نوروز (تعطیل رسمی)", 1]],
-      "1-4": [["عید نوروز (تعطیل رسمی)", 1]],
-      "1-12": [["روز جمهوری اسلامی ایران (تعطیل رسمی)", 1]],
-      "1-13": [["روز طبیعت / سیزده‌بدر (تعطیل رسمی)", 1]],
-      "3-14": [["رحلت امام خمینی (تعطیل رسمی)", 1]],
-      "3-15": [["قیام ۱۵ خرداد (تعطیل رسمی)", 1]],
-      "11-22": [["پیروزی انقلاب اسلامی (تعطیل رسمی)", 1]],
-      "12-29": [["روز ملی شدن صنعت نفت (تعطیل رسمی)", 1]]
-    }
-  },
-  { code: "IQ", fa: "عراق / اقلیم کوردستان", ku: "عێراق / هەرێمی کوردستان", en: "Iraq / Kurdistan",
-    fallback: {
-      "1-1": [["رأس السنة الميلادية / سەری ساڵی زایینی", 1]],
-      "1-6": [["عيد الجيش العراقي / ڕۆژی سوپا", 1]],
-      "3-21": [["عيد نوروز / جەژنی نەورۆز", 1]],
-      "5-1": [["عيد العمال العالمي / ڕۆژی کرێکاران", 1]]
-    }
-  },
-  { code: "TR", fa: "ترکیه", ku: "تورکیا", en: "Turkey",
-    fallback: {
-      "1-1": [["Yılbaşı (تعطیل رسمی ترکیه)", 1]],
-      "4-23": [["Ulusal Egemenlik ve Çocuk Bayramı", 1]],
-      "5-19": [["Atatürk'ü Anma, Gençlik ve Spor Bayramı", 1]],
-      "8-30": [["Zafer Bayramı (روز پیروزی)", 1]],
-      "10-29": [["Cumhuriyet Bayramı (روز جمهوری)", 1]]
-    }
-  },
-  { code: "AE", fa: "امارات متحده عربی", ku: "ئیمارات", en: "United Arab Emirates",
-    fallback: {
-      "1-1": [["New Year's Day (رأس السنة)", 1]],
-      "12-2": [["UAE National Day (عید الاتحاد)", 1]],
-      "12-3": [["UAE National Day Holiday", 1]]
-    }
-  },
-  { code: "DE", fa: "آلمان", ku: "ئەڵمانیا", en: "Germany",
-    fallback: {
-      "1-1": [["Neujahr (سال نو)", 1]],
-      "5-1": [["Tag der Arbeit (روز کارگر)", 1]],
-      "10-3": [["Tag der Deutschen Einheit (اتحاد آلمان)", 1]],
-      "12-25": [["1. Weihnachtstag (کریسمس)", 1]],
-      "12-26": [["2. Weihnachtstag", 1]]
-    }
-  },
-  { code: "GB", fa: "بریتانیا", ku: "بەریتانیا", en: "United Kingdom",
-    fallback: {
-      "1-1": [["New Year's Day", 1]],
-      "12-25": [["Christmas Day", 1]],
-      "12-26": [["Boxing Day", 1]]
-    }
-  },
-  { code: "US", fa: "ایالات متحده آمریکا", ku: "ویلایەتە یەکگرتووەکانی ئەمریکا", en: "United States",
-    fallback: {
-      "1-1": [["New Year's Day", 1]],
-      "7-4": [["Independence Day (روز استقلال آمریکا)", 1]],
-      "11-11": [["Veterans Day", 1]],
-      "12-25": [["Christmas Day", 1]]
-    }
-  },
-  { code: "CA", fa: "کانادا", ku: "کەنەدا", en: "Canada",
-    fallback: {
-      "1-1": [["New Year's Day", 1]],
-      "7-1": [["Canada Day (روز کانادا)", 1]],
-      "12-25": [["Christmas Day", 1]]
-    }
-  },
-  { code: "FR", fa: "فرانسه", ku: "فەرەنسا", en: "France",
-    fallback: {
-      "1-1": [["Jour de l'an", 1]],
-      "5-1": [["Fête du Travail", 1]],
-      "7-14": [["Bastille Day (روز باستیل)", 1]],
-      "12-25": [["Noël (کریسمس)", 1]]
-    }
-  },
-  { code: "SE", fa: "سوئد", ku: "سوێد", en: "Sweden",
-    fallback: {
-      "1-1": [["Nyårsdagen", 1]],
-      "6-6": [["Sveriges nationaldag (روز ملی سوئد)", 1]],
-      "12-25": [["Juldagen (کریسمس)", 1]]
-    }
-  },
-  { code: "NO", fa: "نروژ", ku: "نەرویج", en: "Norway",
-    fallback: {
-      "1-1": [["Første nyttårsdag", 1]],
-      "5-17": [["Grunnlovsdag (روز قانون اساسی نروژ)", 1]],
-      "12-25": [["Første juledag", 1]]
-    }
-  },
-  { code: "NL", fa: "هلند", ku: "هۆڵەندا", en: "Netherlands",
-    fallback: {
-      "1-1": [["Nieuwjaarsdag", 1]],
-      "4-27": [["Koningsdag (روز پادشاه)", 1]],
-      "12-25": [["Eerste kerstdag", 1]]
-    }
-  },
-  { code: "AU", fa: "استرالیا", ku: "ئوسترالیا", en: "Australia",
-    fallback: {
-      "1-1": [["New Year's Day", 1]],
-      "1-26": [["Australia Day", 1]],
-      "4-25": [["ANZAC Day", 1]],
-      "12-25": [["Christmas Day", 1]]
-    }
-  },
-  { code: "QA", fa: "قطر", ku: "قەتەر", en: "Qatar",
-    fallback: {
-      "12-18": [["National Day (روز ملی قطر)", 1]]
-    }
-  },
-  { code: "SA", fa: "عربستان سعودی", ku: "سعوودیە", en: "Saudi Arabia",
-    fallback: {
-      "2-22": [["Founding Day (روز تأسیس)", 1]],
-      "9-23": [["National Day (روز ملی عربستان)", 1]]
-    }
-  }
+  { code: "IR", fa: "ایران", ku: "ئێران", en: "Iran", fallback: { "1-1":[["جشن نوروز (تعطیل رسمی)",1]], "1-2":[["عید نوروز (تعطیل رسمی)",1]], "1-3":[["عید نوروز (تعطیل رسمی)",1]], "1-4":[["عید نوروز (تعطیل رسمی)",1]], "1-12":[["روز جمهوری اسلامی (تعطیل رسمی)",1]], "1-13":[["روز طبیعت (تعطیل رسمی)",1]], "3-14":[["رحلت امام خمینی (تعطیل رسمی)",1]], "3-15":[["قیام ۱۵ خرداد (تعطیل رسمی)",1]], "11-22":[["پیروزی انقلاب اسلامی (تعطیل رسمی)",1]], "12-29":[["ملی شدن صنعت نفت (تعطیل رسمی)",1]] } },
+  { code: "IQ", fa: "عراق / اقلیم کوردستان", ku: "عێراق / هەرێمی کوردستان", en: "Iraq / Kurdistan", fallback: { "1-1":[["سال نو میلادی",1]], "1-6":[["روز ارتش",1]], "3-21":[["عید نوروز / جەژنی نەورۆز",1]], "5-1":[["روز جهانی کارگر",1]] } },
+  { code: "TR", fa: "ترکیه", ku: "تورکیا", en: "Turkey", fallback: { "1-1":[["Yılbaşı (سال نو)",1]], "4-23":[["روز کودک و حاکمیت ملی",1]], "5-1":[["روز کارگر",1]], "5-19":[["روز جوانان و ورزش",1]], "8-30":[["روز پیروزی (Zafer Bayramı)",1]], "10-29":[["روز جمهوری (Cumhuriyet Bayramı)",1]] } },
+  { code: "AE", fa: "امارات متحده عربی", ku: "ئیمارات", en: "United Arab Emirates", fallback: { "1-1":[["سال نو میلادی",1]], "12-2":[["روز ملی امارات (عید الاتحاد)",1]], "12-3":[["تعطیل روز ملی امارات",1]] } },
+  { code: "DE", fa: "آلمان", ku: "ئەڵمانیا", en: "Germany", fallback: { "1-1":[["Neujahr (سال نو)",1]], "5-1":[["Tag der Arbeit (روز کارگر)",1]], "10-3":[["روز اتحاد آلمان",1]], "12-25":[["کریسمس (روز اول)",1]], "12-26":[["کریسمس (روز دوم)",1]] } },
+  { code: "GB", fa: "بریتانیا", ku: "بەریتانیا", en: "United Kingdom", fallback: { "1-1":[["New Year's Day (سال نو)",1]], "11-5":[["Guy Fawkes Night (شب آتش‌بازی)",0]], "11-11":[["Remembrance Day (روز یادبود)",0]], "12-25":[["Christmas Day (کریسمس)",1]], "12-26":[["Boxing Day",1]] } },
+  { code: "US", fa: "ایالات متحده آمریکا", ku: "ئەمریکا", en: "United States", fallback: { "1-1":[["New Year's Day",1]], "7-4":[["Independence Day (روز استقلال)",1]], "11-11":[["Veterans Day (روز کهنه‌سربازان)",1]], "12-25":[["Christmas Day",1]] } },
+  { code: "CA", fa: "کانادا", ku: "کەنەدا", en: "Canada", fallback: { "1-1":[["New Year's Day",1]], "7-1":[["Canada Day (روز کانادا)",1]], "11-11":[["Remembrance Day",1]], "12-25":[["Christmas Day",1]] } },
+  { code: "FR", fa: "فرانسه", ku: "فەرەنسا", en: "France", fallback: { "1-1":[["Jour de l'an",1]], "5-1":[["Fête du Travail",1]], "7-14":[["Bastille Day (روز ملی فرانسه)",1]], "11-11":[["Armistice 1918",1]], "12-25":[["Noël (کریسمس)",1]] } },
+  { code: "IT", fa: "ایتالیا", ku: "ئیتاڵیا", en: "Italy", fallback: { "1-1":[["Capodanno",1]], "4-25":[["Festa della Liberazione",1]], "6-2":[["Festa della Repubblica",1]], "12-25":[["Natale",1]] } },
+  { code: "ES", fa: "اسپانیا", ku: "ئیسپانیا", en: "Spain", fallback: { "1-1":[["Año Nuevo",1]], "5-1":[["Día del Trabajador",1]], "10-12":[["Fiesta Nacional de España",1]], "12-25":[["Navidad",1]] } },
+  { code: "NL", fa: "هلند", ku: "هۆڵەندا", en: "Netherlands", fallback: { "1-1":[["Nieuwjaarsdag",1]], "4-27":[["Koningsdag (روز پادشاه)",1]], "12-25":[["Eerste kerstdag",1]] } },
+  { code: "BE", fa: "بلژیک", ku: "بەلجیکا", en: "Belgium", fallback: { "1-1":[["Nieuwjaar",1]], "7-21":[["روز ملی بلژیک",1]], "11-11":[["Wapenstilstand",1]], "12-25":[["Kerstmis",1]] } },
+  { code: "CH", fa: "سوئیس", ku: "سویسرا", en: "Switzerland", fallback: { "1-1":[["Neujahr",1]], "8-1":[["روز ملی سوئیس",1]], "12-25":[["Weihnachten",1]] } },
+  { code: "AT", fa: "اتریش", ku: "نەمسا", en: "Austria", fallback: { "1-1":[["Neujahr",1]], "10-26":[["روز ملی اتریش",1]], "12-25":[["Christtag",1]] } },
+  { code: "SE", fa: "سوئد", ku: "سوێد", en: "Sweden", fallback: { "1-1":[["Nyårsdagen",1]], "6-6":[["روز ملی سوئد",1]], "12-25":[["Juldagen",1]] } },
+  { code: "NO", fa: "نروژ", ku: "نەرویج", en: "Norway", fallback: { "1-1":[["Nyttårsdag",1]], "5-17":[["روز قانون اساسی نروژ",1]], "12-25":[["Juledag",1]] } },
+  { code: "DK", fa: "دانمارک", ku: "دانیمارک", en: "Denmark", fallback: { "1-1":[["Nytårsdag",1]], "6-5":[["روز قانون اساسی دانمارک",1]], "12-25":[["Juledag",1]] } },
+  { code: "FI", fa: "فنلاند", ku: "فینلاند", en: "Finland", fallback: { "1-1":[["Uudenvuodenpäivä",1]], "12-6":[["روز استقلال فنلاند",1]], "12-25":[["Joulupäivä",1]] } },
+  { code: "PL", fa: "لهستان", ku: "پۆڵەندا", en: "Poland", fallback: { "1-1":[["Nowy Rok",1]], "11-11":[["روز استقلال لهستان",1]], "12-25":[["Boże Narodzenie",1]] } },
+  { code: "CZ", fa: "جمهوری چک", ku: "چیک", en: "Czechia", fallback: { "1-1":[["Nový rok",1]], "10-28":[["روز استقلال چک",1]], "12-25":[["Vánoce",1]] } },
+  { code: "GR", fa: "یونان", ku: "یۆنان", en: "Greece", fallback: { "1-1":[["Πρωτοχρονιά",1]], "3-25":[["روز استقلال یونان",1]], "12-25":[["Χριστούγεννα",1]] } },
+  { code: "PT", fa: "پرتغال", ku: "پۆرتوگال", en: "Portugal", fallback: { "1-1":[["Ano Novo",1]], "6-10":[["روز ملی پرتغال",1]], "12-25":[["Natal",1]] } },
+  { code: "IE", fa: "ایرلند", ku: "ئێرلەندا", en: "Ireland", fallback: { "1-1":[["New Year's Day",1]], "3-17":[["St. Patrick's Day",1]], "12-25":[["Christmas Day",1]] } },
+  { code: "RU", fa: "روسیه", ku: "ڕووسیا", en: "Russia", fallback: { "1-1":[["سال نو روسیه",1]], "5-9":[["روز پیروزی",1]], "6-12":[["روز روسیه",1]], "11-4":[["روز اتحاد ملی",1]] } },
+  { code: "UA", fa: "اوکراین", ku: "ئۆکرانیا", en: "Ukraine", fallback: { "1-1":[["New Year's Day",1]], "8-24":[["روز استقلال اوکراین",1]], "12-25":[["Christmas",1]] } },
+  { code: "AU", fa: "استرالیا", ku: "ئوسترالیا", en: "Australia", fallback: { "1-1":[["New Year's Day",1]], "1-26":[["Australia Day",1]], "4-25":[["ANZAC Day",1]], "12-25":[["Christmas Day",1]] } },
+  { code: "NZ", fa: "نیوزیلند", ku: "نیوزیلەندا", en: "New Zealand", fallback: { "1-1":[["New Year's Day",1]], "2-6":[["Waitangi Day",1]], "12-25":[["Christmas Day",1]] } },
+  { code: "AF", fa: "افغانستان", ku: "ئەفغانستان", en: "Afghanistan", fallback: { "3-21":[["جشن نوروز",1]], "8-19":[["روز استقلال افغانستان",1]] } },
+  { code: "TJ", fa: "تاجیکستان", ku: "تاجیکستان", en: "Tajikistan", fallback: { "1-1":[["سال نو",1]], "3-21":[["جشن نوروز",1]], "9-9":[["روز استقلال تاجیکستان",1]] } },
+  { code: "AZ", fa: "جمهوری آذربایجان", ku: "ئازەربایجان", en: "Azerbaijan", fallback: { "1-1":[["سال نو",1]], "3-21":[["عید نوروز",1]], "5-28":[["روز استقلال آذربایجان",1]], "11-8":[["روز پیروزی",1]] } },
+  { code: "AM", fa: "ارمنستان", ku: "ئەرمینیا", en: "Armenia", fallback: { "1-1":[["سال نو",1]], "9-21":[["روز استقلال ارمنستان",1]] } },
+  { code: "GE", fa: "گرجستان", ku: "جۆرجیا", en: "Georgia", fallback: { "1-1":[["سال نو",1]], "5-26":[["روز استقلال گرجستان",1]] } },
+  { code: "QA", fa: "قطر", ku: "قەتەر", en: "Qatar", fallback: { "12-18":[["روز ملی قطر",1]] } },
+  { code: "SA", fa: "عربستان سعودی", ku: "سعوودیە", en: "Saudi Arabia", fallback: { "2-22":[["روز تأسیس",1]], "9-23":[["روز ملی عربستان",1]] } },
+  { code: "OM", fa: "عمان", ku: "عوممان", en: "Oman", fallback: { "11-18":[["روز ملی عمان",1]] } },
+  { code: "KW", fa: "کویت", ku: "کوێیت", en: "Kuwait", fallback: { "2-25":[["روز ملی کویت",1]], "2-26":[["روز آزادی کویت",1]] } },
+  { code: "BH", fa: "بحرین", ku: "بەحرەین", en: "Bahrain", fallback: { "12-16":[["روز ملی بحرین",1]] } },
+  { code: "JO", fa: "اردن", ku: "ئوردن", en: "Jordan", fallback: { "5-25":[["روز استقلال اردن",1]] } },
+  { code: "LB", fa: "لبنان", ku: "لوبنان", en: "Lebanon", fallback: { "11-22":[["روز استقلال لبنان",1]] } },
+  { code: "EG", fa: "مصر", ku: "میسر", en: "Egypt", fallback: { "7-23":[["روز انقلاب مصر",1]], "10-6":[["روز نیروهای مسلح",1]] } },
+  { code: "MA", fa: "مراکش", ku: "مەغریب", en: "Morocco", fallback: { "11-18":[["روز استقلال مراکش",1]] } },
+  { code: "PK", fa: "پاکستان", ku: "پاکستان", en: "Pakistan", fallback: { "3-23":[["روز پاکستان",1]], "8-14":[["روز استقلال پاکستان",1]] } },
+  { code: "IN", fa: "هند", ku: "هیندستان", en: "India", fallback: { "1-26":[["Republic Day (روز جمهوری)",1]], "8-15":[["Independence Day (روز استقلال)",1]], "10-2":[["Gandhi Jayanti",1]] } },
+  { code: "CN", fa: "چین", ku: "چین", en: "China", fallback: { "1-1":[["سال نو میلادی",1]], "5-1":[["روز کارگر",1]], "10-1":[["روز ملی چین",1]] } },
+  { code: "JP", fa: "ژاپن", ku: "ژاپۆن", en: "Japan", fallback: { "1-1":[["Shōgatsu (سال نو)",1]], "2-11":[["روز بنیان‌گذاری ژاپن",1]], "11-3":[["روز فرهنگ (Culture Day)",1]], "11-23":[["روز شکرگزاری کار",1]] } },
+  { code: "KR", fa: "کره جنوبی", ku: "کۆریای باشوور", en: "South Korea", fallback: { "1-1":[["سال نو",1]], "8-15":[["روز آزادی کره",1]], "10-3":[["روز بنیان‌گذاری ملی",1]] } },
+  { code: "MY", fa: "مالزی", ku: "مالیزیا", en: "Malaysia", fallback: { "8-31":[["روز استقلال مالزی",1]], "9-16":[["روز مالزی",1]] } },
+  { code: "ID", fa: "اندونزی", ku: "ئیندۆنیزیا", en: "Indonesia", fallback: { "8-17":[["روز استقلال اندونزی",1]] } },
+  { code: "TH", fa: "تایلند", ku: "تایلەند", en: "Thailand", fallback: { "1-1":[["New Year's Day",1]], "12-5":[["روز ملی تایلند",1]] } },
+  { code: "SG", fa: "سنگاپور", ku: "سینگاپوور", en: "Singapore", fallback: { "1-1":[["New Year's Day",1]], "8-9":[["National Day",1]] } },
+  { code: "BR", fa: "برزیل", ku: "بەڕازیل", en: "Brazil", fallback: { "1-1":[["Confraternização Universal",1]], "9-7":[["روز استقلال برزیل",1]], "11-15":[["روز جمهوری برزیل",1]], "12-25":[["Natal",1]] } },
+  { code: "AR", fa: "آرژانتین", ku: "ئەرجەنتین", en: "Argentina", fallback: { "1-1":[["Año Nuevo",1]], "7-9":[["روز استقلال آرژانتین",1]], "12-25":[["Navidad",1]] } },
+  { code: "MX", fa: "مکزیک", ku: "مەکسیک", en: "Mexico", fallback: { "1-1":[["Año Nuevo",1]], "9-16":[["روز استقلال مکزیک",1]], "11-20":[["روز انقلاب مکزیک",1]], "12-25":[["Navidad",1]] } },
+  { code: "ZA", fa: "آفریقای جنوبی", ku: "ئەفریقای باشوور", en: "South Africa", fallback: { "1-1":[["New Year's Day",1]], "4-27":[["Freedom Day",1]], "12-25":[["Christmas Day",1]] } }
 ];
-
 
 function getCountryMeta(code) {
   return COUNTRY_CATALOG.find(c => c.code === code) || COUNTRY_CATALOG[0];
@@ -1602,6 +1539,7 @@ function syncCountrySelectorUI() {
 
 async function onCountryChange(newCode) {
   cfg.countryCode = newCode || "IR";
+  const st = document.getElementById("evSyncStatus"); if (st) st.textContent = "";
   localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
   const gNow = new Date();
   await fetchCountryHolidaysForYear(cfg.countryCode, gNow.getFullYear());
@@ -1651,12 +1589,20 @@ function getExtraWorldAndCountryEv(jy, jm, jd) {
 
 function getEv(y,m,d){
   const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
-  if(BASE_EV[k])r.push(...BASE_EV[k]);
+  const activeCountry = cfg?.countryCode || "IR";
+  if (activeCountry === "IR") {
+    if(BASE_EV[k])r.push(...BASE_EV[k]);
+    const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
+    if(yrMap[k])r.push(...yrMap[k]);
+  }
   if((cfg?.calType==="kurdish" || cfg?.lang==="ku") && KURDISH_EV[k]) r.push(...KURDISH_EV[k]);
-  const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
-  if(yrMap[k])r.push(...yrMap[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
-  if (typeof getExtraWorldAndCountryEv === "function") r.push(...getExtraWorldAndCountryEv(y,m,d));
+  if (typeof getExtraWorldAndCountryEv === "function") {
+    const extra = getExtraWorldAndCountryEv(y,m,d);
+    extra.forEach(item => {
+      if (!r.some(existing => existing[0] === item[0])) r.push(item);
+    });
+  }
   return r.map(e=>[trEvTitle(e[0]),e[1],e[2],e[3]]);
 }
 
@@ -1675,76 +1621,31 @@ async function addCustomEvent(){
 }
 
 async function updateHolidaysOnline(){
-  const st=document.getElementById("evSyncStatus");
-  st.textContent="در حال استعلام تعطیلات و مناسبت‌های رسمی کشور برای سال "+fa(vy)+"...";
-  try{
-    const fetched={};
-    const irSources=[
-      `https://raw.githubusercontent.com/persian-calendar/persian-calendar/main/data/holidays/${vy}.json`,
-      `https://cdn.jsdelivr.net/gh/saman-gh/iranian-holidays@main/data/${vy}.json`
-    ];
-    for(const url of irSources){
-      try{
-        const r=await fetch(url,{cache:"no-store"});
-        if(r&&r.ok){
-          const jData=await r.json();
-          const items=Array.isArray(jData)?jData:(jData.holidays||jData.events||[]);
-          items.forEach(it=>{
-            const m=Number(it.month||it.jm),d=Number(it.day||it.jd);
-            const title=it.title||it.description||it.name;
-            const isH=(it.isHoliday!==undefined?it.isHoliday:true)?1:0;
-            if(m>=1&&m<=12&&d>=1&&d<=31&&title){
-              const mk=m+"-"+d;
-              if(!fetched[mk])fetched[mk]=[];
-              if(!fetched[mk].some(x=>x[0].includes(title)))fetched[mk].push([title+(isH&&!title.includes("تعطیل")?" (تعطیل رسمی)":""),isH]);
-            }
-          });
-          if(Object.keys(fetched).length)break;
-        }
-      }catch(e){}
-    }
+  const st = document.getElementById("evSyncStatus");
+  const cCode = cfg.countryCode || "IR";
+  const cMeta = getCountryMeta(cCode);
+  const cLabel = getCountryLabel(cMeta);
+  const gStart = toG(sel.jy, 1, 1), gEnd = toG(sel.jy, 12, 29);
+  const yearsToFetch = [...new Set([gStart.gy, gEnd.gy])];
 
-    if(!Object.keys(fetched).length){
-      const gStart=toG(vy,1,1),gEnd=toG(vy,12,29);
-      for(const gy of [gStart.gy,gEnd.gy]){
-        const r=await fetch(`https://date.nager.at/api/v3/PublicHolidays/${gy}/IR`).catch(()=>null);
-        if(r&&r.ok){
-          const list=await r.json();
-          list.forEach(item=>{
-            const [yy,mm,dd]=item.date.split("-").map(Number);
-            const j=toJ(yy,mm,dd);
-            if(j.jy===vy){
-              const mk=j.jm+"-"+j.jd;
-              if(!fetched[mk])fetched[mk]=[];
-              const name=item.localName||item.name;
-              if(!fetched[mk].some(x=>x[0].includes(name)))fetched[mk].push([name+" (تعطیل رسمی)",1]);
-            }
-          });
-        }
-      }
-    }
-
-    if(Object.keys(fetched).length){
-      dynamicYearEv[vy]=fetched;
-      localStorage.setItem("cal_dyn_ev_v11",JSON.stringify(dynamicYearEv));
-      const holCount=Object.values(fetched).flat().filter(x=>x[1]).length;
-      st.textContent=`✅ ${fa(holCount)} روز تعطیل رسمی سال ${fa(vy)} از پایگاه معتبر کشور بروزرسانی و ذخیره شد.`;
-      render();
-      return;
-    }
-
-    if(BASE_YEAR_EV[vy]){
-      dynamicYearEv[vy]=BASE_YEAR_EV[vy];
-      localStorage.setItem("cal_dyn_ev_v11",JSON.stringify(dynamicYearEv));
-      const holCount=Object.values(BASE_YEAR_EV[vy]).flat().filter(x=>x[1]).length;
-      st.textContent=`✅ آمار رسمی تعطیلات سال ${fa(vy)} (${fa(holCount)} تعطیلی مناسبتی تقویم رسمی کشور) همگام‌سازی شد.`;
-      render();
-    }else{
-      st.textContent="مناسبت‌های ثابت تقویم رسمی کشور برای سال "+fa(vy)+" فعال است.";
-    }
-  }catch(e){
-    st.textContent="خطا در اتصال؛ از پایگاه آفلاین تقویم رسمی کشور استفاده می‌شود.";
+  if (st) st.textContent = `🔄 در حال بروزرسانی مناسبت‌ها و تعطیلات ${cLabel}...`;
+  let totalFetched = 0;
+  for (const gy of yearsToFetch) {
+    const arr = await fetchCountryHolidaysForYear(cCode, gy);
+    totalFetched += arr.length;
   }
+
+  if (totalFetched > 0) {
+    if (st) st.textContent = `✅ ${fa(totalFetched)} تعطیلی رسمی برای ${cLabel} بروزرسانی و ذخیره شد.`;
+  } else if (cCode === "IR" && BASE_YEAR_EV[sel.jy]) {
+    dynamicYearEv[sel.jy] = BASE_YEAR_EV[sel.jy];
+    localStorage.setItem("cal_dyn_ev_v11", JSON.stringify(dynamicYearEv));
+    const holCount = Object.values(BASE_YEAR_EV[sel.jy]).flat().filter(x => x[1]).length;
+    if (st) st.textContent = `✅ تقویم رسمی ${cLabel} (${fa(holCount)} تعطیلی مناسبتی) آماده و فعال است.`;
+  } else {
+    if (st) st.textContent = `✅ مناسبت‌های پایه ${cLabel} و روزهای جهانی فعال هستند.`;
+  }
+  render();
 }
 
 const now=new Date(),tod=toJ(now.getFullYear(),now.getMonth()+1,now.getDate());
