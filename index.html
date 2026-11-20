@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v38";
+  const VER = "v39";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1920,50 +1920,47 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Inner calendar card
+  // Safe-zone centered card with balanced margins for all launcher masks
   ctx.fillStyle = surfaceColor;
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.roundRect(56, 56, 400, 400, 88);
+  ctx.roundRect(92, 92, 328, 328, 72);
   ctx.fill();
-  ctx.stroke();
 
-  // Top accent bar centered
+  // Top accent bar centered inside safe zone
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(S / 2 - 48, 86, 96, 10, 5);
+  ctx.roundRect(S / 2 - 42, 114, 84, 8, 4);
   ctx.fill();
 
-  // Weekday label at top
+  // Weekday label at top of safe card
   drawExactCenteredText(
     ctx,
     weekDayStr || "",
     S / 2,
-    138,
-    "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    154,
+    "700 26px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     mutedText
   );
 
   // Prominent Day Number centered in the middle of the icon
   const dayStrClean = ((typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(dayNumStr ?? "") : String(dayNumStr ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d])).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 156 : 176;
+  const numFontSize = dayStrClean.length >= 2 ? 136 : 154;
   drawExactCenteredText(
     ctx,
     dayStrClean,
     S / 2,
-    S / 2 + 16,
+    S / 2 + 12,
     `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     primaryText
   );
 
-  // Month name at bottom of card
+  // Month name near bottom of safe card
   drawExactCenteredText(
     ctx,
     monthName || "",
     S / 2,
-    404,
-    "700 30px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    386,
+    "700 26px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     accent
   );
 
@@ -5418,11 +5415,22 @@ initPwaInstallAndSw();
     } catch(e){}
   };
 
-  setTimeout(checkRemoteUpdate, 1500);
-  setInterval(checkRemoteUpdate, 120000);
+  if (sessionStorage.getItem("smartcal_just_updated") === "1") {
+    sessionStorage.removeItem("smartcal_just_updated");
+    window.addEventListener("DOMContentLoaded", () => {
+      const toast = document.createElement("div");
+      toast.style.cssText = "position:fixed;bottom:78px;left:50%;transform:translateX(-50%);z-index:120;background:var(--pri);color:var(--onpri);padding:8px 14px;border-radius:999px;font-size:11.5px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.22);white-space:nowrap";
+      toast.textContent = "✅ نسخه جدید برنامه از گیت‌هاب اعمال شد";
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2600);
+    }, { once: true });
+  }
+  setTimeout(checkRemoteUpdate, 1000);
+  setInterval(checkRemoteUpdate, 25000);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") checkRemoteUpdate();
   });
+  window.addEventListener("focus", () => checkRemoteUpdate());
 })();
 
 // ====== رصد لحظه‌ای تغییر روز در نیمه‌شب (۰۰:۰۰) و همگام‌سازی خودکار تقویم، آیکون و اعلان ======

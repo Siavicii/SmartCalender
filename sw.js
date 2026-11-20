@@ -1,5 +1,5 @@
-const CACHE_NAME = "smartcal-pwa-v38";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192-v38.png", "./icon-512-v38.png"];
+const CACHE_NAME = "smartcal-pwa-v39";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192-v39.png", "./icon-512-v39.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();
@@ -28,7 +28,7 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
   if (url.origin === location.origin) {
-    const isHtmlOrSw = url.pathname.endsWith("/") || url.pathname.endsWith("/index.html") || url.pathname.endsWith("/sw.js");
+    const isHtmlOrSw = url.pathname.endsWith("/") || url.pathname.endsWith("/index.html") || url.pathname.endsWith("/sw.js") || url.pathname.endsWith("/manifest.json") || url.pathname.endsWith("/version.json");
     if (isHtmlOrSw) {
       e.respondWith(
         fetch(new Request(e.request.url + (e.request.url.includes("?") ? "&" : "?") + "_t=" + Date.now(), { cache: "no-store" }))
