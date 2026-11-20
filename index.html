@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v42.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v42.png">
-<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v42.png">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v50.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v50.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v50.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -945,22 +945,50 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
   </div>
 </div>
 
-<!-- Quadruple Date Converter Modal (Jalali / Kurdish / Gregorian / Hijri) -->
+<!-- Quadruple Date Converter & Two-Date Difference Calculator Modal -->
 <div class="modal" id="convModal">
   <div class="sheet">
-    <div class="s-head"><b>🔄 مبدل جامع تاریخ (شمسی / کوردی / میلادی)</b><button class="ibtn" onclick="closeModals()">✕</button></div>
-    <select id="convMode" onchange="initConvInputs()">
-      <option value="j2g">مبدأ: تاریخ هجری شمسی (جلالی)</option>
-      <option value="k2g">مبدأ: تاریخ کوردی (کۆچی هەتاوی - ٢٧٢٦)</option>
-      <option value="g2j">مبدأ: تاریخ میلادی (Gregorian)</option>
-    </select>
-    <div class="row3">
-      <select id="cDay"></select>
-      <select id="cMon"></select>
-      <select id="cYear"></select>
+    <div class="s-head"><b>🔄 مبدل تاریخ و فاصله دو تاریخ</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div class="seg" style="width:100%;justify-content:center">
+      <button type="button" id="convTabConvert" class="act" style="flex:1" onclick="switchConvSubTab('convert')">🔄 مبدل تاریخ</button>
+      <button type="button" id="convTabDiff" style="flex:1" onclick="switchConvSubTab('diff')">📏 فاصله دو تاریخ</button>
     </div>
-    <button class="pbtn" onclick="runConvert()">تبدیل تاریخ و نمایش در صفحه</button>
-    <div class="res" id="convRes">تاریخ را انتخاب کنید</div>
+
+    <div id="convSubConvert" style="display:flex;flex-direction:column;gap:10px">
+      <select id="convMode" onchange="initConvInputs()">
+        <option value="j2g">مبدأ: تاریخ هجری شمسی (جلالی)</option>
+        <option value="k2g">مبدأ: تاریخ کوردی (کۆچی هەتاوی - ٢٧٢٦)</option>
+        <option value="g2j">مبدأ: تاریخ میلادی (Gregorian)</option>
+      </select>
+      <div class="row3">
+        <select id="cDay"></select>
+        <select id="cMon"></select>
+        <select id="cYear"></select>
+      </div>
+      <button class="pbtn" onclick="runConvert()">تبدیل تاریخ و نمایش در صفحه</button>
+      <div class="res" id="convRes">تاریخ را انتخاب کنید</div>
+    </div>
+
+    <div id="convSubDiff" style="display:none;flex-direction:column;gap:10px">
+      <div>
+        <b style="font-size:11.5px;color:var(--sec)">تاریخ شروع (شمسی):</b>
+        <div class="row3" style="margin-top:5px">
+          <select id="d1Day"></select>
+          <select id="d1Mon"></select>
+          <select id="d1Year"></select>
+        </div>
+      </div>
+      <div>
+        <b style="font-size:11.5px;color:var(--sec)">تاریخ پایان (شمسی):</b>
+        <div class="row3" style="margin-top:5px">
+          <select id="d2Day"></select>
+          <select id="d2Mon"></select>
+          <select id="d2Year"></select>
+        </div>
+      </div>
+      <button class="pbtn" onclick="calcDateDiff()">📏 محاسبه فاصله دو تاریخ</button>
+      <div class="res" id="diffRes">تاریخ شروع و پایان را انتخاب کنید</div>
+    </div>
   </div>
 </div>
 
@@ -1087,7 +1115,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v47";
+  const VER = "v50";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1936,29 +1964,29 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Safe-zone centered card with balanced margins for all launcher masks
+  // Full-bleed high-contrast card maximizing font legibility on home screen
   ctx.fillStyle = surfaceColor;
-  drawRoundedRectSafe(ctx, 84, 84, 344, 344, 76);
+  drawRoundedRectSafe(ctx, 48, 48, 416, 416, 86);
   ctx.fill();
 
-  // Top accent bar centered inside safe zone
+  // Top accent bar
   ctx.fillStyle = accent;
-  drawRoundedRectSafe(ctx, S / 2 - 46, 108, 92, 9, 4.5);
+  drawRoundedRectSafe(ctx, S / 2 - 64, 66, 128, 11, 5.5);
   ctx.fill();
 
-  // Weekday label cleanly spaced below top bar
+  // Extra-large bold Weekday label
   drawExactCenteredText(
     ctx,
     weekDayStr || "",
     S / 2,
-    158,
-    "700 32px 'Vazirmatn', 'Inter', system-ui, sans-serif",
-    mutedText
+    134,
+    "900 66px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    primaryText
   );
 
-  // Prominent Day Number centered in the middle of the card
+  // Extra-large bold Day Number in center
   const dayStrClean = ((typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(dayNumStr ?? "") : String(dayNumStr ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d])).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 124 : 142;
+  const numFontSize = dayStrClean.length >= 2 ? 156 : 176;
   drawExactCenteredText(
     ctx,
     dayStrClean,
@@ -1968,13 +1996,13 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
     primaryText
   );
 
-  // Month name cleanly spaced below day number
+  // Extra-large bold Month label at bottom
   drawExactCenteredText(
     ctx,
     monthName || "",
     S / 2,
-    370,
-    "700 30px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    396,
+    "900 66px 'Vazirmatn', 'Inter', system-ui, sans-serif",
     accent
   );
 
@@ -1991,30 +2019,23 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   ctx.clearRect(0, 0, S, S);
   ctx.fillStyle = "#FFFFFF";
 
-  // Top calendar binding rings (left & right)
-  drawRoundedRectSafe(ctx, 28, 4, 14, 18, 6);
-  drawRoundedRectSafe(ctx, 86, 4, 14, 18, 6);
+  // Sleek circular/squircle emblem with a refined inner ring cutout
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, 54, 0, Math.PI * 2);
   ctx.fill();
 
-  // Main rounded squircle calendar tile (fills 90% of status bar slot for maximum legibility)
-  drawRoundedRectSafe(ctx, 8, 16, 112, 106, 24);
-  ctx.fill();
-
-  // Cut out transparent top header bar groove & ultra-bold Day Number in the center
   ctx.globalCompositeOperation = "destination-out";
-  ctx.fillStyle = "#000000";
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, 44, 0, Math.PI * 2);
+  ctx.stroke();
 
-  // Top header separator line cutout
-  drawRoundedRectSafe(ctx, 18, 34, 92, 5, 2.5);
-  ctx.fill();
-
-  // Huge, crystal-clear Day Number cutout (auto-scales for 1 or 2 digits)
   const isTwoDigits = String(dayNumStr).length > 1;
-  const fontSize = isTwoDigits ? 68 : 76;
+  const fontSize = isTwoDigits ? 54 : 62;
   ctx.font = `900 ${fontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(dayNumStr, S / 2, 82);
+  ctx.fillText(dayNumStr, S / 2, S / 2 + 2);
 
   ctx.globalCompositeOperation = "source-over";
   return c.toDataURL("image/png");
@@ -4567,6 +4588,67 @@ function initConvInputs(){
     dS.value=g.gd;mS.value=g.gm;yS.value=g.gy;
   }
 }
+
+function switchConvSubTab(mode) {
+  const isDiff = mode === "diff";
+  document.getElementById("convTabConvert")?.classList.toggle("act", !isDiff);
+  document.getElementById("convTabDiff")?.classList.toggle("act", isDiff);
+  if (document.getElementById("convSubConvert")) document.getElementById("convSubConvert").style.display = isDiff ? "none" : "flex";
+  if (document.getElementById("convSubDiff")) document.getElementById("convSubDiff").style.display = isDiff ? "flex" : "none";
+  if (isDiff) initDiffInputs();
+}
+
+function initDiffInputs() {
+  const ids = [["d1Day","d1Mon","d1Year"], ["d2Day","d2Mon","d2Year"]];
+  ids.forEach(([dId, mId, yId], idx) => {
+    const dS = document.getElementById(dId), mS = document.getElementById(mId), yS = document.getElementById(yId);
+    if (!dS || !mS || !yS) return;
+    if (!dS.options.length) {
+      for (let d = 1; d <= 31; d++) dS.innerHTML += `<option value="${d}">${fa(d)}</option>`;
+      getJM().forEach((m, i) => mS.innerHTML += `<option value="${i + 1}">${fa(i + 1)} - ${m}</option>`);
+      for (let y = 1320; y <= 1450; y++) yS.innerHTML += `<option value="${y}">${fa(y)}</option>`;
+    }
+    const base = idx === 0 ? tod : sel;
+    dS.value = base.jd;
+    mS.value = base.jm;
+    yS.value = base.jy;
+  });
+}
+
+function calcDateDiff() {
+  const y1 = Number(document.getElementById("d1Year").value);
+  const m1 = Number(document.getElementById("d1Mon").value);
+  const d1 = Math.min(Number(document.getElementById("d1Day").value), mLen(y1, m1));
+
+  const y2 = Number(document.getElementById("d2Year").value);
+  const m2 = Number(document.getElementById("d2Mon").value);
+  const d2 = Math.min(Number(document.getElementById("d2Day").value), mLen(y2, m2));
+
+  const jdn1 = j2d(y1, m1, d1);
+  const jdn2 = j2d(y2, m2, d2);
+  const totalDays = Math.abs(jdn2 - jdn1);
+  const weeks = Math.floor(totalDays / 7);
+  const remAfterWeeks = totalDays % 7;
+
+  const yrs = Math.floor(totalDays / 365);
+  const mos = Math.floor((totalDays % 365) / 30);
+  const days = (totalDays % 365) % 30;
+
+  const direction = jdn2 >= jdn1
+    ? tr("تاریخ دوم جلوتر از تاریخ اول است", "ڕێکەوتی دووەم لەپێشەوەیە", "End date is after start date")
+    : tr("تاریخ دوم عقب‌تر از تاریخ اول است", "ڕێکەوتی دووەم لەدواوەیە", "End date is before start date");
+
+  const resEl = document.getElementById("diffRes");
+  if (resEl) {
+    resEl.innerHTML = `
+      📏 <b>${tr("فاصله کل:", "ماوەی گشتی:", "Total Difference:")}</b> <span style="color:var(--pri);font-weight:800">${fa(totalDays)} ${tr("روز", "ڕۆژ", "days")}</span><br>
+      🗓️ <b>${tr("تقسیم‌بندی تقریبی:", "دابەشکردن:", "Breakdown:")}</b> ${fa(yrs)} ${tr("سال", "ساڵ", "yrs")}، ${fa(mos)} ${tr("ماه", "مانگ", "mos")} و ${fa(days)} ${tr("روز", "ڕۆژ", "days")}<br>
+      📆 <b>${tr("بر حسب هفته:", "بە هەفتە:", "In Weeks:")}</b> ${fa(weeks)} ${tr("هفته و", "هەفتە و", "weeks &")} ${fa(remAfterWeeks)} ${tr("روز", "ڕۆژ", "days")}<br>
+      <span style="font-size:11px;color:var(--sec)">${direction}</span>
+    `;
+  }
+}
+
 function runConvert(){
   const mode=document.getElementById("convMode").value;
   const d=+document.getElementById("cDay").value,m=+document.getElementById("cMon").value,y=+document.getElementById("cYear").value;
