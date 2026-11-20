@@ -1271,7 +1271,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v59.2";
+  const VER = "v59.3";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2320,54 +2320,54 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
 
   const bgColor = useDarkIcon ? "#090D16" : "#F4F6FA";
   const surfaceColor = useDarkIcon ? "#131B2B" : "#FFFFFF";
-  const borderColor = useDarkIcon ? "rgba(148,163,184,0.22)" : "rgba(15,23,42,0.12)";
   const primaryText = useDarkIcon ? "#F8FAFC" : "#0F172A";
-  const mutedText = useDarkIcon ? "#94A3B8" : "#64748B";
   const accent = useDarkIcon ? "#6EA8FF" : (accentHex || "#1B6EF3");
 
   // Full-bleed background matching phone light/dark mode
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Full-bleed high-contrast card maximizing font legibility on home screen
+  // Full-bleed high-contrast card (no top accent bar!)
   ctx.fillStyle = surfaceColor;
-  drawRoundedRectSafe(ctx, 48, 48, 416, 416, 86);
+  drawRoundedRectSafe(ctx, 26, 26, 460, 460, 92);
   ctx.fill();
 
-  // Top accent bar
-  ctx.fillStyle = accent;
-  drawRoundedRectSafe(ctx, S / 2 - 64, 66, 128, 11, 5.5);
-  ctx.fill();
+  const toFa = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+  const isEn = (typeof cfg !== "undefined" && cfg && cfg.lang === "en");
 
-  // Extra-large bold Weekday label
+  // Extra-large bold Weekday label at top (no top blue bar)
+  const wdText = String(weekDayStr ?? "").trim();
+  const wdSize = wdText.length >= 8 ? 72 : 84;
   drawExactCenteredText(
     ctx,
-    weekDayStr || "",
+    wdText,
     S / 2,
-    134,
-    "900 66px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    126,
+    `900 ${wdSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     primaryText
   );
 
   // Extra-large bold Day Number in center
-  const dayStrClean = ((typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(dayNumStr ?? "") : String(dayNumStr ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d])).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 156 : 176;
+  const dayStrClean = (isEn ? String(dayNumStr ?? "") : toFa(dayNumStr ?? "")).trim();
+  const numFontSize = dayStrClean.length >= 2 ? 188 : 212;
   drawExactCenteredText(
     ctx,
     dayStrClean,
     S / 2,
-    264,
+    272,
     `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     primaryText
   );
 
   // Extra-large bold Month label at bottom
+  const mText = String(monthName ?? "").trim();
+  const mSize = mText.length >= 8 ? 72 : 84;
   drawExactCenteredText(
     ctx,
-    monthName || "",
+    mText,
     S / 2,
-    396,
-    "900 66px 'Vazirmatn', 'Inter', system-ui, sans-serif",
+    414,
+    `900 ${mSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
     accent
   );
 
@@ -2383,7 +2383,6 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
 
   ctx.clearRect(0, 0, S, S);
 
-  // Full-bleed high-impact squircle silhouette with top accent bar cutout & massive centered day number
   ctx.fillStyle = "#FFFFFF";
   drawRoundedRectSafe(ctx, 4, 4, 120, 120, 32);
   ctx.fill();
@@ -2391,17 +2390,13 @@ function generateStatusBarBadgeDataUrl(dayNumStr) {
   ctx.globalCompositeOperation = "destination-out";
   ctx.fillStyle = "#000000";
 
-  // Top header notch cutout
-  drawRoundedRectSafe(ctx, 32, 14, 64, 7, 3.5);
-  ctx.fill();
-
   const cleanStr = String(dayNumStr ?? "").trim();
   const isTwoDigits = cleanStr.length >= 2;
-  const fontSize = isTwoDigits ? 68 : 78;
+  const fontSize = isTwoDigits ? 76 : 88;
   ctx.font = `900 ${fontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(cleanStr, S / 2, 74);
+  ctx.fillText(cleanStr, S / 2, 68);
 
   ctx.globalCompositeOperation = "source-over";
   return c.toDataURL("image/png");
