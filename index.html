@@ -1086,7 +1086,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v39";
+  const VER = "v40";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -4315,7 +4315,7 @@ function render(){
   const todLbl = tr("امروز: ", "ئەمڕۆ: ", "Today: ");
   if (tSpan) {
     if (cType === "gregorian") {
-      tSpan.textContent = todLbl + fa(gToday.gd) + " " + GM_EN[gToday.gm - 1] + " " + fa(gToday.gy);
+      tSpan.innerHTML = todLbl + `<span dir="ltr" style="unicode-bidi:isolate">${toLatDigits(gToday.gd)} ${GM_EN[gToday.gm - 1]} ${toLatDigits(gToday.gy)}</span>`;
     } else if (cType === "hijri") {
       tSpan.textContent = todLbl + fa(hToday.hd) + " " + getHM()[hToday.hm - 1] + " " + fa(hToday.hy);
     } else if (cType === "kurdish") {
