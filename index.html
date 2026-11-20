@@ -1087,7 +1087,7 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v46";
+  const VER = "v47";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1834,11 +1834,6 @@ function dismissInstallBanner() {
 
 // 1. Minimalist Dynamic 512x512 App Icon (Android & iOS) showing Weekday (روز) & Day Date (تاریخ روز)
 function drawRoundedRectSafe(ctx, x, y, w, h, r) {
-  if (typeof ctx.roundRect === "function") {
-    ctx.beginPath();
-    drawRoundedRectSafe(ctx, x, y, w, h, r);
-    return;
-  }
   const rad = Math.min(r || 0, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rad, y);
@@ -2246,8 +2241,8 @@ async function updatePersistentStatusDate(forcePost = false) {
 
   const swNotifOpts = {
     body: notifBody,
-    icon: "./icon-192-v42.png",
-    badge: "./icon-192-v42.png",
+    icon: notifTileIconUrl,
+    badge: badgeDataUrl,
     tag: "smartcal-daily-status",
     renotify: false,
     silent: true,
@@ -2255,7 +2250,7 @@ async function updatePersistentStatusDate(forcePost = false) {
   };
   const winNotifOpts = {
     body: notifBody,
-    icon: "./icon-192-v42.png",
+    icon: notifTileIconUrl,
     tag: "smartcal-daily-status",
     silent: true
   };
