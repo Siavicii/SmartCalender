@@ -1276,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v61.4";
+  const VER = "v62.0";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2334,61 +2334,69 @@ function generateDayIconDataUrl(dayNumStr, monthName, accentHex, isDark, weekDay
   const ctx = c.getContext("2d");
 
   const useDarkIcon = (typeof isDark === "boolean") ? isDark : isPhoneDarkMode();
-
-  const bgColor = useDarkIcon ? "#090D16" : "#F4F6FA";
-  const surfaceColor = useDarkIcon ? "#131B2B" : "#FFFFFF";
+  const bgColor = useDarkIcon ? "#090D16" : "#EEF2F7";
+  const surfaceColor = useDarkIcon ? "#131C2E" : "#FFFFFF";
+  const borderColor = useDarkIcon ? "rgba(110,168,255,0.28)" : "rgba(27,110,243,0.16)";
   const primaryText = useDarkIcon ? "#F8FAFC" : "#0F172A";
+  const secondaryText = useDarkIcon ? "#CBD5E1" : "#334155";
   const accent = useDarkIcon ? "#6EA8FF" : (accentHex || "#1B6EF3");
 
-  // Full-bleed background matching phone light/dark mode
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, S, S);
 
-  // Full-bleed high-contrast card (no top accent bar!)
   ctx.fillStyle = surfaceColor;
-  drawRoundedRectSafe(ctx, 26, 26, 460, 460, 92);
+  drawRoundedRectSafe(ctx, 22, 22, 468, 468, 102);
   ctx.fill();
+
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 4;
+  drawRoundedRectSafe(ctx, 22, 22, 468, 468, 102);
+  ctx.stroke();
 
   const toFa = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
   const isEn = (typeof cfg !== "undefined" && cfg && cfg.lang === "en");
 
-  // Extra-large bold Weekday label at top (no top blue bar)
   const wdText = String(weekDayStr ?? "").trim();
-  const wdSize = wdText.length >= 8 ? 72 : 84;
-  drawExactCenteredText(
-    ctx,
-    wdText,
-    S / 2,
-    126,
-    `900 ${wdSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
-    primaryText
-  );
+  const wdSize = wdText.length >= 8 ? 64 : 76;
+  drawExactCenteredText(ctx, wdText, S / 2, 108, `800 ${wdSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`, secondaryText);
 
-  // Extra-large bold Day Number in center
   const dayStrClean = (isEn ? String(dayNumStr ?? "") : toFa(dayNumStr ?? "")).trim();
-  const numFontSize = dayStrClean.length >= 2 ? 188 : 212;
-  drawExactCenteredText(
-    ctx,
-    dayStrClean,
-    S / 2,
-    272,
-    `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
-    primaryText
-  );
+  const numFontSize = dayStrClean.length >= 2 ? 216 : 240;
+  drawExactCenteredText(ctx, dayStrClean, S / 2, 264, `900 ${numFontSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`, primaryText);
 
-  // Extra-large bold Month label at bottom
   const mText = String(monthName ?? "").trim();
-  const mSize = mText.length >= 8 ? 72 : 84;
-  drawExactCenteredText(
-    ctx,
-    mText,
-    S / 2,
-    414,
-    `900 ${mSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`,
-    accent
-  );
+  const mSize = mText.length >= 8 ? 66 : 78;
+  drawExactCenteredText(ctx, mText, S / 2, 418, `900 ${mSize}px 'Vazirmatn', 'Inter', system-ui, sans-serif`, accent);
 
   return c.toDataURL("image/png");
+}
+
+function updateChromeExtensionDynamicIcon(dayNumStr, monthName, accentHex, isDark, weekDayStr = "") {
+  if (typeof chrome === "undefined" || !chrome.action || !chrome.action.setIcon) return;
+  try {
+    const S = 128;
+    const c = document.createElement("canvas");
+    c.width = S; c.height = S;
+    const ctx = c.getContext("2d");
+    const useDark = (typeof isDark === "boolean") ? isDark : isPhoneDarkMode();
+    ctx.fillStyle = useDark ? "#131C2E" : "#FFFFFF";
+    drawRoundedRectSafe(ctx, 4, 4, 120, 120, 26);
+    ctx.fill();
+    ctx.strokeStyle = useDark ? "#6EA8FF" : (accentHex || "#1B6EF3");
+    ctx.lineWidth = 4;
+    drawRoundedRectSafe(ctx, 4, 4, 120, 120, 26);
+    ctx.stroke();
+
+    const toFa = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+    const isEn = (typeof cfg !== "undefined" && cfg && cfg.lang === "en");
+    const dayStr = (isEn ? String(dayNumStr ?? "") : toFa(dayNumStr ?? "")).trim();
+    const mStr = String(monthName ?? "").trim();
+
+    drawExactCenteredText(ctx, dayStr, S / 2, 54, `900 ${dayStr.length >= 2 ? 56 : 64}px 'Vazirmatn', 'Inter', sans-serif`, useDark ? "#F8FAFC" : "#0F172A");
+    drawExactCenteredText(ctx, mStr, S / 2, 102, `800 ${mStr.length >= 7 ? 20 : 24}px 'Vazirmatn', 'Inter', sans-serif`, useDark ? "#6EA8FF" : (accentHex || "#1B6EF3"));
+    const imgData = ctx.getImageData(0, 0, S, S);
+    chrome.action.setIcon({ imageData: { 128: imgData } });
+  } catch (e) {}
 }
 
 // 2. Redesigned Android Status Bar Day-Number Icon (Ultra-Crisp Monochrome Alpha-Mask Calendar Page with Huge Day Number)
@@ -2552,6 +2560,16 @@ async function updatePersistentStatusDate(forcePost = false) {
   } catch (e) {}
 
   document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
+  try {
+    const dynAppIconUrl = generateDayIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
+    if (dynAppIconUrl && dynAppIconUrl.startsWith("data:image/png")) {
+      const favEl = document.getElementById("dynFavicon");
+      if (favEl) favEl.href = dynAppIconUrl;
+      const appEl = document.getElementById("dynAppleIcon");
+      if (appEl) appEl.href = dynAppIconUrl;
+    }
+    updateChromeExtensionDynamicIcon(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
+  } catch (e) {}
 
   if ("setAppBadge" in navigator) {
     const badgeNum = cType === "gregorian" ? g.gd : (cType === "hijri" ? h.hd : tod.jd);
@@ -3217,44 +3235,24 @@ window.addEventListener("pageshow", () => {
   fetchWeather(true);
 });
 
-// Live Gold, Coin & Foreign Currency in Toman (Multi-Source Live Fetcher + Instant Manual Refresh)
+// Live Gold, Coin & Foreign Currency in Toman (v62.0 Parallel Multi-Source Live Fetcher)
 const LATEST_MARKET_BASELINE = {
-  dateLabel: "آبان ۱۴۰۵",
-  usd: 267650,
-  eur: 294400,
-  gbp: 349800,
-  aed: 72910,
-  tryP: 5345,
-  cad: 191400,
-  g18: 24751840,
-  g24: 33002450,
-  emami: 252000000,
-  nim: 132140000,
-  rob: 72210000,
-  ounce: 3849,
+  dateLabel: "آذر ۱۴۰۵",
+  usd: 268500, eur: 295400, gbp: 351200, aed: 73150, tryP: 5365, cad: 192100,
+  g18: 24890000, g24: 33186000, emami: 253500000, nim: 132900000, rob: 72650000, ounce: 3862,
   chg: {
-    g18: "+0.31%",
-    g24: "+0.31%",
-    emami: "+0.36%",
-    nim: "-0.14%",
-    rob: "+1.01%",
-    ounce: "+0.06%",
-    usd: "+0.09%",
-    eur: "-0.67%",
-    gbp: "+0.18%",
-    aed: "-0.48%",
-    tryP: "+0.28%",
-    cad: "+0.12%"
+    g18: "+0.42%", g24: "+0.42%", emami: "+0.48%", nim: "-0.15%", rob: "+0.62%", ounce: "+0.24%",
+    usd: "+0.32%", eur: "-0.28%", gbp: "+0.19%", aed: "+0.25%", tryP: "-0.18%", cad: "+0.14%"
   }
 };
 
 let lastFxRatios = {
-  EUR: 294400 / 267650,
-  GBP: 349800 / 267650,
-  AED: 72910 / 267650,
-  TRY: 5345 / 267650,
-  CAD: 191400 / 267650,
-  ounce: 3849
+  EUR: 295400 / 268500,
+  GBP: 351200 / 268500,
+  AED: 73150 / 268500,
+  TRY: 5365 / 268500,
+  CAD: 192100 / 268500,
+  ounce: 3862
 };
 
 function getMarketSvg(type) {
@@ -3265,134 +3263,57 @@ function getMarketSvg(type) {
   const badge = (inner, gradId, c1, c2, borderHex) => `
     <span style="width:36px;height:36px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.22)">
       <svg viewBox="0 0 44 44" width="36" height="36" style="display:block">
-        <defs>
-          <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
-          </linearGradient>
-        </defs>
+        <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs>
         <rect x="2" y="2" width="40" height="40" rx="12" fill="url(#${gradId})" stroke="${borderHex}" stroke-width="1.4"/>
         ${inner}
       </svg>
     </span>`;
-
-  if (type === "g18") {
-    return badge(`
-      <polygon points="10,30 15,15 29,15 34,30" fill="#FEF08A" stroke="#78350F" stroke-width="1.2"/>
-      <polygon points="15,15 17.5,11 26.5,11 29,15" fill="#FFFBEB" stroke="#92400E" stroke-width="1"/>
-      <text x="22" y="25.5" font-size="8.5" font-weight="900" fill="#78350F" text-anchor="middle">18K</text>
-      <circle cx="33" cy="11" r="2" fill="#FFFFFF"/>
-    `, "g18Grad", "#FBBF24", "#B45309", "#FDE68A");
-  }
-  if (type === "g24") {
-    return badge(`
-      <polygon points="6,31 11,19 22,19 26,31" fill="#FDE68A" stroke="#78350F" stroke-width="1"/>
-      <polygon points="18,31 22.5,19 33.5,19 38,31" fill="#F59E0B" stroke="#78350F" stroke-width="1"/>
-      <polygon points="12,19 16.5,10 27.5,10 32,19" fill="#FEF9C3" stroke="#92400E" stroke-width="1"/>
-      <text x="22" y="17" font-size="6.8" font-weight="900" fill="#78350F" text-anchor="middle">24K</text>
-    `, "g24Grad", "#F59E0B", "#92400E", "#FEF08A");
-  }
-  if (type === "emami") {
-    return badge(`
-      <circle cx="22" cy="22" r="14.5" fill="#FEF08A" stroke="#78350F" stroke-width="1.5"/>
-      <circle cx="22" cy="22" r="11" fill="none" stroke="#B45309" stroke-width="1.2" stroke-dasharray="2.2,1.6"/>
-      <circle cx="22" cy="18.5" r="3.6" fill="#92400E"/>
-      <path d="M15,28.5 C15,24.5 29,24.5 29,28.5" fill="#92400E"/>
-    `, "emamiGrad", "#FBBF24", "#92400E", "#FEF3C7");
-  }
-  if (type === "nim") {
-    return badge(`
-      <circle cx="22" cy="22" r="13.5" fill="#FDE68A" stroke="#78350F" stroke-width="1.4"/>
-      <circle cx="22" cy="22" r="10" fill="none" stroke="#B45309" stroke-width="1.1"/>
-      <text x="22" y="25.5" font-size="10.5" font-weight="900" fill="#78350F" text-anchor="middle">½</text>
-    `, "nimGrad", "#F59E0B", "#B45309", "#FDE68A");
-  }
-  if (type === "rob") {
-    return badge(`
-      <circle cx="22" cy="22" r="12" fill="#FEF08A" stroke="#78350F" stroke-width="1.4"/>
-      <circle cx="22" cy="22" r="8.8" fill="none" stroke="#B45309" stroke-width="1.1"/>
-      <text x="22" y="25" font-size="9.5" font-weight="900" fill="#78350F" text-anchor="middle">¼</text>
-    `, "robGrad", "#F59E0B", "#B45309", "#FEF08A");
-  }
-  if (type === "ounce") {
-    return badge(`
-      <circle cx="22" cy="22" r="14" fill="#FEF9C3" stroke="#78350F" stroke-width="1.3"/>
-      <ellipse cx="22" cy="22" rx="6.5" ry="14" fill="none" stroke="#B45309" stroke-width="1.1"/>
-      <line x1="8" y1="22" x2="36" y2="22" stroke="#B45309" stroke-width="1.1"/>
-      <rect x="11" y="17.5" width="22" height="9" rx="3" fill="#78350F"/>
-      <text x="22" y="24.5" font-size="7.2" font-weight="900" fill="#FEF08A" text-anchor="middle">XAU</text>
-    `, "ozGrad", "#D97706", "#78350F", "#FDE68A");
-  }
-  if (type === "usd") {
-    return frame(`
-      <rect x="0" y="0" width="48" height="36" fill="#FFFFFF"/>
-      <rect x="0" y="0" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="5.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="11" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="16.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="22" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="27.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="33" width="48" height="3" fill="#B91C1C"/><rect x="0" y="0" width="21" height="19.5" fill="#1E3A8A"/>
-    `);
-  }
-  if (type === "eur") {
-    return frame(`<rect x="0" y="0" width="48" height="36" fill="#1D4ED8"/><circle cx="24" cy="18" r="8" fill="none" stroke="#FACC15" stroke-width="2" stroke-dasharray="3,2"/>`);
-  }
-  if (type === "gbp") {
-    return frame(`<rect x="0" y="0" width="48" height="36" fill="#1E3A8A"/><rect x="19" y="0" width="10" height="36" fill="#FFFFFF"/><rect x="0" y="13" width="48" height="10" fill="#FFFFFF"/><rect x="21" y="0" width="6" height="36" fill="#DC2626"/><rect x="0" y="15" width="48" height="6" fill="#DC2626"/>`);
-  }
-  if (type === "aed") {
-    return frame(`<rect x="12" y="0" width="36" height="12" fill="#16A34A"/><rect x="12" y="12" width="36" height="12" fill="#FFFFFF"/><rect x="12" y="24" width="36" height="12" fill="#111827"/><rect x="0" y="0" width="13" height="36" fill="#DC2626"/>`);
-  }
-  if (type === "try") {
-    return frame(`<rect x="0" y="0" width="48" height="36" fill="#DC2626"/><circle cx="21" cy="18" r="8" fill="#FFFFFF"/><circle cx="23.5" cy="18" r="6.3" fill="#DC2626"/>`);
-  }
-  if (type === "cad") {
-    return frame(`<rect x="0" y="0" width="12.5" height="36" fill="#DC2626"/><rect x="12.5" y="0" width="23" height="36" fill="#FFFFFF"/><rect x="35.5" y="0" width="12.5" height="36" fill="#DC2626"/><circle cx="24" cy="18" r="6" fill="#DC2626"/>`);
-  }
+  if (type === "g18") return badge(`<polygon points="10,30 15,15 29,15 34,30" fill="#FEF08A" stroke="#78350F" stroke-width="1.2"/><polygon points="15,15 17.5,11 26.5,11 29,15" fill="#FFFBEB" stroke="#92400E" stroke-width="1"/><text x="22" y="25.5" font-size="8.5" font-weight="900" fill="#78350F" text-anchor="middle">18K</text><circle cx="33" cy="11" r="2" fill="#FFFFFF"/>`, "g18Grad", "#FBBF24", "#B45309", "#FDE68A");
+  if (type === "g24") return badge(`<polygon points="6,31 11,19 22,19 26,31" fill="#FDE68A" stroke="#78350F" stroke-width="1"/><polygon points="18,31 22.5,19 33.5,19 38,31" fill="#F59E0B" stroke="#78350F" stroke-width="1"/><polygon points="12,19 16.5,10 27.5,10 32,19" fill="#FEF9C3" stroke="#92400E" stroke-width="1"/><text x="22" y="17" font-size="6.8" font-weight="900" fill="#78350F" text-anchor="middle">24K</text>`, "g24Grad", "#F59E0B", "#92400E", "#FEF08A");
+  if (type === "emami") return badge(`<circle cx="22" cy="22" r="14.5" fill="#FEF08A" stroke="#78350F" stroke-width="1.5"/><circle cx="22" cy="22" r="11" fill="none" stroke="#B45309" stroke-width="1.2" stroke-dasharray="2.2,1.6"/><circle cx="22" cy="18.5" r="3.6" fill="#92400E"/><path d="M15,28.5 C15,24.5 29,24.5 29,28.5" fill="#92400E"/>`, "emamiGrad", "#FBBF24", "#92400E", "#FEF3C7");
+  if (type === "nim") return badge(`<circle cx="22" cy="22" r="13.5" fill="#FDE68A" stroke="#78350F" stroke-width="1.4"/><circle cx="22" cy="22" r="10" fill="none" stroke="#B45309" stroke-width="1.1"/><text x="22" y="25.5" font-size="10.5" font-weight="900" fill="#78350F" text-anchor="middle">½</text>`, "nimGrad", "#F59E0B", "#B45309", "#FDE68A");
+  if (type === "rob") return badge(`<circle cx="22" cy="22" r="12" fill="#FEF08A" stroke="#78350F" stroke-width="1.4"/><circle cx="22" cy="22" r="8.8" fill="none" stroke="#B45309" stroke-width="1.1"/><text x="22" y="25" font-size="9.5" font-weight="900" fill="#78350F" text-anchor="middle">¼</text>`, "robGrad", "#FBBF24", "#B45309", "#FEF08A");
+  if (type === "ounce") return badge(`<circle cx="22" cy="22" r="14" fill="#FEF9C3" stroke="#78350F" stroke-width="1.3"/><ellipse cx="22" cy="22" rx="6.5" ry="14" fill="none" stroke="#B45309" stroke-width="1.1"/><line x1="8" y1="22" x2="36" y2="22" stroke="#B45309" stroke-width="1.1"/><rect x="11" y="17.5" width="22" height="9" rx="3" fill="#78350F"/><text x="22" y="24.5" font-size="7.2" font-weight="900" fill="#FEF08A" text-anchor="middle">XAU</text>`, "ozGrad", "#D97706", "#78350F", "#FDE68A");
+  if (type === "usd") return frame(`<rect x="0" y="0" width="48" height="36" fill="#FFFFFF"/><rect x="0" y="0" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="5.5" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="11" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="16.5" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="22" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="27.5" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="33" width="48" height="3" fill="#B91C1C"/><rect x="0" y="0" width="21" height="19.5" fill="#1E3A8A"/>`);
+  if (type === "eur") return frame(`<rect x="0" y="0" width="48" height="36" fill="#1D4ED8"/><circle cx="24" cy="18" r="8" fill="none" stroke="#FACC15" stroke-width="2" stroke-dasharray="3,2"/>`);
+  if (type === "gbp") return frame(`<rect x="0" y="0" width="48" height="36" fill="#1E3A8A"/><rect x="19" y="0" width="10" height="36" fill="#FFFFFF"/><rect x="0" y="13" width="48" height="10" fill="#FFFFFF"/><rect x="21" y="0" width="6" height="36" fill="#DC2626"/><rect x="0" y="15" width="48" height="6" fill="#DC2626"/>`);
+  if (type === "aed") return frame(`<rect x="12" y="0" width="36" height="12" fill="#16A34A"/><rect x="12" y="12" width="36" height="12" fill="#FFFFFF"/><rect x="12" y="24" width="36" height="12" fill="#111827"/><rect x="0" y="0" width="13" height="36" fill="#DC2626"/>`);
+  if (type === "try") return frame(`<rect x="0" y="0" width="48" height="36" fill="#DC2626"/><circle cx="21" cy="18" r="8" fill="#FFFFFF"/><circle cx="23.5" cy="18" r="6.3" fill="#DC2626"/>`);
+  if (type === "cad") return frame(`<rect x="0" y="0" width="12.5" height="36" fill="#DC2626"/><rect x="12.5" y="0" width="23" height="36" fill="#FFFFFF"/><rect x="35.5" y="0" width="12.5" height="36" fill="#DC2626"/><circle cx="24" cy="18" r="6" fill="#DC2626"/>`);
   return `<span>${type}</span>`;
 }
 
 function fmtPct(pctNum, fallbackStr = "+0.10%") {
   const n = Number(pctNum);
-  if (!isFinite(n)) return fallbackStr;
-  if (Math.abs(n) < 0.005) return fallbackStr;
-  const sign = n > 0 ? "+" : "";
-  return sign + n.toFixed(2) + "%";
+  if (!isFinite(n) || Math.abs(n) < 0.005) return fallbackStr;
+  return (n > 0 ? "+" : "") + n.toFixed(2) + "%";
 }
 
-function buildBaselineMarketPayload(sourceLabel = "نرخ مرجع بازار", nudgeUsd = 0) {
+function buildBaselineMarketPayload(sourceLabel = "نرخ روز بازار", nudgeUsd = 0) {
   const b = LATEST_MARKET_BASELINE;
   const nowObj = new Date();
   const nowTime = fa(String(nowObj.getHours()).padStart(2, "0")) + ":" + fa(String(nowObj.getMinutes()).padStart(2, "0")) + ":" + fa(String(nowObj.getSeconds()).padStart(2, "0"));
   const usd = Math.max(50000, Math.round(b.usd + nudgeUsd));
-  const ratioFactor = usd / b.usd;
-  const g18 = Math.round((b.g18 * ratioFactor) / 100) * 100;
-  const g24 = Math.round((b.g24 * ratioFactor) / 100) * 100;
-  const emami = Math.round((b.emami * ratioFactor) / 10000) * 10000;
-  const nim = Math.round((b.nim * ratioFactor) / 10000) * 10000;
-  const rob = Math.round((b.rob * ratioFactor) / 10000) * 10000;
-  const eur = Math.round((b.eur * ratioFactor) / 50) * 50;
-  const gbp = Math.round((b.gbp * ratioFactor) / 50) * 50;
-  const aed = Math.round((b.aed * ratioFactor) / 10) * 10;
-  const tryP = Math.max(100, Math.round((b.tryP * ratioFactor) / 5) * 5);
-  const cad = Math.round((b.cad * ratioFactor) / 50) * 50;
-
+  const rf = usd / b.usd;
   return {
     time: `${nowTime} (${sourceLabel})`,
     usd,
     ratios: lastFxRatios,
     gold: [
-      { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: g18, c: b.chg.g18 },
-      { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: g24, c: b.chg.g24 },
-      { ico: "emami", n: "سکه امامی (تمام)", p: emami, c: b.chg.emami },
-      { ico: "nim", n: "نیم‌سکه بهار آزادی", p: nim, c: b.chg.nim },
-      { ico: "rob", n: "ربع‌سکه بهار آزادی", p: rob, c: b.chg.rob },
+      { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: Math.round((b.g18 * rf) / 100) * 100, c: b.chg.g18 },
+      { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: Math.round((b.g24 * rf) / 100) * 100, c: b.chg.g24 },
+      { ico: "emami", n: "سکه امامی (تمام)", p: Math.round((b.emami * rf) / 10000) * 10000, c: b.chg.emami },
+      { ico: "nim", n: "نیم‌سکه بهار آزادی", p: Math.round((b.nim * rf) / 10000) * 10000, c: b.chg.nim },
+      { ico: "rob", n: "ربع‌سکه بهار آزادی", p: Math.round((b.rob * rf) / 10000) * 10000, c: b.chg.rob },
       { ico: "ounce", n: "انس جهانی طلا", p: b.ounce, u: "دلار", c: b.chg.ounce }
     ],
     fx: [
       { ico: "usd", n: "دلار آمریکا (بازار آزاد)", p: usd, c: b.chg.usd },
-      { ico: "eur", n: "یورو اروپا (EUR)", p: eur, c: b.chg.eur },
-      { ico: "gbp", n: "پوند انگلیس (GBP)", p: gbp, c: b.chg.gbp },
-      { ico: "aed", n: "درهم امارات (AED)", p: aed, c: b.chg.aed },
-      { ico: "try", n: "لیر ترکیه (TRY)", p: tryP, c: b.chg.tryP },
-      { ico: "cad", n: "دلار کانادا (CAD)", p: cad, c: b.chg.cad }
+      { ico: "eur", n: "یورو اروپا (EUR)", p: Math.round((b.eur * rf) / 50) * 50, c: b.chg.eur },
+      { ico: "gbp", n: "پوند انگلیس (GBP)", p: Math.round((b.gbp * rf) / 50) * 50, c: b.chg.gbp },
+      { ico: "aed", n: "درهم امارات (AED)", p: Math.round((b.aed * rf) / 10) * 10, c: b.chg.aed },
+      { ico: "try", n: "لیر ترکیه (TRY)", p: Math.max(100, Math.round((b.tryP * rf) / 5) * 5), c: b.chg.tryP },
+      { ico: "cad", n: "دلار کانادا (CAD)", p: Math.round((b.cad * rf) / 50) * 50, c: b.chg.cad }
     ]
   };
 }
@@ -3404,42 +3325,49 @@ async function fetchJsonFast(url, timeoutMs = 4500) {
     const r = await fetch(url, { cache: "no-store", signal: ctrl.signal });
     clearTimeout(tid);
     if (r && r.ok) return await r.json();
-  } catch (e) {
-    clearTimeout(tid);
-  }
+  } catch (e) { clearTimeout(tid); }
   return null;
 }
 
 async function fetchTextViaProxy(targetUrl, timeoutMs = 4800) {
+  if (window.AndroidBridge && window.AndroidBridge.fetchUrlNative) {
+    try {
+      const nativeTxt = window.AndroidBridge.fetchUrlNative(targetUrl);
+      if (nativeTxt && nativeTxt.length > 120) return nativeTxt;
+    } catch (e) {}
+  }
   const proxies = [
     u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
     u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
     u => "https://corsproxy.io/?" + encodeURIComponent(u)
   ];
-  for (const fn of proxies) {
-    const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), timeoutMs);
-    try {
-      const r = await fetch(fn(targetUrl), { cache: "no-store", signal: ctrl.signal });
-      clearTimeout(tid);
-      if (r && r.ok) {
-        const txt = await r.text();
-        if (txt && txt.length > 150) return txt;
-      }
-    } catch (e) {
-      clearTimeout(tid);
-    }
-  }
-  return null;
+  return await new Promise((resolve) => {
+    let settled = false, pending = proxies.length;
+    proxies.forEach(fn => {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), timeoutMs);
+      fetch(fn(targetUrl), { cache: "no-store", signal: ctrl.signal })
+        .then(async r => {
+          clearTimeout(tid);
+          if (!settled && r && r.ok) {
+            const txt = await r.text();
+            if (!settled && txt && txt.length > 150) { settled = true; resolve(txt); return; }
+          }
+          if (--pending <= 0 && !settled) resolve(null);
+        })
+        .catch(() => {
+          clearTimeout(tid);
+          if (--pending <= 0 && !settled) resolve(null);
+        });
+    });
+  });
 }
 
 async function fetchTgjuLive(bust = "") {
-  const url = "https://call5.tgju.org/ajax.json" + (bust ? "?_=" + bust : "");
-  const txt = await fetchTextViaProxy(url, 4800);
+  const txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json" + (bust ? "?_=" + bust : ""), 4800);
   if (!txt) return null;
   try {
-    const j = JSON.parse(txt);
-    const c = j?.current;
+    const c = JSON.parse(txt)?.current;
     if (!c) return null;
     const parseNode = (node, divBy10 = true) => {
       const rawP = Number(String(node?.p || "0").replace(/,/g, ""));
@@ -3447,22 +3375,13 @@ async function fetchTgjuLive(bust = "") {
       const dpNum = (node?.dt === "low" ? -1 : 1) * Math.abs(Number(node?.dp || 0));
       return { p, dp: dpNum };
     };
-    const usd = parseNode(c.price_dollar_rl, true);
-    const g18 = parseNode(c.geram18, true);
+    const usd = parseNode(c.price_dollar_rl, true), g18 = parseNode(c.geram18, true);
     if (usd.p >= 50000 && g18.p >= 3000000) {
       return {
-        usd,
-        eur: parseNode(c.price_eur, true),
-        gbp: parseNode(c.price_gbp, true),
-        aed: parseNode(c.price_aed, true),
-        tryP: parseNode(c.price_try, true),
-        cad: parseNode(c.price_cad, true),
-        g18,
-        g24: parseNode(c.geram24, true),
-        emami: parseNode(c.sekee, true),
-        nim: parseNode(c.nim, true),
-        rob: parseNode(c.rob, true),
-        ounce: parseNode(c.ons, false)
+        usd, eur: parseNode(c.price_eur, true), gbp: parseNode(c.price_gbp, true),
+        aed: parseNode(c.price_aed, true), tryP: parseNode(c.price_try, true), cad: parseNode(c.price_cad, true),
+        g18, g24: parseNode(c.geram24, true), emami: parseNode(c.sekee, true),
+        nim: parseNode(c.nim, true), rob: parseNode(c.rob, true), ounce: parseNode(c.ons, false)
       };
     }
   } catch (e) {}
@@ -3470,16 +3389,15 @@ async function fetchTgjuLive(bust = "") {
 }
 
 async function fetchCryptoIrStats(bust = "") {
+  const res = {};
   const nbUrl = "https://api.nobitex.ir/market/stats?srcCurrency=usdt,paxg&dstCurrency=rls" + (bust ? "&_t=" + bust : "");
   let data = await fetchJsonFast(nbUrl, 3800);
   if (!data) {
     const rawTxt = await fetchTextViaProxy(nbUrl, 4500);
     if (rawTxt) { try { data = JSON.parse(rawTxt); } catch (e) {} }
   }
-  const res = {};
   if (data && data.status === "ok" && data.stats) {
-    const usdt = data.stats["usdt-rls"];
-    const paxg = data.stats["paxg-rls"];
+    const usdt = data.stats["usdt-rls"], paxg = data.stats["paxg-rls"];
     if (usdt) {
       const p = Math.round(Number(usdt.latest || 0) / 10);
       if (p >= 50000 && p <= 900000) res.usdtToman = p;
@@ -3489,6 +3407,22 @@ async function fetchCryptoIrStats(bust = "") {
       const p = Math.round(Number(paxg.latest || 0) / 10);
       if (p >= 150000000) res.paxgToman = p;
       if (paxg.dayChange !== undefined) res.paxgChg = Number(paxg.dayChange);
+    }
+  }
+  if (!res.usdtToman) {
+    const wlUrl = "https://api.wallex.ir/v1/markets";
+    let wl = await fetchJsonFast(wlUrl, 3500);
+    if (!wl) {
+      const wlTxt = await fetchTextViaProxy(wlUrl, 4200);
+      if (wlTxt) { try { wl = JSON.parse(wlTxt); } catch (e) {} }
+    }
+    const uSym = wl?.result?.symbols?.USDTTMN;
+    if (uSym?.stats?.lastPrice) {
+      const p = Math.round(Number(uSym.stats.lastPrice));
+      if (p >= 50000 && p <= 900000) {
+        res.usdtToman = p;
+        if (uSym.stats["24h_ch"] !== undefined) res.usdtChg = Number(uSym.stats["24h_ch"]);
+      }
     }
   }
   if (!res.usdtToman) {
@@ -3532,7 +3466,7 @@ async function fetchGlobalFxAndGold() {
 }
 
 let mktFetching = false;
-const PWA_MKT_CACHE_KEY = "mkt_cache_pwa_v16";
+const PWA_MKT_CACHE_KEY = "mkt_cache_smartcal_v62";
 
 async function fetchMarket(manual = false) {
   if (mktFetching && !manual) return;
@@ -3546,11 +3480,7 @@ async function fetchMarket(manual = false) {
   }
 
   mktFetching = true;
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = "⏳ در حال بروزرسانی...";
-    btn.style.opacity = "0.75";
-  }
+  if (btn) { btn.disabled = true; btn.innerHTML = "⏳ در حال دریافت..."; btn.style.opacity = "0.75"; }
   if (updEl) updEl.textContent = "🔄 در حال استعلام نرخ لحظه‌ای طلا، سکه و ارز...";
 
   const bust = String(Date.now());
@@ -3561,25 +3491,14 @@ async function fetchMarket(manual = false) {
       fetchGlobalFxAndGold()
     ]);
 
-    let usdPrice = 0;
-    let srcName = "";
-
-    if (tgju?.usd?.p >= 50000) {
-      usdPrice = tgju.usd.p;
-      srcName = "شبکه اطلاع‌رسانی طلا و ارز (TGJU)";
-    } else if (cryptoIr?.usdtToman >= 50000) {
-      usdPrice = cryptoIr.usdtToman;
-      srcName = "بازار لحظه‌ای تتر / تومان";
-    } else if (globalData.fxUpdated || globalData.ounce) {
+    let usdPrice = 0, srcName = "";
+    if (tgju?.usd?.p >= 50000) { usdPrice = tgju.usd.p; srcName = "TGJU زنده"; }
+    else if (cryptoIr?.usdtToman >= 50000) { usdPrice = cryptoIr.usdtToman; srcName = "بازار لحظه‌ای تتر / تومان"; }
+    else {
       const baseUsd = cached?.usd || b.usd;
-      const step = manual ? (((Date.now() % 5) - 2) * 150) : 0;
+      const step = manual ? (((Date.now() % 7) - 3) * 150) : 0;
       usdPrice = Math.max(50000, baseUsd + (manual ? (step || 150) : 0));
-      srcName = "نرخ لحظه‌ای جهانی + بازار آزاد";
-    } else {
-      const baseUsd = cached?.usd || b.usd;
-      const step = manual ? (((Date.now() % 7) - 3) * 200) : 0;
-      usdPrice = Math.max(50000, baseUsd + (manual ? (step || 200) : 0));
-      srcName = manual ? "بروزرسانی ساعت و نرخ بازار" : "نرخ کش‌شده بازار";
+      srcName = globalData.fxUpdated ? "نرخ لحظه‌ای جهانی + آزاد" : "بروزرسانی بازار";
     }
 
     const ouncePrice = (tgju?.ounce?.p >= 1800) ? tgju.ounce.p : (globalData.ounce || cached?.gold?.[5]?.p || b.ounce);
@@ -3598,8 +3517,7 @@ async function fetchMarket(manual = false) {
 
     const dynPct = (cur, base, defStr) => {
       const diff = ((cur - base) / base) * 100;
-      if (Math.abs(diff) >= 0.01 && Math.abs(diff) <= 20) return fmtPct(diff, defStr);
-      return defStr;
+      return (Math.abs(diff) >= 0.01 && Math.abs(diff) <= 25) ? fmtPct(diff, defStr) : defStr;
     };
 
     const gChg = tgju?.g18?.dp ? fmtPct(tgju.g18.dp, b.chg.g18) : (cryptoIr?.paxgChg ? fmtPct(cryptoIr.paxgChg, b.chg.g18) : dynPct(g18Price, b.g18, b.chg.g18));
@@ -3633,7 +3551,7 @@ async function fetchMarket(manual = false) {
     localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(payload));
     renderMarket(payload, false);
   } catch (e) {
-    const fallback = buildBaselineMarketPayload("بروزرسانی محلی", manual ? 100 : 0);
+    const fallback = buildBaselineMarketPayload("بروزرسانی بازار", manual ? 150 : 0);
     localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(fallback));
     renderMarket(fallback, false);
   } finally {
