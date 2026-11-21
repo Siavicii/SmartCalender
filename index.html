@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v51.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v51.png">
-<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v51.png">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v62.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v62.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v62.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -1276,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v59.5";
+  const VER = "v60.0";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2550,16 +2550,7 @@ async function updatePersistentStatusDate(forcePost = false) {
   if (prevBdg) prevBdg.src = badgeDataUrl;
 
   document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
-  const fav = document.getElementById("dynFavicon");
-  if (fav) fav.href = appIconDataUrl;
-  let appIco = document.getElementById("dynAppleIcon");
-  if (!appIco) {
-    appIco = document.createElement("link");
-    appIco.id = "dynAppleIcon";
-    appIco.rel = "apple-touch-icon";
-    document.head.appendChild(appIco);
-  }
-  appIco.href = appIconDataUrl;
+  // Static minimalist calendar icon is kept in HTML & manifest.json (no daily icon overwrite needed)
 
   // 2. Update PWA App Badge
   if ("setAppBadge" in navigator) {
@@ -5892,7 +5883,7 @@ function syncTodayReference(forceRenderAndIcon = false) {
 
   if (forceRenderAndIcon) {
     render();
-    updatePersistentStatusDate(false);
+    updatePersistentStatusDate(true);
   }
   return false;
 }
