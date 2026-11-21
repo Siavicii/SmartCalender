@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v65.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v65.png">
-<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v65.png">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v68.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v68.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v68.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -1276,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v60.3";
+  const VER = "v60.6";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2631,34 +2631,63 @@ async function updatePersistentStatusDate(forcePost = false) {
 
   const swNotifOpts = {
     body: notifBody,
-    icon: notifTileIconUrl,
+    icon: notifTileIconUrl || "./icon-192-v68.png",
     badge: badgeDataUrl,
     tag: "smartcal-daily-status",
-    renotify: false,
+    renotify: !!forcePost,
     silent: true,
     requireInteraction: true
   };
+  const swFallbackOpts = {
+    body: notifBody,
+    icon: "./icon-192-v68.png",
+    tag: "smartcal-daily-status",
+    renotify: !!forcePost,
+    silent: true
+  };
   const winNotifOpts = {
     body: notifBody,
-    icon: notifTileIconUrl,
+    icon: notifTileIconUrl || "./icon-192-v68.png",
     tag: "smartcal-daily-status",
     silent: true
   };
 
-  try {
-    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
-      const reg = await Promise.race([
-        navigator.serviceWorker.ready,
-        new Promise(res => setTimeout(() => res(null), 1500))
-      ]) || await navigator.serviceWorker.getRegistration().catch(() => null);
-      if (reg && reg.showNotification) {
-        await reg.showNotification(notifTitle, swNotifOpts);
-        return;
+  let delivered = false;
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
+    try {
+      let reg = await navigator.serviceWorker.getRegistration().catch(() => null);
+      if (!reg) {
+        reg = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise(res => setTimeout(() => res(null), 1500))
+        ]).catch(() => null);
       }
+      if (reg && reg.showNotification) {
+        if (forcePost && reg.getNotifications) {
+          try {
+            const oldList = await reg.getNotifications({ tag: "smartcal-daily-status" });
+            oldList.forEach(n => n.close());
+          } catch (e) {}
+        }
+        try {
+          await reg.showNotification(notifTitle, swNotifOpts);
+          delivered = true;
+        } catch (e1) {
+          await reg.showNotification(notifTitle, swFallbackOpts);
+          delivered = true;
+        }
+      }
+    } catch (e) {
+      delivered = false;
     }
-    new Notification(notifTitle, winNotifOpts);
-  } catch (e) {
-    try { new Notification(notifTitle, winNotifOpts); } catch (err) {}
+  }
+
+  if (!delivered) {
+    try {
+      new Notification(notifTitle, winNotifOpts);
+    } catch (err) {
+      try { new Notification(notifTitle, { body: notifBody, icon: "./icon-192-v68.png", silent: true }); } catch (e2) {}
+    }
   }
 }
 
