@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" id="metaAppleStatusBar" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Cal">
-<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192-v68.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192-v68.png">
-<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512-v68.png">
+<link rel="icon" id="dynFavicon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" id="dynAppleIcon" href="./icon-512.png">
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
@@ -1276,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v60.6";
+  const VER = "v60.7";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2631,7 +2631,7 @@ async function updatePersistentStatusDate(forcePost = false) {
 
   const swNotifOpts = {
     body: notifBody,
-    icon: notifTileIconUrl || "./icon-192-v68.png",
+    icon: notifTileIconUrl || "./icon-192.png",
     badge: badgeDataUrl,
     tag: "smartcal-daily-status",
     renotify: !!forcePost,
@@ -2640,14 +2640,14 @@ async function updatePersistentStatusDate(forcePost = false) {
   };
   const swFallbackOpts = {
     body: notifBody,
-    icon: "./icon-192-v68.png",
+    icon: "./icon-192.png",
     tag: "smartcal-daily-status",
     renotify: !!forcePost,
     silent: true
   };
   const winNotifOpts = {
     body: notifBody,
-    icon: notifTileIconUrl || "./icon-192-v68.png",
+    icon: notifTileIconUrl || "./icon-192.png",
     tag: "smartcal-daily-status",
     silent: true
   };
@@ -2686,7 +2686,7 @@ async function updatePersistentStatusDate(forcePost = false) {
     try {
       new Notification(notifTitle, winNotifOpts);
     } catch (err) {
-      try { new Notification(notifTitle, { body: notifBody, icon: "./icon-192-v68.png", silent: true }); } catch (e2) {}
+      try { new Notification(notifTitle, { body: notifBody, icon: "./icon-192.png", silent: true }); } catch (e2) {}
     }
   }
 }
