@@ -1268,7 +1268,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v63.7";
+  const VER = "v63.8";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3464,28 +3464,34 @@ async function fetchJsonFast(url, timeoutMs = 4500) {
   return null;
 }
 
-async function fetchTextViaProxy(targetUrl, timeoutMs = 4800) {
+async function fetchTextViaProxy(targetUrl, timeoutMs = 6500) {
   if (window.AndroidBridge && window.AndroidBridge.fetchUrlNative) {
     try {
       const nativeTxt = window.AndroidBridge.fetchUrlNative(targetUrl);
       if (nativeTxt && nativeTxt.length > 120) return nativeTxt;
     } catch (e) {}
   }
-  const proxies = [
-    u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
-    u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
-    u => "https://corsproxy.io/?" + encodeURIComponent(u)
+  const attempts = [
+    { url: targetUrl, unwrapJson: false },
+    { url: "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl), unwrapJson: false },
+    { url: "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl), unwrapJson: true },
+    { url: "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(targetUrl), unwrapJson: false },
+    { url: "https://corsproxy.io/?" + encodeURIComponent(targetUrl), unwrapJson: false },
+    { url: "https://thingproxy.freeboard.io/fetch/" + targetUrl, unwrapJson: false }
   ];
   return await new Promise((resolve) => {
-    let settled = false, pending = proxies.length;
-    proxies.forEach(fn => {
+    let settled = false, pending = attempts.length;
+    attempts.forEach(item => {
       const ctrl = new AbortController();
       const tid = setTimeout(() => ctrl.abort(), timeoutMs);
-      fetch(fn(targetUrl), { cache: "no-store", signal: ctrl.signal })
+      fetch(item.url, { cache: "no-store", signal: ctrl.signal })
         .then(async r => {
           clearTimeout(tid);
           if (!settled && r && r.ok) {
-            const txt = await r.text();
+            let txt = await r.text();
+            if (item.unwrapJson && txt) {
+              try { txt = JSON.parse(txt)?.contents || ""; } catch (e) { txt = ""; }
+            }
             if (!settled && txt && txt.length > 150) { settled = true; resolve(txt); return; }
           }
           if (--pending <= 0 && !settled) resolve(null);
@@ -3499,7 +3505,9 @@ async function fetchTextViaProxy(targetUrl, timeoutMs = 4800) {
 }
 
 async function fetchTgjuLive(bust = "") {
-  const txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json" + (bust ? "?_=" + bust : ""), 4800);
+  const qs = bust ? "?_=" + bust : "";
+  let txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json" + qs, 6500);
+  if (!txt) txt = await fetchTextViaProxy("https://call4.tgju.org/ajax.json" + qs, 6500);
   if (!txt) return null;
   try {
     const c = JSON.parse(txt)?.current;
