@@ -6,14 +6,14 @@
 *Persian (Jalali) • Kurdish (Sorani) • English (Gregorian)*
 
 [![Version](https://img.shields.io/badge/Version-v64.3-1F2B3B?style=for-the-badge)](./version.json)
-[![PWA Ready](https://img.shields.io/badge/PWA-Installable-2563EB?style=for-the-badge&logo=pwa&logoColor=white)](https://siavicii.github.io/SmartCal-PWA/)
+[![PWA Ready](https://siavicii.github.io/SmartCalender/)
 [![Android APK](https://img.shields.io/badge/Android-Download%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Siavicii/SmartCal-Android/releases/latest)
 [![iOS Safari](https://img.shields.io/badge/iOS-Add%20to%20Home%20Screen-000000?style=for-the-badge&logo=apple&logoColor=white)](https://siavicii.github.io/SmartCal-PWA/)
 
 <p>
   <a href="#-english-overview">🇬🇧 English</a> •
   <a href="#-معرفی-نسخه-وب-و-pwa-فارسی">🇮🇷 فارسی</a> •
-  <a href="https://siavicii.github.io/SmartCal-PWA/">🚀 Open Live Web App (iOS & Android)</a> •
+  <a href="https://siavicii.github.io/SmartCalender/">🚀 Open Live Web App (iOS & Android)</a> •
   <a href="https://github.com/Siavicii/SmartCal-Android/releases/latest">📦 Download Android APK</a>
 </p>
 
