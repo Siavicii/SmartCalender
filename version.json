@@ -1,12 +1,4 @@
 {
-  "version": "v60.7",
-  "cacheName": "smartcal-pwa-v60.7",
-  "updatedAt": "2026-11-21T07:04:00+03:30",
-  "targets": [
-    "ios",
-    "android",
-    "chrome",
-    "windows",
-    "desktop"
-  ]
+  "version": "61.4",
+  "updated_at": "2026-11-21"
 }

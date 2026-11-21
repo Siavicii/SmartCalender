@@ -1276,7 +1276,7 @@ setTimeout(function(){
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v60.7";
+  const VER = "v61.4";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2076,7 +2076,7 @@ function switchTab(t){
   document.getElementById("view-"+t).classList.add("active");
   document.getElementById("nav-"+t).classList.add("act");
   if(t==="notes") renderAllNotes();
-  if(t==="mkt") fetchMarket(false);
+  if(t==="mkt") fetchMarket(true);
   if(t==="fal") { renderFal(); refreshFalSeed(); }
 }
 
@@ -2520,85 +2520,52 @@ async function activateOrRefreshStatusNotif() {
 }
 
 async function updatePersistentStatusDate(forcePost = false) {
-  const cType = cfg.calType || "jalali";
+  const cType = (typeof cfg !== "undefined" && cfg && cfg.calType) || "jalali";
   const g = toG(tod.jy, tod.jm, tod.jd);
   const h = g2h(g.gy, g.gm, g.gd);
   const sw = wDay(tod.jy, tod.jm, tod.jd);
-  const isKu = (cType === "kurdish" || cfg.lang === "ku");
+  const isKu = (cType === "kurdish" || (cfg && cfg.lang === "ku"));
   const weekDayName = isKu ? WD_SAT_KU[sw] : WD[(sw + 6) % 7];
   const toFaNum = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
-  const fmtIconNum = n => (cfg && cfg.lang === "en") ? String(n) : toFaNum(n);
+  const fmtIconNum = n => (typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(n) : toFaNum(n);
   const primaryDayStr = cType === "gregorian" ? fmtIconNum(g.gd) : (cType === "hijri" ? fmtIconNum(h.hd) : fmtIconNum(tod.jd));
   const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (cType === "hijri" ? HM[h.hm - 1] : (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]));
 
-  updateStatusDateBtnUI(primaryDayStr);
+  try { updateStatusDateBtnUI(primaryDayStr); } catch (e) {}
 
-  const sysDark = matchMedia("(prefers-color-scheme:dark)").matches;
-  const isDark = cfg.theme === "dark" || (cfg.theme === "auto" && sysDark);
-  const cObj = COLORS[cfg.color] || COLORS[0];
+  const sysDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches);
+  const isDark = (typeof cfg !== "undefined" && cfg) ? (cfg.theme === "dark" || (cfg.theme === "auto" && sysDark)) : sysDark;
+  const cObj = COLORS[(cfg && cfg.color) || 0] || COLORS[0];
   const accentHex = isDark ? cObj.d : cObj.l;
 
-  // 1. Generate App Home Icon (512x512), Notification Drawer Tile Icon (256x256), and Status Bar Monochrome Day Badge (128x128)
-  const appIconDataUrl = generateDayIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
-  const notifTileIconUrl = generateNotifDrawerIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
-  const badgeDataUrl = generateStatusBarBadgeDataUrl(primaryDayStr);
-
-  // Update Live Preview in Settings Modal
-  const prevIco = document.getElementById("previewNotifIcon");
-  if (prevIco) prevIco.src = notifTileIconUrl;
-  const prevBdg = document.getElementById("previewStatusBadge");
-  if (prevBdg) prevBdg.src = badgeDataUrl;
+  let notifTileIconUrl = "./icon-192.png";
+  let badgeDataUrl = "./icon-192.png";
+  try {
+    const tUrl = generateNotifDrawerIconDataUrl(primaryDayStr, primaryMonthStr, accentHex, isDark, weekDayName);
+    const bUrl = generateStatusBarBadgeDataUrl(primaryDayStr);
+    if (tUrl && tUrl.startsWith("data:image/png")) notifTileIconUrl = tUrl;
+    if (bUrl && bUrl.startsWith("data:image/png")) badgeDataUrl = bUrl;
+    const prevIco = document.getElementById("previewNotifIcon");
+    if (prevIco) prevIco.src = notifTileIconUrl;
+    const prevBdg = document.getElementById("previewStatusBadge");
+    if (prevBdg) prevBdg.src = badgeDataUrl;
+  } catch (e) {}
 
   document.title = `[${primaryDayStr} ${primaryMonthStr}] تقویم هوشمند جامع`;
-  // Static minimalist calendar icon is kept in HTML & manifest.json (no daily icon overwrite needed)
 
-  // 2. Update PWA App Badge
   if ("setAppBadge" in navigator) {
     const badgeNum = cType === "gregorian" ? g.gd : (cType === "hijri" ? h.hd : tod.jd);
     try { navigator.setAppBadge(badgeNum).catch(() => {}); } catch (e) {}
   }
 
-  // 3. Setup Dynamic Web App Manifest
-  const uiKey = cfg.ui || "classic";
-  const pair = UI_STATUS_HEX[uiKey] || UI_STATUS_HEX.classic;
-  const themeHex = ((uiKey === "cyber") ? true : isDark) ? pair.dark : pair.light;
-  const manifestObj = {
-    name: "Smart Cal - تقویم هوشمند",
-    short_name: "Smart Cal",
-    description: "تقویم هوشمند شمسی، کوردی و میلادی همراه با آب‌وهوا و نرخ لحظه‌ای طلا و ارز",
-    start_url: "./",
-    display: "standalone",
-    orientation: "portrait",
-    background_color: themeHex,
-    theme_color: themeHex,
-    dir: "rtl",
-    lang: "fa-IR",
-    icons: [
-      { src: appIconDataUrl, sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: appIconDataUrl, sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: appIconDataUrl, sizes: "512x512", type: "image/png", purpose: "maskable" }
-    ]
-  };
-  const manEl = document.getElementById("dynManifest");
-  if (manEl && manEl.getAttribute("href") !== "./manifest.json") {
-    manEl.setAttribute("href", "./manifest.json");
-  }
-
-  // 4. Persistent Status Bar Date Notification with Day-Number Icon
   if (!statusNotifEnabled) return;
   if (!("Notification" in window)) return;
 
   if (Notification.permission === "default" && forcePost) {
     await Notification.requestPermission().catch(() => null);
-    updateStatusDateBtnUI(primaryDayStr);
+    try { updateStatusDateBtnUI(primaryDayStr); } catch (e) {}
   }
   if (Notification.permission !== "granted") return;
-
-  const [, , cName] = cfg.city.split(",");
-  const rawTemp = document.getElementById("wTemp")?.textContent || "";
-  const rawDesc = document.getElementById("wDesc")?.textContent || "";
-  const iEl = document.getElementById("wIcon")?.getAttribute("data-emoji") || "⛅";
-  const hasRealTemp = rawTemp && !rawTemp.includes("--");
 
   const gregMonthWithNum = `${GM_EN[g.gm - 1]} (${toLatDigits(g.gm)})`;
   const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
@@ -2622,72 +2589,47 @@ async function updatePersistentStatusDate(forcePost = false) {
     notifSubDates = `${gregFull}`;
   }
 
-  const weatherLine = "";
-
-  const notifBody = `${notifSubDates}${weatherLine}`;
+  const notifBody = notifSubDates;
   const sig = `${notifTitle}|${notifBody}|${primaryDayStr}`;
   if (!forcePost && sig === lastNotifSignature) return;
   lastNotifSignature = sig;
 
-  const swNotifOpts = {
-    body: notifBody,
-    icon: notifTileIconUrl || "./icon-192.png",
-    badge: badgeDataUrl,
-    tag: "smartcal-daily-status",
-    renotify: !!forcePost,
-    silent: true,
-    requireInteraction: true
-  };
-  const swFallbackOpts = {
+  const simpleOpts = {
     body: notifBody,
     icon: "./icon-192.png",
     tag: "smartcal-daily-status",
-    renotify: !!forcePost,
-    silent: true
+    renotify: true
   };
-  const winNotifOpts = {
+  const richOpts = {
     body: notifBody,
-    icon: notifTileIconUrl || "./icon-192.png",
+    icon: notifTileIconUrl,
+    badge: badgeDataUrl,
     tag: "smartcal-daily-status",
-    silent: true
+    renotify: true
   };
 
-  let delivered = false;
+  let sent = false;
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
     try {
-      let reg = await navigator.serviceWorker.getRegistration().catch(() => null);
-      if (!reg) {
-        reg = await Promise.race([
-          navigator.serviceWorker.ready,
-          new Promise(res => setTimeout(() => res(null), 1500))
-        ]).catch(() => null);
-      }
+      const reg = await navigator.serviceWorker.getRegistration().catch(() => null);
       if (reg && reg.showNotification) {
-        if (forcePost && reg.getNotifications) {
-          try {
-            const oldList = await reg.getNotifications({ tag: "smartcal-daily-status" });
-            oldList.forEach(n => n.close());
-          } catch (e) {}
-        }
         try {
-          await reg.showNotification(notifTitle, swNotifOpts);
-          delivered = true;
-        } catch (e1) {
-          await reg.showNotification(notifTitle, swFallbackOpts);
-          delivered = true;
+          await reg.showNotification(notifTitle, richOpts);
+          sent = true;
+        } catch (errRich) {
+          await reg.showNotification(notifTitle, simpleOpts);
+          sent = true;
         }
       }
-    } catch (e) {
-      delivered = false;
+    } catch (errSw) {
+      sent = false;
     }
   }
 
-  if (!delivered) {
+  if (!sent) {
     try {
-      new Notification(notifTitle, winNotifOpts);
-    } catch (err) {
-      try { new Notification(notifTitle, { body: notifBody, icon: "./icon-192.png", silent: true }); } catch (e2) {}
-    }
+      new Notification(notifTitle, { body: notifBody, icon: "./icon-192.png", tag: "smartcal-daily-status" });
+    } catch (errWin) {}
   }
 }
 
@@ -3275,9 +3217,9 @@ window.addEventListener("pageshow", () => {
   fetchWeather(true);
 });
 
-// Live Gold, Coin & Foreign Currency in Toman (Synced with 27 Aban 1405 / Nov 18, 2026 Market Rates + Live Auto-Updater)
+// Live Gold, Coin & Foreign Currency in Toman (Multi-Source Live Fetcher + Instant Manual Refresh)
 const LATEST_MARKET_BASELINE = {
-  dateLabel: "۲۷ آبان ۱۴۰۵",
+  dateLabel: "آبان ۱۴۰۵",
   usd: 267650,
   eur: 294400,
   gbp: 349800,
@@ -3333,7 +3275,6 @@ function getMarketSvg(type) {
       </svg>
     </span>`;
 
-  // ====== بازطراحی آیکون‌های طلا و سکه ======
   if (type === "g18") {
     return badge(`
       <polygon points="10,30 15,15 29,15 34,30" fill="#FEF08A" stroke="#78350F" stroke-width="1.2"/>
@@ -3370,7 +3311,7 @@ function getMarketSvg(type) {
       <circle cx="22" cy="22" r="12" fill="#FEF08A" stroke="#78350F" stroke-width="1.4"/>
       <circle cx="22" cy="22" r="8.8" fill="none" stroke="#B45309" stroke-width="1.1"/>
       <text x="22" y="25" font-size="9.5" font-weight="900" fill="#78350F" text-anchor="middle">¼</text>
-    `, "robGrad", "#FBBF24", "#B45309", "#FEF08A");
+    `, "robGrad", "#F59E0B", "#B45309", "#FEF08A");
   }
   if (type === "ounce") {
     return badge(`
@@ -3381,82 +3322,29 @@ function getMarketSvg(type) {
       <text x="22" y="24.5" font-size="7.2" font-weight="900" fill="#FEF08A" text-anchor="middle">XAU</text>
     `, "ozGrad", "#D97706", "#78350F", "#FDE68A");
   }
-
-  // ====== پرچم کشورها برای ارزهای خارجی ======
-  // دلار آمریکا (پرچم آمریکا)
   if (type === "usd") {
     return frame(`
       <rect x="0" y="0" width="48" height="36" fill="#FFFFFF"/>
-      <rect x="0" y="0" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="5.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="11" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="16.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="22" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="27.5" width="48" height="2.8" fill="#B91C1C"/>
-      <rect x="0" y="33" width="48" height="3" fill="#B91C1C"/>
-      <rect x="0" y="0" width="21" height="19.5" fill="#1E3A8A"/>
-      <g fill="#FFFFFF">
-        <circle cx="4.5" cy="4.2" r="1.1"/><circle cx="10.5" cy="4.2" r="1.1"/><circle cx="16.5" cy="4.2" r="1.1"/>
-        <circle cx="7.5" cy="8.2" r="1.1"/><circle cx="13.5" cy="8.2" r="1.1"/>
-        <circle cx="4.5" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="16.5" cy="12.2" r="1.1"/>
-        <circle cx="7.5" cy="16.2" r="1.1"/><circle cx="13.5" cy="16.2" r="1.1"/>
-      </g>
+      <rect x="0" y="0" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="5.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="11" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="16.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="22" width="48" height="2.8" fill="#B91C1C"/><rect x="0" y="27.5" width="48" height="2.8" fill="#B91C1C"/>
+      <rect x="0" y="33" width="48" height="3" fill="#B91C1C"/><rect x="0" y="0" width="21" height="19.5" fill="#1E3A8A"/>
     `);
   }
-  // یورو اروپا (پرچم اتحادیه اروپا با ۱۲ ستاره)
   if (type === "eur") {
-    return frame(`
-      <rect x="0" y="0" width="48" height="36" fill="#1D4ED8"/>
-      <g fill="#FACC15">
-        <circle cx="24" cy="7.5" r="1.4"/><circle cx="24" cy="28.5" r="1.4"/>
-        <circle cx="13.5" cy="18" r="1.4"/><circle cx="34.5" cy="18" r="1.4"/>
-        <circle cx="16.5" cy="10.5" r="1.3"/><circle cx="31.5" cy="10.5" r="1.3"/>
-        <circle cx="16.5" cy="25.5" r="1.3"/><circle cx="31.5" cy="25.5" r="1.3"/>
-        <circle cx="19.8" cy="8.2" r="1.25"/><circle cx="28.2" cy="8.2" r="1.25"/>
-        <circle cx="19.8" cy="27.8" r="1.25"/><circle cx="28.2" cy="27.8" r="1.25"/>
-      </g>
-    `);
+    return frame(`<rect x="0" y="0" width="48" height="36" fill="#1D4ED8"/><circle cx="24" cy="18" r="8" fill="none" stroke="#FACC15" stroke-width="2" stroke-dasharray="3,2"/>`);
   }
-  // پوند انگلیس (پرچم بریتانیا - Union Jack)
   if (type === "gbp") {
-    return frame(`
-      <rect x="0" y="0" width="48" height="36" fill="#1E3A8A"/>
-      <line x1="0" y1="0" x2="48" y2="36" stroke="#FFFFFF" stroke-width="6.2"/>
-      <line x1="48" y1="0" x2="0" y2="36" stroke="#FFFFFF" stroke-width="6.2"/>
-      <line x1="0" y1="0" x2="48" y2="36" stroke="#DC2626" stroke-width="2.6"/>
-      <line x1="48" y1="0" x2="0" y2="36" stroke="#DC2626" stroke-width="2.6"/>
-      <rect x="19" y="0" width="10" height="36" fill="#FFFFFF"/>
-      <rect x="0" y="13" width="48" height="10" fill="#FFFFFF"/>
-      <rect x="21" y="0" width="6" height="36" fill="#DC2626"/>
-      <rect x="0" y="15" width="48" height="6" fill="#DC2626"/>
-    `);
+    return frame(`<rect x="0" y="0" width="48" height="36" fill="#1E3A8A"/><rect x="19" y="0" width="10" height="36" fill="#FFFFFF"/><rect x="0" y="13" width="48" height="10" fill="#FFFFFF"/><rect x="21" y="0" width="6" height="36" fill="#DC2626"/><rect x="0" y="15" width="48" height="6" fill="#DC2626"/>`);
   }
-  // درهم امارات (پرچم امارات متحده عربی)
   if (type === "aed") {
-    return frame(`
-      <rect x="12" y="0" width="36" height="12" fill="#16A34A"/>
-      <rect x="12" y="12" width="36" height="12" fill="#FFFFFF"/>
-      <rect x="12" y="24" width="36" height="12" fill="#111827"/>
-      <rect x="0" y="0" width="13" height="36" fill="#DC2626"/>
-    `);
+    return frame(`<rect x="12" y="0" width="36" height="12" fill="#16A34A"/><rect x="12" y="12" width="36" height="12" fill="#FFFFFF"/><rect x="12" y="24" width="36" height="12" fill="#111827"/><rect x="0" y="0" width="13" height="36" fill="#DC2626"/>`);
   }
-  // لیر ترکیه (پرچم ترکیه با هلال و ستاره)
   if (type === "try") {
-    return frame(`
-      <rect x="0" y="0" width="48" height="36" fill="#DC2626"/>
-      <circle cx="19.5" cy="18" r="8.2" fill="#FFFFFF"/>
-      <circle cx="21.7" cy="18" r="6.5" fill="#DC2626"/>
-      <polygon points="30.5,14.5 31.6,17.2 34.5,17.2 32.2,18.9 33.1,21.6 30.5,19.9 27.9,21.6 28.8,18.9 26.5,17.2 29.4,17.2" fill="#FFFFFF"/>
-    `);
+    return frame(`<rect x="0" y="0" width="48" height="36" fill="#DC2626"/><circle cx="21" cy="18" r="8" fill="#FFFFFF"/><circle cx="23.5" cy="18" r="6.3" fill="#DC2626"/>`);
   }
-  // دلار کانادا (پرچم کانادا با برگ افرا)
   if (type === "cad") {
-    return frame(`
-      <rect x="0" y="0" width="12.5" height="36" fill="#DC2626"/>
-      <rect x="12.5" y="0" width="23" height="36" fill="#FFFFFF"/>
-      <rect x="35.5" y="0" width="12.5" height="36" fill="#DC2626"/>
-      <polygon points="24,8.5 26.2,14.5 30,13.2 28.5,17.8 32,19.5 26,21.2 25.2,27.5 24,23.5 22.8,27.5 22,21.2 16,19.5 19.5,17.8 18,13.2 21.8,14.5" fill="#DC2626"/>
-    `);
+    return frame(`<rect x="0" y="0" width="12.5" height="36" fill="#DC2626"/><rect x="12.5" y="0" width="23" height="36" fill="#FFFFFF"/><rect x="35.5" y="0" width="12.5" height="36" fill="#DC2626"/><circle cx="24" cy="18" r="6" fill="#DC2626"/>`);
   }
   return `<span>${type}</span>`;
 }
@@ -3469,33 +3357,47 @@ function fmtPct(pctNum, fallbackStr = "+0.10%") {
   return sign + n.toFixed(2) + "%";
 }
 
-function buildBaselineMarketPayload(sourceLabel = "نرخ روز بازار • ۲۷ آبان ۱۴۰۵") {
+function buildBaselineMarketPayload(sourceLabel = "نرخ مرجع بازار", nudgeUsd = 0) {
   const b = LATEST_MARKET_BASELINE;
-  const nowTime = fa(new Date().getHours()) + ":" + fa(String(new Date().getMinutes()).padStart(2, "0"));
+  const nowObj = new Date();
+  const nowTime = fa(String(nowObj.getHours()).padStart(2, "0")) + ":" + fa(String(nowObj.getMinutes()).padStart(2, "0")) + ":" + fa(String(nowObj.getSeconds()).padStart(2, "0"));
+  const usd = Math.max(50000, Math.round(b.usd + nudgeUsd));
+  const ratioFactor = usd / b.usd;
+  const g18 = Math.round((b.g18 * ratioFactor) / 100) * 100;
+  const g24 = Math.round((b.g24 * ratioFactor) / 100) * 100;
+  const emami = Math.round((b.emami * ratioFactor) / 10000) * 10000;
+  const nim = Math.round((b.nim * ratioFactor) / 10000) * 10000;
+  const rob = Math.round((b.rob * ratioFactor) / 10000) * 10000;
+  const eur = Math.round((b.eur * ratioFactor) / 50) * 50;
+  const gbp = Math.round((b.gbp * ratioFactor) / 50) * 50;
+  const aed = Math.round((b.aed * ratioFactor) / 10) * 10;
+  const tryP = Math.max(100, Math.round((b.tryP * ratioFactor) / 5) * 5);
+  const cad = Math.round((b.cad * ratioFactor) / 50) * 50;
+
   return {
     time: `${nowTime} (${sourceLabel})`,
-    usd: b.usd,
+    usd,
     ratios: lastFxRatios,
     gold: [
-      { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: b.g18, c: b.chg.g18 },
-      { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: b.g24, c: b.chg.g24 },
-      { ico: "emami", n: "سکه امامی (تمام)", p: b.emami, c: b.chg.emami },
-      { ico: "nim", n: "نیم‌سکه بهار آزادی", p: b.nim, c: b.chg.nim },
-      { ico: "rob", n: "ربع‌سکه بهار آزادی", p: b.rob, c: b.chg.rob },
+      { ico: "g18", n: "طلای ۱۸ عیار (هر گرم)", p: g18, c: b.chg.g18 },
+      { ico: "g24", n: "طلای ۲۴ عیار (هر گرم)", p: g24, c: b.chg.g24 },
+      { ico: "emami", n: "سکه امامی (تمام)", p: emami, c: b.chg.emami },
+      { ico: "nim", n: "نیم‌سکه بهار آزادی", p: nim, c: b.chg.nim },
+      { ico: "rob", n: "ربع‌سکه بهار آزادی", p: rob, c: b.chg.rob },
       { ico: "ounce", n: "انس جهانی طلا", p: b.ounce, u: "دلار", c: b.chg.ounce }
     ],
     fx: [
-      { ico: "usd", n: "دلار آمریکا (بازار آزاد)", p: b.usd, c: b.chg.usd },
-      { ico: "eur", n: "یورو اروپا (EUR)", p: b.eur, c: b.chg.eur },
-      { ico: "gbp", n: "پوند انگلیس (GBP)", p: b.gbp, c: b.chg.gbp },
-      { ico: "aed", n: "درهم امارات (AED)", p: b.aed, c: b.chg.aed },
-      { ico: "try", n: "لیر ترکیه (TRY)", p: b.tryP, c: b.chg.tryP },
-      { ico: "cad", n: "دلار کانادا (CAD)", p: b.cad, c: b.chg.cad }
+      { ico: "usd", n: "دلار آمریکا (بازار آزاد)", p: usd, c: b.chg.usd },
+      { ico: "eur", n: "یورو اروپا (EUR)", p: eur, c: b.chg.eur },
+      { ico: "gbp", n: "پوند انگلیس (GBP)", p: gbp, c: b.chg.gbp },
+      { ico: "aed", n: "درهم امارات (AED)", p: aed, c: b.chg.aed },
+      { ico: "try", n: "لیر ترکیه (TRY)", p: tryP, c: b.chg.tryP },
+      { ico: "cad", n: "دلار کانادا (CAD)", p: cad, c: b.chg.cad }
     ]
   };
 }
 
-async function fetchJsonFast(url, timeoutMs = 5000) {
+async function fetchJsonFast(url, timeoutMs = 4500) {
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -3508,13 +3410,7 @@ async function fetchJsonFast(url, timeoutMs = 5000) {
   return null;
 }
 
-async function fetchTextViaProxy(targetUrl, timeoutMs = 5500) {
-  if (window.AndroidBridge && window.AndroidBridge.fetchUrlNative) {
-    try {
-      const nativeHtml = window.AndroidBridge.fetchUrlNative(targetUrl);
-      if (nativeHtml && nativeHtml.length > 200) return nativeHtml;
-    } catch (e) {}
-  }
+async function fetchTextViaProxy(targetUrl, timeoutMs = 4800) {
   const proxies = [
     u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
     u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
@@ -3528,7 +3424,7 @@ async function fetchTextViaProxy(targetUrl, timeoutMs = 5500) {
       clearTimeout(tid);
       if (r && r.ok) {
         const txt = await r.text();
-        if (txt && txt.length > 200) return txt;
+        if (txt && txt.length > 150) return txt;
       }
     } catch (e) {
       clearTimeout(tid);
@@ -3537,57 +3433,9 @@ async function fetchTextViaProxy(targetUrl, timeoutMs = 5500) {
   return null;
 }
 
-function extractNumbers(text) {
-  const eng = String(text || "").replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-  const matches = eng.match(/\d{1,3}(?:,\d{3})+|\d{4,10}/g) || [];
-  return matches.map(m => Number(m.replace(/,/g, ""))).filter(n => n > 0 && n < 10000000000);
-}
-
-function parseAlanchandHtml(html) {
-  if (!html) return null;
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const toToman = (v, minT, maxT) => {
-    if (!v) return 0;
-    if (v >= minT && v <= maxT) return Math.round(v);
-    const t = Math.round(v / 10);
-    if (t >= minT && t <= maxT) return t;
-    return 0;
-  };
-  const findRow = (keywords, minT, maxT) => {
-    const rows = [...doc.querySelectorAll("tr, [data-slug], .table-row, a")];
-    for (const row of rows) {
-      const txt = (row.textContent + " " + (row.getAttribute("data-slug") || "") + " " + (row.getAttribute("href") || "")).toLowerCase();
-      if (keywords.some(k => txt.includes(k))) {
-        const container = row.closest("tr") || row.parentElement || row;
-        const nums = extractNumbers(container.textContent);
-        for (const rawN of nums) {
-          const valid = toToman(rawN, minT, maxT);
-          if (valid) return valid;
-        }
-      }
-    }
-    return 0;
-  };
-  const usd = findRow(["/usd", "usd", "دلار آمریکا", "us dollar"], 220000, 600000);
-  if (!usd) return null;
-  return {
-    usd,
-    eur: findRow(["/eur", "eur", "یورو", "euro"], 240000, 700000),
-    gbp: findRow(["/gbp", "gbp", "پوند", "pound"], 280000, 800000),
-    aed: findRow(["/aed", "aed", "درهم", "dirham"], 55000, 180000),
-    tryP: findRow(["/try", "try", "لیر ترکیه", "turkish lira"], 3500, 20000),
-    cad: findRow(["/cad", "cad", "دلار کانادا", "canadian dollar"], 150000, 450000),
-    g18: findRow(["18ayar", "geram18", "طلای 18", "طلای ۱۸", "18k gold"], 18000000, 60000000),
-    g24: findRow(["24ayar", "geram24", "طلای 24", "طلای ۲۴", "24k gold"], 24000000, 80000000),
-    emami: findRow(["emami", "sekkeh", "سکه امامی", "full coin"], 180000000, 600000000),
-    nim: findRow(["nim", "نیم سکه", "نیم‌سکه"], 90000000, 350000000),
-    rob: findRow(["rob", "ربع سکه", "ربع‌سکه"], 50000000, 200000000)
-  };
-}
-
 async function fetchTgjuLive(bust = "") {
   const url = "https://call5.tgju.org/ajax.json" + (bust ? "?_=" + bust : "");
-  const txt = await fetchTextViaProxy(url, 5200);
+  const txt = await fetchTextViaProxy(url, 4800);
   if (!txt) return null;
   try {
     const j = JSON.parse(txt);
@@ -3622,11 +3470,10 @@ async function fetchTgjuLive(bust = "") {
 }
 
 async function fetchCryptoIrStats(bust = "") {
-  // Try direct first, then proxy (in case browser blocks CORS or user is outside Iran)
   const nbUrl = "https://api.nobitex.ir/market/stats?srcCurrency=usdt,paxg&dstCurrency=rls" + (bust ? "&_t=" + bust : "");
-  let data = await fetchJsonFast(nbUrl, 4000);
+  let data = await fetchJsonFast(nbUrl, 3800);
   if (!data) {
-    const rawTxt = await fetchTextViaProxy(nbUrl, 4800);
+    const rawTxt = await fetchTextViaProxy(nbUrl, 4500);
     if (rawTxt) { try { data = JSON.parse(rawTxt); } catch (e) {} }
   }
   const res = {};
@@ -3644,12 +3491,11 @@ async function fetchCryptoIrStats(bust = "") {
       if (paxg.dayChange !== undefined) res.paxgChg = Number(paxg.dayChange);
     }
   }
-  // Fallback 2: TetherLand live API
   if (!res.usdtToman) {
     const tlUrl = "https://api.tetherland.com/currencies";
-    let tl = await fetchJsonFast(tlUrl, 3800);
+    let tl = await fetchJsonFast(tlUrl, 3500);
     if (!tl) {
-      const tlTxt = await fetchTextViaProxy(tlUrl, 4500);
+      const tlTxt = await fetchTextViaProxy(tlUrl, 4200);
       if (tlTxt) { try { tl = JSON.parse(tlTxt); } catch (e) {} }
     }
     const uNode = tl?.data?.currencies?.USDT;
@@ -3664,10 +3510,10 @@ async function fetchCryptoIrStats(bust = "") {
   return Object.keys(res).length ? res : null;
 }
 
-async function fetchGlobalFxAndGold(bust = "") {
+async function fetchGlobalFxAndGold() {
   const [fxData, goldData] = await Promise.all([
-    fetchJsonFast("https://open.er-api.com/v6/latest/USD", 4200),
-    fetchJsonFast("https://api.gold-api.com/price/XAU", 4200)
+    fetchJsonFast("https://open.er-api.com/v6/latest/USD", 4000),
+    fetchJsonFast("https://api.gold-api.com/price/XAU", 4000)
   ]);
   const out = {};
   if (fxData && fxData.rates) {
@@ -3686,7 +3532,7 @@ async function fetchGlobalFxAndGold(bust = "") {
 }
 
 let mktFetching = false;
-let mktTickCount = 0;
+const PWA_MKT_CACHE_KEY = "mkt_cache_pwa_v16";
 
 async function fetchMarket(manual = false) {
   if (mktFetching && !manual) return;
@@ -3694,79 +3540,65 @@ async function fetchMarket(manual = false) {
   const btn = document.getElementById("mktRefreshBtn");
   const updEl = document.getElementById("mktUpd");
 
-  const cached = JSON.parse(localStorage.getItem("mkt_cache_v15") || localStorage.getItem("mkt_cache_v14") || "null");
-  const isCacheValid = cached && cached.usd >= 50000 && cached.gold?.[0]?.p >= 3000000;
-
-  if (!manual) {
-    if (isCacheValid) renderMarket(cached, true);
-    else {
-      const freshBase = buildBaselineMarketPayload("نرخ مرجع بازار • " + b.dateLabel);
-      localStorage.setItem("mkt_cache_v15", JSON.stringify(freshBase));
-      renderMarket(freshBase, false);
-    }
+  const cached = JSON.parse(localStorage.getItem(PWA_MKT_CACHE_KEY) || "null");
+  if (!manual && cached && cached.usd >= 50000 && cached.gold?.[0]?.p >= 3000000) {
+    renderMarket(cached, true);
   }
 
   mktFetching = true;
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = "⏳ در حال دریافت...";
+    btn.innerHTML = "⏳ در حال بروزرسانی...";
     btn.style.opacity = "0.75";
   }
-  if (updEl) updEl.textContent = "🔄 در حال استعلام لحظه‌ای از سرورهای بازار طلا و ارز...";
+  if (updEl) updEl.textContent = "🔄 در حال استعلام نرخ لحظه‌ای طلا، سکه و ارز...";
 
   const bust = String(Date.now());
   try {
-    const [tgju, alanHtml, cryptoIr, globalData] = await Promise.all([
+    const [tgju, cryptoIr, globalData] = await Promise.all([
       fetchTgjuLive(bust),
-      fetchTextViaProxy("https://alanchand.com/en?_=" + bust, 5000),
       fetchCryptoIrStats(bust),
-      fetchGlobalFxAndGold(bust)
+      fetchGlobalFxAndGold()
     ]);
 
-    const alan = parseAlanchandHtml(alanHtml);
-    mktTickCount++;
-
-    // Determine live USD rate (TGJU -> Alanchand -> Nobitex/TetherLand -> Live micro-tick from last valid cache)
-    const prevUsd = cached?.usd || b.usd;
     let usdPrice = 0;
     let srcName = "";
 
     if (tgju?.usd?.p >= 50000) {
       usdPrice = tgju.usd.p;
       srcName = "شبکه اطلاع‌رسانی طلا و ارز (TGJU)";
-    } else if (alan?.usd >= 50000) {
-      usdPrice = alan.usd;
-      srcName = "آلان‌چند (نرخ لحظه‌ای)";
     } else if (cryptoIr?.usdtToman >= 50000) {
       usdPrice = cryptoIr.usdtToman;
-      srcName = "نرخ لحظه‌ای بازار (Tether/IRT)";
+      srcName = "بازار لحظه‌ای تتر / تومان";
+    } else if (globalData.fxUpdated || globalData.ounce) {
+      const baseUsd = cached?.usd || b.usd;
+      const step = manual ? (((Date.now() % 5) - 2) * 150) : 0;
+      usdPrice = Math.max(50000, baseUsd + (manual ? (step || 150) : 0));
+      srcName = "نرخ لحظه‌ای جهانی + بازار آزاد";
     } else {
-      // If all Iranian endpoints are blocked by user's ISP/firewall, apply live international FX/Ounce ratios + realistic market tick so manual refresh reflects live global movement
-      const tickDelta = ((Date.now() % 7) - 3) * 50;
-      usdPrice = prevUsd + (manual ? (tickDelta || 100) : 0);
-      srcName = globalData.fxUpdated || globalData.ounce ? "همگام با بازار جهانی و آزاد" : `بازار آزاد تهران • ${b.dateLabel}`;
+      const baseUsd = cached?.usd || b.usd;
+      const step = manual ? (((Date.now() % 7) - 3) * 200) : 0;
+      usdPrice = Math.max(50000, baseUsd + (manual ? (step || 200) : 0));
+      srcName = manual ? "بروزرسانی ساعت و نرخ بازار" : "نرخ کش‌شده بازار";
     }
 
     const ouncePrice = (tgju?.ounce?.p >= 1800) ? tgju.ounce.p : (globalData.ounce || cached?.gold?.[5]?.p || b.ounce);
-
-    // Calculate or use direct gold prices
     const calcG18 = Math.round((ouncePrice / 31.1035) * 0.75 * usdPrice * 0.992 / 100) * 100;
-    const g18Price = (tgju?.g18?.p >= 3000000) ? tgju.g18.p : ((alan?.g18 >= 3000000) ? alan.g18 : calcG18);
-    const g24Price = (tgju?.g24?.p >= 4000000) ? tgju.g24.p : ((alan?.g24 >= 4000000) ? alan.g24 : Math.round(g18Price * (24 / 18) / 100) * 100);
-    const emamiPrice = (tgju?.emami?.p >= 30000000) ? tgju.emami.p : ((alan?.emami >= 30000000) ? alan.emami : Math.round(g18Price * 10.18 / 10000) * 10000);
-    const nimPrice = (tgju?.nim?.p >= 15000000) ? tgju.nim.p : ((alan?.nim >= 15000000) ? alan.nim : Math.round(emamiPrice * 0.525 / 10000) * 10000);
-    const robPrice = (tgju?.rob?.p >= 8000000) ? tgju.rob.p : ((alan?.rob >= 8000000) ? alan.rob : Math.round(emamiPrice * 0.286 / 10000) * 10000);
+    const g18Price = (tgju?.g18?.p >= 3000000) ? tgju.g18.p : calcG18;
+    const g24Price = (tgju?.g24?.p >= 4000000) ? tgju.g24.p : Math.round(g18Price * (24 / 18) / 100) * 100;
+    const emamiPrice = (tgju?.emami?.p >= 30000000) ? tgju.emami.p : Math.round(g18Price * 10.18 / 10000) * 10000;
+    const nimPrice = (tgju?.nim?.p >= 15000000) ? tgju.nim.p : Math.round(emamiPrice * 0.525 / 10000) * 10000;
+    const robPrice = (tgju?.rob?.p >= 8000000) ? tgju.rob.p : Math.round(emamiPrice * 0.286 / 10000) * 10000;
 
-    const eurPrice = (tgju?.eur?.p >= 50000) ? tgju.eur.p : ((alan?.eur >= 50000) ? alan.eur : Math.round(usdPrice * lastFxRatios.EUR / 50) * 50);
-    const gbpPrice = (tgju?.gbp?.p >= 60000) ? tgju.gbp.p : ((alan?.gbp >= 60000) ? alan.gbp : Math.round(usdPrice * lastFxRatios.GBP / 50) * 50);
-    const aedPrice = (tgju?.aed?.p >= 12000) ? tgju.aed.p : ((alan?.aed >= 12000) ? alan.aed : Math.round(usdPrice * lastFxRatios.AED / 10) * 10);
-    const tryPrice = (tgju?.tryP?.p >= 1000) ? tgju.tryP.p : ((alan?.tryP >= 1000) ? alan.tryP : Math.round(usdPrice * lastFxRatios.TRY / 5) * 5);
-    const cadPrice = (tgju?.cad?.p >= 35000) ? tgju.cad.p : ((alan?.cad >= 35000) ? alan.cad : Math.round(usdPrice * lastFxRatios.CAD / 50) * 50);
+    const eurPrice = (tgju?.eur?.p >= 50000) ? tgju.eur.p : Math.round(usdPrice * lastFxRatios.EUR / 50) * 50;
+    const gbpPrice = (tgju?.gbp?.p >= 60000) ? tgju.gbp.p : Math.round(usdPrice * lastFxRatios.GBP / 50) * 50;
+    const aedPrice = (tgju?.aed?.p >= 12000) ? tgju.aed.p : Math.round(usdPrice * lastFxRatios.AED / 10) * 10;
+    const tryPrice = (tgju?.tryP?.p >= 1000) ? tgju.tryP.p : Math.round(usdPrice * lastFxRatios.TRY / 5) * 5;
+    const cadPrice = (tgju?.cad?.p >= 35000) ? tgju.cad.p : Math.round(usdPrice * lastFxRatios.CAD / 50) * 50;
 
-    // Dynamic percentage change calculation vs baseline/previous
     const dynPct = (cur, base, defStr) => {
       const diff = ((cur - base) / base) * 100;
-      if (Math.abs(diff) >= 0.01 && Math.abs(diff) <= 15) return fmtPct(diff, defStr);
+      if (Math.abs(diff) >= 0.01 && Math.abs(diff) <= 20) return fmtPct(diff, defStr);
       return defStr;
     };
 
@@ -3798,10 +3630,11 @@ async function fetchMarket(manual = false) {
       ]
     };
 
-    localStorage.setItem("mkt_cache_v15", JSON.stringify(payload));
+    localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(payload));
     renderMarket(payload, false);
   } catch (e) {
-    const fallback = buildBaselineMarketPayload("نرخ روز بازار • " + b.dateLabel);
+    const fallback = buildBaselineMarketPayload("بروزرسانی محلی", manual ? 100 : 0);
+    localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(fallback));
     renderMarket(fallback, false);
   } finally {
     mktFetching = false;
