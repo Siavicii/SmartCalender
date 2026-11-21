@@ -1,23 +1,20 @@
-<div align="center">
-
-# 📅 Smart Cal — PWA (Web App)
-
-**A Smart, Lightweight, Offline-Capable Tri-Calendar Progressive Web App**  
-*Persian (Jalali) • Kurdish (Sorani) • English (Gregorian)*
-
-[![Version](https://img.shields.io/badge/Version-v64.3-1F2B3B?style=for-the-badge)](./version.json)
-[![PWA Ready](https://siavicii.github.io/SmartCalender/)
-[![Android APK](https://img.shields.io/badge/Android-Download%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Siavicii/SmartCal-Android/releases/latest)
-[![iOS Safari](https://img.shields.io/badge/iOS-Add%20to%20Home%20Screen-000000?style=for-the-badge&logo=apple&logoColor=white)](https://siavicii.github.io/SmartCal-PWA/)
-
-<p>
-  <a href="#-english-overview">🇬🇧 English</a> •
-  <a href="#-معرفی-نسخه-وب-و-pwa-فارسی">🇮🇷 فارسی</a> •
-  <a href="https://siavicii.github.io/SmartCalender/">🚀 Open Live Web App (iOS & Android)</a> •
-  <a href="https://github.com/Siavicii/SmartCal-Android/releases/latest">📦 Download Android APK</a>
+<p align="center">
+  <h1>📅 Smart Cal — PWA (Web App)</h1>
+  <p><strong>A Smart, Lightweight, Offline-Capable Tri-Calendar Progressive Web App</strong></p>
+  <p><em>Persian (Jalali) • Kurdish (Sorani) • English (Gregorian)</em></p>
+  <p>
+    <a href="https://siavicii.github.io/SmartCalender/">
+      <img src="https://img.shields.io/badge/🌐_Open_PWA_(iOS_%2F_Android)-1F2B3B?style=for-the-badge" alt="Open Smart Cal PWA" />
+    </a>
+    <a href="https://github.com/Siavicii/SmartCal-Android/releases/latest">
+      <img src="https://img.shields.io/badge/🤖_Android_APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK" />
+    </a>
+  </p>
+  <p>
+    <a href="#-english-overview">🇬🇧 English</a> •
+    <a href="#-معرفی-نسخه-وب-و-pwa-فارسی">🇮🇷 فارسی</a>
+  </p>
 </p>
-
-</div>
 
 ---
 
@@ -26,8 +23,9 @@
 **Smart Cal PWA** is a lightweight, offline-capable Progressive Web App supporting **Persian (Jalali)**, **Kurdish (Sorani)**, and **Gregorian** calendar systems. Designed for instant installation on **iOS, Android, and Desktop** directly from the browser via **GitHub Pages**, it delivers full feature parity with the native Android edition—including live financial rates, weather forecasts, horoscope & daily fal, smooth launch animations, and optional Google Calendar synchronization.
 
 ### 🔗 Direct App & Install Links
-* **🌐 Launch & Install PWA (iOS / Android / Desktop):** [https://siavicii.github.io/SmartCal-PWA/](https://siavicii.github.io/SmartCal-PWA/)
-* **🤖 Native Android App (APK Releases):** [https://github.com/Siavicii/SmartCal-Android/releases/latest](https://github.com/Siavicii/SmartCal-Android/releases/latest)
+
+* **🌐 Launch & Install PWA (iOS / Android / Desktop):** <https://siavicii.github.io/SmartCalender/>
+* **🤖 Native Android App (APK Releases):** <https://github.com/Siavicii/SmartCal-Android/releases/latest>
 
 ## 📸 Screenshots
 
@@ -52,16 +50,18 @@
 ## 📲 How to Install on Mobile
 
 ### 🍎 iOS (iPhone / iPad — Safari)
-1. Open the live web app in **Safari**: **[Open Smart Cal PWA](https://siavicii.github.io/SmartCal-PWA/)**
+
+1. Open the live web app in **Safari**: [**Open Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
 2. Tap the **Share** icon (`⬆️`) at the bottom of the screen.
 3. Scroll down and tap **Add to Home Screen**, then tap **Add**.
 
 ### 🤖 Android (Chrome / Edge — PWA or Native APK)
+
 * **Option 1 — Install Web App (PWA):**
-  1. Open the live web app in **Chrome**: **[Open Smart Cal PWA](https://siavicii.github.io/SmartCal-PWA/)**
+  1. Open the live web app in **Chrome**: [**Open Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
   2. Tap the **⋮ (Menu)** button and select **Install app** or **Add to Home screen**.
 * **Option 2 — Native Android App (with Dynamic Home-Screen Icons & Alarms):**
-  * Download and install the latest `.apk` directly from **[GitHub Releases](https://github.com/Siavicii/SmartCal-Android/releases/latest)**.
+  * Download and install the latest `.apk` directly from [**GitHub Releases**](https://github.com/Siavicii/SmartCal-Android/releases/latest).
 
 ## 🔑 Optional: Enabling Live Google Calendar OAuth
 
@@ -70,13 +70,13 @@ If you want direct two-way Google Account login on your GitHub Pages domain:
 1. Open [Google Cloud Console](https://console.cloud.google.com) and create/select a project.
 2. Go to **APIs & Services > Library** and enable **Google Calendar API**.
 3. Go to **APIs & Services > Credentials > Create Credentials > OAuth client ID** and choose **Web application**.
-4. Under **Authorized JavaScript origins**, add your GitHub Pages domain (e.g., `https://siavicii.github.io`).
+4. Under **Authorized JavaScript origins**, add your GitHub Pages domain (`https://siavicii.github.io`).
 5. Paste the generated **Client ID** inside **Settings > Google Calendar Sync** in Smart Cal PWA and sign in.
 
 ## 🏗️ Repository Structure
 
 ```text
-SmartCal-PWA/
+SmartCalender/
 ├── index.html          # Complete single-file application core (v64.3)
 ├── manifest.json       # PWA metadata, theme colors (#1F2B3B), and icon definitions
 ├── sw.js               # Service Worker for offline support and automatic cache updates
@@ -91,7 +91,7 @@ SmartCal-PWA/
 1. Upload all 7 files from the release archive directly to the root of your repository.
 2. Go to **Settings > Pages** in your GitHub repository.
 3. Under **Build and deployment**, select **Deploy from a branch**, choose `main` and `/ (root)`, then click **Save**.
-4. Your PWA will be live within a couple of minutes.
+4. Your PWA will be live at `https://siavicii.github.io/SmartCalender/`.
 
 ---
 
@@ -102,9 +102,10 @@ SmartCal-PWA/
 **Smart Cal PWA** نسخه تحت‌وب و قابل‌نصب اپلیکیشن تقویم هوشمند است که تقویم‌های **شمسی، کوردی و میلادی** را بدون نیاز به دانلود فایل نصبی، مستقیماً از طریق مرورگر روی گوشی‌های **آیفون (iOS)، اندروید و دسکتاپ** اجرا می‌کند. این نسخه از نظر امکانات و طراحی کاملاً با نسخه بومی اندروید هماهنگ است و از طریق **GitHub Pages** میزبانی می‌شود.
 
 ### 🔗 لینک‌های مستقیم نصب و اجرا
-* **🌐 اجرای آنلاین و نصب روی آیفون (iOS) و اندروید (نسخه PWA):**  
-  [🚀 باز کردن Smart Cal PWA](https://siavicii.github.io/SmartCal-PWA/)
-* **🤖 دانلود نسخه بومی اندروید (فایل APK با آیکون پویا و آلارم پس‌زمینه):**  
+
+* **🌐 اجرای آنلاین و نصب روی آیفون (iOS) و اندروید (نسخه PWA):**
+  [🚀 باز کردن Smart Cal PWA](https://siavicii.github.io/SmartCalender/)
+* **🤖 دانلود نسخه بومی اندروید (فایل APK با آیکون پویا و آلارم پس‌زمینه):**
   [📦 دانلود آخرین نسخه از GitHub Releases](https://github.com/Siavicii/SmartCal-Android/releases/latest)
 
 ## 📸 تصاویر برنامه
@@ -113,7 +114,7 @@ SmartCal-PWA/
 
 | صفحه اصلی و تقویم | سبک‌های طراحی | آب‌وهوا و بازار مالی | تنظیمات و همگام‌سازی |
 | :---: | :---: | :---: | :---: |
-| ![صفحه اصلی](screenshots/home.png) | ![سبک‌ها](screenshots/styles.png) | ![بازار مالی](screenshots/markets.png) | ![تنظیمات](screenshots/settings.png) |
+| ![صفحه اصلی](screenshots/home.png) | ![سبک‌های طراحی](screenshots/styles.png) | ![بازار مالی](screenshots/markets.png) | ![تنظیمات](screenshots/settings.png) |
 
 ## ✨ امکانات کلیدی (نسخه `v64.3`)
 
@@ -130,16 +131,18 @@ SmartCal-PWA/
 ## 📲 راهنمای نصب روی گوشی
 
 ### 🍎 آیفون و آیپد / iOS (مرورگر Safari)
-1. وارد لینک برنامه در مرورگر **سافاری (Safari)** شوید: **[باز کردن Smart Cal PWA](https://siavicii.github.io/SmartCal-PWA/)**
+
+1. وارد لینک برنامه در مرورگر **سافاری (Safari)** شوید: [**باز کردن Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
 2. روی دکمه **Share** (`⬆️`) در پایین صفحه بزنید.
 3. گزینه **Add to Home Screen** و سپس **Add** را انتخاب کنید تا آیکون برنامه کنار سایر اپلیکیشن‌ها اضافه شود.
 
 ### 🤖 اندروید (نسخه PWA یا فایل نصبی APK)
+
 * **روش اول — نصب نسخه وب (PWA):**
-  1. لینک برنامه را در مرورگر **کروم (Chrome)** باز کنید: **[باز کردن Smart Cal PWA](https://siavicii.github.io/SmartCal-PWA/)**
+  1. لینک برنامه را در مرورگر **کروم (Chrome)** باز کنید: [**باز کردن Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
   2. روی منوی **⋮** بالا بزنید و گزینه **Install app** یا **Add to Home screen** را انتخاب کنید.
 * **روش دوم — نصب اپلیکیشن بومی اندروید (APK):**
-  * برای استفاده از **آیکون پویای تاریخ در صفحه اصلی** و **آلارم بومی پس‌زمینه**، فایل APK را مستقیم از **[بخش Releases گیت‌هاب](https://github.com/Siavicii/SmartCal-Android/releases/latest)** دانلود و نصب کنید.
+  * برای استفاده از **آیکون پویای تاریخ در صفحه اصلی** و **آلارم بومی پس‌زمینه**، فایل APK را مستقیم از [**بخش Releases گیت‌هاب**](https://github.com/Siavicii/SmartCal-Android/releases/latest) دانلود و نصب کنید.
 
 ## 🔑 راهنمای فعال‌سازی اتصال زنده به اکانت گوگل (اختیاری)
 
@@ -148,7 +151,7 @@ SmartCal-PWA/
 1. وارد [Google Cloud Console](https://console.cloud.google.com) شوید و یک پروژه بسازید.
 2. از بخش **APIs & Services > Library**، سرویس **Google Calendar API** را فعال (**Enable**) کنید.
 3. در **APIs & Services > Credentials**، روی **Create Credentials > OAuth client ID** بزنید و نوع آن را **Web application** انتخاب کنید.
-4. در بخش **Authorized JavaScript origins**، آدرس دامنه GitHub Pages خود (مثلاً `https://siavicii.github.io`) را ثبت و ذخیره کنید.
+4. در بخش **Authorized JavaScript origins**، آدرس دامنه GitHub Pages خود (`https://siavicii.github.io`) را ثبت و ذخیره کنید.
 5. شناسه `Client ID` را در بخش **تنظیمات > همگام‌سازی با تقویم گوگل** داخل برنامه وارد کرده و لاگین کنید.
 
 ## 🚀 راه‌اندازی روی GitHub Pages
@@ -156,5 +159,6 @@ SmartCal-PWA/
 1. هر ۷ فایل موجود در بسته نهایی (`index.html`، `manifest.json`، `sw.js`، `version.json`، `icon-192.png`، `icon-512.png` و `.nojekyll`) را در ریشه مخزن گیت‌هاب آپلود و **Commit** کنید.
 2. وارد **Settings > Pages** در مخزن خود شوید.
 3. در بخش **Build and deployment**، گزینه **Deploy from a branch** را انتخاب کرده، شاخه `main` و مسیر `/ (root)` را تنظیم و ذخیره کنید.
+4. برنامه روی آدرس `https://siavicii.github.io/SmartCalender/` فعال خواهد شد.
 
 </div>
