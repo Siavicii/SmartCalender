@@ -6,7 +6,7 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#1F2B3B",
   "theme_color": "#1F2B3B",
   "dir": "rtl",
@@ -31,5 +31,10 @@
       "purpose": "maskable"
     }
   ],
-  "version": "64.0"
+  "version": "64.4",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ]
 }

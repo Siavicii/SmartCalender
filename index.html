@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" id="metaThemeColor" content="#F4F6FA">
 <meta name="theme-color" id="metaThemeColorLight" media="(prefers-color-scheme: light)" content="#F4F6FA">
 <meta name="theme-color" id="metaThemeColorDark" media="(prefers-color-scheme: dark)" content="#0C0F14">
@@ -703,6 +703,211 @@ body.app-booting .app {
   100% { transform: translateX(240%); }
 }
 
+
+/* =========================================================================
+   ADAPTIVE SYSTEM & SCREEN RESPONSIVE ENGINE (Mobile / Tablet / Desktop / OS)
+   ========================================================================= */
+html {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+body {
+  min-height: 100dvh;
+  padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
+}
+button, .day, .nbtn, .pill, .ibtn, .cat-pill {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS / macOS subtle typography & safe-area polish */
+html[data-os="ios"] body,
+html[data-os="macos"] body {
+  -webkit-font-smoothing: antialiased;
+}
+html[data-os="ios"][data-standalone="true"] body {
+  padding-top: max(14px, env(safe-area-inset-top, 14px));
+}
+
+/* Small Phones (<= 380px) */
+@media (max-width: 380px) {
+  body { padding-inline: 8px; }
+  .card { padding: 12px; }
+  .pill, .ibtn { font-size: 11px; padding: 6px 8px; }
+  .day { font-size: 13px; }
+}
+
+/* Landscape Short Screens (e.g. rotated mobile) */
+@media (max-height: 520px) and (orientation: landscape) {
+  .sheet { max-height: 92dvh; padding: 14px; }
+  .nav { padding-block: 4px; }
+}
+
+/* Tablet & Small Laptop (768px - 1099px): 2-Column Dashboard + Centered Modals */
+@media (min-width: 768px) {
+  body {
+    padding-top: 20px;
+    padding-bottom: 96px;
+    padding-inline: 20px;
+  }
+  .app {
+    max-width: 860px;
+    gap: 14px;
+  }
+  .nav-in {
+    max-width: 560px;
+  }
+  [data-ui="ios26"] .nav,
+  [data-ui="android17"] .nav {
+    max-width: 560px;
+  }
+
+  /* 2-Column Adaptive Calendar View (Preserving exact DOM) */
+  #view-cal.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.88fr);
+    grid-auto-flow: dense;
+    gap: 14px;
+    align-items: start;
+  }
+  #view-cal > #calBdayBanner,
+  #view-cal > #weatherCard {
+    grid-column: 1 / -1;
+  }
+  #view-cal > #calCard {
+    grid-column: 1;
+    grid-row: span 2;
+  }
+  #view-cal > .card:not(#calCard) {
+    grid-column: 2;
+  }
+
+  /* 2-Column Market Cards & Horoscope Cards */
+  #view-mkt .mkt-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  #falContent {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px !important;
+  }
+
+  /* Centered Floating Dialog Modals on Tablet/Desktop */
+  .modal {
+    align-items: center;
+    padding: 24px;
+  }
+  .sheet {
+    max-width: 520px;
+    max-height: 86dvh;
+    border-radius: 26px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.34);
+  }
+  [data-ui="ios26"] .sheet::before,
+  [data-ui="android17"] .sheet::before {
+    display: none;
+  }
+}
+
+/* Desktop & Widescreen (>= 1100px): Floating Side Navigation Rail + Wide Dashboard */
+@media (min-width: 1100px) {
+  body {
+    padding-top: 24px;
+    padding-bottom: 32px;
+    padding-inline-start: 118px;
+    padding-inline-end: 28px;
+  }
+  .app {
+    max-width: 1120px;
+    gap: 16px;
+  }
+
+  /* Transform Bottom Bar into Floating Vertical Side Rail (RTL Right / LTR Left) */
+  .nav,
+  [data-ui="ios26"] .nav,
+  [data-ui="android17"] .nav {
+    top: 50%;
+    bottom: auto;
+    right: 18px;
+    left: auto;
+    transform: translateY(-50%);
+    width: 84px;
+    max-width: 84px;
+    margin: 0;
+    padding: 12px 8px;
+    border-radius: 26px;
+    border: 1px solid var(--brd);
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.14);
+  }
+  html[dir="ltr"] .nav,
+  html[dir="ltr"] [data-ui="ios26"] .nav,
+  html[dir="ltr"] [data-ui="android17"] .nav {
+    left: 18px;
+    right: auto;
+  }
+  .nav-in {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    max-width: 100%;
+  }
+  .nbtn {
+    padding: 10px 4px;
+    border-radius: 16px;
+    font-size: 10.5px;
+    gap: 4px;
+  }
+
+  /* Spacious Desktop Calendar Grid */
+  #view-cal.active {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
+    gap: 16px;
+  }
+  #calCard .day {
+    min-height: 54px;
+    font-size: 15px;
+  }
+
+  /* 3-Column Market Cards on Wide Desktop */
+  #view-mkt .mkt-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .sheet {
+    max-width: 560px;
+  }
+}
+
+/* Mouse / Fine Pointer Polish (Hover States & Sleek Scrollbars) */
+@media (hover: hover) and (pointer: fine) {
+  .day:hover:not(.sel) {
+    background: var(--sub);
+    transform: translateY(-1px);
+  }
+  .mkt-row:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  }
+  .nbtn:hover:not(.act) {
+    background: var(--sub);
+  }
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.28);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.48);
+  }
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1341,6 +1546,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
         <button class="ibtn" style="justify-content:center" onclick="importBackup()">📥 بازیابی از متن</button>
       </div>
       <textarea id="backupText" rows="2" placeholder="کد پشتیبان اینجا نمایش داده می‌شود یا برای بازیابی اینجا پیست کنید..."></textarea>
+      <button type="button" id="checkUpdateBtn" class="ibtn" style="width:100%;justify-content:center;color:var(--pri);border-color:rgba(27,110,243,0.35);margin-top:4px;display:none" onclick="triggerManualUpdateCheck()">🔄 بررسی بروزرسانی برنامه</button>
       <button type="button" id="resetDefaultsBtn" class="ibtn" style="width:100%;justify-content:center;color:var(--hol);border-color:rgba(220,38,38,0.35);margin-top:4px" onclick="resetDefaultSettings()">♻️ بازنشانی تنظیمات پیش‌فرض</button>
     </div>
   </div>
@@ -1349,7 +1555,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v64.0";
+  const VER = "v64.4";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -1938,7 +2144,12 @@ const DEFAULT_CITIES=[
   {n:"سلیمانیه (سلێمانی)",lat:35.5613,lon:45.4304}
 ];
 let customCities=JSON.parse(localStorage.getItem("cal_cities_v9")||"[]");
-let cfg=JSON.parse(localStorage.getItem("cal_cfg_v4")||'{"theme":"auto","color":0,"ui":"ios26","city":"35.6892,51.3890,تهران","showW":true,"showG":true,"calType":"jalali","lang":"fa","font":"vazirmatn","firstDay":0,"weekends":[6],"autoLoc":true,"autoSyncCalLang":true}');
+const __hasSavedCfg = !!localStorage.getItem("cal_cfg_v4");
+const __uaStr = navigator.userAgent || "";
+const __isAppleOS = /iPhone|iPad|iPod|Macintosh/i.test(__uaStr) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const __isAndroidOS = /Android/i.test(__uaStr);
+const __defaultAdaptiveUi = __isAppleOS ? "ios26" : (__isAndroidOS ? "android17" : "classic");
+let cfg=JSON.parse(localStorage.getItem("cal_cfg_v4")||JSON.stringify({theme:"auto",color:0,ui:__defaultAdaptiveUi,city:"35.6892,51.3890,تهران",showW:true,showG:true,calType:"jalali",lang:"fa",font:"vazirmatn",firstDay:0,weekends:[6],autoLoc:true,autoSyncCalLang:true}));
 if(!cfg.ui) cfg.ui="ios26";
 if(!cfg.calType || cfg.calType==="hijri") cfg.calType="jalali";
 if(!cfg.lang) cfg.lang="fa";
@@ -5478,7 +5689,7 @@ function saveBirthAndCalcFal(){
   const d=Number(document.getElementById("bDay").value);
   const m=Number(document.getElementById("bMon").value);
   const y=Number(document.getElementById("bYear").value);
-  const name=(document.getElementById("bNameInput")?.value||"").trim();
+  const name=birthCfg.name||"";
   const validDay=Math.min(d,mLen(y,m));
   document.getElementById("bDay").value=validDay;
   birthCfg={y,m,d:validDay,name};
@@ -5531,113 +5742,9 @@ const POSTCARD_THEMES = [
   { name: "یاقوتی شاعرانه", bg1: "#4C0519", bg2: "#1E1B4B", accent: "#FDA4AF", badgeBg: "rgba(253,164,175,0.16)" }
 ];
 
-function drawPostcardComposite() {
-  const canvas = document.getElementById("bdayCanvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
-  const { y, m, d, name } = birthCfg;
-  const z = ZODIAC_MONTHS[m - 1] || ZODIAC_MONTHS[0];
-  const animal = CHINESE_ANIMALS[((y - 1300) % 12 + 12) % 12];
-  const th = POSTCARD_THEMES[postcardVariant % POSTCARD_THEMES.length];
-  const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
-  const mName = isKu ? KM[m - 1] : JM[m - 1];
-
-  const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0, th.bg1);
-  grad.addColorStop(1, th.bg2);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
-  const glow1 = ctx.createRadialGradient(130, 120, 10, 130, 120, 210);
-  glow1.addColorStop(0, th.badgeBg);
-  glow1.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = glow1;
-  ctx.beginPath(); ctx.arc(130, 120, 210, 0, Math.PI * 2); ctx.fill();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.22)";
-  ctx.lineWidth = 2;
-  drawRoundedRectSafe(ctx, 18, 18, W - 36, H - 36, 24);
-  ctx.stroke();
-
-  const leftCx = 136;
-  ctx.fillStyle = th.badgeBg;
-  ctx.strokeStyle = th.accent;
-  ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.arc(leftCx, 148, 54, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-
-  ctx.save();
-  ctx.fillStyle = "#FFFFFF";
-  ctx.font = "bold 46px 'Inter', sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(z.sym, leftCx, 150);
-
-  ctx.fillStyle = th.accent;
-  ctx.font = "700 17px 'Vazirmatn', sans-serif";
-  ctx.fillText(z.sign, leftCx, 232);
-
-  ctx.fillStyle = "rgba(255,255,255,0.82)";
-  ctx.font = "500 14px 'Vazirmatn', sans-serif";
-  ctx.fillText(`${animal.ico} سال ${animal.n}`, leftCx, 262);
-  ctx.restore();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.14)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(256, 64); ctx.lineTo(256, H - 64); ctx.stroke();
-
-  ctx.save();
-  ctx.direction = "rtl";
-  ctx.textAlign = "right";
-  ctx.textBaseline = "top";
-  const rightX = W - 48;
-  const maxTextW = W - 48 - 284;
-
-  ctx.fillStyle = th.accent;
-  ctx.font = "700 17px 'Vazirmatn', sans-serif";
-  ctx.fillText(`🎂 ${fa(d)} ${mName} ${fa(isKu ? y + 1321 : y)}`, rightX, 62);
-
-  ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 34px 'Vazirmatn', sans-serif";
-  const greetTitle = name ? `${name} عزیز، تولدت مبارک!` : `تولدت مبارک!`;
-  ctx.fillText(greetTitle, rightX, 102);
-
-  const customWish = (document.getElementById("aiCustomWish")?.value || "").trim();
-  ctx.fillStyle = "rgba(255,255,255,0.92)";
-  ctx.font = "500 19px 'Vazirmatn', sans-serif";
-  wrapCanvasText(ctx, customWish || z.wish, rightX, 166, maxTextW, 34);
-
-  ctx.fillStyle = "rgba(255,255,255,0.62)";
-  ctx.font = "500 14px 'Vazirmatn', sans-serif";
-  ctx.fillText(`سنگ خوش‌یمن: ${z.stone}`, rightX, H - 64);
-  ctx.restore();
-}
-
-function generateBirthdayPostcard(forceNew = false) {
-  if (forceNew) postcardVariant = (postcardVariant + 1) % POSTCARD_THEMES.length;
-  drawPostcardComposite();
-}
-
-function downloadPostcard() {
-  const canvas = document.getElementById("bdayCanvas");
-  if (!canvas) return;
-  try {
-    const dataUrl = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = `SmartCal-Birthday-${birthCfg.d}-${birthCfg.m}.png`;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (e) {
-    alert("امکان ذخیره مستقیم فایل وجود ندارد؛ می‌توانید از کارت اسکرین‌شات بگیرید.");
-  }
-}
-
 function renderFal(skipPostcard = false){
   initBirthInputs();
   checkBirthdaySurprise(false);
-  if (!skipPostcard) generateBirthdayPostcard(false);
   const {y,m,d}=birthCfg;
   const z=ZODIAC_MONTHS[m-1];
   const animalIdx=((y-1300)%12+12)%12;
@@ -6029,6 +6136,15 @@ function saveGcalClientId(val) {
   localStorage.setItem(GCAL_CFG_KEY, JSON.stringify(gcalCfg));
 }
 
+
+function triggerManualUpdateCheck() {
+  if (window.AndroidBridge && typeof window.AndroidBridge.checkUpdateManual === "function") {
+    try { window.AndroidBridge.checkUpdateManual(); } catch (e) {}
+  } else {
+    alert(tr("نسخه وب همیشه به‌صورت خودکار به‌روزرسانی می‌شود.", "وەشانی وێب هەمیشە بە شێوەی خۆکار نوێ دەبێتەوە.", "The web/PWA version updates automatically."));
+  }
+}
+
 function updateGcalSettingsUI() {
   const titleEl = document.getElementById("gcalBoxTitle");
   const badgeEl = document.getElementById("gcalModeBadge");
@@ -6046,6 +6162,11 @@ function updateGcalSettingsUI() {
   if (syncBtn) syncBtn.textContent = tr("🔄 همگام‌سازی الان", "🔄 هاوکاتکردن ئێستا", "🔄 Sync Now");
   if (discBtn) discBtn.textContent = tr("🔌 قطع اتصال", "🔌 پچڕاندنی پەیوەندی", "🔌 Disconnect");
   if (icsBtn) icsBtn.textContent = tr("📥 خروجی تقویم (.ics)", "📥 هەناردەکردنی ڕۆژژمێر (.ics)", "📥 Export (.ics)");
+  const updBtn = document.getElementById("checkUpdateBtn");
+  if (updBtn) {
+    updBtn.style.display = (window.AndroidBridge && typeof window.AndroidBridge.checkUpdateManual === "function") ? "inline-flex" : "none";
+    updBtn.textContent = tr("🔄 بررسی بروزرسانی برنامه", "🔄 پشکنینی نوێکردنەوەی بەرنامە", "🔄 Check for App Update");
+  }
 
   const nativeMode = isNativeAndroidCalAvailable();
   if (cidWrap) cidWrap.style.display = nativeMode ? "none" : "flex";
@@ -6226,7 +6347,7 @@ function getPersonalCalEventsForGDate(gy, gm, gd) {
 }
 
 async function pushNoteToPersonalCalendar(jy, jm, jd, tm, title, cat) {
-  const g = j2g(jy, jm, jd);
+  const g = toG(jy, jm, jd);
   const allDay = !tm;
   let startDt, endDt;
   if (tm) {
@@ -6289,7 +6410,7 @@ function openQuickGoogleCalFromModal() {
   const y = Number(document.getElementById("nYear")?.value || sel.jy);
   const tm = document.getElementById("nTime")?.value || "";
   const cat = document.getElementById("nCat")?.value || "شخصی";
-  const g = j2g(y, m, Math.min(d, mLen(y, m)));
+  const g = toG(y, m, Math.min(d, mLen(y, m)));
   openGoogleCalQuickLink(g.gy, g.gm, g.gd, tm, txt, cat);
 }
 
@@ -6300,7 +6421,7 @@ function exportAllNotesIcs() {
   Object.keys(notes || {}).forEach(k => {
     const [jy, jm, jd] = k.split("-").map(Number);
     if (!jy || !jm || !jd) return;
-    const g = j2g(jy, jm, jd);
+    const g = toG(jy, jm, jd);
     const dStr = `${g.gy}${pad(g.gm)}${pad(g.gd)}`;
     (notes[k] || []).forEach((raw, idx) => {
       const n = normNote(raw);
@@ -6338,6 +6459,80 @@ setTimeout(() => {
     if (gcalCfg.enabled && isNativeAndroidCalAvailable()) syncPersonalCalendar(false);
   } catch (e) {}
 }, 1450);
+
+
+// =========================================================================
+// ADAPTIVE PLATFORM, SCREEN & KEYBOARD ENGINE
+// =========================================================================
+(function initAdaptiveEnvironment() {
+  function detectPlatformAndViewport() {
+    const ua = navigator.userAgent || "";
+    const isIPadOS = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+    let os = "linux";
+    if (/iPhone|iPad|iPod/i.test(ua) || isIPadOS) os = "ios";
+    else if (/Android/i.test(ua)) os = "android";
+    else if (/Macintosh|Mac OS X/i.test(ua)) os = "macos";
+    else if (/Windows/i.test(ua)) os = "windows";
+
+    const w = window.innerWidth || 390;
+    const device = w >= 1100 ? "desktop" : (w >= 768 ? "tablet" : "mobile");
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+    const root = document.documentElement;
+    root.setAttribute("data-os", os);
+    root.setAttribute("data-device", device);
+    root.setAttribute("data-standalone", standalone ? "true" : "false");
+  }
+
+  detectPlatformAndViewport();
+  window.addEventListener("resize", detectPlatformAndViewport, { passive: true });
+  window.addEventListener("orientationchange", detectPlatformAndViewport, { passive: true });
+
+  // Live OS Light/Dark Mode sync when theme is set to auto
+  try {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSchemeChange = () => {
+      if (typeof cfg !== "undefined" && cfg.theme === "auto" && typeof applyCfg === "function") {
+        applyCfg();
+      }
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onSchemeChange);
+    else if (mq.addListener) mq.addListener(onSchemeChange);
+  } catch (e) {}
+
+  // Desktop keyboard shortcuts (ArrowLeft/ArrowRight, T=Today, N=New Note, Esc=Close Modal)
+  document.addEventListener("keydown", (e) => {
+    const tag = (e.target && e.target.tagName || "").toUpperCase();
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.target?.isContentEditable) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    if (e.key === "Escape") {
+      if (typeof closeModals === "function") closeModals();
+      return;
+    }
+    const anyModalOpen = !!document.querySelector(".modal.open");
+    if (anyModalOpen) return;
+
+    const isCalTab = document.getElementById("view-cal")?.classList.contains("active");
+    if (!isCalTab) return;
+
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      const isRtl = document.documentElement.dir === "rtl";
+      const delta = (e.key === "ArrowLeft") ? (isRtl ? 1 : -1) : (isRtl ? -1 : 1);
+      if (typeof chMon === "function") {
+        e.preventDefault();
+        chMon(delta);
+      }
+    } else if (e.key === "t" || e.key === "T") {
+      document.getElementById("todBtn")?.click();
+    } else if (e.key === "n" || e.key === "N") {
+      if (typeof openNoteModal === "function") {
+        e.preventDefault();
+        openNoteModal();
+      }
+    }
+  });
+})();
 
 </script>
 </body>
