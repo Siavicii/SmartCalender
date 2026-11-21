@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartcal-pwa-v62.0";
+const CACHE_NAME = "smartcal-pwa-v63.7";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./version.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {

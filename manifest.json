@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F4F6FA",
-  "theme_color": "#1B6EF3",
+  "background_color": "#1F2B3B",
+  "theme_color": "#1F2B3B",
   "dir": "rtl",
   "lang": "fa-IR",
   "icons": [
@@ -31,5 +31,5 @@
       "purpose": "maskable"
     }
   ],
-  "version": "62.0"
+  "version": "63.7"
 }
