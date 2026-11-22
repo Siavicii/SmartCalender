@@ -2017,6 +2017,54 @@ body {
   }
 }
 
+
+/* Emergency AI-Detected Closure Banner in Day Details Card */
+#emergencyHolBox {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+}
+#emergencyHolBox.scope-schools {
+  background: rgba(245, 158, 11, 0.11);
+  border-color: rgba(245, 158, 11, 0.38);
+}
+.emg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.emg-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #DC2626;
+}
+#emergencyHolBox.scope-schools .emg-title {
+  color: #D97706;
+}
+[data-theme="dark"] .emg-title { color: #F87171; }
+[data-theme="dark"] #emergencyHolBox.scope-schools .emg-title { color: #FBBF24; }
+.emg-reason {
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--txt);
+}
+.emg-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 10.5px;
+  color: var(--sec);
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2187,6 +2235,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div class="sub-dates" id="selSub"></div>
       <div id="sunTimesBox" style="margin-top:9px;padding:8px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:8px"></div>
       <div id="yearTahvilBox" style="margin-top:8px;padding:9px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd)"></div>
+      <div id="emergencyHolBox"></div>
       <div id="evBox"></div>
       <div class="note-box">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
@@ -2447,7 +2496,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="s-head"><b>📍 انتخاب یا افزودن شهر دلخواه</b><button class="ibtn" onclick="closeModals()">✕</button></div>
     <div style="font-size:11px;color:var(--sec)">نام شهر مورد نظر خود را به فارسی یا انگلیسی جستجو کنید (مثلاً: سقز، بوکان، رشت، لندن، دبی):</div>
     <div class="note-row">
-      <input type="text" id="citySearchInput" placeholder="نام شهر را بنویسید..." onkeydown="if(event.key==='Enter')searchCityOnline()">
+      <input type="text" id="citySearchInput" placeholder="نام هر شهر، بخش یا روستایی را بنویسید..." oninput="debouncedCitySearch()" onkeydown="if(event.key==='Enter')searchCityOnline()">
       <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 14px" onclick="searchCityOnline()">جستجو</button>
     </div>
     <div id="citySearchResults" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -2663,9 +2712,12 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div class="swatches" id="colorSwatches"></div>
     </div>
     <div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <b style="font-size:12px;color:var(--sec)">شهر (برای آب‌وهوا)</b>
-        <button type="button" class="w-city-btn" onclick="detectUserLocation(true)">🎯 تشخیص خودکار مکان</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+        <b style="font-size:12px;color:var(--sec)">شهر (آب‌وهوا و تعطیلات استانی)</b>
+        <div style="display:flex;gap:5px">
+          <button type="button" class="w-city-btn" onclick="openCityModal()">🔍 جستجوی آنلاین شهر</button>
+          <button type="button" class="w-city-btn" onclick="detectUserLocation(true)">🎯 مکان من</button>
+        </div>
       </div>
       <select id="setCity" style="margin-top:5px" onchange="saveSettings(true)">
         <option value="35.6892,51.3890,تهران">تهران</option>
@@ -2733,7 +2785,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v68.4";
+  const VER = "v68.7";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2948,7 +3000,7 @@ const REMOTE_IR_HOL_KEY="smartcal_remote_ir_hol_v1";
 let remoteIrHol=JSON.parse(localStorage.getItem(REMOTE_IR_HOL_KEY)||"{}");
 async function syncRemoteIrHolidays(force=false){
   const lastTs=Number(localStorage.getItem(REMOTE_IR_HOL_KEY+"_ts")||0);
-  if(!force && Date.now()-lastTs<86400000) return false;
+  if(!force && Date.now()-lastTs<7200000) return false;
   const urls=["https://raw.githubusercontent.com/Siavicii/SmartCal-Android/main/holidays.json","./holidays.json"];
   for(const u of urls){
     try{
@@ -2967,6 +3019,62 @@ async function syncRemoteIrHolidays(force=false){
   return false;
 }
 setTimeout(()=>{try{syncRemoteIrHolidays(false);}catch(e){}},1800);
+
+// Emergency AI-Detected Closures (matched to user's selected city or nationwide)
+function normFaCity(s) {
+  return String(s || "").replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/\s+/g, " ").trim();
+}
+function getEmergencyHolidaysForDay(jy, jm, jd) {
+  const emgMap = (remoteIrHol && remoteIrHol.emergency) || {};
+  const list = emgMap[`${jy}-${jm}-${jd}`];
+  if (!Array.isArray(list) || !list.length) return [];
+  const cityRaw = (cfg && cfg.city ? cfg.city.split(",")[2] : "") || "";
+  const userCity = normFaCity(cityRaw);
+  const userProv = normFaCity((cfg && cfg.province) || "");
+  return list.filter(item => {
+    if (!item || !item.title) return false;
+    const cities = Array.isArray(item.cities) ? item.cities.map(normFaCity) : [];
+    if (!cities.length || cities.some(c => c === "سراسری" || c === "کل کشور" || c === "ایران" || c === "all")) return true;
+    if (!userCity && !userProv) return true;
+    return cities.some(c =>
+      (userCity && (c.includes(userCity) || userCity.includes(c))) ||
+      (userProv && (c.includes(userProv) || userProv.includes(c)))
+    );
+  });
+}
+function renderEmergencyHolidayBox(jy, jm, jd) {
+  const box = document.getElementById("emergencyHolBox");
+  if (!box) return;
+  const items = getEmergencyHolidaysForDay(jy, jm, jd);
+  if (!items.length) {
+    box.style.display = "none";
+    box.className = "";
+    box.innerHTML = "";
+    return;
+  }
+  const anyFullHoliday = items.some(it => it.isHoliday !== false && it.scope !== "schools");
+  box.className = anyFullHoliday ? "" : "scope-schools";
+  box.style.display = "flex";
+  box.innerHTML = items.map(it => {
+    const scopeLbl = it.scope === "schools"
+      ? tr("مدارس / غیرحضوری", "قوتابخانەکان", "Schools Only")
+      : (it.scope === "offices" ? tr("ادارات و دستگاه‌ها", "فەرمانگەکان", "Offices Closed") : tr("تعطیلی اضطراری رسمی", "پشووی نائاسایی", "Emergency Holiday"));
+    const citiesStr = Array.isArray(it.cities) && it.cities.length ? it.cities.join("، ") : "سراسری";
+    const srcStr = it.source ? ` • ${esc(it.source)}` : "";
+    return `
+      <div class="emg-head">
+        <span class="emg-title">🚨 ${esc(it.title)}</span>
+        <span class="tag" style="font-size:10px;font-weight:800">${scopeLbl}</span>
+      </div>
+      ${it.reason ? `<div class="emg-reason"><b>${tr("علت تعطیلی:", "هۆکار:", "Reason:")}</b> ${esc(it.reason)}</div>` : ""}
+      <div class="emg-meta">
+        <span>📍 ${tr("محدوده:", "ناوچە:", "Area:")} ${esc(citiesStr)}</span>
+        <span>🤖 ${tr("بروزرسانی هوشمند", "نوێکردنەوەی زیرەک", "AI Sync")}${srcStr}</span>
+      </div>
+    `;
+  }).join('<div style="border-top:1px dashed var(--brd);margin:4px 0"></div>');
+}
+
 let customUserEv=JSON.parse(localStorage.getItem("cal_user_ev_v11")||"{}");
 
 
@@ -3240,6 +3348,14 @@ function getEv(y,m,d){
         if (!r.some(ex => ex[0] === item[0])) r.push(item);
       });
     }
+    if (typeof getEmergencyHolidaysForDay === "function") {
+      const emgList = getEmergencyHolidaysForDay(y, m, d);
+      emgList.forEach(it => {
+        const isH = (it.isHoliday !== false && it.scope !== "schools") ? 1 : 0;
+        const lbl = it.reason ? `${it.title} (${it.reason})` : it.title;
+        if (!r.some(ex => ex[0] === lbl)) r.push([lbl, isH]);
+      });
+    }
   }
   if((cfg?.calType==="kurdish" || cfg?.lang==="ku") && KURDISH_EV[k]) r.push(...KURDISH_EV[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
@@ -3451,6 +3567,223 @@ async function searchCityOnline(){
   }catch(e){
     resBox.innerHTML='<div style="font-size:12px;color:var(--hol)">خطا در اتصال به اینترنت برای جستجوی شهر.</div>';
   }
+}
+
+
+// ====== AUTOMATIC LOCATION DETECTION (GPS + REVERSE GEOCODING + IP FALLBACK) ======
+async function detectUserLocation(manualPrompt = false) {
+  if (!manualPrompt && !cfg.autoLoc) return;
+  if (window.AndroidBridge && typeof window.AndroidBridge.hasLocationPermission === "function") {
+    if (!window.AndroidBridge.hasLocationPermission()) {
+      if (manualPrompt) {
+        try { if (window.AndroidBridge.requestLocationPermission) window.AndroidBridge.requestLocationPermission(); } catch (e) {}
+        try {
+          if (window.AndroidBridge.showNativeToast) {
+            window.AndroidBridge.showNativeToast(tr("برای تشخیص مکان شما، ابتدا مجوز موقعیت مکانی را تأیید کنید", "بۆ دیاریکردنی شوێنەکەت، سەرەتا مۆڵەتی شوێن بدە", "Please grant Location permission first"));
+          }
+        } catch (e) {}
+      }
+      return;
+    }
+  } else if (!manualPrompt && navigator.permissions && navigator.permissions.query) {
+    try {
+      const pSt = await navigator.permissions.query({ name: "geolocation" });
+      if (pSt.state !== "granted") return;
+    } catch (e) { return; }
+  }
+  const btn = document.getElementById("autoLocBtn");
+  if (btn && manualPrompt) {
+    btn.textContent = "⏳ مکان‌یابی...";
+    btn.style.opacity = "0.75";
+  }
+
+  const applyDetectedCoords = async (lat, lon, fallbackCityName = "") => {
+    const cleanLat = Number(Number(lat).toFixed(4));
+    const cleanLon = Number(Number(lon).toFixed(4));
+    let cityName = fallbackCityName;
+    try {
+      const langParam = (cfg.lang === "ku") ? "ku" : "fa";
+      const rg = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${cleanLat}&longitude=${cleanLon}&localityLanguage=${langParam}`).then(r => r.json()).catch(() => null);
+      if (rg) {
+        cityName = rg.city || rg.locality || rg.principalSubdivision || fallbackCityName || "مکان فعلی";
+      }
+    } catch (e) {}
+    if (!cityName) cityName = "مکان فعلی";
+    addAndSelectCity(cityName, cleanLat, cleanLon);
+    if (btn) {
+      btn.textContent = "✅ " + cityName;
+      btn.style.opacity = "1";
+      setTimeout(() => { if (btn) btn.textContent = "🎯 مکان من"; }, 2500);
+    }
+  };
+
+  // 1. Try Browser GPS Geolocation if available
+  if ("geolocation" in navigator) {
+    try {
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: false,
+          timeout: 5500,
+          maximumAge: 600000
+        });
+      });
+      if (pos && pos.coords) {
+        await applyDetectedCoords(pos.coords.latitude, pos.coords.longitude);
+        return;
+      }
+    } catch (e) {
+      // Fall through to IP geolocation if GPS permission denied or timed out
+    }
+  }
+
+  // 2. IP Geolocation Fallback (works seamlessly without permission popups)
+  try {
+    const ipData = await fetch("https://ipwho.is/").then(r => r.json()).catch(() => null);
+    if (ipData && ipData.success && ipData.latitude && ipData.longitude) {
+      await applyDetectedCoords(ipData.latitude, ipData.longitude, ipData.city || "");
+      return;
+    }
+    const ipData2 = await fetch("https://ipapi.co/json/").then(r => r.json()).catch(() => null);
+    if (ipData2 && ipData2.latitude && ipData2.longitude) {
+      await applyDetectedCoords(ipData2.latitude, ipData2.longitude, ipData2.city || "");
+      return;
+    }
+  } catch (e) {}
+
+  if (btn && manualPrompt) {
+    btn.textContent = "🎯 مکان من";
+    btn.style.opacity = "1";
+    openCityModal();
+  }
+}
+
+function addAndSelectCity(name,lat,lon,province=""){
+  const cleanName = String(name || "").trim();
+  const cleanProv = String(province || "").replace(/^استان\s+/,"").trim();
+  if(!cleanName) return;
+  const exists=[...DEFAULT_CITIES,...customCities].find(c=>c.n===cleanName);
+  if(!exists){
+    customCities.push({n:cleanName,lat:Number(lat),lon:Number(lon),p:cleanProv});
+    localStorage.setItem("cal_cities_v9",JSON.stringify(customCities));
+  } else if (cleanProv && !exists.p) {
+    exists.p = cleanProv;
+    localStorage.setItem("cal_cities_v9",JSON.stringify(customCities));
+  }
+  selectCity(lat,lon,cleanName,cleanProv);
+}
+
+function selectCity(lat,lon,name,province=""){
+  cfg.city=`${lat},${lon},${name}`;
+  if (province) {
+    cfg.province = String(province).replace(/^استان\s+/,"").trim();
+  } else {
+    const found = [...DEFAULT_CITIES,...customCities].find(c => c.n === name);
+    cfg.province = (found && found.p) ? found.p : "";
+  }
+  localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));
+  syncCitySelect();
+  closeModals();
+  render();
+  fetchWeather(true);
+}
+
+function openCityModal(){
+  document.getElementById("citySearchInput").value="";
+  document.getElementById("citySearchResults").innerHTML="";
+  renderSavedCities();
+  pushModalState();document.getElementById("cityModal").classList.add("open");
+  setTimeout(()=>{try{document.getElementById("citySearchInput").focus();}catch(e){}},120);
+}
+
+function renderSavedCities(){
+  const all=[...DEFAULT_CITIES,...customCities];
+  document.getElementById("savedCitiesList").innerHTML=all.map((c,idx)=>`
+    <div class="tag" style="cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;${cfg.city.endsWith(','+c.n)?'background:var(--pri);color:var(--onpri);font-weight:700':''}" onclick="selectCity(${c.lat},${c.lon},'${esc(c.n).replace(/'/g,"")}','${esc(c.p||"").replace(/'/g,"")}')">
+      <span>${esc(trCity(c.n))}</span>
+      ${idx>=DEFAULT_CITIES.length?`<span onclick="event.stopPropagation();removeCustomCity(${idx-DEFAULT_CITIES.length})" style="opacity:.8">✕</span>`:''}
+    </div>
+  `).join("");
+}
+
+function removeCustomCity(i){
+  customCities.splice(i,1);
+  localStorage.setItem("cal_cities_v9",JSON.stringify(customCities));
+  syncCitySelect();renderSavedCities();
+}
+
+let _citySearchTimer = null;
+function debouncedCitySearch(){
+  clearTimeout(_citySearchTimer);
+  const q = (document.getElementById("citySearchInput").value || "").trim();
+  if (q.length < 2) {
+    document.getElementById("citySearchResults").innerHTML = "";
+    return;
+  }
+  _citySearchTimer = setTimeout(() => searchCityOnline(), 420);
+}
+
+async function searchCityOnline(){
+  const q=document.getElementById("citySearchInput").value.trim();
+  const resBox=document.getElementById("citySearchResults");
+  if(!q){return;}
+  resBox.innerHTML='<div style="font-size:12px;color:var(--sec)">🔍 در حال جستجوی آنلاین مکان...</div>';
+  const combined = [];
+  const pushUnique = (item) => {
+    if (!item || !item.name || !isFinite(item.lat) || !isFinite(item.lon)) return;
+    const dup = combined.some(x => Math.abs(x.lat - item.lat) < 0.08 && Math.abs(x.lon - item.lon) < 0.08);
+    if (!dup) combined.push(item);
+  };
+
+  // Query OpenStreetMap Nominatim (covers every Iranian city, town, village & district in Persian) + Open-Meteo in parallel
+  const tasks = [
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&accept-language=fa&limit=8&q=${encodeURIComponent(q)}`, {
+      headers: { "Accept": "application/json" }
+    }).then(r => r.ok ? r.json() : []).then(arr => {
+      if (!Array.isArray(arr)) return;
+      arr.forEach(it => {
+        const addr = it.address || {};
+        const name = it.name || addr.city || addr.town || addr.village || addr.county || (it.display_name || "").split("،")[0].split(",")[0].trim();
+        const prov = (addr.state || addr.province || "").replace(/^استان\s+/, "").trim();
+        const country = addr.country || "";
+        pushUnique({
+          name,
+          province: prov,
+          country,
+          lat: Number(parseFloat(it.lat).toFixed(4)),
+          lon: Number(parseFloat(it.lon).toFixed(4))
+        });
+      });
+    }).catch(() => {}),
+    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=fa&format=json`)
+      .then(r => r.ok ? r.json() : null).then(data => {
+        if (!data || !Array.isArray(data.results)) return;
+        data.results.forEach(it => {
+          pushUnique({
+            name: it.name,
+            province: (it.admin1 || "").replace(/^استان\s+/, "").trim(),
+            country: it.country || "",
+            lat: Number(it.latitude.toFixed(4)),
+            lon: Number(it.longitude.toFixed(4))
+          });
+        });
+      }).catch(() => {})
+  ];
+
+  await Promise.allSettled(tasks);
+
+  if(!combined.length){
+    resBox.innerHTML='<div style="font-size:12px;color:var(--hol)">مکانی با این نام پیدا نشد. املای نام شهر یا روستا را بررسی کنید.</div>';
+    return;
+  }
+  resBox.innerHTML=combined.slice(0, 8).map(item=>{
+    const subParts = [item.province, item.country].filter(Boolean);
+    const safeName = esc(item.name).replace(/'/g,"");
+    const safeProv = esc(item.province || "").replace(/'/g,"");
+    return `<div class="note-item" style="cursor:pointer" onclick="addAndSelectCity('${safeName}',${item.lat},${item.lon},'${safeProv}')">
+      <div><b>${esc(item.name)}</b><div style="font-size:10px;color:var(--sec)">${esc(subParts.join(" • "))}</div></div>
+      <span class="pill" style="padding:4px 9px;font-size:11px">+ انتخاب</span>
+    </div>`;
+  }).join("");
 }
 
 
@@ -6165,19 +6498,19 @@ const YEAR_ANIMALS_12 = [
   { fa: "خوک", ku: "بەراز", en: "Pig", ico: "🐷" }
 ];
 
-// Official Iranian Calendar Reference Table + Meeus Astronomical Equinox Fallback (Iran Standard Time UTC+03:30)
+// Official Iranian Calendar Reference Table + Full 24-Term Meeus Astronomical Equinox Fallback (IRST UTC+03:30)
 const OFFICIAL_TAHVIL_IRST = {
-  1400: { jm: 12, jd: 30, jyRef: 1399, h: 13, m: 7, s: 28 },
-  1401: { jm: 12, jd: 29, jyRef: 1400, h: 19, m: 3, s: 26 },
+  1400: { jm: 12, jd: 30, jyRef: 1399, h: 13, m: 7,  s: 28 },
+  1401: { jm: 12, jd: 29, jyRef: 1400, h: 19, m: 3,  s: 26 },
   1402: { jm: 1,  jd: 1,  jyRef: 1402, h: 0,  m: 54, s: 28 },
   1403: { jm: 1,  jd: 1,  jyRef: 1403, h: 6,  m: 36, s: 26 },
   1404: { jm: 12, jd: 30, jyRef: 1403, h: 12, m: 31, s: 30 },
   1405: { jm: 12, jd: 29, jyRef: 1404, h: 18, m: 15, s: 59 },
-  1406: { jm: 1,  jd: 1,  jyRef: 1406, h: 0,  m: 2,  s: 56 },
-  1407: { jm: 1,  jd: 1,  jyRef: 1407, h: 5,  m: 51, s: 19 },
-  1408: { jm: 1,  jd: 1,  jyRef: 1408, h: 11, m: 38, s: 31 },
-  1409: { jm: 12, jd: 29, jyRef: 1408, h: 17, m: 24, s: 40 },
-  1410: { jm: 12, jd: 29, jyRef: 1409, h: 23, m: 12, s: 12 }
+  1406: { jm: 12, jd: 29, jyRef: 1405, h: 23, m: 54, s: 43 },
+  1407: { jm: 1,  jd: 1,  jyRef: 1407, h: 5,  m: 47, s: 8  },
+  1408: { jm: 1,  jd: 1,  jyRef: 1408, h: 11, m: 31, s: 42 },
+  1409: { jm: 12, jd: 30, jyRef: 1408, h: 17, m: 21, s: 54 },
+  1410: { jm: 12, jd: 29, jyRef: 1409, h: 23, m: 11, s: 7  }
 };
 
 function getYearAnimalInfo(jy) {
@@ -6197,22 +6530,29 @@ function calcVernalEquinoxIRST(jy) {
       h: o.h, m: o.m, s: o.s
     };
   }
-  // Jean Meeus Astronomical Algorithm for March Equinox (JDE0)
+  // Full 24-term Jean Meeus Astronomical Algorithm for March Equinox (Table 27.B & 27.C)
   const gy = jy + 621;
   const Y = (gy - 2000) / 1000;
   const Y2 = Y * Y, Y3 = Y2 * Y, Y4 = Y3 * Y;
   let JDE0 = 2451623.80984 + 365242.37404 * Y + 0.05169 * Y2 - 0.00411 * Y3 - 0.00057 * Y4;
-  // Periodic terms (Meeus Table 27.C)
   const T = (JDE0 - 2451545.0) / 36525;
   const W = 35999.373 * T - 2.47;
   const dL = 1 + 0.0334 * Math.cos(W * Math.PI / 180) + 0.0007 * Math.cos(2 * W * Math.PI / 180);
-  const S = 485 * Math.cos((324.96 + 1934.136 * T) * Math.PI / 180)
-          + 203 * Math.cos((337.23 + 32964.467 * T) * Math.PI / 180)
-          + 199 * Math.cos((342.08 + 20.186 * T) * Math.PI / 180)
-          + 182 * Math.cos((27.85 + 445267.112 * T) * Math.PI / 180);
+  const terms = [
+    [485,324.96,1934.136],[203,337.23,32964.467],[199,342.08,20.186],[182,27.85,445267.112],
+    [156,73.14,45036.886],[136,171.52,22518.443],[77,222.54,65928.934],[74,296.72,3034.906],
+    [70,243.58,9037.513],[58,119.81,33718.147],[52,297.17,150.678],[50,21.02,2281.226],
+    [45,247.54,29929.562],[44,325.15,31555.956],[29,60.93,4443.417],[18,155.12,67555.328],
+    [17,288.79,4562.452],[16,198.04,62894.029],[14,199.76,31436.921],[12,95.39,14577.848],
+    [12,287.11,31931.756],[12,320.81,34777.259],[9,227.73,1222.114],[8,15.45,16859.074]
+  ];
+  let S = 0;
+  for (let i = 0; i < terms.length; i++) {
+    S += terms[i][0] * Math.cos((terms[i][1] + terms[i][2] * T) * Math.PI / 180);
+  }
   JDE0 += (0.00001 * S) / dL;
-  // Convert TT to UT (~69s deltaT) then to IRST (UTC + 3.5h)
-  const unixMs = (JDE0 - 2440587.5) * 86400000 - 69000 + (3.5 * 3600000);
+  // Convert TT to UT (~69.2s deltaT) then to IRST (UTC + 3.5h)
+  const unixMs = (JDE0 - 2440587.5) * 86400000 - 69200 + (3.5 * 3600000);
   const dt = new Date(unixMs);
   const uGy = dt.getUTCFullYear(), uGm = dt.getUTCMonth() + 1, uGd = dt.getUTCDate();
   const jEquiv = toJ(uGy, uGm, uGd);
@@ -6228,18 +6568,20 @@ function renderYearTahvilCard(activeJy) {
   const box = document.getElementById("yearTahvilBox");
   if (!box) return;
   const isFirstDayOfYear = (sel.jm === 1 && sel.jd === 1);
-  if (!isFirstDayOfYear) {
+  const isLastDayOfYear = (sel.jm === 12 && sel.jd === jLen(sel.jy, 12));
+  if (!isFirstDayOfYear && !isLastDayOfYear) {
     box.style.display = "none";
     box.innerHTML = "";
     return;
   }
+  const targetJy = isLastDayOfYear ? (activeJy + 1) : activeJy;
   box.style.display = "block";
   const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
   const isEn = (cfg.lang === "en");
-  const animal = getYearAnimalInfo(activeJy);
-  const eq = calcVernalEquinoxIRST(activeJy);
+  const animal = getYearAnimalInfo(targetJy);
+  const eq = calcVernalEquinoxIRST(targetJy);
   const animName = isEn ? animal.en : (isKu ? animal.ku : animal.fa);
-  const dispYear = cfg.calType === "kurdish" ? (activeJy + 1321) : activeJy;
+  const dispYear = cfg.calType === "kurdish" ? (targetJy + 1321) : targetJy;
   const eqMonthName = isKu ? getKM()[eq.jm - 1] : getJM()[eq.jm - 1];
   const eqJyDisp = cfg.calType === "kurdish" ? (eq.jy + 1321) : eq.jy;
   const wdName = getWD_SAT()[wDay(eq.jy, eq.jm, eq.jd)];
@@ -6249,7 +6591,7 @@ function renderYearTahvilCard(activeJy) {
   const ss = String(eq.s).padStart(2, "0");
   const timeFormatted = isEn ? `${hh}:${mm}:${ss}` : `${fa(hh)}:${fa(mm)}:${fa(ss)}`;
   const gregStr = `${toLatDigits(eq.gd)} ${GM_EN[eq.gm - 1]} (${toLatDigits(eq.gm)}) ${toLatDigits(eq.gy)}`;
-  const leapStatus = isLeap(activeJy)
+  const leapStatus = isLeap(targetJy)
     ? tr("کبیسه (۳۶۶ روز)", "ساڵی پڕ (٣٦٦ ڕۆژ)", "Leap Year (366 days)")
     : tr("عادی (۳۶۵ روز)", "ساڵی ئاسایی (٣٦٥ ڕۆژ)", "Common Year (365 days)");
 
@@ -6541,6 +6883,7 @@ function render(){
 
   renderSunBox(sg.gy, sg.gm, sg.gd);
   renderYearTahvilCard(sel.jy);
+  if (typeof renderEmergencyHolidayBox === "function") renderEmergencyHolidayBox(sel.jy, sel.jm, sel.jd);
   updateOpenNotesBadge();
   let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
   if (typeof getPersonalCalEventsForGDate === "function") {
