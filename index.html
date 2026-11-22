@@ -1766,16 +1766,15 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="sn-card" id="dayNightCard">
       <div class="sn-top">
         <div class="sn-meta">
-          <b class="sn-title" id="dayNightTitle">🌓 حالت شب (تاریک)</b>
-          <span class="sn-sub" id="dayNightSub">تغییر سریع بین پوسته روشن و تیره</span>
+          <b class="sn-title" id="dayNightTitle">🌓 حالت شب و روز</b>
+          <span class="sn-sub" id="dayNightSub">جابه‌جایی بین پوسته روشن و تیره</span>
         </div>
-        <label class="sc-switch" aria-label="تغییر حالت شب و روز">
+        <label class="sc-switch" aria-label="جابه‌جایی بین پوسته روشن و تیره">
           <input type="checkbox" id="setQuickDark" onchange="toggleQuickDayNight(this.checked)">
           <span class="sc-switch-track"></span>
         </label>
       </div>
     </div>
-    <!-- Dynamic Phone Theme, Accent Color & OS UI Sync (Material You / System UI) -->
     <div class="sn-card" id="systemSyncCard">
       <div class="sn-top">
         <div class="sn-meta">
@@ -1792,7 +1791,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div class="sn-top">
         <div class="sn-meta">
           <b class="sn-title" id="weatherAtmTitle">🌦️ تطبیق خودکار با آب‌وهوا و فصل</b>
-          <span class="sn-sub" id="atmStatusText">هماهنگی حال‌وهوا و رنگ برنامه با وضعیت هوای شهر و فصل</span>
+          <span class="sn-sub" id="atmStatusText">تنظیم خودکار رنگ و حال‌وهوای برنامه با فصل و هوای شهر</span>
         </div>
         <label class="sc-switch" aria-label="تطبیق خودکار با آب‌وهوا و فصل">
           <input type="checkbox" id="setAutoAtm" onchange="cfg.autoAtm=this.checked;localStorage.setItem('cal_cfg_v4',JSON.stringify(cfg));applyCfg();">
@@ -2100,7 +2099,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v66.3";
+  const VER = "v67.1";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3768,10 +3767,7 @@ function applyLanguageUI() {
 
   // Modals (Style, City, Note, Converter, Settings)
   setTxt("#styleModal .s-head b", "🎨 طراحی، سبک‌ها و همگام‌سازی جوی", "🎨 دیزاین، ستایل و هاوکاتکردنی کەشوهەوا", "🎨 Themes, UI Styles & Weather Sync");
-  const atmTitleB = document.querySelector("#styleModal .sheet > div:nth-of-type(2) b");
-  if (atmTitleB) atmTitleB.textContent = tr("🌦️ همگام‌سازی زنده با آب‌وهوا و فصل", "🌦️ هاوکاتکردنی زیندوو لەگەڵ کەشوهەوا و وەرز", "🌦️ Live Weather & Season Sync");
-  const styleDescDiv = document.querySelector("#styleModal .sheet > div:nth-of-type(3)");
-  if (styleDescDiv) styleDescDiv.textContent = tr("ظاهر و چیدمان کل اپلیکیشن را بین طراحی‌های مدرن زیر انتخاب کنید:", "شێواز و دیزاینی گشتیی بەرنامە لە نێوان ستایلەکانی خوارەوە هەڵبژێرە:", "Choose the overall look and layout from the modern styles below:");
+
   const styleAccB = document.querySelector("#styleSwatches")?.previousElementSibling;
   if (styleAccB) styleAccB.textContent = tr("رنگ تاکیدی (Accent Color)", "ڕەنگی سەرەکی (Accent Color)", "Accent Color");
   setTxt("#cityModal .s-head b", "📍 انتخاب یا افزودن شهر دلخواه", "📍 هەڵبژاردن یان زیادکردنی شار", "📍 Select or Search City");
@@ -6071,7 +6067,15 @@ function closeModals(fromPopState = false){
     try { history.back(); } catch (e) {}
   }
 }
-const openStyleFn = () => { renderStyleCards(); pushModalState(); document.getElementById("styleModal").classList.add("open"); };
+const openStyleFn = () => {
+  try { renderStyleCards(); } catch (e) {}
+  try { if (typeof syncQuickDayNightUI === "function") syncQuickDayNightUI(); } catch (e) {}
+  try { if (typeof updateSystemSyncLabels === "function") updateSystemSyncLabels(); } catch (e) {}
+  try { if (typeof applyAtmosphereSync === "function") applyAtmosphereSync(); } catch (e) {}
+  pushModalState();
+  const sm = document.getElementById("styleModal");
+  if (sm) sm.classList.add("open");
+};
 document.querySelectorAll("#topStyleBtn").forEach(btn => { if (btn) btn.onclick = openStyleFn; });
 document.getElementById("openConv").onclick=()=>{initConvInputs();pushModalState();document.getElementById("convModal").classList.add("open")};
 document.getElementById("openSet").onclick=()=>{pushModalState();document.getElementById("setModal").classList.add("open")};
@@ -7943,16 +7947,14 @@ function syncQuickDayNightUI() {
   if (chk) chk.checked = isDark;
   const tEl = document.getElementById("dayNightTitle");
   if (tEl) {
-    tEl.textContent = isDark
-      ? tr("🌙 حالت شب فعال است", "🌙 دۆخی شەو چالاکە", "🌙 Dark Mode Active")
-      : tr("☀️ حالت روز فعال است", "☀️ دۆخی ڕۆژ چالاکە", "☀️ Light Mode Active");
+    tEl.textContent = tr("🌓 حالت شب و روز", "🌓 دۆخی شەو و ڕۆژ", "🌓 Day & Night Mode");
   }
   const sEl = document.getElementById("dayNightSub");
   if (sEl) {
     sEl.textContent = tr(
-      "تغییر سریع بین پوسته روشن و تیره",
-      "گۆڕینی خێرا لە نێوان ڕووناک و تاریک",
-      "Quickly switch between light and dark theme"
+      "جابه‌جایی بین پوسته روشن و تیره",
+      "گۆڕین لە نێوان ڕووناک و تاریک",
+      "Switch between light and dark theme"
     );
   }
 }
