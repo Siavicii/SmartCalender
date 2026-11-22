@@ -1291,6 +1291,117 @@ input[type="range"]::-moz-range-thumb {
   border-color: var(--pri);
 }
 
+
+/* Minimalist Theme-Synced Toggle Switch & Clean Status Notif Card */
+.sc-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.sc-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.sc-switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--brd);
+  transition: background 0.22s ease;
+}
+.sc-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sc-switch input:checked + .sc-switch-track {
+  background: var(--pri);
+}
+.sc-switch input:checked + .sc-switch-track::after {
+  transform: translateX(20px);
+}
+.sn-card {
+  background: var(--sub);
+  padding: 12px 13px;
+  border-radius: calc(var(--rad, 20px) * 0.72);
+  border: 1px solid var(--brd);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sn-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sn-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sn-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sn-sub {
+  font-size: 11px;
+  color: var(--sec);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sn-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--brd);
+  transition: opacity 0.2s ease;
+}
+.sn-bar.is-off {
+  opacity: 0.52;
+}
+.sn-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--brd);
+  padding: 4px 9px 4px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  color: var(--sec);
+}
+.sn-badge-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #0F172A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1896,25 +2007,24 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="set-item"><span>تشخیص خودکار موقعیت مکانی هنگام ورود</span><input type="checkbox" id="setAutoLoc" style="width:20px;height:20px" onchange="saveSettings()"></div>
     <div class="set-item"><span>نمایش باکس آب‌وهوا</span><input type="checkbox" id="setShowW" style="width:20px;height:20px" onchange="saveSettings()"></div>
     <div class="set-item"><span>نمایش تاریخ فرعی در خانه‌های تقویم</span><input type="checkbox" id="setShowG" style="width:20px;height:20px" onchange="saveSettings()"></div>
-    <div style="background:var(--sub);padding:12px;border-radius:15px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:9px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <div>
-          <b style="font-size:12.5px;color:var(--pri);display:block">🔔 اعلان همیشگی تاریخ در استاتوس‌بار (Status Bar)</b>
-          <span id="statusNotifPermState" style="font-size:10.5px;color:var(--sec)">نمایش آیکون عدد روز در نوار بالای گوشی و کارت تاریخ</span>
+    <div class="sn-card" id="statusNotifCard">
+      <div class="sn-top">
+        <div class="sn-meta">
+          <b class="sn-title" id="statusNotifTitle">🔔 تاریخ در نوار وضعیت</b>
+          <span class="sn-sub" id="statusNotifPermState">نمایش عدد روز در نوار بالای گوشی</span>
         </div>
-        <input type="checkbox" id="setStatusNotif" style="width:22px;height:22px;cursor:pointer;flex-shrink:0" onchange="togglePersistentDateNotif(this.checked)">
+        <label class="sc-switch" aria-label="اعلان تاریخ در نوار وضعیت">
+          <input type="checkbox" id="setStatusNotif" onchange="togglePersistentDateNotif(this.checked)">
+          <span class="sc-switch-track"></span>
+        </label>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);padding:8px 10px;border-radius:12px;border:1px solid var(--brd)">
-        <div style="display:flex;align-items:center;gap:8px">
-          <img id="previewNotifIcon" alt="icon" style="width:38px;height:38px;border-radius:10px;border:1px solid var(--brd)">
-          <div style="background:#0F172A;padding:5px 8px;border-radius:8px;display:flex;align-items:center;gap:6px" title="پیش‌نمایش آیکون استاتوس‌بار بالای گوشی">
-            <img id="previewStatusBadge" alt="badge" style="width:22px;height:22px;display:block">
-            <span style="font-size:10px;color:#E2E8F0">آیکون نوار وضعیت</span>
-          </div>
+      <div class="sn-bar" id="statusNotifBar">
+        <div class="sn-preview-pill">
+          <span class="sn-badge-dot"><img id="previewStatusBadge" alt="badge" style="width:15px;height:15px;display:block"></span>
+          <span id="statusBadgePreviewLbl">پیش‌نمایش نوار بالا</span>
         </div>
-        <button type="button" class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;height:32px;padding:0 10px;font-size:11px" onclick="activateOrRefreshStatusNotif()">🔄 ارسال / بروزرسانی اعلان</button>
+        <button type="button" id="statusNotifRefreshBtn" class="ibtn" style="height:28px;padding:0 10px;font-size:11px;border-radius:999px;color:var(--pri);border-color:var(--pri)" onclick="activateOrRefreshStatusNotif()">🔄 بروزرسانی</button>
       </div>
-      <div style="font-size:10px;color:var(--sec);line-height:1.6">💡 در برخی مرورگرها یا نسخه‌های موبایل ممکن است اعلان دائمی پس از مدتی توسط سیستم بسته شود؛ با باز کردن برنامه یا زدن دکمه «ارسال / بروزرسانی اعلان» دوباره تازه می‌شود. همچنین تغییر آیکون پویا و دارک‌مود در لانچر برخی گوشی‌ها ممکن است با کمی تاخیر یا پس از تازه‌سازی لانچر اعمال شود.</div>
     </div>
 
     <!-- Backup & Restore -->
@@ -1954,7 +2064,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v65.4";
+  const VER = "v65.5";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3174,6 +3284,8 @@ let lastNotifSignature = "";
 function updateStatusDateBtnUI(primaryDayStr = "") {
   const chk = document.getElementById("setStatusNotif");
   if (chk) chk.checked = !!statusNotifEnabled;
+  const snBar = document.getElementById("statusNotifBar");
+  if (snBar) snBar.classList.toggle("is-off", !statusNotifEnabled);
 
   const badgeEl = document.getElementById("topStatusDayBadge");
   if (badgeEl && primaryDayStr) badgeEl.textContent = primaryDayStr;
@@ -3196,8 +3308,8 @@ function updateStatusDateBtnUI(primaryDayStr = "") {
   if (permStateEl) {
     if (hasNativeAndroidNotif) {
       permStateEl.textContent = statusNotifEnabled
-        ? tr("✅ فعال (اندروید بومی) • عدد روز در نوار وضعیت بالای گوشی نمایش داده می‌شود", "✅ چالاک (ئەندرۆید) • ژمارەی ڕۆژ لە شریتی سەرەوەی مۆبایل پیشان دەدرێت", "✅ Active (Android Native) • Day number shown in status bar")
-        : tr("غیرفعال شده توسط شما", "لەلایەن تۆوە ناچالاک کراوە", "Disabled by user");
+        ? tr("فعال • نمایش عدد روز در نوار بالا", "چالاک • ژمارەی ڕۆژ لە سەرەوە", "Active • Day shown in status bar")
+        : tr("غیرفعال", "ناچالاک", "Off");
       permStateEl.style.color = statusNotifEnabled ? "var(--grn)" : "var(--sec)";
     } else if (!("Notification" in window)) {
       permStateEl.textContent = isIosDevice() ? "در iOS نمایش اعلان در نوار بالا نیازمند iOS 16.4+ و نصب از Safari است" : "مرورگر فعلی از اعلان سیستم پشتیبانی نمی‌کند";
@@ -3687,14 +3799,12 @@ function applyLanguageUI() {
     const autoLocBtnSet = document.getElementById("setCity")?.parentElement?.querySelector(".w-city-btn");
     if (autoLocBtnSet) autoLocBtnSet.textContent = tr("🎯 تشخیص خودکار مکان", "🎯 دیاریکردنی خۆکاری شوێن", "🎯 Auto Location");
   }
-  const notifTitleEl = document.querySelector("#setStatusNotif")?.parentElement?.querySelector("b");
-  if (notifTitleEl) notifTitleEl.textContent = tr("🔔 اعلان همیشگی تاریخ در استاتوس‌بار (Status Bar)", "🔔 ئاگاداری بەردەوامی ڕێکەوت لە ستاتۆس‌بار", "🔔 Persistent Status Bar Date Notification");
-  const notifDescEl = document.getElementById("statusNotifPermState");
-  if (notifDescEl && !notifDescEl.textContent.includes("✅")) {
-    notifDescEl.textContent = tr("نمایش آیکون عدد روز در نوار بالای گوشی و کارت تاریخ", "پیشاندانی ژمارەی ڕۆژ لە شریتی سەرەوەی مۆبایل", "Show day number icon in top status bar");
-  }
-  const statusBadgeLbl = document.getElementById("previewStatusBadge")?.nextElementSibling;
-  if (statusBadgeLbl) statusBadgeLbl.textContent = tr("آیکون نوار وضعیت", "ئایکۆنی شریتی دۆخ", "Status Bar Icon");
+  const notifTitleEl = document.getElementById("statusNotifTitle");
+  if (notifTitleEl) notifTitleEl.textContent = tr("🔔 تاریخ در نوار وضعیت", "🔔 ڕێکەوت لە شریتی سەرەوە", "🔔 Status Bar Date");
+  const statusBadgeLbl = document.getElementById("statusBadgePreviewLbl");
+  if (statusBadgeLbl) statusBadgeLbl.textContent = tr("پیش‌نمایش نوار بالا", "پێشبینینی سەرەوە", "Top Bar Preview");
+  const snRefBtn = document.getElementById("statusNotifRefreshBtn");
+  if (snRefBtn) snRefBtn.textContent = tr("🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh");
   const refreshNotifBtn = document.getElementById("previewStatusBadge")?.parentElement?.parentElement?.nextElementSibling;
   if (refreshNotifBtn && refreshNotifBtn.tagName === "BUTTON") {
     refreshNotifBtn.textContent = tr("🔄 ارسال / بروزرسانی اعلان", "🔄 ناردن / نوێکردنەوە", "🔄 Send / Refresh");
@@ -6021,14 +6131,14 @@ function getDailyRandomHafezOmen(extraRoll = 0) {
     return {
       beyt: pick.b,
       tabir: buildMeaningfulHafezTabir(pick.b, themeObj.key),
-      sourceLabel: `غزل شماره ${fa(pick.ghazalNo)} از کل دیوان حافظ`
+      sourceLabel: tr(`غزل شماره ${fa(pick.ghazalNo)} از دیوان حافظ`, `غەزەلی ژمارە ${fa(pick.ghazalNo)} لە دیوانی حافز`, `Ghazal #${pick.ghazalNo} • Divan of Hafez`)
     };
   }
   const fb = HAFEZ_FALLBACK_VERSES[combinedSeed % HAFEZ_FALLBACK_VERSES.length];
   return {
     beyt: fb.b,
     tabir: buildMeaningfulHafezTabir(fb.b, fb.th || themeObj.key),
-    sourceLabel: "دیوان حافظ (بیت برگزیده امروز)"
+    sourceLabel: tr("دیوان حافظ (بیت برگزیده امروز)", "دیوانی حافز (دێڕی هەڵبژێردراوی ئەمڕۆ)", "Divan of Hafez (Today's Verse)")
   };
 }
 
@@ -6048,6 +6158,57 @@ const ASTRAL_READINGS=[
   {title:"نظم کیهانی زحل",msg:"ساختار منظم، پایبندی به قول‌ها و پایان‌دادن به کارهای نیمه‌تمام امروز بیشترین ارزش را دارد."}
 ];
 const LUCKY_COLORS=["آبی فیروزه‌ای","سبز زمردی","طلایی","سفید صدفی","بنفش یاسی","سرمه‌ای","نارنجی ملایم"];
+const LUCKY_COLORS_I18N = {
+  fa: ["آبی فیروزه‌ای", "سبز زمردی", "طلایی", "سفید صدفی", "بنفش یاسی", "سرمه‌ای", "نارنجی ملایم"],
+  ku: ["شینی فیروزەیی", "سەوزی زمردی", "زێڕینی", "سپی مرواری", "مۆری ڕووناک", "شینی تۆخ", "پرتەقاڵی کاڵ"],
+  en: ["Turquoise Blue", "Emerald Green", "Soft Gold", "Pearl White", "Lavender", "Midnight Navy", "Warm Coral"]
+};
+const TAROT_CARDS_I18N = {
+  fa: [
+    {name:"خورشید",sym:"☀️",msg:"امروز وضوح، اعتمادبه‌نفس و نتیجه‌ی روشن در کارها همراه شماست. هر قدمی که با انگیزه بردارید، بازتاب مثبتی دارد."},
+    {name:"ستاره",sym:"⭐",msg:"پس از یک دوره‌ی شلوغ یا نامطمئن، آرامش و جهت درست به شما نشان داده می‌شود. به ایده‌های الهام‌بخش خود اعتماد کنید."},
+    {name:"ارابه",sym:"🏛️",msg:"با تمرکز و کنترل هیجانات می‌توانید مانعی را پشت سر بگذارید و در کار یا برنامه‌های شخصی جلو بیفتید."},
+    {name:"جهان",sym:"🌍",msg:"یک کار یا مسیر مهم به سرانجام خوشی می‌رسد. فرصتی مناسب برای جمع‌بندی و جشن گرفتن دستاوردهای کوچک است."},
+    {name:"اعتدال",sym:"⚖️",msg:"امروز بهترین نتیجه از میانه‌روی و پرهیز از افراط به‌دست می‌آید؛ زمان‌بندی آرام و سنجیده انتخاب کنید."},
+    {name:"قدرت",sym:"🦁",msg:"قدرت واقعی امروز در آرامش و بردباری شماست. با نرمی و درایت می‌توانید موقعیت‌های حساس را به خوبی مدیریت کنید."}
+  ],
+  ku: [
+    {name:"خۆر",sym:"☀️",msg:"ئەمڕۆ ڕوونی، متمانەبەخۆبوون و ئەنجامی باش لە کارەکانتدا هاوڕێت دەبێت. هەر هەنگاوێک بە هاندانەوە بینێیت، دەنگدانەوەی ئەرێنی دەبێت."},
+    {name:"ئەستێرە",sym:"⭐",msg:"دوای ماوەیەکی سەرقاڵ یان ناڕوون، ئارامی و ئاڕاستەی دروستت پیشان دەدرێت. متمانە بە بیرۆکە نوێیەکانت بکە."},
+    {name:"گالیسکە",sym:"🏛️",msg:"بە تەرکیز و کۆنترۆڵکردنی هەستەکانت دەتوانیت بەربەستێک تێپەڕێنیت و لە کار و بەرنامە تایبەتەکانتدا پێش بکەویت."},
+    {name:"جیهان",sym:"🌍",msg:"کارێک یان ڕێگایەکی گرنگ بە کۆتاییەکی خۆش دەگات. دەرفەتێکی گونجاوە بۆ کۆکردنەوە و ئاهەنگگێڕان بۆ دەستکەوتە بچووکەکان."},
+    {name:"هاوسەنگی",sym:"⚖️",msg:"ئەمڕۆ باشترین ئەنجام لە مامناوەندی و دوورکەوتنەوە لە زیادەڕۆیی بەدەست دێت؛ کاتەکانت بە ئارامی ڕێک بخە."},
+    {name:"هێز",sym:"🦁",msg:"هێزی ڕاستەقینە ئەمڕۆ لە ئارامی و خۆڕاگری تۆدایە. بە نەرمی و ژیری دەتوانیت دۆخە هەستیارەکان بە باشی بەڕێوە ببەیت."}
+  ],
+  en: [
+    {name:"The Sun",sym:"☀️",msg:"Clarity, confidence, and bright outcomes accompany your efforts today. Every motivated step brings a positive reflection."},
+    {name:"The Star",sym:"⭐",msg:"After a busy or uncertain stretch, calm and clear direction emerge. Trust the quiet inspiration guiding your ideas."},
+    {name:"The Chariot",sym:"🏛️",msg:"With steady focus and emotional balance, you can move past an obstacle and make visible progress in your plans."},
+    {name:"The World",sym:"🌍",msg:"An important task or chapter reaches a rewarding finish. Take a moment to wrap up loose ends and celebrate small wins."},
+    {name:"Temperance",sym:"⚖️",msg:"Today's best results come from moderation and harmony. Choose a calm, measured pace rather than rushing."},
+    {name:"Strength",sym:"🦁",msg:"True strength today lies in patience and gentle composure. Tact and warmth will help you navigate delicate moments smoothly."}
+  ]
+};
+const ASTRAL_READINGS_I18N = {
+  fa: [
+    {title:"هم‌نشینی ماه و عطارد",msg:"ذهن شما برای تصمیم‌گیری‌های دقیق، مذاکره و مرتب کردن برنامه‌ها آماده است؛ از وضوح فکری امروز استفاده کنید."},
+    {title:"انرژی سیاره‌ی زهره",msg:"توجه به زیبایی، روابط صمیمی و ایجاد فضای دلنشین در محیط کار یا خانه، حال و هوای امروز را متعادل می‌کند."},
+    {title:"پرتوی مشتری و گشایش",msg:"نگاه خوش‌بینانه و آینده‌نگر به شما کمک می‌کند فرصت‌های رشد و یادگیری را ساده‌تر تشخیص دهید."},
+    {title:"نظم کیهانی زحل",msg:"ساختار منظم، پایبندی به قول‌ها و پایان‌دادن به کارهای نیمه‌تمام امروز بیشترین ارزش را دارد."}
+  ],
+  ku: [
+    {title:"هاوتەریبی مانگ و عەتارد",msg:"مێشکت ئامادەیە بۆ بڕیاردانی ورد، گفتوگۆ و ڕێکخستنی بەرنامەکان؛ سوود لە ڕوونی بیرکردنەوەی ئەمڕۆ وەربگرە."},
+    {title:"وزەی هەسارەی زوهرە",msg:"گرنگیدان بە جوانی، پەیوەندی گەرم و دروستکردنی کەشێکی خۆش لە کار یان ماڵدا، دۆخی ئەمڕۆت هاوسەنگ دەکات."},
+    {title:"تیشکی موشتەری و کرانەوە",msg:"تێڕوانینی گەشبینانە و داهاتووبین یارمەتیت دەدات دەرفەتەکانی گەشە و فێربوون بە ئاسانی ببینیت."},
+    {title:"ڕێکوپێکی گەردوونی زوحەل",msg:"پێکهاتەی ڕێکوپێک، پابەندبوون بە بەڵێنەکان و تەواوکردنی کارە نیوەچڵەکان ئەمڕۆ زۆرترین بەهایان هەیە."}
+  ],
+  en: [
+    {title:"Moon & Mercury Alignment",msg:"Your mind is sharp for clear decisions, thoughtful conversations, and organizing plans—make the most of today's mental clarity."},
+    {title:"Venusian Harmony",msg:"Focusing on beauty, warm connections, and a pleasant atmosphere at work or home brings welcome balance to your day."},
+    {title:"Jupiter's Expansion",msg:"An optimistic, forward-looking mindset helps you spot fresh opportunities for growth and learning more easily."},
+    {title:"Saturn's Cosmic Order",msg:"Steady structure, keeping commitments, and completing unfinished tasks carry the highest reward today."}
+  ]
+};
 
 let birthCfg=JSON.parse(localStorage.getItem("cal_birth_v1")||'{"y":1380,"m":1,"d":1,"name":""}');
 let falExtraOffset=0;
@@ -6189,7 +6350,9 @@ function renderFal(skipPostcard = false){
   const hafezBeyt = hafezObj.beyt;
   const hafezTabir = hafezObj.tabir;
   const luckyNum = customAiFalData?.lucky_num || (((seed + d + m) % 9) + 1);
-  const luckyCol = customAiFalData?.lucky_color || LUCKY_COLORS[(seed + m + falExtraOffset) % LUCKY_COLORS.length];
+  const _falLang = (cfg.lang === "ku" || cfg.lang === "en") ? cfg.lang : "fa";
+  const _lcArr = LUCKY_COLORS_I18N[_falLang] || LUCKY_COLORS;
+  const luckyCol = customAiFalData?.lucky_color || _lcArr[(seed + m + falExtraOffset) % _lcArr.length];
   const energyPct = 74 + ((seed*11) % 25);
   const aiBadge = customAiFalData ? `<span class="cat-pill" style="background:var(--pri);color:var(--onpri);border:none">${tr("✨ تحلیل هوشمند روزانه","✨ شیکاری زیرەکی ڕۆژانە","✨ Smart Daily Insight")}</span>` : `<span class="cat-pill">${tr("✨ طالع روزانه","✨ بەختی ڕۆژانە","✨ Daily Horoscope")}</span>`;
 
@@ -6279,8 +6442,10 @@ function renderFal(skipPostcard = false){
     </div>
   `;
 
-  const tCard = TAROT_CARDS[(seed * 4 + d + falExtraOffset) % TAROT_CARDS.length];
-  const aRead = ASTRAL_READINGS[(seed * 2 + m + falExtraOffset) % ASTRAL_READINGS.length];
+  const _tArr = TAROT_CARDS_I18N[_falLang] || TAROT_CARDS;
+  const _aArr = ASTRAL_READINGS_I18N[_falLang] || ASTRAL_READINGS;
+  const tCard = _tArr[(seed * 4 + d + falExtraOffset) % _tArr.length];
+  const aRead = _aArr[(seed * 2 + m + falExtraOffset) % _aArr.length];
   const tarotTitleDisp = customAiFalData?.tarot_card ? `${tCard.sym} ${esc(customAiFalData.tarot_card)}` : `${tCard.sym} ${esc(tCard.name)}`;
   const tarotMsgDisp = customAiFalData?.tarot_msg || tCard.msg;
   const astralMsgDisp = customAiFalData?.astral_msg || `${aRead.msg} (${tr("عنصر برج شما:","توخمی بورجەکەت:","Zodiac element:")} ${elemDisp})`;
