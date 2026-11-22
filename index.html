@@ -1591,6 +1591,404 @@ body.app-booting .app {
   opacity: 1;
 }
 
+
+/* =========================================================================
+   INSTANT ZERO-LAG TAB SWITCHING & HORIZONTAL SWIPE TRANSITIONS
+   ========================================================================= */
+@keyframes tabSlideInFromLeft {
+  from { opacity: 0.35; transform: translate3d(-24px, 0, 0); }
+  to   { opacity: 1;    transform: translate3d(0, 0, 0); }
+}
+@keyframes tabSlideInFromRight {
+  from { opacity: 0.35; transform: translate3d(24px, 0, 0); }
+  to   { opacity: 1;    transform: translate3d(0, 0, 0); }
+}
+.view.active {
+  animation: viewSmoothIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+  contain: layout style;
+}
+.view.active.tab-dir-left {
+  animation: tabSlideInFromLeft 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.view.active.tab-dir-right {
+  animation: tabSlideInFromRight 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.nbtn {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+
+/* =========================================================================
+   DESKTOP & PC PROPORTIONAL TYPOGRAPHY, SPACING & CONTROLS (>= 768px / >= 1100px)
+   ========================================================================= */
+@media (min-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+  .app {
+    max-width: 920px;
+    gap: 16px;
+  }
+
+  /* Top Bar: Comfortable Desktop Pills & Buttons */
+  .bar {
+    gap: 10px;
+  }
+  .pill {
+    height: 40px;
+    padding: 0 15px;
+    font-size: 13.5px;
+    gap: 7px;
+  }
+  .actions {
+    gap: 8px;
+  }
+  .ibtn {
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 13px;
+    font-size: 13px;
+    gap: 6px;
+  }
+  .bar .ibtn svg,
+  .bar .pill svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Install Banner */
+  .install-card {
+    padding: 13px 16px;
+    font-size: 13.5px;
+    border-radius: 18px;
+  }
+  #pwaBannerAction,
+  .install-card .ibtn {
+    height: 36px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Cards & Weather */
+  .card,
+  .w-card {
+    padding: 20px;
+  }
+  .w-ico-wrap {
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
+    font-size: 34px;
+  }
+  .w-ico-wrap svg {
+    width: 44px;
+    height: 44px;
+  }
+  #wCity {
+    font-size: 18px !important;
+  }
+  .w-city-row {
+    gap: 8px;
+  }
+  .w-city-btn {
+    padding: 5px 11px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    gap: 5px;
+  }
+  .w-desc {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .w-meta {
+    font-size: 12.5px;
+    margin-top: 5px;
+    gap: 10px;
+  }
+  .w-temp {
+    font-size: 36px;
+  }
+  #wHiLo {
+    font-size: 13px !important;
+    margin-top: 4px !important;
+  }
+  #aqiBar {
+    margin-top: 13px !important;
+    padding: 10px 14px !important;
+    font-size: 13.5px !important;
+    border-radius: 14px !important;
+  }
+  .w-days {
+    gap: 10px;
+    padding-top: 14px;
+    margin-top: 14px;
+  }
+  .w-day {
+    padding: 11px 8px;
+    font-size: 13.5px;
+    border-radius: 15px;
+  }
+  .w-day b {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  /* Calendar Card & Grid */
+  .cal-card {
+    padding: 18px 20px;
+  }
+  .seg {
+    padding: 4px;
+    border-radius: 13px;
+  }
+  .seg button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  #cycleCalTypeBtn {
+    height: 36px !important;
+    width: 36px !important;
+  }
+  #cycleCalTypeBtn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  #goTodayBtn,
+  #fsBtn {
+    height: 36px !important;
+    padding: 0 13px !important;
+    font-size: 12.5px !important;
+  }
+  .mhead {
+    margin: 10px 0 12px;
+  }
+  #jTit {
+    font-size: 20px !important;
+  }
+  #gTit {
+    font-size: 13px !important;
+    margin-top: 3px !important;
+  }
+  .grid {
+    gap: 7px;
+  }
+  .wd {
+    font-size: 13.5px;
+    padding-bottom: 8px;
+  }
+  .day {
+    min-height: 58px;
+    padding: 6px 4px 10px;
+    border-radius: 14px;
+  }
+  .jn {
+    font-size: 18px;
+  }
+  .gn {
+    font-size: 11.5px;
+    margin-top: 3px;
+  }
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  /* Selected Day, Notes & Events Cards */
+  #selTit {
+    font-size: 17px !important;
+  }
+  .copy-date-btn {
+    height: 32px;
+    padding: 0 11px;
+    font-size: 12.5px;
+    border-radius: 10px;
+  }
+  .sub-dates {
+    font-size: 13px;
+    gap: 9px;
+    margin-top: 7px;
+  }
+  .tag {
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+  #sunTimesBox,
+  #yearTahvilBox {
+    padding: 12px 14px !important;
+    font-size: 13.5px;
+  }
+  .ev,
+  .m-ev {
+    font-size: 14px;
+    padding: 9px 4px;
+  }
+  .badge {
+    min-width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  .note-item {
+    font-size: 13.5px;
+    padding: 10px 12px;
+  }
+  .ncard {
+    padding: 14px 16px;
+    gap: 8px;
+  }
+  .ntxt {
+    font-size: 14px !important;
+  }
+  .fchip {
+    padding: 7px 13px;
+    font-size: 12.5px;
+  }
+  .nact {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 12.5px;
+  }
+  .cat-pill {
+    font-size: 11.5px;
+    padding: 3px 9px;
+  }
+
+  /* Markets & Horoscope */
+  .mkt-head b {
+    font-size: 17px !important;
+  }
+  .mkt-row {
+    padding: 13px 15px;
+  }
+  .mkt-name {
+    font-size: 14.5px;
+    gap: 10px;
+  }
+  .mkt-price {
+    font-size: 16px;
+  }
+  .mkt-unit {
+    font-size: 11.5px;
+  }
+
+  /* Inputs, Selects & Modals */
+  select,
+  input,
+  textarea {
+    padding: 11px 12px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+  .pbtn {
+    padding: 12px;
+    font-size: 14.5px;
+    border-radius: 13px;
+  }
+  .res {
+    font-size: 14.5px;
+    padding: 14px;
+  }
+  .sn-title {
+    font-size: 14px;
+  }
+  .sn-sub {
+    font-size: 12.5px;
+  }
+  .set-item {
+    font-size: 14px;
+    padding: 7px 0;
+  }
+  .st-card b {
+    font-size: 13.5px;
+  }
+  .st-card span {
+    font-size: 11.5px;
+  }
+}
+
+@media (min-width: 1100px) {
+  body {
+    padding-top: 28px;
+    padding-bottom: 40px;
+    padding-inline-start: 136px;
+    padding-inline-end: 36px;
+  }
+  .app {
+    max-width: 1180px;
+    gap: 18px;
+  }
+
+  /* Larger, Crisp Floating Side Rail on PC */
+  .nav,
+  [data-ui="ios26"] .nav,
+  [data-ui="android17"] .nav {
+    right: 22px;
+    width: 98px;
+    max-width: 98px;
+    padding: 14px 10px;
+    border-radius: 28px;
+  }
+  html[dir="ltr"] .nav,
+  html[dir="ltr"] [data-ui="ios26"] .nav,
+  html[dir="ltr"] [data-ui="android17"] .nav {
+    left: 22px;
+    right: auto;
+  }
+  .nbtn {
+    padding: 12px 6px;
+    border-radius: 18px;
+    font-size: 12.5px;
+    gap: 5px;
+  }
+  .nbtn svg {
+    width: 24px;
+    height: 24px;
+  }
+  [data-ui="android17"] .nbtn svg {
+    width: 54px;
+    height: 32px;
+    padding: 4px 15px;
+  }
+
+  /* Spacious Desktop Calendar Cells */
+  #view-cal.active {
+    grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.92fr);
+    gap: 18px;
+  }
+  #calCard .day {
+    min-height: 68px;
+    border-radius: 16px;
+  }
+  #calCard .jn {
+    font-size: 20px;
+  }
+  #calCard .gn {
+    font-size: 12px;
+  }
+  .sheet {
+    max-width: 600px;
+    padding: 22px;
+  }
+  #layoutEditBanner {
+    max-width: 520px;
+    padding: 12px 16px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .app {
+    max-width: 1260px;
+  }
+  #calCard .day {
+    min-height: 74px;
+  }
+  #calCard .jn {
+    font-size: 21px;
+  }
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2307,7 +2705,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v67.3";
+  const VER = "v67.5";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3151,21 +3549,112 @@ function setCalMode(m){
   if (typeof animateCalSurface === "function") animateCalSurface("cal-anim-zoom");
 }
 
-function switchTab(t){
+const TAB_ORDER = ["cal", "mkt", "fal", "notes"];
+let activeTabId = "cal";
+let lastMktTabFetchMs = 0;
+
+function switchTab(t, swipeDir = 0){
+  if (!TAB_ORDER.includes(t)) return;
   const targetView = document.getElementById("view-"+t);
   if (targetView && targetView.classList.contains("active")) return;
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  document.querySelectorAll(".nbtn").forEach(b=>b.classList.remove("act"));
+
+  const prevIdx = TAB_ORDER.indexOf(activeTabId);
+  const nextIdx = TAB_ORDER.indexOf(t);
+  const isRtl = document.documentElement.dir !== "ltr";
+  let dirClass = "";
+  if (swipeDir !== 0) {
+    dirClass = swipeDir > 0 ? "tab-dir-left" : "tab-dir-right";
+  } else if (prevIdx !== -1 && nextIdx !== -1 && prevIdx !== nextIdx) {
+    const movingForward = nextIdx > prevIdx;
+    dirClass = isRtl
+      ? (movingForward ? "tab-dir-left" : "tab-dir-right")
+      : (movingForward ? "tab-dir-right" : "tab-dir-left");
+  }
+
+  activeTabId = t;
+  document.querySelectorAll(".view").forEach(v => {
+    v.classList.remove("active", "tab-dir-left", "tab-dir-right");
+  });
+  document.querySelectorAll(".nbtn").forEach(b => b.classList.remove("act"));
+
   if (targetView) {
-    void targetView.offsetWidth;
+    if (dirClass) targetView.classList.add(dirClass);
     targetView.classList.add("active");
   }
   const navBtn = document.getElementById("nav-"+t);
   if (navBtn) navBtn.classList.add("act");
-  if(t==="notes") renderAllNotes();
-  if(t==="mkt") fetchMarket(true);
-  if(t==="fal") { renderFal(); fetchAiDailyFal(false); }
+
+  // Defer heavier DOM/network work to the next animation frame so tab transition is 100% instant
+  requestAnimationFrame(() => {
+    if (t === "notes") {
+      try { renderAllNotes(); } catch (e) {}
+    } else if (t === "mkt") {
+      try {
+        const cachedMkt = JSON.parse(localStorage.getItem(PWA_MKT_CACHE_KEY) || "null");
+        if (cachedMkt && !lastMarketPayload) renderMarket(cachedMkt, true);
+      } catch (e) {}
+      if (Date.now() - lastMktTabFetchMs > 25000) {
+        lastMktTabFetchMs = Date.now();
+        setTimeout(() => { try { fetchMarket(false); } catch (e) {} }, 60);
+      }
+    } else if (t === "fal") {
+      try { renderFal(true); } catch (e) {}
+      setTimeout(() => { try { if (typeof fetchAiDailyFal === "function") fetchAiDailyFal(false); } catch (e) {} }, 120);
+    }
+  });
 }
+
+// Global horizontal swipe gesture to switch between the 4 main tabs smoothly
+(function initGlobalTabSwipe(){
+  let sx = 0, sy = 0, st = 0, tracking = false;
+  const isBlockedTarget = (el) => {
+    if (!el || !el.closest) return false;
+    if (document.querySelector(".modal.open") || document.getElementById("smartSelectPicker")?.classList.contains("open")) return true;
+    if (document.getElementById("calCard")?.classList.contains("fullscreen")) return true;
+    if (el.closest("#calScrollArea, .notes-filters, input, textarea, select, [contenteditable]")) return true;
+    return false;
+  };
+
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1 || isBlockedTarget(e.target)) {
+      tracking = false;
+      return;
+    }
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    st = Date.now();
+    tracking = true;
+  }, { passive: true });
+
+  document.addEventListener("touchend", (e) => {
+    if (!tracking || !e.changedTouches || !e.changedTouches.length) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    const dt = Date.now() - st;
+    // Fast, intentional horizontal swipe (prevents accidental triggers while scrolling vertically)
+    if (dt < 650 && Math.abs(dx) > 58 && Math.abs(dx) > Math.abs(dy) * 1.45) {
+      const curIdx = TAB_ORDER.indexOf(activeTabId);
+      if (curIdx === -1) return;
+      const isRtl = document.documentElement.dir !== "ltr";
+      // In RTL: swipe left (dx < 0) goes to next tab; swipe right (dx > 0) goes to previous tab
+      const step = isRtl ? (dx < 0 ? 1 : -1) : (dx < 0 ? 1 : -1);
+      // Wait: in RTL bottom nav, cal is on the right (index 0), notes is on the left (index 3).
+      // Swiping finger right -> left (dx < 0) pulls the left neighbor (next tab, +1) into view.
+      // Swiping finger left -> right (dx > 0) pulls the right neighbor (prev tab, -1) into view.
+      // In LTR bottom nav, cal is on the left (index 0), notes is on the right (index 3).
+      // Swiping finger right -> left (dx < 0) pulls the right neighbor (next tab, +1) into view.
+      // Wait: in RTL, visual order of grid is Right-to-Left: [notes] [fal] [mkt] [cal]
+      // So to go from cal (right) to mkt (to its left), user drags finger LEFT->RIGHT (dx > 0) or RIGHT->LEFT (dx < 0)?
+      // Natural page-turning: if mkt is to the LEFT of cal, dragging finger from LEFT to RIGHT (dx > 0) pulls the left page in!
+      const delta = isRtl ? (dx > 0 ? 1 : -1) : (dx < 0 ? 1 : -1);
+      const nextIdx = curIdx + delta;
+      if (nextIdx >= 0 && nextIdx < TAB_ORDER.length) {
+        switchTab(TAB_ORDER[nextIdx], dx > 0 ? -1 : 1);
+      }
+    }
+  }, { passive: true });
+})();
 
 
 let currentWeatherCode=null;
