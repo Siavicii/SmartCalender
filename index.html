@@ -908,6 +908,314 @@ html[data-os="ios"][data-standalone="true"] body {
   }
 }
 
+
+/* =========================================================================
+   UNIVERSAL THEMED SELECT PICKER & SLIDER UI (Synced to all data-ui Themes)
+   ========================================================================= */
+select {
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+select:active {
+  transform: scale(0.985);
+}
+
+/* Themed Range Sliders (for any range inputs) */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--sub);
+  border: 1px solid var(--brd);
+  outline: none;
+  accent-color: var(--pri);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--pri);
+  border: 2.5px solid var(--card);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.18);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--pri);
+  border: 2.5px solid var(--card);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+}
+
+/* Universal Themed Picker Backdrop & Sheet */
+#smartSelectPicker {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: rgba(8, 12, 24, 0.48);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.24s ease;
+}
+#smartSelectPicker.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+#smartSelectPicker .sp-sheet {
+  width: 100%;
+  max-width: 440px;
+  max-height: min(76dvh, 560px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--card);
+  color: var(--txt);
+  border: 1px solid var(--brd);
+  border-radius: var(--rad, 24px);
+  box-shadow: var(--shadow, 0 20px 50px rgba(0,0,0,0.28));
+  padding: 14px 16px 16px;
+  transform: translateY(28px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+#smartSelectPicker.open .sp-sheet {
+  transform: translateY(0) scale(1);
+}
+#smartSelectPicker .sp-handle {
+  width: 38px;
+  height: 4.5px;
+  border-radius: 99px;
+  background: var(--sec);
+  opacity: 0.32;
+  margin: 0 auto 2px;
+  flex-shrink: 0;
+}
+#smartSelectPicker .sp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--brd);
+  flex-shrink: 0;
+}
+#smartSelectPicker .sp-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#smartSelectPicker .sp-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--brd);
+  background: var(--sub);
+  color: var(--txt);
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#smartSelectPicker .sp-search-wrap {
+  display: none;
+  flex-shrink: 0;
+}
+#smartSelectPicker .sp-search-wrap.show {
+  display: block;
+}
+#smartSelectPicker .sp-search {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: calc(var(--rad, 20px) * 0.55);
+  border: 1px solid var(--brd);
+  background: var(--sub);
+  color: var(--txt);
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+}
+#smartSelectPicker .sp-search:focus {
+  border-color: var(--pri);
+}
+#smartSelectPicker .sp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px 1px 4px;
+  -webkit-overflow-scrolling: touch;
+}
+#smartSelectPicker .sp-opt {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: start;
+  padding: 11px 14px;
+  border-radius: calc(var(--rad, 22px) * 0.62);
+  border: 1px solid transparent;
+  background: var(--sub);
+  color: var(--txt);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.14s ease, color 0.16s ease;
+}
+#smartSelectPicker .sp-opt:active {
+  transform: scale(0.98);
+}
+#smartSelectPicker .sp-opt.selected {
+  background: var(--pri-bg, rgba(27, 110, 243, 0.14));
+  border-color: var(--pri);
+  color: var(--pri);
+  font-weight: 800;
+}
+#smartSelectPicker .sp-opt-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--sec);
+  opacity: 0.55;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+#smartSelectPicker .sp-opt.selected .sp-opt-radio {
+  border-color: var(--pri);
+  background: var(--pri);
+  opacity: 1;
+}
+#smartSelectPicker .sp-opt.selected .sp-opt-radio::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--onpri, #FFFFFF);
+}
+
+/* ---- Per-Theme Exact Visual Synchronization ---- */
+/* iOS 26 Liquid Glass */
+[data-ui="ios26"] #smartSelectPicker .sp-sheet {
+  border-radius: 34px;
+  backdrop-filter: blur(28px) saturate(185%);
+  -webkit-backdrop-filter: blur(28px) saturate(185%);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2), inset 0 1.5px 0 rgba(255, 255, 255, 0.85);
+}
+[data-theme="dark"][data-ui="ios26"] #smartSelectPicker .sp-sheet {
+  background: rgba(22, 28, 46, 0.82);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+[data-ui="ios26"] #smartSelectPicker .sp-opt {
+  border-radius: 20px;
+}
+
+/* Android 17 Expressive (Material 3) */
+[data-ui="android17"] #smartSelectPicker .sp-sheet {
+  border-radius: 32px 32px 24px 24px;
+}
+[data-ui="android17"] #smartSelectPicker .sp-opt {
+  border-radius: 999px;
+  padding: 12px 16px;
+}
+
+/* Glass (Aurora) */
+[data-ui="glass"] #smartSelectPicker .sp-sheet {
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border-radius: 28px;
+}
+
+/* Cyber / Neon Galaxy */
+[data-ui="cyber"] #smartSelectPicker .sp-sheet {
+  background: rgba(15, 11, 34, 0.94);
+  border: 1px solid rgba(139, 92, 246, 0.52);
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.34);
+  border-radius: 18px;
+}
+[data-ui="cyber"] #smartSelectPicker .sp-opt {
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.18);
+}
+[data-ui="cyber"] #smartSelectPicker .sp-opt.selected {
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.32);
+}
+
+/* Swiss Minimal */
+[data-ui="minimal"] #smartSelectPicker .sp-sheet {
+  border-radius: 10px;
+  box-shadow: none;
+  border: 1.5px solid var(--brd);
+}
+[data-ui="minimal"] #smartSelectPicker .sp-opt {
+  border-radius: 8px;
+}
+
+/* Bento */
+[data-ui="bento"] #smartSelectPicker .sp-sheet {
+  border-radius: 30px;
+}
+[data-ui="bento"] #smartSelectPicker .sp-opt {
+  border-radius: 22px;
+}
+
+/* Neumorph */
+[data-ui="neumorph"] #smartSelectPicker .sp-opt {
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.08), -3px -3px 8px rgba(255,255,255,0.65);
+}
+[data-theme="dark"][data-ui="neumorph"] #smartSelectPicker .sp-opt {
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.45), -3px -3px 8px rgba(255,255,255,0.04);
+}
+[data-ui="neumorph"] #smartSelectPicker .sp-opt.selected {
+  box-shadow: inset 3px 3px 7px rgba(0,0,0,0.12), inset -3px -3px 7px rgba(255,255,255,0.45);
+}
+
+/* Tablet / Desktop Centered Floating Picker */
+@media (min-width: 768px) {
+  #smartSelectPicker {
+    align-items: center;
+    padding: 24px;
+  }
+  #smartSelectPicker .sp-sheet {
+    max-width: 480px;
+    border-radius: var(--rad, 26px);
+  }
+  #smartSelectPicker .sp-handle {
+    display: none;
+  }
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1209,6 +1517,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
           <b style="font-size:15px" id="falMainTitle">🔮 طالع‌بینی و فال روزانه</b>
           <div style="font-size:11px;color:var(--sec);margin-top:2px" id="falDateSub">بر اساس تاریخ تولد و انرژی امروز</div>
         </div>
+        <button type="button" class="ibtn" id="aiFalBtn" onclick="fetchAiDailyFal(true)" style="font-size:11.5px;color:var(--pri);border-color:var(--pri)">✨ طالع AI جدید</button>
       </div>
 
       <!-- Birthday Surprise Box (Appears automatically on user's birthday) -->
@@ -1555,7 +1864,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v64.4";
+  const VER = "v64.7";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2385,7 +2694,7 @@ function switchTab(t){
   document.getElementById("nav-"+t).classList.add("act");
   if(t==="notes") renderAllNotes();
   if(t==="mkt") fetchMarket(true);
-  if(t==="fal") { renderFal(); refreshFalSeed(); }
+  if(t==="fal") { renderFal(); fetchAiDailyFal(false); }
 }
 
 
@@ -2418,6 +2727,7 @@ function applyAtmosphereSync(){
   const c=COLORS[targetColor]||COLORS[0];
   document.documentElement.style.setProperty("--pri",isDark?c.d:c.l);
   document.documentElement.style.setProperty("--pri-bg",(isDark?c.d:c.l)+"26");
+  if(window.AndroidBridge && window.AndroidBridge.syncWidgetTheme){ try{ window.AndroidBridge.syncWidgetTheme(cfg.ui||"ios26", cfg.theme||"auto", isDark?c.d:c.l, cfg.calType||"jalali", cfg.lang||"fa"); }catch(e){} }
   if(stEl)stEl.textContent=`${tr("فعال: فصل","چالاک: وەرزی","Active:")} ${season.name}${weatherLabel}`;
 }
 
@@ -3225,6 +3535,7 @@ function applyLanguageUI() {
   setTxt("#copyJalaliDateBtn", "📋 شمسی", "📋 هەتاوی", "📋 Jalali");
   setTxt("#copyGregDateBtn", "📋 میلادی", "📋 زایینی", "📋 Gregorian");
   if (typeof updateGcalSettingsUI === "function") updateGcalSettingsUI();
+  if (typeof updateAiFalBtnLabel === "function") updateAiFalBtnLabel(false);
 
   // Notes hub quick templates & labels
   const tplChips = document.querySelectorAll("#view-notes .fchip");
@@ -5377,6 +5688,7 @@ function pushModalState() {
 }
 
 function closeModals(fromPopState = false){
+  if (document.getElementById('smartSelectPicker')?.classList.contains('open')) { if (typeof closeSmartSelectPicker==='function') closeSmartSelectPicker(); return; }
   const hadOpen = !!document.querySelector(".modal.open");
   document.querySelectorAll(".modal").forEach(m=>m.classList.remove("open"));
   if (hadOpen && !fromPopState && history.state && history.state.modal) {
@@ -5697,6 +6009,7 @@ function saveBirthAndCalcFal(){
   falExtraOffset=0;
   render();
   renderFal();
+  fetchAiDailyFal(true);
   checkBirthdaySurprise(true);
 }
 
@@ -5767,7 +6080,7 @@ function renderFal(skipPostcard = false){
   const luckyNum = customAiFalData?.lucky_num || (((seed + d + m) % 9) + 1);
   const luckyCol = customAiFalData?.lucky_color || LUCKY_COLORS[(seed + m + falExtraOffset) % LUCKY_COLORS.length];
   const energyPct = 74 + ((seed*11) % 25);
-  const aiBadge = customAiFalData ? `<span class="cat-pill" style="background:var(--pri);color:var(--onpri);border:none">🤖 تولیدشده با هوش مصنوعی</span>` : `<span class="cat-pill">${tr("✨ طالع روزانه","✨ بەختی ڕۆژانە","✨ Daily Horoscope")}</span>`;
+  const aiBadge = customAiFalData ? `<span class="cat-pill" style="background:var(--pri);color:var(--onpri);border:none">${tr("🤖 تولیدشده با هوش مصنوعی","🤖 زیرەکی دەستکرد (AI)","🤖 AI Generated")}</span>` : `<span class="cat-pill">${tr("✨ طالع روزانه","✨ بەختی ڕۆژانە","✨ Daily Horoscope")}</span>`;
 
   const ZODIAC_EN_SIGN=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
   const ZODIAC_KU_SIGN=["کاوڕ (حەمەڵ)","گا (سەور)","دووانە (جەوزا)","قرژاڵ (سەرەتان)","شێر (ئەسەد)","فریشتە (سونبولە)","تەرازوو (میزان)","دووپشک (عەقرەب)","کەوان (قەوس)","گیسک (جەدی)","سەتڵ (دەلوو)","نەهەنگ (حووت)"];
@@ -6534,6 +6847,304 @@ setTimeout(() => {
   });
 })();
 
+
+// =========================================================================
+// UNIVERSAL THEMED SELECT PICKER CONTROLLER (Replaces Native OS Dropdowns)
+// =========================================================================
+(function initSmartSelectPicker() {
+  const overlay = document.getElementById("smartSelectPicker");
+  const titleEl = document.getElementById("spTitle");
+  const closeBtn = document.getElementById("spCloseBtn");
+  const searchWrap = document.getElementById("spSearchWrap");
+  const searchInput = document.getElementById("spSearchInput");
+  const listEl = document.getElementById("spList");
+  if (!overlay || !listEl) return;
+
+  let activeSelect = null;
+  let lastOpenTs = 0;
+
+  const FONT_PREVIEW_MAP = {
+    vazirmatn: "'Vazirmatn','Inter',sans-serif",
+    estedad: "'Estedad','Plus Jakarta Sans',sans-serif",
+    sahel: "'Sahel','Rubik',sans-serif",
+    noto: "'Noto Sans Arabic','Inter',sans-serif",
+    naskh: "'Noto Naskh Arabic','Inter',serif",
+    dastkhat: "'Dastkhat','Vazirmatn',sans-serif"
+  };
+
+  function getPickerTitle(selEl) {
+    const id = selEl.id || "";
+    const map = {
+      setLang: tr("🌍 زبان برنامه", "🌍 زمانی بەرنامە", "🌍 App Language"),
+      setTheme: tr("🌙 حالت پوسته", "🌙 دۆخی ڕووناک/تاریک", "🌙 Theme Mode"),
+      setFont: tr("🔤 فونت برنامه", "🔤 فۆنتی بەرنامە", "🔤 App Font"),
+      setCalType: tr("📅 نوع تقویم اصلی", "📅 جۆری ڕۆژژمێری سەرەکی", "📅 Primary Calendar"),
+      setFirstDay: tr("📆 روز شروع هفته", "📆 ڕۆژی دەستپێکی هەفتە", "📆 First Day of Week"),
+      setCity: tr("📍 انتخاب شهر", "📍 هەڵبژاردنی شار", "📍 Select City"),
+      countryEvSelect: tr("🏳️ مناسبت‌های کشور", "🏳️ بۆنەکانی وڵات", "🏳️ Country Holidays"),
+      convMode: tr("🔄 نوع تبدیل تاریخ", "🔄 جۆری گۆڕینی بەروار", "🔄 Conversion Mode"),
+      nCat: tr("🏷️ دسته‌بندی یادداشت", "🏷️ پۆلی تێبینی", "🏷️ Note Category"),
+      nPrio: tr("⚡ اولویت یادداشت", "⚡ لەپێشینەی تێبینی", "⚡ Priority"),
+      bDay: tr("🎂 روز تولد", "🎂 ڕۆژی لەدایکبوون", "🎂 Birth Day"),
+      bMon: tr("🎂 ماه تولد", "🎂 مانگی لەدایکبوون", "🎂 Birth Month"),
+      bYear: tr("🎂 سال تولد", "🎂 ساڵی لەدایکبوون", "🎂 Birth Year"),
+      nDay: tr("📅 روز یادداشت", "📅 ڕۆژی تێبینی", "📅 Day"),
+      nMon: tr("📅 ماه یادداشت", "📅 مانگی تێبینی", "📅 Month"),
+      nYear: tr("📅 سال یادداشت", "📅 ساڵی تێبینی", "📅 Year"),
+      cDay: tr("📅 روز", "📅 ڕۆژ", "📅 Day"),
+      cMon: tr("📅 ماه", "📅 مانگ", "📅 Month"),
+      cYear: tr("📅 سال", "📅 ساڵ", "📅 Year"),
+      d1Day: tr("📅 روز اول", "📅 ڕۆژی یەکەم", "📅 Start Day"),
+      d1Mon: tr("📅 ماه اول", "📅 مانگی یەکەم", "📅 Start Month"),
+      d1Year: tr("📅 سال اول", "📅 ساڵی یەکەم", "📅 Start Year"),
+      d2Day: tr("📅 روز دوم", "📅 ڕۆژی دووەم", "📅 End Day"),
+      d2Mon: tr("📅 ماه دوم", "📅 مانگی دووەم", "📅 End Month"),
+      d2Year: tr("📅 سال دوم", "📅 ساڵی دووەم", "📅 End Year")
+    };
+    if (map[id]) return map[id];
+    const prev = selEl.previousElementSibling;
+    if (prev && prev.textContent && prev.textContent.trim().length < 48) {
+      return prev.textContent.trim().replace(/:$/, "");
+    }
+    return tr("انتخاب گزینه", "هەڵبژاردنی بژاردە", "Select Option");
+  }
+
+  function renderOptions(filterTxt = "") {
+    if (!activeSelect) return;
+    const q = filterTxt.trim().toLowerCase();
+    const isFontSel = activeSelect.id === "setFont";
+    const curVal = activeSelect.value;
+    listEl.innerHTML = "";
+
+    const opts = Array.from(activeSelect.options || []);
+    let matchedCount = 0;
+    opts.forEach((opt, idx) => {
+      const label = (opt.textContent || "").trim();
+      if (q && !label.toLowerCase().includes(q)) return;
+      matchedCount++;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      const isSel = opt.value === curVal;
+      btn.className = "sp-opt" + (isSel ? " selected" : "");
+      if (isFontSel && FONT_PREVIEW_MAP[opt.value]) {
+        btn.style.fontFamily = FONT_PREVIEW_MAP[opt.value];
+      }
+      const txtSpan = document.createElement("span");
+      txtSpan.textContent = label;
+      const radioSpan = document.createElement("span");
+      radioSpan.className = "sp-opt-radio";
+      btn.appendChild(txtSpan);
+      btn.appendChild(radioSpan);
+
+      btn.addEventListener("click", () => {
+        if (!activeSelect) return;
+        const changed = activeSelect.value !== opt.value;
+        activeSelect.value = opt.value;
+        activeSelect.selectedIndex = idx;
+        closeSmartSelectPicker();
+        if (changed) {
+          activeSelect.dispatchEvent(new Event("input", { bubbles: true }));
+          activeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      });
+      listEl.appendChild(btn);
+    });
+
+    if (!matchedCount) {
+      const empty = document.createElement("div");
+      empty.style.cssText = "text-align:center;padding:18px 8px;font-size:12.5px;color:var(--sec)";
+      empty.textContent = tr("موردی یافت نشد", "هیچ ئەنجامێک نەدۆزرایەوە", "No matching options");
+      listEl.appendChild(empty);
+    }
+  }
+
+  window.openSmartSelectPicker = function(selEl) {
+    if (!selEl || selEl.disabled) return;
+    const now = Date.now();
+    if (now - lastOpenTs < 180) return;
+    lastOpenTs = now;
+
+    activeSelect = selEl;
+    try { selEl.blur(); } catch (e) {}
+    titleEl.textContent = getPickerTitle(selEl);
+
+    const optCount = (selEl.options && selEl.options.length) || 0;
+    if (optCount >= 14) {
+      searchWrap.classList.add("show");
+      searchInput.value = "";
+      searchInput.placeholder = tr("🔍 جستجو در گزینه‌ها...", "🔍 گەڕان لە بژاردەکان...", "🔍 Search options...");
+    } else {
+      searchWrap.classList.remove("show");
+      searchInput.value = "";
+    }
+
+    renderOptions("");
+    overlay.setAttribute("aria-hidden", "false");
+    overlay.classList.add("open");
+
+    requestAnimationFrame(() => {
+      const selectedBtn = listEl.querySelector(".sp-opt.selected");
+      if (selectedBtn && selectedBtn.scrollIntoView) {
+        selectedBtn.scrollIntoView({ block: "center", behavior: "instant" });
+      }
+    });
+  };
+
+  window.closeSmartSelectPicker = function() {
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    activeSelect = null;
+  };
+
+  overlay.addEventListener("click", () => closeSmartSelectPicker());
+  closeBtn.addEventListener("click", () => closeSmartSelectPicker());
+  searchInput.addEventListener("input", () => renderOptions(searchInput.value));
+
+  // Block native OS/WebView <select> popup reliably on mobile & desktop without breaking touch scroll
+  document.addEventListener("mousedown", (e) => {
+    const selEl = e.target && e.target.closest ? e.target.closest("select") : null;
+    if (!selEl) return;
+    e.preventDefault();
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const selEl = e.target && e.target.closest ? e.target.closest("select") : null;
+    if (!selEl) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openSmartSelectPicker(selEl);
+  }, true);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      closeSmartSelectPicker();
+      return;
+    }
+    const selEl = e.target && e.target.tagName === "SELECT" ? e.target : null;
+    if (selEl && (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      e.preventDefault();
+      openSmartSelectPicker(selEl);
+    }
+  }, true);
+})();
+
+
+// =========================================================================
+// TRILINGUAL AI HOROSCOPE & FORTUNE ENGINE (FA / KU / EN - Non-Repetitive)
+// =========================================================================
+function getAiFalCacheKey() {
+  const lang = cfg.lang || "fa";
+  const { y, m, d } = birthCfg || { y: 1370, m: 1, d: 1 };
+  return `smartcal_ai_fal_v1_${lang}_${tod.jy}-${tod.jm}-${tod.jd}_${y}-${m}-${d}`;
+}
+
+function updateAiFalBtnLabel(loading = false) {
+  const btn = document.getElementById("aiFalBtn");
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    btn.textContent = tr("⏳ در حال نگارش...", "⏳ چاوەڕوان بە...", "⏳ Generating...");
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.textContent = tr("✨ طالع AI جدید", "✨ بەختی AI نوێ", "✨ New AI Reading");
+  }
+}
+
+async function fetchAiDailyFal(forceNew = false) {
+  if (aiFalLoading) return;
+  const cacheKey = getAiFalCacheKey();
+
+  if (!forceNew) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+      if (cached && cached.general && cached.work && cached.emotion) {
+        customAiFalData = cached;
+        renderFal(true);
+        updateAiFalBtnLabel(false);
+        return;
+      }
+    } catch (e) {}
+  }
+
+  aiFalLoading = true;
+  updateAiFalBtnLabel(true);
+
+  try {
+    const lang = cfg.lang || "fa";
+    const { y, m, d } = birthCfg || { y: 1370, m: 1, d: 1 };
+    const zSignEn = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"][(m - 1) % 12];
+    const nonce = Math.floor(Math.random() * 900000) + 100000;
+    const langName = lang === "ku" ? "Central Kurdish (Sorani, Arabic script)" : (lang === "en" ? "English" : "Persian (Farsi)");
+
+    const prompt = `You are a thoughtful, poetic, modern daily horoscope writer. Write a fresh, meaningful, non-repetitive daily horoscope strictly in ${langName} for someone born on Jalali ${y}/${m}/${d} (Zodiac: ${zSignEn}) for today (${tod.jy}/${tod.jm}/${tod.jd}, seed ${nonce}). Return ONLY valid JSON with no markdown or extra text: {"general":"2 insightful sentences","work":"2 practical sentences on work and finances","emotion":"2 warm sentences on relationships and mood","lucky_num":7,"lucky_color":"one color name in ${langName}"}`;
+
+    const apiUrl = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${nonce}&json=true`;
+
+    let rawTxt = "";
+    if (window.AndroidBridge && typeof window.AndroidBridge.fetchUrlNative === "function") {
+      try {
+        rawTxt = window.AndroidBridge.fetchUrlNative(apiUrl) || "";
+      } catch (e) {}
+    }
+    if (!rawTxt || rawTxt.length < 20) {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 11000);
+      try {
+        const resp = await fetch(apiUrl, { cache: "no-store", signal: ctrl.signal });
+        clearTimeout(tid);
+        if (resp && resp.ok) rawTxt = await resp.text();
+      } catch (e) {
+        clearTimeout(tid);
+      }
+    }
+
+    if (rawTxt) {
+      const cleaned = rawTxt.replace(/```json|```/gi, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed && parsed.general && parsed.work && parsed.emotion) {
+          customAiFalData = {
+            general: String(parsed.general).trim(),
+            work: String(parsed.work).trim(),
+            emotion: String(parsed.emotion).trim(),
+            lucky_num: Number(parsed.lucky_num) || (((nonce % 9) + 1)),
+            lucky_color: String(parsed.lucky_color || "").trim()
+          };
+          localStorage.setItem(cacheKey, JSON.stringify(customAiFalData));
+          if (forceNew) dailyHafezRollCount += 1;
+          renderFal(true);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("AI Fal fallback:", e);
+  } finally {
+    aiFalLoading = false;
+    updateAiFalBtnLabel(false);
+  }
+}
+
 </script>
+
+<!-- Universal Themed Select / Dropdown Picker Sheet -->
+<div id="smartSelectPicker" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="sp-sheet" onclick="event.stopPropagation()">
+    <div class="sp-handle"></div>
+    <div class="sp-head">
+      <div class="sp-title" id="spTitle">انتخاب گزینه</div>
+      <button type="button" class="sp-close" id="spCloseBtn" aria-label="بستن">✕</button>
+    </div>
+    <div class="sp-search-wrap" id="spSearchWrap">
+      <input type="search" class="sp-search" id="spSearchInput" placeholder="جستجو..." autocomplete="off">
+    </div>
+    <div class="sp-list" id="spList"></div>
+  </div>
+</div>
+
 </body>
 </html>
