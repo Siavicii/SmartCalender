@@ -200,8 +200,6 @@ body{background:var(--bg);background-attachment:fixed;color:var(--txt);padding:c
   color:#FFFFFF;border-radius:18px;padding:14px;margin-bottom:12px;
   box-shadow:0 8px 24px rgba(236,72,153,0.32);animation:pulseGlow 2.8s infinite ease-in-out;
 }
-.postcard-wrap{margin-top:10px;display:flex;flex-direction:column;gap:8px;align-items:center}
-.postcard-canvas{width:100%;max-width:380px;border-radius:18px;box-shadow:0 10px 26px rgba(0,0,0,0.18);border:1px solid var(--brd);display:block}
 
 
 /* ====== UPGRADED NOTES HUB STYLES ====== */
@@ -576,8 +574,6 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 
 .copy-date-btn{background:var(--sub);border:1px solid var(--brd);color:var(--pri);height:26px;padding:0 8px;border-radius:8px;font-size:10.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .copy-date-btn:active{transform:scale(.95)}
-.agenda-strip{margin-top:10px;padding-top:10px;border-top:1px dashed var(--brd);display:flex;flex-direction:column;gap:6px}
-.agenda-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--sub);border:1px solid var(--brd);border-radius:11px;padding:7px 10px;font-size:11.5px;cursor:pointer}
 .nav-badge{position:absolute;top:2px;left:18%;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--hol);color:#fff;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
 .nbtn{position:relative}
 
@@ -1991,13 +1987,22 @@ body.app-booting .app {
 /* =========================================================================
    ANDROID WEBVIEW FIXED BOTTOM NAV LOCK & HORIZONTAL OVERFLOW GUARD
    ========================================================================= */
-html, body {
+html {
+  height: auto !important;
+  min-height: 100%;
+  overflow-y: auto !important;
   overflow-x: clip;
-  overflow-x: hidden;
-  max-width: 100vw;
+}
+body {
+  height: auto !important;
+  min-height: 100dvh;
+  overflow-y: visible !important;
+  overflow-x: clip;
+  touch-action: pan-y;
 }
 .app {
   overflow-x: clip;
+  max-width: 100%;
 }
 @media (max-width: 1099px) {
   .nav,
@@ -2728,7 +2733,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v67.7";
+  const VER = "v68.4";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2749,7 +2754,6 @@ const JM=["فروردین","اردیبهشت","خرداد","تیر","مرداد"
 const KM=["خاکەلێوە","گوڵان","جۆزەردان","پووشپەڕ","گەلاوێژ","خەرمانان","ڕەزبەر","گەڵاڕێزان","سەرماوەز","بەفرانبار","ڕێبەندان","ڕەشەمە"];
 const GM=["ژانویه (۱)","فوریه (۲)","مارس (۳)","آوریل (۴)","می (۵)","ژوئن (۶)","ژوئیه (۷)","اوت (۸)","سپتامبر (۹)","اکتبر (۱۰)","نوامبر (۱۱)","دسامبر (۱۲)"];
 const GM_EN=["January","February","March","April","May","June","July","August","September","October","November","December"];
-const HM=["محرم","صفر","ربیع‌الاول","ربیع‌الثانی","جمادی‌الاول","جمادی‌الثانی","رجب","شعبان","رمضان","شوال","ذیقعده","ذیحجه"];
 const WD=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه","شنبه"];
 const WD_SAT_FA=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه"];
 const WD_SAT_KU=["شەممە","یەکشەممە","دووشەممە","سێشەممە","چوارشەممە","پێنجشەممە","هەینی"];
@@ -2760,7 +2764,6 @@ const WD_SHORT_KU=["ش","ی","د","س","چ","پ","هـ"];
 const WD_SHORT_EN=["Sat","Sun","Mon","Tue","Wed","Thu","Fri"];
 const JM_EN=["Farvardin","Ordibehesht","Khordad","Tir","Mordad","Shahrivar","Mehr","Aban","Azar","Dey","Bahman","Esfand"];
 const KM_EN=["Xakelêwe","Gullan","Cozerdan","Pûşper","Gelawêj","Xermanan","Rezber","Gelarêzan","Sermawez","Befranbar","Rêbendan","Reşeme"];
-const HM_EN=["Muharram","Safar","Rabi' I","Rabi' II","Jumada I","Jumada II","Rajab","Sha'ban","Ramadan","Shawwal","Dhu al-Qi'dah","Dhu al-Hijjah"];
 const CITY_EN_MAP={"تهران":"Tehran","سنندج (سنە)":"Sanandaj","مهاباد":"Mahabad","کرمانشاه (کرماشان)":"Kermanshah","ایلام":"Ilam","سقز":"Saqqez","بوکان":"Bukan","مریوان":"Marivan","بانه":"Baneh","ارومیه (ورمێ)":"Urmia","مشهد":"Mashhad","اصفهان":"Isfahan","شیراز":"Shiraz","تبریز":"Tabriz","کرج":"Karaj","اهواز":"Ahvaz","رشت":"Rasht","اربیل (هەولێر)":"Erbil","سلیمانیه (سلێمانی)":"Sulaymaniyah","مکان فعلی":"Current Location"};
 const trCity=c=>{
   const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
@@ -2769,7 +2772,6 @@ const trCity=c=>{
 };
 const getJM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?JM_EN:JM);
 const getKM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?KM_EN:KM);
-const getHM=()=>((typeof cfg!=="undefined"&&cfg?.lang==="en")?HM_EN:HM);
 const getWD_SAT=()=>{
   const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
   return l==="en"?WD_SAT_EN:(l==="ku"?WD_SAT_KU:WD_SAT_FA);
@@ -2795,24 +2797,7 @@ const EV_TR_MAP={
   "شب یلدا":{ku:"شەوی یەلدا (شەوی چلە)",en:"Yalda Night (Winter Solstice)"},
   "پیروزی انقلاب اسلامی (تعطیل رسمی)":{ku:"سەرکەوتنی شۆڕشی ئیسلامی (پشووی فەرمی)",en:"Islamic Revolution Victory (Official Holiday)"},
   "روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس":{ku:"ڕۆژی ئەندازیار (خاجە نەسیرەدینی تووسی)",en:"Engineers' Day (Nasir al-Din al-Tusi)"},
-  "روز ملی شدن صنعت نفت ایران (تعطیل رسمی)":{ku:"خۆماڵیکردنی پیشەسازیی نەوت (پشووی فەرمی)",en:"Oil Nationalization Day (Official Holiday)"},
-  "شهادت امام جعفر صادق (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام جەعفەری سادق (پشووی فەرمی)",en:"Martyrdom of Imam Ja'far al-Sadiq (Holiday)"},
-  "عید سعید قربان (تعطیل رسمی)":{ku:"جەژنی قوربان (پشووی فەرمی)",en:"Eid al-Adha (Official Holiday)"},
-  "عید سعید غدیر خم (تعطیل رسمی)":{ku:"جەژنی غەدیری خوم (پشووی فەرمی)",en:"Eid al-Ghadir (Official Holiday)"},
-  "تاسوعای حسینی (تعطیل رسمی)":{ku:"تاسووعای حوسێنی (پشووی فەرمی)",en:"Tasu'a (Official Holiday)"},
-  "عاشورای حسینی (تعطیل رسمی)":{ku:"عاشوورای حوسێنی (پشووی فەرمی)",en:"Ashura (Official Holiday)"},
-  "اربعین حسینی (تعطیل رسمی)":{ku:"ئەربەعینی حوسێنی (پشووی فەرمی)",en:"Arba'een (Official Holiday)"},
-  "رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)":{ku:"کۆچی دوایی پێغەمبەر (د.خ) و ئیمام حەسەن (پشووی فەرمی)",en:"Passing of Prophet Muhammad & Imam Hasan (Holiday)"},
-  "شهادت امام رضا (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام ڕەزا (پشووی فەرمی)",en:"Martyrdom of Imam Reza (Official Holiday)"},
-  "شهادت امام حسن عسکری (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام حەسەنی عەسکەری (پشووی فەرمی)",en:"Martyrdom of Imam Hasan al-Askari (Holiday)"},
-  "میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)":{ku:"لەدایکبوونی پێغەمبەر (د.خ) و ئیمام سادق (پشووی فەرمی)",en:"Birth of Prophet Muhammad & Imam Sadiq (Holiday)"},
-  "شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)":{ku:"شەهیدبوونی فاتیمەی زەهرا (پشووی فەرمی)",en:"Martyrdom of Fatimah al-Zahra (Official Holiday)"},
-  "ولادت امام علی (ع) و روز پدر (تعطیل رسمی)":{ku:"لەدایکبوونی ئیمام عەلی و ڕۆژی باوک (پشووی فەرمی)",en:"Birth of Imam Ali & Father's Day (Official Holiday)"},
-  "مبعث رسول اکرم (ص) (تعطیل رسمی)":{ku:"مەبعەسی پێغەمبەر (د.خ) (پشووی فەرمی)",en:"Mab'ath of Prophet Muhammad (Official Holiday)"},
-  "ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)":{ku:"لەدایکبوونی ئیمام مەهدی / نیوەی شەعبان (پشووی فەرمی)",en:"Mid-Sha'ban / Birth of Imam Mahdi (Holiday)"},
-  "شهادت امام علی (ع) (تعطیل رسمی)":{ku:"شەهیدبوونی ئیمام عەلی (پشووی فەرمی)",en:"Martyrdom of Imam Ali (Official Holiday)"},
-  "عید سعید فطر (تعطیل رسمی)":{ku:"جەژنی ڕەمەزان (پشووی فەرمی)",en:"Eid al-Fitr (Official Holiday)"},
-  "تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)":{ku:"پشووی جەژنی ڕەمەزان (پشووی فەرمی)",en:"Eid al-Fitr Holiday (Official Holiday)"}
+  "روز ملی شدن صنعت نفت ایران (تعطیل رسمی)":{ku:"خۆماڵیکردنی پیشەسازیی نەوت (پشووی فەرمی)",en:"Oil Nationalization Day (Official Holiday)"}
 };
 const trEvTitle=t=>{
   const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
@@ -2885,91 +2870,103 @@ function d2j(jdn){let gy=d2g(jdn).gy,jy=gy-621,r=jalCal(jy),k=jdn-g2d(gy,3,r.mar
 const toG=(y,m,d)=>d2g(j2d(y,m,d)),toJ=(y,m,d)=>d2j(g2d(y,m,d));
 const wDay=(y,m,d)=>{const g=toG(y,m,d);return(new Date(g.gy,g.gm-1,g.gd).getDay()+1)%7};
 
-// Hijri Qamari Approx (Kuwaiti Algorithm)
-
-// Accurate Hijri <-> JDN conversion (Tabular / Kuwaiti civil alignment)
-function h2jdn(hy, hm, hd) {
-  return Math.floor((11 * hy + 3) / 30) + 354 * hy + 30 * hm - Math.floor((hm - 1) / 2) + hd + 1948440 - 385;
-}
-function jdn2h(jdn) {
-  const g = d2g(jdn);
-  return g2h(g.gy, g.gm, g.gd);
-}
-function hMonthLen(hy, hm) {
-  const g1 = d2g(h2jdn(hy, hm, 30));
-  const hCheck = g2h(g1.gy, g1.gm, g1.gd);
-  return (hCheck.hm === hm && hCheck.hd === 30) ? 30 : 29;
-}
-function hFirstWeekday(hy, hm) {
-  const g = d2g(h2jdn(hy, hm, 1));
-  return (new Date(g.gy, g.gm - 1, g.gd).getDay() + 1) % 7;
-}
-
-function g2h(gy,gm,gd){
-  let m=gm,y=gy;if(m<3){y-=1;m+=12}
-  let a=Math.floor(y/100),b=2-a+Math.floor(a/4);
-  if(y<1583)b=0;if(y===1582){if(m>10)b=-10;if(m===10){b=0;if(gd>4)b=-10}}
-  let jd=Math.floor(365.35*(y+4716))+Math.floor(30.6001*(m+1))+gd+b-1524;
-  let iyear=10631./30.,epochastro=1948084,shift1=8.01/60.,z=jd-epochastro;
-  let cyc=Math.floor(z/10631.);z=z-10631*cyc;let j=Math.floor((z-shift1)/iyear);
-  let iy=30*cyc+j;z=z-Math.floor(j*iyear+shift1);let im=Math.floor((z+28.5001)/29.5);
-  if(im===13)im=12;let id=z-Math.floor(29.5001*im-29);
-  return{hy:iy,hm:im,hd:Math.max(1,Math.round(id))};
-}
-
 // Official Iranian Calendar Events & Holidays
 const BASE_EV={
-  "1-1":[["جشن نوروز (تعطیل رسمی)",1]],"1-2":[["عید نوروز (تعطیل رسمی)",1]],"1-3":[["عید نوروز (تعطیل رسمی)",1]],"1-4":[["عید نوروز (تعطیل رسمی)",1]],
-  "1-12":[["روز جمهوری اسلامی ایران (تعطیل رسمی)",1]],"1-13":[["جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)",1]],
-  "2-1":[["روز بزرگداشت سعدی",0]],"2-10":[["روز ملی خلیج فارس",0]],"2-12":[["روز معلم",0]],"2-25":[["روز بزرگداشت فردوسی",0]],"2-28":[["روز بزرگداشت حکیم عمر خیام",0]],
-  "3-14":[["رحلت حضرت امام خمینی (ره) (تعطیل رسمی)",1]],"3-15":[["قیام خونین ۱۵ خرداد (تعطیل رسمی)",1]],
-  "6-4":[["روز کارمند",0]],"6-27":[["روز شعر و ادب فارسی",0]],
-  "7-8":[["روز بزرگداشت مولوی",0]],"7-20":[["روز بزرگداشت حافظ",0]],
-  "8-13":[["روز دانش‌آموز",0]],"9-16":[["روز دانشجو",0]],"9-30":[["شب یلدا",0]],
+  // فروردین
+  "1-1":[["جشن نوروز و آغاز سال نو (تعطیل رسمی)",1]],
+  "1-2":[["عید نوروز (تعطیل رسمی)",1]],
+  "1-3":[["عید نوروز (تعطیل رسمی)",1]],
+  "1-4":[["عید نوروز (تعطیل رسمی)",1]],
+  "1-6":[["زادروز زرتشت پیامبر و روز امید",0]],
+  "1-12":[["روز جمهوری اسلامی ایران (تعطیل رسمی)",1]],
+  "1-13":[["جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)",1]],
+  "1-19":[["جشن فروردینگان",0]],
+  "1-25":[["روز بزرگداشت عطار نیشابوری",0]],
+  // اردیبهشت
+  "2-1":[["روز بزرگداشت سعدی",0]],
+  "2-3":[["جشن اردیبهشتگان و روز بزرگداشت شیخ بهایی",0]],
+  "2-10":[["روز ملی خلیج فارس",0]],
+  "2-12":[["روز معلم",0]],
+  "2-25":[["روز بزرگداشت فردوسی و پاسداشت زبان فارسی",0]],
+  "2-28":[["روز بزرگداشت حکیم عمر خیام",0]],
+  // خرداد
+  "3-1":[["روز بزرگداشت ملاصدرا",0]],
+  "3-3":[["سالروز آزادسازی خرمشهر",0]],
+  "3-6":[["جشن خردادگان",0]],
+  "3-14":[["رحلت حضرت امام خمینی (ره) (تعطیل رسمی)",1]],
+  "3-15":[["قیام ۱۵ خرداد (تعطیل رسمی)",1]],
+  "3-25":[["روز ملی گل و گیاه",0]],
+  // تیر
+  "4-1":[["آغاز فصل تابستان و روز اصناف",0]],
+  "4-10":[["روز صنعت و معدن",0]],
+  "4-13":[["جشن تیرگان",0]],
+  "4-14":[["روز قلم",0]],
+  // مرداد
+  "5-7":[["جشن امردادگان",0]],
+  "5-14":[["سالروز صدور فرمان مشروطیت",0]],
+  "5-17":[["روز خبرنگار",0]],
+  // شهریور
+  "6-1":[["روز بزرگداشت ابوعلی سینا و روز پزشک",0]],
+  "6-4":[["جشن شهریورگان و روز کارمند",0]],
+  "6-5":[["روز بزرگداشت محمدبن زکریای رازی و روز داروساز",0]],
+  "6-13":[["روز بزرگداشت ابوریحان بیرونی",0]],
+  "6-21":[["روز سینما",0]],
+  "6-27":[["روز شعر و ادب فارسی و بزرگداشت استاد شهریار",0]],
+  // مهر
+  "7-1":[["آغاز فصل پاییز",0]],
+  "7-7":[["روز آتش‌نشانی و ایمنی",0]],
+  "7-8":[["روز بزرگداشت مولوی",0]],
+  "7-16":[["جشن مهرگان",0]],
+  "7-20":[["روز بزرگداشت حافظ شیرازی",0]],
+  // آبان
+  "8-7":[["روز کوروش بزرگ",0]],
+  "8-10":[["جشن آبانگان",0]],
+  "8-13":[["روز دانش‌آموز",0]],
+  "8-24":[["روز کتاب و کتاب‌خوانی",0]],
+  // آذر
+  "9-9":[["جشن آذرگان",0]],
+  "9-16":[["روز دانشجو",0]],
+  "9-25":[["روز پژوهش",0]],
+  "9-30":[["شب یلدا (شب چله)",0]],
+  // دی
+  "10-1":[["آغاز فصل زمستان و جشن خرم‌روز",0]],
+  "10-5":[["روز ایمنی در برابر زلزله",0]],
+  "10-15":[["جشن دیگان",0]],
+  // بهمن
+  "11-2":[["جشن بهمنگان",0]],
+  "11-10":[["جشن سده",0]],
   "11-22":[["پیروزی انقلاب اسلامی (تعطیل رسمی)",1]],
-  "12-5":[["روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس",0]],"12-29":[["روز ملی شدن صنعت نفت ایران (تعطیل رسمی)",1]]
+  "11-29":[["جشن سپندارمذگان (روز عشق ایرانی)",0]],
+  // اسفند
+  "12-5":[["روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس",0]],
+  "12-15":[["روز درختکاری",0]],
+  "12-25":[["پایان سرایش شاهنامه",0]],
+  "12-29":[["روز ملی شدن صنعت نفت ایران (تعطیل رسمی)",1]]
 };
-const BASE_YEAR_EV={
-  "1405":{
-    "1-25":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],
-    "2-6":[["عید سعید قربان (تعطیل رسمی)",1]],
-    "2-14":[["عید سعید غدیر خم (تعطیل رسمی)",1]],
-    "3-4":[["تاسوعای حسینی (تعطیل رسمی)",1]],
-    "3-5":[["عاشورای حسینی (تعطیل رسمی)",1]],
-    "4-13":[["اربعین حسینی (تعطیل رسمی)",1]],
-    "4-21":[["رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],
-    "4-23":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],
-    "5-1":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],
-    "5-10":[["میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],
-    "7-23":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],
-    "8-2":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],
-    "8-16":[["مبعث رسول اکرم (ص) (تعطیل رسمی)",1]],
-    "9-4":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],
-    "10-9":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],
-    "12-19":[["عید سعید فطر (تعطیل رسمی)",1]],
-    "12-20":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]
-  },
-  "1406":{
-    "1-14":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],
-    "1-26":[["عید سعید قربان (تعطیل رسمی)",1]],
-    "2-4":[["عید سعید غدیر خم (تعطیل رسمی)",1]],
-    "2-24":[["تاسوعای حسینی (تعطیل رسمی)",1]],
-    "2-25":[["عاشورای حسینی (تعطیل رسمی)",1]],
-    "4-3":[["اربعین حسینی (تعطیل رسمی)",1]],
-    "4-11":[["رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],
-    "4-13":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],
-    "4-21":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],
-    "4-30":[["میلاد رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],
-    "7-12":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],
-    "7-22":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],
-    "8-6":[["مبعث رسول اکرم (ص) (تعطیل رسمی)",1]],
-    "8-24":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],
-    "9-28":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],
-    "12-8":[["عید سعید فطر (تعطیل رسمی)",1]],
-    "12-9":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]
+const IR_OFFICIAL_YEAR_HOL={"1405":{"1-1":[["عید سعید فطر (تعطیل رسمی)",1]],"1-2":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]],"1-25":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"3-6":[["عید سعید قربان (تعطیل رسمی)",1]],"3-14":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"4-3":[["تاسوعای حسینی (تعطیل رسمی)",1]],"4-4":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-13":[["اربعین حسینی (تعطیل رسمی)",1]],"5-21":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-22":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-30":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"6-8":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-22":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"10-2":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-16":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"11-4":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"12-9":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-19":[["عید سعید فطر (تعطیل رسمی)",1]],"12-20":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]},"1406":{"1-14":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"2-27":[["عید سعید قربان (تعطیل رسمی)",1]],"3-4":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"3-24":[["تاسوعای حسینی (تعطیل رسمی)",1]],"3-25":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-3":[["اربعین حسینی (تعطیل رسمی)",1]],"5-11":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-12":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-20":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"5-29":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-11":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"9-21":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-5":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"10-23":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"11-28":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-8":[["عید سعید فطر (تعطیل رسمی)",1]],"12-9":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]}};
+const REMOTE_IR_HOL_KEY="smartcal_remote_ir_hol_v1";
+let remoteIrHol=JSON.parse(localStorage.getItem(REMOTE_IR_HOL_KEY)||"{}");
+async function syncRemoteIrHolidays(force=false){
+  const lastTs=Number(localStorage.getItem(REMOTE_IR_HOL_KEY+"_ts")||0);
+  if(!force && Date.now()-lastTs<86400000) return false;
+  const urls=["https://raw.githubusercontent.com/Siavicii/SmartCal-Android/main/holidays.json","./holidays.json"];
+  for(const u of urls){
+    try{
+      const r=await fetch(u+(u.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"});
+      if(!r.ok) continue;
+      const d=await r.json();
+      if(d && typeof d==="object" && !Array.isArray(d)){
+        remoteIrHol=d;
+        localStorage.setItem(REMOTE_IR_HOL_KEY,JSON.stringify(d));
+        localStorage.setItem(REMOTE_IR_HOL_KEY+"_ts",String(Date.now()));
+        if(typeof render==="function") render();
+        return true;
+      }
+    }catch(e){}
   }
-};
-let dynamicYearEv=JSON.parse(localStorage.getItem("cal_dyn_ev_v11")||"{}");
+  return false;
+}
+setTimeout(()=>{try{syncRemoteIrHolidays(false);}catch(e){}},1800);
 let customUserEv=JSON.parse(localStorage.getItem("cal_user_ev_v11")||"{}");
 
 
@@ -3215,7 +3212,7 @@ function getExtraWorldAndCountryEv(jy, jm, jd) {
     WORLD_DAYS_GM[gmKey].forEach(item => out.push([item[0], item[1]]));
   }
 
-  if (cfg.showCountryHol !== false) {
+  if (cfg.showCountryHol !== false && (cfg.countryCode || "IR") !== "IR") {
     const cCode = cfg.countryCode || "IR";
     const cMeta = getCountryMeta(cCode);
     const cLabel = getCountryLabel(cMeta);
@@ -3235,10 +3232,14 @@ function getExtraWorldAndCountryEv(jy, jm, jd) {
 function getEv(y,m,d){
   const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
   const activeCountry = cfg?.countryCode || "IR";
-  if (activeCountry === "IR") {
+  if (activeCountry === "IR" || cfg?.calType === "jalali" || cfg?.calType === "kurdish") {
     if(BASE_EV[k])r.push(...BASE_EV[k]);
-    const yrMap=(dynamicYearEv[y]||BASE_YEAR_EV[y]||{});
-    if(yrMap[k])r.push(...yrMap[k]);
+    const yrHol = (remoteIrHol && remoteIrHol[String(y)]) || IR_OFFICIAL_YEAR_HOL[String(y)];
+    if(yrHol && yrHol[k]) {
+      yrHol[k].forEach(item => {
+        if (!r.some(ex => ex[0] === item[0])) r.push(item);
+      });
+    }
   }
   if((cfg?.calType==="kurdish" || cfg?.lang==="ku") && KURDISH_EV[k]) r.push(...KURDISH_EV[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
@@ -3280,13 +3281,15 @@ async function updateHolidaysOnline(){
     totalFetched += arr.length;
   }
 
-  if (totalFetched > 0) {
+  if (cCode === "IR") {
+    const okRemote = await syncRemoteIrHolidays(true);
+    const yrMap = (remoteIrHol && remoteIrHol[String(sel.jy)]) || IR_OFFICIAL_YEAR_HOL[String(sel.jy)] || {};
+    const yrCount = Object.keys(yrMap).length;
+    if (st) st.textContent = okRemote
+      ? `✅ تعطیلات رسمی ایران از مخزن آنلاین همگام‌سازی شد (${fa(yrCount)} تعطیلی سال ${fa(sel.jy)}).`
+      : `✅ تقویم رسمی ایران (${fa(yrCount)} تعطیلی سالانه + مناسبت‌های شمسی) فعال است.`;
+  } else if (totalFetched > 0) {
     if (st) st.textContent = `✅ ${fa(totalFetched)} تعطیلی رسمی برای ${cLabel} بروزرسانی و ذخیره شد.`;
-  } else if (cCode === "IR" && BASE_YEAR_EV[sel.jy]) {
-    dynamicYearEv[sel.jy] = BASE_YEAR_EV[sel.jy];
-    localStorage.setItem("cal_dyn_ev_v11", JSON.stringify(dynamicYearEv));
-    const holCount = Object.values(BASE_YEAR_EV[sel.jy]).flat().filter(x => x[1]).length;
-    if (st) st.textContent = `✅ تقویم رسمی ${cLabel} (${fa(holCount)} تعطیلی مناسبتی) آماده و فعال است.`;
   } else {
     if (st) st.textContent = `✅ مناسبت‌های پایه ${cLabel} و روزهای جهانی فعال هستند.`;
   }
@@ -3332,7 +3335,6 @@ if(!Array.isArray(cfg.weekends)) cfg.weekends=[6];
 if(cfg.autoLoc===undefined) cfg.autoLoc=false;
 if(cfg.autoSyncCalLang===undefined) cfg.autoSyncCalLang=true;
 if(cfg.calType==="gregorian"){ vy=now.getFullYear(); vm=now.getMonth()+1; }
-else if(cfg.calType==="hijri"){ const hNow=g2h(now.getFullYear(),now.getMonth()+1,now.getDate()); vy=hNow.hy; vm=hNow.hm; }
 else if(cfg.calType==="kurdish"){ vy=tod.jy+1321; vm=tod.jm; }
 let notes=JSON.parse(localStorage.getItem("cal_notes_v4")||'{}');
 let countryHolidaysCache = JSON.parse(localStorage.getItem("smartcal_country_hol_v1") || "{}");
@@ -3705,7 +3707,7 @@ function applyAtmosphereSync(){
     else{weatherLabel=tr(" • هوای ابری ⛅"," • کەشی هەوری ⛅"," • Cloudy ⛅");}
   }
   body.classList.add(atmClass);
-  const sysDark=matchMedia("(prefers-color-scheme:dark)").matches;
+  const sysDark=isSystemDarkNow();
   const isDark=cfg.theme==="dark"||(cfg.theme==="auto"&&sysDark);
   const c=COLORS[targetColor]||COLORS[0];
   document.documentElement.style.setProperty("--pri",isDark?c.d:c.l);
@@ -3921,7 +3923,7 @@ function isDaylightNow() {
 }
 
 function isPhoneDarkMode() {
-  const sysDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const sysDark = isSystemDarkNow();
   const tMode = (typeof cfg !== "undefined" && cfg && cfg.theme) || "auto";
   if (tMode === "dark") return true;
   if (tMode === "light") return false;
@@ -4149,18 +4151,17 @@ async function activateOrRefreshStatusNotif() {
 async function updatePersistentStatusDate(forcePost = false) {
   const cType = (typeof cfg !== "undefined" && cfg && cfg.calType) || "jalali";
   const g = toG(tod.jy, tod.jm, tod.jd);
-  const h = g2h(g.gy, g.gm, g.gd);
   const sw = wDay(tod.jy, tod.jm, tod.jd);
   const isKu = (cType === "kurdish" || (cfg && cfg.lang === "ku"));
   const weekDayName = isKu ? WD_SAT_KU[sw] : WD[(sw + 6) % 7];
   const toFaNum = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
   const fmtIconNum = n => (typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(n) : toFaNum(n);
-  const primaryDayStr = cType === "gregorian" ? fmtIconNum(g.gd) : (cType === "hijri" ? fmtIconNum(h.hd) : fmtIconNum(tod.jd));
-  const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (cType === "hijri" ? HM[h.hm - 1] : (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]));
+  const primaryDayStr = cType === "gregorian" ? fmtIconNum(g.gd) : fmtIconNum(tod.jd);
+  const primaryMonthStr = cType === "gregorian" ? GM_EN[g.gm - 1] : (isKu ? KM[tod.jm - 1] : JM[tod.jm - 1]);
 
   try { updateStatusDateBtnUI(primaryDayStr); } catch (e) {}
 
-  const sysDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches);
+  const sysDark = isSystemDarkNow();
   const isDark = (typeof cfg !== "undefined" && cfg) ? (cfg.theme === "dark" || (cfg.theme === "auto" && sysDark)) : sysDark;
   const cObj = COLORS[(cfg && cfg.color) || 0] || COLORS[0];
   const accentHex = isDark ? cObj.d : cObj.l;
@@ -4191,7 +4192,7 @@ async function updatePersistentStatusDate(forcePost = false) {
   } catch (e) {}
 
   if ("setAppBadge" in navigator) {
-    const badgeNum = cType === "gregorian" ? g.gd : (cType === "hijri" ? h.hd : tod.jd);
+    const badgeNum = cType === "gregorian" ? g.gd : tod.jd;
     try { navigator.setAppBadge(badgeNum).catch(() => {}); } catch (e) {}
   }
 
@@ -4223,7 +4224,6 @@ async function updatePersistentStatusDate(forcePost = false) {
   const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
   const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
   const gregFull = `${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}`;
-  const hijriFull = `${fa(h.hd)} ${HM[h.hm - 1]} ${fa(h.hy)}`;
 
   let notifTitle = "";
   let notifSubDates = "";
@@ -4233,9 +4233,6 @@ async function updatePersistentStatusDate(forcePost = false) {
   } else if (cType === "gregorian") {
     notifTitle = `${gregFull} (${weekDayName})`;
     notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
-  } else if (cType === "hijri") {
-    notifTitle = `${weekDayName} ${hijriFull}`;
-    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  ${gregFull}`;
   } else {
     notifTitle = `${jalaliFull}`;
     notifSubDates = `${gregFull}`;
@@ -4624,9 +4621,24 @@ function applyLanguageUI() {
   }
 }
 
+function isSystemDarkNow() {
+  if (window.AndroidBridge && typeof window.AndroidBridge.isSystemDarkMode === "function") {
+    try { return !!window.AndroidBridge.isSystemDarkMode(); } catch (e) {}
+  }
+  if (typeof window.__nativeSystemDark === "boolean") {
+    return window.__nativeSystemDark;
+  }
+  if (window.AndroidBridge && typeof window.AndroidBridge.getSystemThemeJson === "function") {
+    try {
+      const info = JSON.parse(window.AndroidBridge.getSystemThemeJson() || "null");
+      if (info && typeof info.isDark === "boolean") return info.isDark;
+    } catch (e) {}
+  }
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
 function applyCfg(){
   const rootStyle = document.documentElement.style;
-  const sysDark = matchMedia("(prefers-color-scheme:dark)").matches;
+  const sysDark = isSystemDarkNow();
   const useSysSync = !!cfg.systemSync;
   const isDark = useSysSync ? sysDark : (cfg.theme==="dark"||(cfg.theme==="auto"&&sysDark));
   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
@@ -4722,10 +4734,6 @@ function syncViewToCalType(targetType) {
   if (targetType === "gregorian") {
     vy = gSel.gy;
     vm = gSel.gm;
-  } else if (targetType === "hijri") {
-    const hSel = g2h(gSel.gy, gSel.gm, gSel.gd);
-    vy = hSel.hy;
-    vm = hSel.hm;
   } else if (targetType === "kurdish") {
     vy = sel.jy + 1321;
     vm = sel.jm;
@@ -6022,7 +6030,6 @@ function renderYearGrid(){
   const cType = cfg.calType || "jalali";
   const fDay = Number(cfg.firstDay || 0);
   const gNow = new Date();
-  const hNow = g2h(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
   const isKu = (cType === "kurdish" || cfg.lang === "ku");
 
   for(let m=1;m<=12;m++){
@@ -6031,10 +6038,6 @@ function renderYearGrid(){
       len = getGregMonthLen(vy, m);
       rawFw = (new Date(vy, m - 1, 1).getDay() + 1) % 7;
       tit = GM_EN[m - 1];
-    } else if (cType === "hijri") {
-      len = hMonthLen(vy, m);
-      rawFw = hFirstWeekday(vy, m);
-      tit = getHM()[m - 1];
     } else if (cType === "kurdish") {
       const jyEquiv = vy - 1321;
       len = mLen(jyEquiv, m);
@@ -6054,10 +6057,6 @@ function renderYearGrid(){
       if (cType === "gregorian") {
         jDate = toJ(vy, m, d);
         isTod = (vy === gNow.getFullYear() && m === (gNow.getMonth() + 1) && d === gNow.getDate());
-      } else if (cType === "hijri") {
-        const gEquiv = d2g(h2jdn(vy, m, d));
-        jDate = toJ(gEquiv.gy, gEquiv.gm, gEquiv.gd);
-        isTod = (vy === hNow.hy && m === hNow.hm && d === hNow.hd);
       } else if (cType === "kurdish") {
         const jyEquiv = vy - 1321;
         jDate = { jy: jyEquiv, jm: m, jd: d };
@@ -6149,41 +6148,6 @@ function getSunSvg(type) {
     <path d="M18 25V31M15 28L18 31L21 28" stroke="#F43F5E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   </svg>`;
 }
-
-function calcPrayerTimes(gy, gm, gd, lat, lon) {
-  const rad = Math.PI / 180, deg = 180 / Math.PI;
-  const start = Date.UTC(gy, 0, 0);
-  const doy = Math.floor((Date.UTC(gy, gm - 1, gd) - start) / 86400000);
-  const offset = (lat >= 24 && lat <= 40 && lon >= 44 && lon <= 64) ? 3.5 : (-new Date().getTimezoneOffset() / 60);
-  const lngHour = lon / 15;
-  function sunTimeByAngle(angle, isMorning) {
-    const t = doy + ((isMorning ? 6 : 18) - lngHour) / 24;
-    const M = (0.9856 * t) - 3.289;
-    let L = (M + 1.916 * Math.sin(M * rad) + 0.020 * Math.sin(2 * M * rad) + 282.634 + 360) % 360;
-    let RA = (deg * Math.atan(0.91764 * Math.tan(L * rad)) + 360) % 360;
-    RA = (RA + (Math.floor(L / 90) * 90 - Math.floor(RA / 90) * 90)) / 15;
-    const sinDec = 0.39782 * Math.sin(L * rad);
-    const cosDec = Math.cos(Math.asin(sinDec));
-    const cosH = (Math.cos((90 + angle) * rad) - sinDec * Math.sin(lat * rad)) / (cosDec * Math.cos(lat * rad));
-    if (cosH > 1 || cosH < -1) return null;
-    const H = (isMorning ? (360 - deg * Math.acos(cosH)) : (deg * Math.acos(cosH))) / 15;
-    const T = H + RA - 0.06571 * t - 6.622;
-    return ((T - lngHour + 24) % 24 + offset + 24) % 24;
-  }
-  const fmtH = val => {
-    if (val === null) return "--:--";
-    let h = Math.floor(val), m = Math.round((val - h) * 60);
-    if (m === 60) { m = 0; h = (h + 1) % 24; }
-    return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
-  };
-  const fajr = sunTimeByAngle(17.7, true);
-  const sunrise = sunTimeByAngle(0.833, true);
-  const sunset = sunTimeByAngle(0.833, false);
-  const maghrib = sunTimeByAngle(4.5, false);
-  const dhuhr = (sunrise !== null && sunset !== null) ? (sunrise + sunset) / 2 + (1 / 60) : 12.0;
-  return { fajr: fmtH(fajr), sunrise: fmtH(sunrise), dhuhr: fmtH(dhuhr), sunset: fmtH(sunset), maghrib: fmtH(maghrib) };
-}
-
 
 // ====== لحظه تحویل سال (اعتدال بهاری دقیق نجومی) و حیوان سال (۱۲ حیوان تقویم شرق آسیا و ایران) ======
 const YEAR_ANIMALS_12 = [
@@ -6319,7 +6283,6 @@ function renderSunBox(gy, gm, gd) {
   const [latStr, lonStr, cityName] = cfg.city.split(",");
   const lat = parseFloat(latStr) || 35.6892, lon = parseFloat(lonStr) || 51.3890;
   const sun = calcSunTimes(gy, gm, gd, lat, lon);
-  const pt = calcPrayerTimes(gy, gm, gd, lat, lon);
   const cDisp = trCity(cityName);
   box.style.flexDirection = "column";
   box.style.alignItems = "stretch";
@@ -6426,37 +6389,6 @@ function updateOpenNotesBadge() {
   }
 }
 
-function renderUpcomingAgenda() {
-  const box = document.getElementById("upcomingAgendaBox");
-  if (!box) return;
-  const baseJdn = j2d(sel.jy, sel.jm, sel.jd);
-  const items = [];
-  for (let offset = 0; offset < 7; offset++) {
-    const jdObj = d2j(baseJdn + offset);
-    const k = dayKey(jdObj.jy, jdObj.jm, jdObj.jd);
-    const evs = getEv(jdObj.jy, jdObj.jm, jdObj.jd);
-    const dayNotes = (notes[k] || []).filter(raw => !normNote(raw).done);
-    evs.forEach(ev => {
-      items.push({ jdObj, label: `📅 ${fa(jdObj.jd)}/${fa(jdObj.jm)}`, text: ev[0], isHol: !!ev[1] });
-    });
-    dayNotes.forEach(raw => {
-      const n = normNote(raw);
-      items.push({ jdObj, label: `📝 ${fa(jdObj.jd)}/${fa(jdObj.jm)}${n.tm ? " • ⏰" + fa(n.tm) : ""}`, text: n.t, isHol: false });
-    });
-  }
-  const titleTxt = tr("🗓️ برنامه ۷ روز پیشِ رو (از تاریخ انتخاب‌شده):", "🗓️ خشتەی ٧ ڕۆژی داهاتوو:", "🗓️ Next 7 Days Agenda:");
-  if (!items.length) {
-    box.innerHTML = `<div style="font-size:11px;color:var(--sec)">${titleTxt} <span style="opacity:.75">${tr("رویداد یا کار بازی ثبت نشده است.", "هیچ بۆنە یان کارێک تۆمار نەکراوە.", "No upcoming events or open tasks.")}</span></div>`;
-    return;
-  }
-  box.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--sec)">${titleTxt}</div>` + items.slice(0, 5).map(it => `
-    <div class="agenda-item" onclick="sel={jy:${it.jdObj.jy},jm:${it.jdObj.jm},jd:${it.jdObj.jd}};render()">
-      <span style="white-space:nowrap;font-weight:700;color:${it.isHol ? 'var(--hol)' : 'var(--pri)'}">${it.label}</span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${it.isHol ? 'color:var(--hol);font-weight:700' : ''}">${esc(it.text)}</span>
-    </div>
-  `).join("");
-}
-
 function render(){
   updateGoTodayVisibility();
   renderWeekdayHeader();
@@ -6465,7 +6397,6 @@ function render(){
   const fDay = Number(cfg.firstDay || 0);
   const gNow = new Date();
   const gToday = { gy: gNow.getFullYear(), gm: gNow.getMonth() + 1, gd: gNow.getDate() };
-  const hToday = g2h(gToday.gy, gToday.gm, gToday.gd);
   const kTodayYear = tod.jy + 1321;
 
   const tSpan = document.getElementById("todBtnTxt") || document.getElementById("todBtn");
@@ -6473,8 +6404,6 @@ function render(){
   if (tSpan) {
     if (cType === "gregorian") {
       tSpan.innerHTML = todLbl + `<span dir="ltr" style="unicode-bidi:isolate">${toLatDigits(gToday.gd)} ${GM_EN[gToday.gm - 1]} ${toLatDigits(gToday.gy)}</span>`;
-    } else if (cType === "hijri") {
-      tSpan.textContent = todLbl + fa(hToday.hd) + " " + getHM()[hToday.hm - 1] + " " + fa(hToday.hy);
     } else if (cType === "kurdish") {
       tSpan.textContent = todLbl + fa(tod.jd) + (cfg.lang==="en"?" ":"ی ") + getKM()[tod.jm - 1] + " " + fa(kTodayYear);
     } else {
@@ -6540,45 +6469,6 @@ function render(){
       el.onclick = () => { sel = { jy: jDate.jy, jm: jDate.jm, jd: jDate.jd }; render(); };
       box.appendChild(el);
     }
-  } else if (cType === "hijri") {
-    const len = hMonthLen(vy, vm);
-    const rawFw = hFirstWeekday(vy, vm);
-    const offset = (rawFw - fDay + 7) % 7;
-    const gStart = d2g(h2jdn(vy, vm, 1));
-    const gEnd = d2g(h2jdn(vy, vm, len));
-
-    if (calMode === "year") {
-      document.getElementById("jTit").textContent = "سال " + fa(vy) + " هجری قمری";
-      document.getElementById("gTit").textContent = gStart.gy + " - " + gEnd.gy + " میلادی";
-      renderYearGrid();
-    } else {
-      document.getElementById("jTit").textContent = HM[vm - 1] + " " + fa(vy);
-      document.getElementById("gTit").textContent = GM_EN[gStart.gm - 1] + " - " + GM_EN[gEnd.gm - 1] + " " + gEnd.gy;
-    }
-
-    const gSel = toG(sel.jy, sel.jm, sel.jd);
-    const hSel = g2h(gSel.gy, gSel.gm, gSel.gd);
-    for (let i = 0; i < offset; i++) box.innerHTML += "<div></div>";
-    for (let d = 1; d <= len; d++) {
-      const w = (rawFw + d - 1) % 7;
-      const gDate = d2g(h2jdn(vy, vm, d));
-      const jDate = toJ(gDate.gy, gDate.gm, gDate.gd);
-      const evs = getEv(jDate.jy, jDate.jm, jDate.jd);
-      const hol = isCustomWeekend(w) || evs.some(e => e[1]);
-      const hasNote = !!(notes[dayKey(jDate.jy, jDate.jm, jDate.jd)] && notes[dayKey(jDate.jy, jDate.jm, jDate.jd)].length);
-      const isBday = (birthCfg && birthCfg.m === jDate.jm && birthCfg.d === jDate.jd);
-      const isTod = (vy === hToday.hy && vm === hToday.hm && d === hToday.hd);
-      const isSel = (vy === hSel.hy && vm === hSel.hm && d === hSel.hd);
-
-      evs.forEach(e => mList.push({ label: fa(d), j: jDate, t: e[0], h: e[1] }));
-      if (isBday) mList.push({ label: fa(d), j: jDate, t: "🎂 سالروز تولد شما", h: 0 });
-
-      const el = document.createElement("div");
-      el.className = "day" + (hol ? " hol" : "") + (isTod ? " tod" : "") + (isSel ? " sel" : "");
-      el.innerHTML = `<span class="jn">${isBday ? "🎂" : fa(d)}</span>${cfg.showG ? `<span class="gn">${fa(jDate.jd)}</span>` : ""}<div class="dots">${evs.some(e => e[1]) ? '<span class="dot hol-ev"></span>' : (evs.length ? '<span class="dot"></span>' : "")}${hasNote ? '<span class="dot note"></span>' : ""}</div>`;
-      el.onclick = () => { sel = { jy: jDate.jy, jm: jDate.jm, jd: jDate.jd }; render(); };
-      box.appendChild(el);
-    }
   } else {
     // Jalali OR Kurdish Solar Calendar (Kurdish year = Jalali year + 1321; months 1..12 share exact solar equinox alignment)
     const isKurdishCal = (cType === "kurdish");
@@ -6629,18 +6519,15 @@ function render(){
     }
   }
 
-  const sw = wDay(sel.jy, sel.jm, sel.jd), sg = toG(sel.jy, sel.jm, sel.jd), sh = g2h(sg.gy, sg.gm, sg.gd), sevs = getEv(sel.jy, sel.jm, sel.jd);
+  const sw = wDay(sel.jy, sel.jm, sel.jd), sg = toG(sel.jy, sel.jm, sel.jd), sevs = getEv(sel.jy, sel.jm, sel.jd);
   const isSelBday = (birthCfg && birthCfg.m === sel.jm && birthCfg.d === sel.jd);
   const dayNameStr = getWD_SAT()[sw];
   const kYearSel = sel.jy + 1321;
-  const jmArr = getJM(), kmArr = getKM(), hmArr = getHM();
+  const jmArr = getJM(), kmArr = getKM();
 
   if (cType === "gregorian") {
     document.getElementById("selTit").innerHTML = `<span dir="ltr">${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span> • ${dayNameStr}`;
     document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span>`;
-  } else if (cType === "hijri") {
-    document.getElementById("selTit").textContent = dayNameStr + " " + fa(sh.hd) + " " + hmArr[sh.hm - 1] + " " + fa(sh.hy);
-    document.getElementById("selSub").innerHTML = `<span class="tag">☀️ ${fa(sel.jd)} ${jmArr[sel.jm - 1]} ${fa(sel.jy)}</span><span class="tag">🏔️ ${fa(sel.jd)} ${kmArr[sel.jm - 1]} ${fa(kYearSel)}</span><span class="tag" dir="ltr">🌍 ${toLatDigits(sg.gd)} ${GM_EN[sg.gm - 1]} (${toLatDigits(sg.gm)}) ${toLatDigits(sg.gy)}</span>`;
   } else if (cType === "kurdish") {
     document.getElementById("selTit").textContent = cfg.lang==="en"
       ? `${dayNameStr}, ${sel.jd} ${kmArr[sel.jm - 1]} ${kYearSel}`
@@ -6780,7 +6667,6 @@ function runConvert(){
   }else{
     g={gy:y,gm:m,gd:d};j=toJ(y,m,d);
   }
-  const h=g2h(g.gy,g.gm,g.gd);
   const ky=j.jy+1321;
   document.getElementById("convRes").innerHTML=`
     ☀️ ${tr("هجری شمسی:","کۆچی هەتاوی:","Solar Hijri (Jalali):")} <b style="color:var(--pri)">${fa(j.jd)} ${getJM()[j.jm-1]} ${fa(j.jy)}</b><br>
@@ -6871,10 +6757,6 @@ const jumpToToday=()=>{
   if (ct === "gregorian") {
     vy = gNow.getFullYear();
     vm = gNow.getMonth() + 1;
-  } else if (ct === "hijri") {
-    const hNow = g2h(gNow.getFullYear(), gNow.getMonth() + 1, gNow.getDate());
-    vy = hNow.hy;
-    vm = hNow.hm;
   } else if (ct === "kurdish") {
     vy = jNow.jy + 1321;
     vm = jNow.jm;
@@ -7153,7 +7035,6 @@ const ASTRAL_READINGS_I18N = {
 
 let birthCfg=JSON.parse(localStorage.getItem("cal_birth_v1")||'{"y":1380,"m":1,"d":1,"name":""}');
 let falExtraOffset=0;
-let postcardVariant=0;
 
 function initBirthInputs(){
   const dS=document.getElementById("bDay"),mS=document.getElementById("bMon"),yS=document.getElementById("bYear");
@@ -7183,9 +7064,9 @@ function checkBirthdaySurprise(justSaved=false){
         <span style="background:rgba(255,255,255,0.22);padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700">${fa(tod.jd)} ${JM[tod.jm-1]}</span>
       </div>
       <div style="font-size:12px;line-height:1.7;margin-top:6px;opacity:.96">
-        آغاز <b>${fa(ageYears)} سالگی</b> زندگی‌ات سرشار از سلامتی، عشق و موفقیت‌های درخشان باد! کارت پستال اختصاصی تولدت آماده شده است.
+        آغاز <b>${fa(ageYears)} سالگی</b> زندگی‌ات سرشار از سلامتی، عشق و موفقیت‌های درخشان باد! طالع و پیام ویژه روز تولدت در بخش طالع و فال آماده است.
       </div>
-      <button onclick="switchTab('fal')" style="margin-top:8px;background:#FFFFFF;color:#BE185D;border:none;padding:6px 12px;border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer">🎁 مشاهده کارت پستال تولد من</button>
+      <button onclick="switchTab('fal')" style="margin-top:8px;background:#FFFFFF;color:#BE185D;border:none;padding:6px 12px;border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer">🎁 مشاهده طالع ویژه تولد من</button>
     </div>
   `;
 
@@ -7242,31 +7123,6 @@ async function refreshFalSeed(){
     contentBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 }
-
-function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = String(text || "").split(/\s+/).filter(Boolean);
-  let line = "", currY = y;
-  for (let i = 0; i < words.length; i++) {
-    const testLine = line ? line + " " + words[i] : words[i];
-    if (ctx.measureText(testLine).width > maxWidth && line) {
-      ctx.fillText(line, x, currY);
-      line = words[i];
-      currY += lineHeight;
-    } else {
-      line = testLine;
-    }
-  }
-  if (line) ctx.fillText(line, x, currY);
-  return currY;
-}
-
-let lastAiBgImg = null;
-const POSTCARD_THEMES = [
-  { name: "شب کهکشانی", bg1: "#1E1B4B", bg2: "#0F172A", accent: "#FBBF24", badgeBg: "rgba(251,191,36,0.16)" },
-  { name: "شفق طلایی",   bg1: "#451A03", bg2: "#18181B", accent: "#FDE047", badgeBg: "rgba(253,224,71,0.16)" },
-  { name: "زمردی آرام",   bg1: "#064E3B", bg2: "#0F172A", accent: "#34D399", badgeBg: "rgba(52,211,153,0.16)" },
-  { name: "یاقوتی شاعرانه", bg1: "#4C0519", bg2: "#1E1B4B", accent: "#FDA4AF", badgeBg: "rgba(253,164,175,0.16)" }
-];
 
 function renderFal(skipPostcard = false){
   initBirthInputs();
