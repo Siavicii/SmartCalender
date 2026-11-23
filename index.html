@@ -17,10 +17,114 @@
 <link rel="manifest" id="dynManifest" href="./manifest.json">
 <title>Smart Cal - تقویم هوشمند جامع</title>
 <style>
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css');
-@import url('https://cdn.jsdelivr.net/gh/aminabedi68/Estedad@master/Estedad-font-face.css');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Noto+Naskh+Arabic:wght@500;700&family=Noto+Sans+Arabic:wght@500;700;800&family=Plus+Jakarta+Sans:wght@600;700&family=Rubik:wght@500;700&display=swap');
+/* Local Offline Bundled Fonts (v71.1) — Instant 0ms load, zero FOUT */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./fonts/Vazirmatn-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./fonts/Vazirmatn-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IRANSans';
+  src: url('./fonts/IRANSans-Regular.ttf') format('truetype'),
+       url('https://raw.githubusercontent.com/mhmmdq/IRANSans-Font/master/IRANSansWeb(FaNum).ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IRANSans';
+  src: url('./fonts/IRANSans-Bold.ttf') format('truetype'),
+       url('./fonts/IRANSans-Regular.ttf') format('truetype');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Estedad';
+  src: url('./fonts/Estedad-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/aminabedi68/Estedad@master/fonts/webfonts/statics/Estedad-Regular.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Estedad';
+  src: url('./fonts/Estedad-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/aminabedi68/Estedad@master/fonts/webfonts/statics/Estedad-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sahel';
+  src: url('./fonts/Sahel-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/Sahel.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sahel';
+  src: url('./fonts/Sahel-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/Sahel-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  src: url('./fonts/NotoSansArabic-Regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  src: url('./fonts/NotoSansArabic-Bold.ttf') format('truetype');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Naskh Arabic';
+  src: url('./fonts/NotoNaskhArabic-Regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Naskh Arabic';
+  src: url('./fonts/NotoNaskhArabic-Bold.ttf') format('truetype');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 :root{
   --bg:#F4F6FA;--card:#FFFFFF;--sub:#EBF0F7;--pri:#1B6EF3;--pri-bg:rgba(27,110,243,0.14);--onpri:#FFFFFF;
@@ -50,7 +154,7 @@
   --shadow:0 8px 32px rgba(0,0,0,0.45);
 }
 [data-ui="glass"] .card,[data-ui="glass"] .w-card,[data-ui="glass"] .nav,[data-ui="glass"] .sheet{
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  
 }
 [data-ui="glass"] .day.sel{box-shadow:0 4px 14px var(--pri-bg)}
 
@@ -298,8 +402,8 @@ body::before {
   background: linear-gradient(180deg, var(--status-bg, var(--bg)) 68%, transparent 100%);
   z-index: 42;
   pointer-events: none;
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  
+  
 }
 .install-card{
   background:var(--pri-bg);border:1px solid var(--pri);border-radius:16px;padding:10px 12px;
@@ -329,8 +433,8 @@ body::before {
 [data-ui="ios26"] .ibtn,
 [data-ui="ios26"] .pill,
 [data-ui="ios26"] .w-city-btn {
-  backdrop-filter: blur(34px) saturate(210%);
-  -webkit-backdrop-filter: blur(34px) saturate(210%);
+  
+  
   box-shadow: var(--shadow);
 }
 [data-ui="ios26"] .w-card {
@@ -389,8 +493,8 @@ body::before {
 [data-ui="ios26"] .w-day {
   border-radius: 18px;
   border: 1px solid var(--brd);
-  backdrop-filter: blur(18px) saturate(170%);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  
+  
 }
 [data-ui="ios26"] .nav {
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
@@ -401,8 +505,8 @@ body::before {
   background: rgba(255, 255, 255, 0.56);
   border: 1px solid rgba(255, 255, 255, 0.82);
   padding: 6px 8px;
-  backdrop-filter: blur(40px) saturate(220%);
-  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  
+  
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
 }
 [data-theme=dark][data-ui="ios26"] .nav {
@@ -580,7 +684,8 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 
 @font-face {
   font-family: 'Dastkhat';
-  src: url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Regular.woff2') format('woff2'),
+  src: url('./fonts/Dastkhat-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Regular.woff2') format('woff2'),
        url('https://raw.githubusercontent.com/dastyar-io/dastkhat-font/main/dist/Dastkhat-Regular.woff2') format('woff2'),
        url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/fonts/woff2/Dastkhat-Regular.woff2') format('woff2');
   font-weight: 400;
@@ -589,7 +694,8 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
 }
 @font-face {
   font-family: 'Dastkhat';
-  src: url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Bold.woff2') format('woff2'),
+  src: url('./fonts/Dastkhat-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/dist/Dastkhat-Bold.woff2') format('woff2'),
        url('https://raw.githubusercontent.com/dastyar-io/dastkhat-font@main/dist/Dastkhat-Bold.woff2') format('woff2'),
        url('https://cdn.jsdelivr.net/gh/dastyar-io/dastkhat-font@main/fonts/woff2/Dastkhat-Bold.woff2') format('woff2');
   font-weight: 700;
@@ -636,7 +742,6 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
   opacity: 0;
   transform: scale(0.82) translateY(8px);
   animation: splashLogoIn 0.52s cubic-bezier(0.22, 1, 0.36, 1) 0.04s forwards;
-  will-change: transform, opacity;
 }
 .splash-emblem svg {
   width: 48px;
@@ -985,8 +1090,8 @@ input[type="range"]::-moz-range-thumb {
   justify-content: center;
   padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
   background: rgba(8, 12, 24, 0.48);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  
+  
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1144,8 +1249,8 @@ input[type="range"]::-moz-range-thumb {
 /* iOS 26 Liquid Glass */
 [data-ui="ios26"] #smartSelectPicker .sp-sheet {
   border-radius: 34px;
-  backdrop-filter: blur(28px) saturate(185%);
-  -webkit-backdrop-filter: blur(28px) saturate(185%);
+  
+  
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2), inset 0 1.5px 0 rgba(255, 255, 255, 0.85);
@@ -1170,8 +1275,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* Glass (Aurora) */
 [data-ui="glass"] #smartSelectPicker .sp-sheet {
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  
+  
   border-radius: 28px;
 }
 
@@ -1560,8 +1665,8 @@ body.app-booting .app {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
+  
+  
   transition: opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
               visibility 0.26s ease,
               backdrop-filter 0.28s ease;
@@ -1570,8 +1675,8 @@ body.app-booting .app {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  
+  
 }
 .modal .sheet {
   transform: translateY(34px) scale(0.97);
@@ -2124,8 +2229,8 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(10, 14, 24, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  
+  
   padding: 20px;
 }
 #celebrationOverlay.open {
@@ -2279,8 +2384,8 @@ body {
   align-items: flex-end;
   justify-content: center;
   background: rgba(10, 14, 24, 0.48);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  
+  
   padding: 14px;
 }
 #permGuideOverlay.open { display: flex; }
@@ -2308,12 +2413,63 @@ body {
 .perm-txt b { font-size: 12px; display: block; margin-bottom: 2px; color: var(--pri); }
 .perm-txt span { font-size: 11px; line-height: 1.6; color: var(--sec); display: block; }
 
-</style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-</head>
-<body class="app-booting">
 
-<div id="smartSplash" aria-hidden="true">
+/* 60fps Fluidity & Instant Touch Response (v70.6) */
+button, .ibtn, .nbtn, .dcell, .m-ev, .tag, .pill, .fchip, .w-city-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.nbtn:active, .ibtn:active, .dcell:active, .happy-btn:active, .upd-btn-main:active {
+  transform: scale(0.95);
+  transition: transform 0.08s ease;
+}
+.card {
+  contain: layout style;
+}
+.view {
+  contain: layout style;
+  will-change: transform, opacity;
+}
+.view.active {
+  animation-duration: 0.16s !important;
+  animation-timing-function: cubic-bezier(0.2, 0.85, 0.3, 1) !important;
+}
+.nav, .bnav, nav.nav {
+  background: var(--card) !important;
+  transform: translate3d(0, 0, 0);
+}
+
+
+/* 120Hz Silky Scroll & Soft Micro-Interactions (v70.7) */
+html, body {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.sheet, .modal, #monthEvBox {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.view.active {
+  animation-duration: 0.14s !important;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+
+/* v71.0 Zero-Block Cold Start & Lag-Free Market/Tab Switching */
+.card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+#view-mkt .card {
+  contain-intrinsic-size: auto 180px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div id="smartSplash" class="hide" style="display:none" aria-hidden="true">
   <div class="splash-emblem">
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="8" y="13" width="48" height="43" rx="8" stroke="#FFFFFF" stroke-width="4"/>
@@ -2896,6 +3052,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <b style="font-size:12px;color:var(--sec)">🔤 فونت یکپارچه اپلیکیشن (هماهنگ با فارسی، کوردی و انگلیسی)</b>
       <select id="setFont" style="margin-top:5px" onchange="saveSettings()">
         <option value="vazirmatn">۱. وزیرمتن + اینتر (Vazirmatn & Inter - مدرن و استاندارد)</option>
+        <option value="iransans">۲. ایران‌سنس + اینتر (IRANSans & Inter - شیک، یکدست و چندزبانه)</option>
         <option value="estedad">۲. استعداد + جاکارتا (Estedad & Jakarta - هندسی و لوکس)</option>
         <option value="sahel">۳. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)</option>
         <option value="notosans">۴. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)</option>
@@ -3029,7 +3186,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v70.5";
+  const VER = "v71.1";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3106,6 +3263,7 @@ const trEvTitle=t=>{
 
 const FONT_STACKS={
   vazirmatn:"'Vazirmatn','Inter',system-ui,-apple-system,sans-serif",
+  iransans:"'IRANSans','Inter','Vazirmatn','Noto Sans Arabic',system-ui,-apple-system,sans-serif",
   estedad:"'Estedad','Plus Jakarta Sans','Vazirmatn',system-ui,sans-serif",
   sahel:"'Sahel','Rubik','Vazirmatn',system-ui,sans-serif",
   notosans:"'Noto Sans Arabic','Inter','Vazirmatn',system-ui,sans-serif",
@@ -3510,6 +3668,34 @@ function getExtraWorldAndCountryEv(jy, jm, jd) {
   return out;
 }
 
+
+function normEvForDedup(s) {
+  return String(s || "")
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "")
+    .replace(/[ي]/g, "ی").replace(/[ك]/g, "ک").replace(/\u200c/g, " ")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/معلولیت|معلولان|کم.?توانان/g, "معلول")
+    .replace(/مبارزه با|افراد دارای|روز جهانی|روز ملی|روز|جشن|سالروز|بزرگداشت/g, " ")
+    .replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+function isDupEvTitle(list, title) {
+  const nNew = normEvForDedup(title);
+  if (!nNew) return false;
+  return list.some(ex => {
+    const exTitle = Array.isArray(ex) ? ex[0] : String(ex || "");
+    if (exTitle === title) return true;
+    const nEx = normEvForDedup(exTitle);
+    if (!nEx) return false;
+    if (nEx === nNew) return true;
+    if (nNew.length >= 4 && nEx.includes(nNew)) return true;
+    if (nEx.length >= 4 && nNew.includes(nEx)) return true;
+    return false;
+  });
+}
+
 function getEv(y,m,d){
   const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
   const activeCountry = cfg?.countryCode || "IR";
@@ -3518,7 +3704,7 @@ function getEv(y,m,d){
     const yrHol = (remoteIrHol && remoteIrHol[String(y)]) || IR_OFFICIAL_YEAR_HOL[String(y)];
     if(yrHol && yrHol[k]) {
       yrHol[k].forEach(item => {
-        if (!r.some(ex => ex[0] === item[0])) r.push(item);
+        if (!isDupEvTitle(r, item[0])) r.push(item);
       });
     }
     if (typeof getEmergencyHolidaysForDay === "function") {
@@ -3535,7 +3721,7 @@ function getEv(y,m,d){
   if (typeof getExtraWorldAndCountryEv === "function") {
     const extra = getExtraWorldAndCountryEv(y,m,d);
     extra.forEach(item => {
-      if (!r.some(existing => existing[0] === item[0])) r.push(item);
+      if (!isDupEvTitle(r, item[0])) r.push(item);
     });
   }
   return r.map(e=>[trEvTitle(e[0]),e[1],e[2],e[3]]);
@@ -4117,8 +4303,10 @@ function switchTab(t, swipeDir = 0){
   if (navBtn) navBtn.classList.add("act");
   try { window.scrollTo(0, 0); } catch (e) {}
 
-  // Defer heavier DOM/network work to the next animation frame so tab transition is 100% instant
-  requestAnimationFrame(() => {
+  // Defer heavier DOM/network work until AFTER the 140ms tab transition completes so switching is 100% lag-free
+  if (window.__tabWorkTimer) clearTimeout(window.__tabWorkTimer);
+  window.__tabWorkTimer = setTimeout(() => {
+    if (activeTabId !== t) return;
     if (t === "notes") {
       try { renderAllNotes(); } catch (e) {}
     } else if (t === "mkt") {
@@ -4126,15 +4314,15 @@ function switchTab(t, swipeDir = 0){
         const cachedMkt = JSON.parse(localStorage.getItem(PWA_MKT_CACHE_KEY) || "null");
         if (cachedMkt && !lastMarketPayload) renderMarket(cachedMkt, true);
       } catch (e) {}
-      if (Date.now() - lastMktTabFetchMs > 25000) {
+      if (Date.now() - lastMktTabFetchMs > 45000) {
         lastMktTabFetchMs = Date.now();
-        setTimeout(() => { try { fetchMarket(false); } catch (e) {} }, 60);
+        setTimeout(() => { if (activeTabId === "mkt") try { fetchMarket(false); } catch (e) {} }, 120);
       }
     } else if (t === "fal") {
       try { renderFal(true); } catch (e) {}
-      setTimeout(() => { try { if (typeof fetchAiDailyFal === "function") fetchAiDailyFal(false); } catch (e) {} }, 120);
+      setTimeout(() => { if (activeTabId === "fal") try { if (typeof fetchAiDailyFal === "function") fetchAiDailyFal(false); } catch (e) {} }, 150);
     }
-  });
+  }, 180);
 }
 
 // Global horizontal swipe gesture to switch between the 4 main tabs smoothly
@@ -7447,7 +7635,7 @@ function render(){
       groupedMList.push(obj);
     } else {
       const obj = grpMap.get(gk);
-      if (!obj.titles.includes(x.t)) obj.titles.push(x.t);
+      if (!isDupEvTitle(obj.titles, x.t)) obj.titles.push(x.t);
       if (x.h) obj.h = true;
     }
   });
@@ -8811,6 +8999,7 @@ setTimeout(() => {
 
   const FONT_PREVIEW_MAP = {
     vazirmatn: "'Vazirmatn','Inter',sans-serif",
+    iransans: "'IRANSans','Inter','Vazirmatn','Noto Sans Arabic',sans-serif",
     estedad: "'Estedad','Plus Jakarta Sans',sans-serif",
     sahel: "'Sahel','Rubik',sans-serif",
     noto: "'Noto Sans Arabic','Inter',sans-serif",
@@ -9767,7 +9956,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "70.5";
+const APP_CURRENT_VER = "71.1";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
@@ -9817,7 +10006,11 @@ function dismissAppUpdateBanner() {
 async function applyAppUpdateNow() {
   if (isAndroidAppEnv()) {
     const url = (_pendingUpdateInfo && _pendingUpdateInfo.apk_url) || "https://github.com/Siavicii/SmartCal-Android/releases/latest";
-    window.open(url, "_blank");
+    if (window.AndroidBridge && typeof window.AndroidBridge.openExternalUrl === "function") {
+      try { window.AndroidBridge.openExternalUrl(url); } catch (e) { window.location.href = url; }
+    } else {
+      window.location.href = url;
+    }
     dismissAppUpdateBanner();
     return;
   }
@@ -9871,7 +10064,20 @@ async function checkForAppUpdate(manual = false) {
   return false;
 }
 
+const UPD_LAST_CHK_KEY = "smartcal_upd_last_chk_ts";
+const _origCheckForAppUpdate = checkForAppUpdate;
+checkForAppUpdate = async function(manual = false) {
+  localStorage.setItem(UPD_LAST_CHK_KEY, String(Date.now()));
+  return _origCheckForAppUpdate(manual);
+};
 setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 4500);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  const lastTs = Number(localStorage.getItem(UPD_LAST_CHK_KEY) || 0);
+  if (Date.now() - lastTs >= 3600000) {
+    setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 1200);
+  }
+});
 
 
 
@@ -9929,6 +10135,10 @@ setTimeout(() => {
     if (ov) ov.classList.add("open");
   } catch (e) {}
 }, 4000);
+
+
+
+
 
 </script>
 
