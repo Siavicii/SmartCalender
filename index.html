@@ -3099,8 +3099,12 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
             <b style="font-size:12px;color:var(--pri)">⭐ انتخاب دارایی‌ها و تعیین اولویت نمایش</b>
             <div style="font-size:10px;color:var(--sec)">با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید</div>
           </div>
-          <button type="button" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
+          <div style="display:flex;gap:5px">
+            <button type="button" class="ibtn" id="inspectTgjuBtn" onclick="inspectLiveTgjuKeys()" style="height:26px;padding:0 8px;font-size:10.5px;color:var(--pri);border-color:var(--pri)">🔎 کلیدهای TGJU</button>
+            <button type="button" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
+          </div>
         </div>
+        <div id="tgjuKeysDiagBox" style="display:none;padding:8px 10px;border-radius:12px;background:var(--card);border:1px solid var(--brd);font-size:10.5px;line-height:1.7;max-height:160px;overflow-y:auto;direction:ltr;text-align:left"></div>
         <div id="mktWatchItemsList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
       </div>
 
@@ -6642,9 +6646,10 @@ async function fetchTgjuLive(bust = "") {
           etf_ayar:    pickKey(["etf_ayar", "ayar", "bourse_ayar"], true),
           etf_mesghal: pickKey(["etf_mesghal", "mesghal", "bourse_mesghal"], true),
           etf_gohar:   pickKey(["etf_gohar", "gohar", "bourse_gohar"], true),
-          etf_kahroba: pickKey(["etf_kahroba", "kahroba", "bourse_kahroba"], true),
-          etf_lotus:   pickKey(["etf_lotus", "lotus", "bourse_lotus"], true),
-          etf_zar:     pickKey(["etf_zar", "zar", "bourse_zar"], true)
+          etf_noghran: pickKey(["etf_noghran", "noghran_silver", "noghran_etf", "noghran"], true),
+          etf_noghreh: pickKey(["etf_noghreh", "noghreh_etf", "silver_etf", "bourse_silver"], true),
+          etf_simorgh: pickKey(["etf_simorgh", "simorgh_silver", "simorgh_etf", "simorgh"], true),
+          etf_saat:    pickKey(["etf_saat", "saat_silver", "saat_etf", "saat"], true)
         }
       };
     }
@@ -6862,12 +6867,13 @@ const DEFAULT_MKT_CATALOG = [
   { ico: "iqd1k",     sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "هزار دینار عراق (IQD)", ku: "هەزار دیناری عێراق (IQD)", en: "1,000 Iraqi Dinar (IQD)" },
 
   // Stock Market Gold ETFs (صندوق‌های طلای بورس ایران - شاخص‌محور بر اساس نرخ طلای ۱۸ عیار)
-  { ico: "etf_ayar",   sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار (بورس)", ku: "سندووقی زێڕی عەیار (بۆرسە)", en: "Ayar Gold ETF (Bourse)" },
-  { ico: "etf_mesghal",sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای مثقال (بورس)", ku: "سندووقی زێڕی میسقاڵ (بۆرسە)", en: "Mesghal Gold ETF (Bourse)" },
-  { ico: "etf_gohar",  sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای گوهر (بورس)", ku: "سندووقی زێڕی گەوهەر (بۆرسە)", en: "Gohar Gold ETF (Bourse)" },
-  { ico: "etf_kahroba",sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای کهربا (بورس)", ku: "سندووقی زێڕی کەهرەبا (بۆرسە)", en: "Kahroba Gold ETF (Bourse)" },
-  { ico: "etf_lotus",  sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای لوتوس (بورس)", ku: "سندووقی زێڕی لۆتۆس (بۆرسە)", en: "Lotus Gold ETF (Bourse)" },
-  { ico: "etf_zar",    sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای زر (بورس)", ku: "سندووقی زێڕی زەڕ (بۆرسە)", en: "Zar Gold ETF (Bourse)" }
+    { ico: "etf_ayar",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار", ku: "سندووقی زێڕی عەیار", en: "Ayar Gold ETF" },
+  { ico: "etf_mesghal", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای مثقال", ku: "سندووقی زێڕی میسقاڵ", en: "Mesghal Gold ETF" },
+  { ico: "etf_gohar",   sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای گوهر", ku: "سندووقی زێڕی گەوهەر", en: "Gohar Gold ETF" },
+  { ico: "etf_noghreh", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره (بورس)", ku: "سندووقی زیو (بۆرسە)", en: "Silver ETF (Bourse)" },
+  { ico: "etf_simorgh", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره سیمرغ", ku: "سندووقی زیوی سیمرغ", en: "Simorgh Silver ETF" },
+  { ico: "etf_saat",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره ساعت", ku: "سندووقی زیوی ساعەت", en: "Saat Silver ETF" },
+  { ico: "etf_noghran", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره نقران", ku: "سندووقی زیوی نەقران", en: "Noghran Silver ETF" }
 ];
 
 const MKT_NAME_I18N = {};
@@ -7009,13 +7015,14 @@ function enrichMarketData(d) {
   const sarP = Math.round(usd * 0.2666 / 10) * 10;
   const iqd1kP = Math.max(100, Math.round(usd * 0.00076 / 5) * 5);
 
-  const etfBaseUnit = Math.max(1000, Math.round((g18P * 0.142) / 100) * 100);
+  // Realistic Bourse Gold ETF scaling anchored to 18K 1g gold & live TGJU ETF keys when present
+  const etfBaseUnit = Math.max(1000, Math.round((g18P * 1.28) / 100) * 100);
   const etfDefs = [
     { ico: "etf_ayar",    mult: 1.00, c: g18Obj.c || "+0.35%" },
-    { ico: "etf_mesghal", mult: 1.03, c: "+0.41%" },
-    { ico: "etf_gohar",   mult: 0.98, c: "+0.28%" },
+    { ico: "etf_mesghal", mult: 1.04, c: "+0.41%" },
+    { ico: "etf_gohar",   mult: 0.97, c: "+0.28%" },
     { ico: "etf_kahroba", mult: 1.02, c: "+0.39%" },
-    { ico: "etf_lotus",   mult: 0.99, c: "+0.31%" },
+    { ico: "etf_lotus",   mult: 0.96, c: "+0.31%" },
     { ico: "etf_zar",     mult: 1.01, c: "+0.34%" }
   ];
 
@@ -7027,6 +7034,10 @@ function enrichMarketData(d) {
   const resolveTgjuOrFormula = (ico, formulaPrice, formulaChg, unit) => {
     const node = lx[ico];
     if (node && node.p > 0) {
+      if (ico.startsWith("etf_")) {
+        const reasonable = node.p >= g18P * 0.5 && node.p <= g18P * 3.0;
+        if (!reasonable) return { p: formulaPrice, c: formulaChg, unit };
+      }
       return {
         p: node.p,
         c: fmtPct(node.dp, formulaChg),
@@ -7071,10 +7082,54 @@ function getAssetIconHtml(ico) {
   if (ico === "sar") return getAssetBadgeSvg("SAR", "#DCFCE7", "#15803D");
   if (ico === "iqd1k") return getAssetBadgeSvg("IQD", "#E0F2FE", "#0369A1");
   if (ico.startsWith("etf_")) {
-    const shortMap = { etf_ayar: "عیار", etf_mesghal: "مثقال", etf_gohar: "گوهر", etf_kahroba: "کهربا", etf_lotus: "لوتوس", etf_zar: "زر" };
+    const shortMap = { etf_ayar: "عیار", etf_mesghal: "مثقال", etf_gohar: "گوهر", etf_noghreh: "نقره", etf_simorgh: "سیمرغ", etf_saat: "ساعت", etf_noghran: "نقران" };
     return getAssetBadgeSvg(shortMap[ico] || "ETF", "rgba(245,158,11,0.18)", "#D97706");
   }
   return getMarketSvg(ico);
+}
+
+
+async function inspectLiveTgjuKeys() {
+  const box = document.getElementById("tgjuKeysDiagBox");
+  const btn = document.getElementById("inspectTgjuBtn");
+  if (!box) return;
+  box.style.display = "block";
+  box.style.direction = "rtl";
+  box.style.textAlign = "right";
+  box.textContent = "⏳ در حال دریافت و بررسی کلیدهای زنده از TGJU...";
+  if (btn) btn.disabled = true;
+
+  const bust = String(Date.now());
+  let txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json?_=" + bust, 6500);
+  if (!txt) txt = await fetchTextViaProxy("https://call4.tgju.org/ajax.json?_=" + bust, 6500);
+
+  if (btn) btn.disabled = false;
+  if (!txt) {
+    box.textContent = "⚠️ امکان دسترسی مستقیم به فید TGJU در این لحظه وجود نداشت؛ برنامه از نرخ‌های پایه و محاسبات زنده استفاده می‌کند.";
+    return;
+  }
+
+  try {
+    const cur = JSON.parse(txt)?.current || {};
+    const matched = Object.keys(cur)
+      .filter(k => /silver|noghreh|ons|xag|xpt|xpd|plat|pall|chf|cny|sar|iqd|eur|gbp|aed|try|cad|etf|geram|sek|dollar/i.test(k))
+      .sort();
+
+    if (!matched.length) {
+      box.textContent = "ℹ️ کلیدهای تطبیق‌یافته در current یافت نشد.";
+      return;
+    }
+
+    box.style.direction = "ltr";
+    box.style.textAlign = "left";
+    box.innerHTML = `<div style="direction:rtl;text-align:right;font-weight:800;color:var(--pri);margin-bottom:4px">✅ ${fa(matched.length)} کلید زنده در TGJU پیدا شد:</div>` +
+      matched.map(k => {
+        const node = cur[k] || {};
+        return `<div><b>${esc(k)}</b>: p=${esc(node.p || "")} | dp=${esc(node.dp || "")} | dt=${esc(node.dt || "")}</div>`;
+      }).join("");
+  } catch (e) {
+    box.textContent = "⚠️ خطا در خواندن ساختار JSON فید TGJU.";
+  }
 }
 
 function renderMarket(d, isCached) {
@@ -7102,7 +7157,7 @@ function renderMarket(d, isCached) {
   const eTitle = document.getElementById("mktEtfSecTitle");
   if (gTitle) gTitle.textContent = tr("🪙 بازار طلا، نقره و فلزات", "🪙 بازاڕی زێڕ، زیو و کانزاکان", "🪙 Gold, Silver & Metals");
   if (fTitle) fTitle.textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Currencies (Toman)");
-  if (eTitle) eTitle.textContent = tr("📈 صندوق‌های طلا و سرمایه‌گذاری بورسی (تومان)", "📈 سندووقەکانی زێڕ و بۆرسە (تمەن)", "📈 Bourse Gold & Investment ETFs (Toman)");
+  if (eTitle) eTitle.textContent = tr("📈 صندوق‌های طلا و نقره بورسی", "📈 سندووقەکانی زێڕ و زیوی بۆرسە", "📈 Gold & Silver Bourse ETFs");
 
   const prefs = loadMarketPrefs();
   const dataMap = enrichMarketData(d);
