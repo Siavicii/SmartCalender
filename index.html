@@ -2678,6 +2678,164 @@ html:not(.app-ready) .view.active {
   transform: scale(0.96);
 }
 
+
+/* =========================================================================
+   AIRY NOTES STUDIO SPACING & RELIABLE VOICE DICTATION (v72)
+   ========================================================================= */
+#view-notes .card {
+  padding: 18px 16px;
+}
+#view-notes .mkt-head {
+  margin-bottom: 14px;
+  gap: 10px;
+}
+#view-notes .notes-sec-wrap {
+  gap: 14px;
+}
+#notesProgBlock,
+#notesQuickBlock,
+#notesFilterBlock,
+#notesListBlock {
+  padding: 13px 14px !important;
+  border-radius: 18px !important;
+}
+#notesQuickBlock {
+  gap: 10px !important;
+}
+#notesFilterBlock {
+  gap: 10px !important;
+}
+#view-notes .notes-filters {
+  gap: 7px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+}
+#view-notes .fchip {
+  padding: 6px 12px;
+}
+#allNotesBox {
+  gap: 10px !important;
+  margin-top: 6px;
+}
+.voice-listening {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border-color: #EF4444 !important;
+  color: #EF4444 !important;
+}
+
+
+/* =========================================================================
+   CUSTOM MARKET WATCHLIST, EXTRA METALS/FX/ETFs & PRIORITY ORDERING (v72)
+   ========================================================================= */
+.mkt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding: 9px 11px;
+  border-radius: 15px;
+  background: var(--sub);
+  border: 1px solid var(--brd);
+}
+.mkt-cat-pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.mkt-watch-panel {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--sub);
+  border: 1px solid var(--brd);
+}
+.mkt-watch-panel.open {
+  display: flex;
+}
+.mkt-watch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--brd);
+}
+.mkt-watch-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+.mkt-watch-name {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mkt-watch-sub {
+  font-size: 10px;
+  color: var(--sec);
+}
+.mkt-watch-ctrls {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mkt-prio-btn {
+  height: 26px;
+  min-width: 26px;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--sub);
+  color: var(--txt);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mkt-prio-btn.active-star {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #F59E0B;
+  color: #D97706;
+}
+.mkt-vis-btn {
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--sub);
+  color: var(--sec);
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mkt-vis-btn.on {
+  background: var(--pri-bg);
+  border-color: var(--pri);
+  color: var(--pri);
+}
+.mkt-prio-tag {
+  font-size: 9.5px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.16);
+  color: #D97706;
+  font-weight: 800;
+}
+
 </style>
 
 </head>
@@ -2925,14 +3083,39 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
         <button class="ibtn" id="mktRefreshBtn" onclick="fetchMarket(true)">🔄 بروزرسانی</button>
       </div>
 
+      <div class="mkt-toolbar" id="mktCustomToolbar">
+        <div class="mkt-cat-pills" id="mktCatFilterChips">
+          <button type="button" class="fchip act" data-mcat="all" onclick="setMarketCatFilter('all', this)">همه</button>
+          <button type="button" class="fchip" data-mcat="metals" onclick="setMarketCatFilter('metals', this)">🪙 طلا و فلزات</button>
+          <button type="button" class="fchip" data-mcat="fx" onclick="setMarketCatFilter('fx', this)">💵 ارزها</button>
+          <button type="button" class="fchip" data-mcat="etf" onclick="setMarketCatFilter('etf', this)">📈 صندوق‌های بورسی</button>
+        </div>
+        <button type="button" class="ibtn" id="mktWatchToggleBtn" onclick="toggleMarketWatchPanel()" style="height:28px;padding:0 9px;font-size:11px;border-radius:10px;color:var(--pri);border-color:var(--pri)">⚙️ انتخاب و اولویت</button>
+      </div>
+
+      <div class="mkt-watch-panel" id="mktWatchPanel">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+          <div>
+            <b style="font-size:12px;color:var(--pri)">⭐ انتخاب دارایی‌ها و تعیین اولویت نمایش</b>
+            <div style="font-size:10px;color:var(--sec)">با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید</div>
+          </div>
+          <button type="button" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
+        </div>
+        <div id="mktWatchItemsList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
+      </div>
+
       <div class="mkt-sec-wrap" id="mktBlocksWrap">
         <div id="mktGoldBlock" data-reorder-group="mkt" data-reorder-item="mktGoldBlock">
-          <b style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">🪙 بازار طلا و سکه (تومان)</b>
+          <b id="mktGoldSecTitle" style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">🪙 بازار طلا، نقره و سکه</b>
           <div class="mkt-list" id="goldList"></div>
         </div>
         <div id="mktFxBlock" data-reorder-group="mkt" data-reorder-item="mktFxBlock">
-          <b style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">💵 نرخ ارزهای خارجی (تومان)</b>
+          <b id="mktFxSecTitle" style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">💵 نرخ ارزهای خارجی (تومان)</b>
           <div class="mkt-list" id="fxList"></div>
+        </div>
+        <div id="mktEtfBlock" data-reorder-group="mkt" data-reorder-item="mktEtfBlock">
+          <b id="mktEtfSecTitle" style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">📈 صندوق‌های طلا و سرمایه‌گذاری بورسی (تومان)</b>
+          <div class="mkt-list" id="etfList"></div>
         </div>
       </div>
     </div>
@@ -2968,7 +3151,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div id="notesQuickBlock" data-reorder-group="notes" data-reorder-item="notesQuickBlock" style="background:var(--sub);padding:9px 10px;border-radius:14px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:6px">
         <div style="display:flex;gap:5px;align-items:center">
           <input type="text" id="hubQuickNoteInp" placeholder="✍️ ثبت هوشمند (مثلاً: فردا ساعت ۱۰ جلسه کاری #مهم)..." style="flex:1;background:var(--card);font-size:12px;padding:8px 10px" onkeydown="if(event.key==='Enter')addHubQuickNote()">
-          <button class="ibtn" id="voiceDictBtn" onclick="startVoiceNote('hubQuickNoteInp')" title="تایپ صوتی هوشمند (فارسی/کوردی/انگلیسی)" style="background:var(--card);padding:0 9px">🎙️</button>
+          <button class="ibtn" id="voiceDictBtn" onclick="startVoiceNote('hubQuickNoteInp', event)" title="تایپ صوتی هوشمند (فارسی/کوردی/انگلیسی)" style="background:var(--card);padding:0 9px">🎙️</button>
           <button class="ibtn" onclick="addHubQuickNote()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px">ثبت</button>
         </div>
         <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px">
@@ -3175,7 +3358,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <b style="font-size:11.5px;color:var(--sec)">متن یادداشت یا چک‌لیست (هر خط با - یک آیتم تیک‌دار می‌شود):</b>
-        <button type="button" class="ibtn" style="height:26px;font-size:10.5px;padding:0 8px" onclick="startVoiceNote('nText')">🎙️ تایپ صوتی</button>
+        <button type="button" class="ibtn" style="height:26px;font-size:10.5px;padding:0 8px" onclick="startVoiceNote('nText', event)">🎙️ تایپ صوتی</button>
       </div>
       <textarea id="nText" rows="4" placeholder="متن یادداشت را بنویسید...&#10;برای ساخت چک‌لیست، اول خط علامت - بگذارید:&#10;- آیتم اول&#10;- آیتم دوم" style="margin-top:5px"></textarea>
     </div>
@@ -6433,11 +6616,36 @@ async function fetchTgjuLive(bust = "") {
     };
     const usd = parseNode(c.price_dollar_rl, true), g18 = parseNode(c.geram18, true);
     if (usd.p >= 50000 && g18.p >= 3000000) {
+      const pickKey = (keys, div10 = true) => {
+        for (const k of keys) {
+          if (c[k] && c[k].p) {
+            const parsed = parseNode(c[k], div10);
+            if (parsed.p > 0) return parsed;
+          }
+        }
+        return null;
+      };
       return {
         usd, eur: parseNode(c.price_eur, true), gbp: parseNode(c.price_gbp, true),
         aed: parseNode(c.price_aed, true), tryP: parseNode(c.price_try, true), cad: parseNode(c.price_cad, true),
         g18, g24: parseNode(c.geram24, true), emami: parseNode(c.sekee, true),
-        nim: parseNode(c.nim, true), rob: parseNode(c.rob, true), ounce: parseNode(c.ons, false)
+        nim: parseNode(c.nim, true), rob: parseNode(c.rob, true), ounce: parseNode(c.ons, false),
+        liveExtra: {
+          silver_g:  pickKey(["silver", "noghreh", "price_silver", "geram_silver"], true),
+          silver_oz: pickKey(["silver_ons", "ons_silver", "xag", "price_xag"], false),
+          plat_oz:   pickKey(["platinum", "ons_platinum", "xpt", "price_xpt"], false),
+          pall_oz:   pickKey(["palladium", "ons_palladium", "xpd", "price_xpd"], false),
+          chf:       pickKey(["price_chf", "chf"], true),
+          cny:       pickKey(["price_cny", "cny", "price_yuan"], true),
+          sar:       pickKey(["price_sar", "sar"], true),
+          iqd1k:     pickKey(["price_iqd", "iqd"], true),
+          etf_ayar:    pickKey(["etf_ayar", "ayar", "bourse_ayar"], true),
+          etf_mesghal: pickKey(["etf_mesghal", "mesghal", "bourse_mesghal"], true),
+          etf_gohar:   pickKey(["etf_gohar", "gohar", "bourse_gohar"], true),
+          etf_kahroba: pickKey(["etf_kahroba", "kahroba", "bourse_kahroba"], true),
+          etf_lotus:   pickKey(["etf_lotus", "lotus", "bourse_lotus"], true),
+          etf_zar:     pickKey(["etf_zar", "zar", "bourse_zar"], true)
+        }
       };
     }
   } catch (e) {}
@@ -6601,7 +6809,8 @@ async function fetchMarket(manual = false) {
         { ico: "aed", n: "درهم امارات (AED)", p: aedPrice, c: tgju?.aed?.dp ? fmtPct(tgju.aed.dp, b.chg.aed) : dynPct(aedPrice, b.aed, b.chg.aed) },
         { ico: "try", n: "لیر ترکیه (TRY)", p: tryPrice, c: tgju?.tryP?.dp ? fmtPct(tgju.tryP.dp, b.chg.tryP) : dynPct(tryPrice, b.tryP, b.chg.tryP) },
         { ico: "cad", n: "دلار کانادا (CAD)", p: cadPrice, c: tgju?.cad?.dp ? fmtPct(tgju.cad.dp, b.chg.cad) : dynPct(cadPrice, b.cad, b.chg.cad) }
-      ]
+      ],
+      liveExtra: tgju?.liveExtra || null
     };
 
     localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(payload));
@@ -6622,20 +6831,252 @@ async function fetchMarket(manual = false) {
 }
 
 let lastMarketPayload = null;
-const MKT_NAME_I18N = {
-  g18:   { fa: "طلای ۱۸ عیار (هر گرم)", ku: "زێڕی عەیار ١٨ (هەر گرامێک)", en: "18K Gold (per gram)" },
-  g24:   { fa: "طلای ۲۴ عیار (هر گرم)", ku: "زێڕی عەیار ٢٤ (هەر گرامێک)", en: "24K Gold (per gram)" },
-  emami: { fa: "سکه امامی (تمام)", ku: "سکەی ئیمامی (تەواو)", en: "Emami Full Gold Coin" },
-  nim:   { fa: "نیم‌سکه بهار آزادی", ku: "نیو سکەی بەهاری ئازادی", en: "Half Azadi Gold Coin" },
-  rob:   { fa: "ربع‌سکه بهار آزادی", ku: "چارەکە سکەی بەهاری ئازادی", en: "Quarter Azadi Gold Coin" },
-  ounce: { fa: "انس جهانی طلا", ku: "ئۆنسی جیهانیی زێڕ", en: "Global Gold Ounce (XAU)" },
-  usd:   { fa: "دلار آمریکا (بازار آزاد)", ku: "دۆلاری ئەمریکی (بازاڕی ئازاد)", en: "US Dollar (USD Free Market)" },
-  eur:   { fa: "یورو اروپا (EUR)", ku: "یۆرۆی ئەورووپا (EUR)", en: "Euro (EUR)" },
-  gbp:   { fa: "پوند انگلیس (GBP)", ku: "پاوەندی بەریتانی (GBP)", en: "British Pound (GBP)" },
-  aed:   { fa: "درهم امارات (AED)", ku: "دیرهەمی ئیمارات (AED)", en: "UAE Dirham (AED)" },
-  try:   { fa: "لیر ترکیه (TRY)", ku: "لیرەی تورکی (TRY)", en: "Turkish Lira (TRY)" },
-  cad:   { fa: "دلار کانادا (CAD)", ku: "دۆلاری کەنەدی (CAD)", en: "Canadian Dollar (CAD)" }
-};
+let currentMarketCatFilter = "all";
+const MKT_PREFS_KEY = "smartcal_mkt_prefs_v72";
+
+const DEFAULT_MKT_CATALOG = [
+  // Metals & Coins (default visible)
+  { ico: "g18",       sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "toman", fa: "طلای ۱۸ عیار (هر گرم)", ku: "زێڕی عەیار ١٨ (هەر گرامێک)", en: "18K Gold (per gram)" },
+  { ico: "g24",       sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "toman", fa: "طلای ۲۴ عیار (هر گرم)", ku: "زێڕی عەیار ٢٤ (هەر گرامێک)", en: "24K Gold (per gram)" },
+  { ico: "emami",     sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "toman", fa: "سکه امامی (تمام)", ku: "سکەی ئیمامی (تەواو)", en: "Emami Full Gold Coin" },
+  { ico: "nim",       sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "toman", fa: "نیم‌سکه بهار آزادی", ku: "نیو سکەی بەهاری ئازادی", en: "Half Azadi Gold Coin" },
+  { ico: "rob",       sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "toman", fa: "ربع‌سکه بهار آزادی", ku: "چارەکە سکەی بەهاری ئازادی", en: "Quarter Azadi Gold Coin" },
+  { ico: "ounce",     sec: "gold", mcat: "metals", enabled: true,  star: false, unit: "usd",   fa: "انس جهانی طلا", ku: "ئۆنسی جیهانیی زێڕ", en: "Global Gold Ounce (XAU)" },
+  // Extra Metals (Silver, Platinum, Palladium)
+  { ico: "silver_g",  sec: "gold", mcat: "metals", enabled: false, star: false, unit: "toman", fa: "نقره ۹۹۹ (هر گرم)", ku: "زیوی ٩٩٩ (هەر گرامێک)", en: "Fine Silver 999 (per gram)" },
+  { ico: "silver_oz", sec: "gold", mcat: "metals", enabled: false, star: false, unit: "usd",   fa: "انس جهانی نقره (XAG)", ku: "ئۆنسی جیهانیی زیو (XAG)", en: "Global Silver Ounce (XAG)" },
+  { ico: "plat_oz",   sec: "gold", mcat: "metals", enabled: false, star: false, unit: "usd",   fa: "انس جهانی پلاتین (XPT)", ku: "ئۆنسی پلاتین (XPT)", en: "Global Platinum (XPT)" },
+  { ico: "pall_oz",   sec: "gold", mcat: "metals", enabled: false, star: false, unit: "usd",   fa: "انس جهانی پالادیوم (XPD)", ku: "ئۆنسی پالادیۆم (XPD)", en: "Global Palladium (XPD)" },
+
+  // Foreign Exchange (default visible)
+  { ico: "usd",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "دلار آمریکا (بازار آزاد)", ku: "دۆلاری ئەمریکی (بازاڕی ئازاد)", en: "US Dollar (USD)" },
+  { ico: "eur",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "یورو اروپا (EUR)", ku: "یۆرۆی ئەورووپا (EUR)", en: "Euro (EUR)" },
+  { ico: "gbp",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "پوند انگلیس (GBP)", ku: "پاوەندی بەریتانی (GBP)", en: "British Pound (GBP)" },
+  { ico: "aed",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "درهم امارات (AED)", ku: "دیرهەمی ئیمارات (AED)", en: "UAE Dirham (AED)" },
+  { ico: "try",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "لیر ترکیه (TRY)", ku: "لیرەی تورکی (TRY)", en: "Turkish Lira (TRY)" },
+  { ico: "cad",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "دلار کانادا (CAD)", ku: "دۆلاری کەنەدی (CAD)", en: "Canadian Dollar (CAD)" },
+  // Extra FX
+  { ico: "chf",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "فرانک سوئیس (CHF)", ku: "فرانکی سویسرا (CHF)", en: "Swiss Franc (CHF)" },
+  { ico: "cny",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "یوان چین (CNY)", ku: "یوانی چین (CNY)", en: "Chinese Yuan (CNY)" },
+  { ico: "sar",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "ریال عربستان (SAR)", ku: "ڕیاڵی سعوودیە (SAR)", en: "Saudi Riyal (SAR)" },
+  { ico: "iqd1k",     sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "هزار دینار عراق (IQD)", ku: "هەزار دیناری عێراق (IQD)", en: "1,000 Iraqi Dinar (IQD)" },
+
+  // Stock Market Gold ETFs (صندوق‌های طلای بورس ایران - شاخص‌محور بر اساس نرخ طلای ۱۸ عیار)
+  { ico: "etf_ayar",   sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار (بورس)", ku: "سندووقی زێڕی عەیار (بۆرسە)", en: "Ayar Gold ETF (Bourse)" },
+  { ico: "etf_mesghal",sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای مثقال (بورس)", ku: "سندووقی زێڕی میسقاڵ (بۆرسە)", en: "Mesghal Gold ETF (Bourse)" },
+  { ico: "etf_gohar",  sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای گوهر (بورس)", ku: "سندووقی زێڕی گەوهەر (بۆرسە)", en: "Gohar Gold ETF (Bourse)" },
+  { ico: "etf_kahroba",sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای کهربا (بورس)", ku: "سندووقی زێڕی کەهرەبا (بۆرسە)", en: "Kahroba Gold ETF (Bourse)" },
+  { ico: "etf_lotus",  sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای لوتوس (بورس)", ku: "سندووقی زێڕی لۆتۆس (بۆرسە)", en: "Lotus Gold ETF (Bourse)" },
+  { ico: "etf_zar",    sec: "etf", mcat: "etf",    enabled: false, star: false, unit: "toman", fa: "صندوق طلای زر (بورس)", ku: "سندووقی زێڕی زەڕ (بۆرسە)", en: "Zar Gold ETF (Bourse)" }
+];
+
+const MKT_NAME_I18N = {};
+DEFAULT_MKT_CATALOG.forEach(m => {
+  MKT_NAME_I18N[m.ico] = { fa: m.fa, ku: m.ku, en: m.en };
+});
+
+function loadMarketPrefs() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(MKT_PREFS_KEY) || "null"); } catch (e) {}
+  const map = new Map();
+  if (Array.isArray(saved)) {
+    saved.forEach((item, idx) => {
+      if (item && item.ico) {
+        map.set(item.ico, {
+          ico: item.ico,
+          enabled: !!item.enabled,
+          star: !!item.star,
+          order: typeof item.order === "number" ? item.order : idx
+        });
+      }
+    });
+  }
+  return DEFAULT_MKT_CATALOG.map((def, idx) => {
+    const ov = map.get(def.ico);
+    return {
+      ...def,
+      enabled: ov ? ov.enabled : def.enabled,
+      star: ov ? ov.star : def.star,
+      order: ov ? ov.order : idx
+    };
+  }).sort((a, b) => (b.star ? 1 : 0) - (a.star ? 1 : 0) || a.order - b.order);
+}
+
+function saveMarketPrefs(list) {
+  const compact = list.map((it, i) => ({ ico: it.ico, enabled: !!it.enabled, star: !!it.star, order: i }));
+  try { localStorage.setItem(MKT_PREFS_KEY, JSON.stringify(compact)); } catch (e) {}
+}
+
+function normalizeMarketOrders(list) {
+  return list.map((it, i) => ({ ...it, order: i }));
+}
+
+function toggleMarketWatchPanel() {
+  const panel = document.getElementById("mktWatchPanel");
+  if (!panel) return;
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) {
+    renderMarketWatchPanel();
+  }
+}
+
+function setMarketCatFilter(cat, btnEl) {
+  currentMarketCatFilter = cat || "all";
+  document.querySelectorAll("#mktCatFilterChips .fchip").forEach(b => {
+    b.classList.toggle("act", b.getAttribute("data-mcat") === currentMarketCatFilter);
+  });
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+}
+
+function toggleMarketItemEnabled(ico) {
+  const list = loadMarketPrefs();
+  const target = list.find(x => x.ico === ico);
+  if (!target) return;
+  target.enabled = !target.enabled;
+  saveMarketPrefs(list);
+  renderMarketWatchPanel();
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+}
+
+function toggleMarketItemStar(ico) {
+  const list = loadMarketPrefs();
+  const target = list.find(x => x.ico === ico);
+  if (!target) return;
+  target.star = !target.star;
+  saveMarketPrefs(list);
+  renderMarketWatchPanel();
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+}
+
+function moveMarketItemPriority(ico, delta) {
+  let list = loadMarketPrefs();
+  const idx = list.findIndex(x => x.ico === ico);
+  if (idx === -1) return;
+  const nextIdx = idx + delta;
+  if (nextIdx < 0 || nextIdx >= list.length) return;
+  const tmp = list[idx];
+  list[idx] = list[nextIdx];
+  list[nextIdx] = tmp;
+  list = normalizeMarketOrders(list);
+  saveMarketPrefs(list);
+  renderMarketWatchPanel();
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+}
+
+function resetMarketWatchPrefs() {
+  try { localStorage.removeItem(MKT_PREFS_KEY); } catch (e) {}
+  renderMarketWatchPanel();
+  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
+}
+
+function getAssetBadgeSvg(labelText, bgHex, fgHex) {
+  return `<span style="width:36px;height:36px;border-radius:12px;background:${bgHex};color:${fgHex};display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;flex-shrink:0;border:1px solid rgba(255,255,255,0.14);box-shadow:0 3px 8px rgba(0,0,0,0.16)">${esc(labelText)}</span>`;
+}
+
+function renderMarketWatchPanel() {
+  const box = document.getElementById("mktWatchItemsList");
+  if (!box) return;
+  const l = cfg.lang || "fa";
+  const list = loadMarketPrefs();
+  const catLabel = c => c === "metals" ? tr("فلزات و طلا", "کانزا و زێڕ", "Metals") : (c === "etf" ? tr("صندوق بورسی", "سندووقی بۆرسە", "Bourse ETF") : tr("ارز", "دراو", "FX"));
+  box.innerHTML = list.map((it, i) => {
+    const title = it[l] || it.fa;
+    return `<div class="mkt-watch-row">
+      <div class="mkt-watch-info">
+        <span class="mkt-watch-name">${esc(title)}</span>
+        <span class="mkt-watch-sub">• ${catLabel(it.mcat)}</span>
+      </div>
+      <div class="mkt-watch-ctrls">
+        <button type="button" class="mkt-prio-btn ${it.star ? 'active-star' : ''}" title="اولویت ویژه" onclick="toggleMarketItemStar('${it.ico}')">${it.star ? '⭐' : '☆'}</button>
+        <button type="button" class="mkt-prio-btn" title="بالاتر" ${i === 0 ? 'disabled style="opacity:.35"' : ''} onclick="moveMarketItemPriority('${it.ico}', -1)">⬆️</button>
+        <button type="button" class="mkt-prio-btn" title="پایین‌تر" ${i === list.length - 1 ? 'disabled style="opacity:.35"' : ''} onclick="moveMarketItemPriority('${it.ico}', 1)">⬇️</button>
+        <button type="button" class="mkt-vis-btn ${it.enabled ? 'on' : ''}" onclick="toggleMarketItemEnabled('${it.ico}')">${it.enabled ? tr('نمایش ✓', 'دیارە ✓', 'Shown ✓') : tr('مخفی +', 'زیادکردن +', 'Add +')}</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function enrichMarketData(d) {
+  const usd = Number(d.usd) || 268500;
+  const g18Obj = (d.gold || []).find(x => x.ico === "g18") || { p: 24890000, c: "+0.42%" };
+  const g18P = Number(g18Obj.p) || 24890000;
+  const silverOz = 51.4;
+  const silverGramToman = Math.max(1000, Math.round(((silverOz / 31.1035) * usd) / 100) * 100);
+  const platOz = 1645;
+  const pallOz = 1420;
+  const chfP = Math.round(usd * 1.135 / 50) * 50;
+  const cnyP = Math.round(usd * 0.138 / 10) * 10;
+  const sarP = Math.round(usd * 0.2666 / 10) * 10;
+  const iqd1kP = Math.max(100, Math.round(usd * 0.00076 / 5) * 5);
+
+  const etfBaseUnit = Math.max(1000, Math.round((g18P * 0.142) / 100) * 100);
+  const etfDefs = [
+    { ico: "etf_ayar",    mult: 1.00, c: g18Obj.c || "+0.35%" },
+    { ico: "etf_mesghal", mult: 1.03, c: "+0.41%" },
+    { ico: "etf_gohar",   mult: 0.98, c: "+0.28%" },
+    { ico: "etf_kahroba", mult: 1.02, c: "+0.39%" },
+    { ico: "etf_lotus",   mult: 0.99, c: "+0.31%" },
+    { ico: "etf_zar",     mult: 1.01, c: "+0.34%" }
+  ];
+
+  const allItemsMap = new Map();
+  (d.gold || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: x.ico === "ounce" ? "usd" : "toman" }));
+  (d.fx || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: "toman" }));
+
+  const lx = (d && d.liveExtra) || {};
+  const resolveTgjuOrFormula = (ico, formulaPrice, formulaChg, unit) => {
+    const node = lx[ico];
+    if (node && node.p > 0) {
+      return {
+        p: node.p,
+        c: fmtPct(node.dp, formulaChg),
+        unit
+      };
+    }
+    return { p: formulaPrice, c: formulaChg, unit };
+  };
+
+  const extraEntries = [
+    { ico: "silver_g",  p: silverGramToman, c: "+0.54%", unit: "toman" },
+    { ico: "silver_oz", p: silverOz,        c: "+0.48%", unit: "usd" },
+    { ico: "plat_oz",   p: platOz,          c: "+0.22%", unit: "usd" },
+    { ico: "pall_oz",   p: pallOz,          c: "-0.19%", unit: "usd" },
+    { ico: "chf",       p: chfP,            c: "+0.27%", unit: "toman" },
+    { ico: "cny",       p: cnyP,            c: "+0.12%", unit: "toman" },
+    { ico: "sar",       p: sarP,            c: "+0.24%", unit: "toman" },
+    { ico: "iqd1k",     p: iqd1kP,          c: "+0.18%", unit: "toman" }
+  ];
+  extraEntries.forEach(e => {
+    const meta = MKT_NAME_I18N[e.ico] || { fa: e.ico };
+    const res = resolveTgjuOrFormula(e.ico, e.p, e.c, e.unit);
+    allItemsMap.set(e.ico, { ico: e.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
+  });
+
+  etfDefs.forEach(ef => {
+    const meta = MKT_NAME_I18N[ef.ico] || { fa: ef.ico };
+    const formulaP = Math.round((etfBaseUnit * ef.mult) / 100) * 100;
+    const res = resolveTgjuOrFormula(ef.ico, formulaP, ef.c, "toman");
+    allItemsMap.set(ef.ico, { ico: ef.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
+  });
+
+  return allItemsMap;
+}
+
+function getAssetIconHtml(ico) {
+  if (ico === "silver_g" || ico === "silver_oz") return getAssetBadgeSvg("Ag", "#E2E8F0", "#0F172A");
+  if (ico === "plat_oz") return getAssetBadgeSvg("Pt", "#CBD5E1", "#1E293B");
+  if (ico === "pall_oz") return getAssetBadgeSvg("Pd", "#DDD6FE", "#4C1D95");
+  if (ico === "chf") return getAssetBadgeSvg("CHF", "#FEE2E2", "#B91C1C");
+  if (ico === "cny") return getAssetBadgeSvg("CNY", "#FEF3C7", "#B45309");
+  if (ico === "sar") return getAssetBadgeSvg("SAR", "#DCFCE7", "#15803D");
+  if (ico === "iqd1k") return getAssetBadgeSvg("IQD", "#E0F2FE", "#0369A1");
+  if (ico.startsWith("etf_")) {
+    const shortMap = { etf_ayar: "عیار", etf_mesghal: "مثقال", etf_gohar: "گوهر", etf_kahroba: "کهربا", etf_lotus: "لوتوس", etf_zar: "زر" };
+    return getAssetBadgeSvg(shortMap[ico] || "ETF", "rgba(245,158,11,0.18)", "#D97706");
+  }
+  return getMarketSvg(ico);
+}
+
 function renderMarket(d, isCached) {
   if (d) lastMarketPayload = d;
   if (!d) return;
@@ -6645,23 +7086,71 @@ function renderMarket(d, isCached) {
     const cleanTime = String(d.time || "").split(" (")[0];
     updEl.textContent = tr("آخرین بروزرسانی: ساعت " + d.time, "دوایین نوێکردنەوە: کاتژمێر " + cleanTime, "Last Updated: " + fa(cleanTime));
   }
-  const rowHtml = x => {
+
+  // Localize market filter chips & section titles
+  const chips = document.querySelectorAll("#mktCatFilterChips .fchip");
+  if (chips.length >= 4) {
+    chips[0].textContent = tr("همه", "هەموو", "All");
+    chips[1].textContent = tr("🪙 طلا و فلزات", "🪙 زێڕ و کانزاکان", "🪙 Gold & Metals");
+    chips[2].textContent = tr("💵 ارزها", "💵 دراوەکان", "💵 Currencies");
+    chips[3].textContent = tr("📈 صندوق‌های بورسی", "📈 سندووقەکانی بۆرسە", "📈 Bourse ETFs");
+  }
+  const wBtn = document.getElementById("mktWatchToggleBtn");
+  if (wBtn) wBtn.textContent = tr("⚙️ انتخاب و اولویت", "⚙️ هەڵبژاردن و پێشەنگی", "⚙️ Watchlist & Priority");
+  const gTitle = document.getElementById("mktGoldSecTitle");
+  const fTitle = document.getElementById("mktFxSecTitle");
+  const eTitle = document.getElementById("mktEtfSecTitle");
+  if (gTitle) gTitle.textContent = tr("🪙 بازار طلا، نقره و فلزات", "🪙 بازاڕی زێڕ، زیو و کانزاکان", "🪙 Gold, Silver & Metals");
+  if (fTitle) fTitle.textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Currencies (Toman)");
+  if (eTitle) eTitle.textContent = tr("📈 صندوق‌های طلا و سرمایه‌گذاری بورسی (تومان)", "📈 سندووقەکانی زێڕ و بۆرسە (تمەن)", "📈 Bourse Gold & Investment ETFs (Toman)");
+
+  const prefs = loadMarketPrefs();
+  const dataMap = enrichMarketData(d);
+
+  const buildRowHtml = prefItem => {
+    const x = dataMap.get(prefItem.ico);
+    if (!x) return "";
     const isNeg = String(x.c).startsWith("-");
     const isZero = String(x.c) === "0.00%";
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
-    const itemName = MKT_NAME_I18N[x.ico]?.[l] || x.n;
-    const unitStr = x.ico === "ounce" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
-    return `<div class="mkt-row">
-      <div class="mkt-name">${getMarketSvg(x.ico)}<span>${itemName}</span></div>
+    const itemName = MKT_NAME_I18N[x.ico]?.[l] || prefItem[l] || x.n;
+    const unitStr = x.unit === "usd" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
+    const starBadge = prefItem.star ? `<span class="mkt-prio-tag">⭐ ${tr("ویژه", "تایبەت", "Priority")}</span>` : "";
+    return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
+      <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
       <div class="mkt-val">
         <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${unitStr}</span></div>
         <span style="color:${badgeColor};font-size:11px;font-weight:700;direction:ltr;display:inline-block">${arrow}${fa(x.c)}</span>
       </div>
     </div>`;
   };
-  document.getElementById("goldList").innerHTML = d.gold.map(rowHtml).join("");
-  document.getElementById("fxList").innerHTML = d.fx.map(rowHtml).join("");
+
+  const activeItems = prefs.filter(it => it.enabled);
+  const goldItems = activeItems.filter(it => it.sec === "gold");
+  const fxItems   = activeItems.filter(it => it.sec === "fx");
+  const etfItems  = activeItems.filter(it => it.sec === "etf");
+
+  const goldBlock = document.getElementById("mktGoldBlock");
+  const fxBlock   = document.getElementById("mktFxBlock");
+  const etfBlock  = document.getElementById("mktEtfBlock");
+
+  const showGold = (currentMarketCatFilter === "all" || currentMarketCatFilter === "metals") && goldItems.length > 0;
+  const showFx   = (currentMarketCatFilter === "all" || currentMarketCatFilter === "fx") && fxItems.length > 0;
+  const showEtf  = (currentMarketCatFilter === "etf") || (currentMarketCatFilter === "all" && etfItems.length > 0);
+
+  if (goldBlock) goldBlock.style.display = showGold ? "block" : "none";
+  if (fxBlock)   fxBlock.style.display   = showFx ? "block" : "none";
+  if (etfBlock)  etfBlock.style.display  = showEtf ? "block" : "none";
+
+  document.getElementById("goldList").innerHTML = goldItems.map(buildRowHtml).join("");
+  document.getElementById("fxList").innerHTML   = fxItems.map(buildRowHtml).join("");
+  const etfListEl = document.getElementById("etfList");
+  if (etfListEl) {
+    etfListEl.innerHTML = etfItems.length
+      ? etfItems.map(buildRowHtml).join("")
+      : `<div style="font-size:11.5px;color:var(--sec);padding:10px;background:var(--sub);border-radius:12px;text-align:center">${tr("برای نمایش صندوق‌های بورسی، روی «⚙️ انتخاب و اولویت» بزنید و صندوق دلخواه را فعال کنید.", "بۆ پیشاندانی سندووقەکانی بۆرسە، «هەڵبژاردن و پێشەنگی» بکەرەوە.", "Tap 'Watchlist & Priority' to enable Bourse ETFs.")}</div>`;
+  }
 }
 
 // Notes & Scheduled Time Alarms Management (Revolutionized Studio: Voice, Checklist, Priority, Colors, Tags, Progress)
@@ -6815,36 +7304,131 @@ async function addHubQuickNote() {
   renderAllNotes();
 }
 
-async function startVoiceNote(targetInputId) {
-  if (window.AndroidBridge && window.AndroidBridge.requestMicAndNotifPermissions) {
-    try { window.AndroidBridge.requestMicAndNotifPermissions(); } catch (e) {}
+let _activeVoiceBtn = null;
+let _activeSpeechRec = null;
+
+function setVoiceBtnState(btn, listening) {
+  if (!btn) return;
+  if (listening) {
+    btn.textContent = "⏹️";
+    btn.classList.add("voice-listening");
+  } else {
+    btn.textContent = "🎙️";
+    btn.classList.remove("voice-listening");
   }
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+}
+
+function appendSpokenText(targetInputId, transcript) {
+  const clean = String(transcript || "").trim();
+  if (!clean) return;
+  const el = document.getElementById(targetInputId);
+  if (!el) return;
+  const sep = el.tagName === "TEXTAREA" ? (el.value && !el.value.endsWith("\n") ? "\n" : "") : (el.value ? " " : "");
+  el.value = (el.value || "") + sep + clean;
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  el.focus();
+}
+
+window.onNativeVoiceResult = function(targetInputId, transcript) {
+  setVoiceBtnState(_activeVoiceBtn, false);
+  _activeVoiceBtn = null;
+  appendSpokenText(targetInputId, transcript);
+};
+
+window.onNativeVoiceError = function(reason) {
+  setVoiceBtnState(_activeVoiceBtn, false);
+  _activeVoiceBtn = null;
+  if (reason === "no_recognizer") {
+    showAppNotice(tr(
+      "سرویس تشخیص گفتار گوگل روی این دستگاه یافت نشد. از دکمه میکروفون کیبورد گوشی استفاده کنید.",
+      "خزمەتگوزاری دەنگی گووگڵ لەسەر ئەم ئامێرە نەدۆزرایەوە؛ مایکرۆفۆنی کیبۆرد بەکاربهێنە.",
+      "Speech recognition service was not found on this device. Use your keyboard microphone."
+    ));
+  }
+};
+
+async function startVoiceNote(targetInputId, evOrBtn = null) {
+  const btn = (evOrBtn && evOrBtn.currentTarget) ? evOrBtn.currentTarget : (evOrBtn || document.getElementById("voiceDictBtn"));
+
+  // 1) Native Android RecognizerIntent (reliable inside Android WebView)
+  if (window.AndroidBridge && typeof window.AndroidBridge.startVoiceDictation === "function") {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(tr => tr.stop());
-    } catch (e) {}
+      _activeVoiceBtn = btn;
+      setVoiceBtnState(btn, true);
+      window.AndroidBridge.startVoiceDictation(String(targetInputId || "hubQuickNoteInp"), String((cfg && cfg.lang) || "fa"));
+      setTimeout(() => {
+        if (_activeVoiceBtn === btn) {
+          setVoiceBtnState(btn, false);
+          _activeVoiceBtn = null;
+        }
+      }, 12000);
+      return;
+    } catch (e) {
+      setVoiceBtnState(btn, false);
+    }
   }
+
+  // 2) Browser Web Speech API (Chrome / Edge / Safari)
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-    showAppNotice("مجوز میکروفون بررسی شد. از دکمه میکروفون کیبورد گوشی برای دیکته صوتی استفاده کنید.");
+    showAppNotice(tr(
+      "مرورگر شما از تبدیل گفتار به متن پشتیبانی نمی‌کند. از دکمه میکروفون کیبورد استفاده کنید.",
+      "وێبگەڕەکەت پشتگیری گۆڕینی دەنگ بۆ دەق ناکات؛ مایکرۆفۆنی کیبۆرد بەکاربهێنە.",
+      "Your browser does not support Speech-to-Text. Please use your keyboard microphone."
+    ));
     return;
   }
+
+  if (_activeSpeechRec) {
+    try { _activeSpeechRec.stop(); } catch (e) {}
+    _activeSpeechRec = null;
+    setVoiceBtnState(btn, false);
+    return;
+  }
+
   const rec = new SR();
-  rec.lang = cfg.lang === "ku" ? "ckb-IR" : "fa-IR";
+  _activeSpeechRec = rec;
+  _activeVoiceBtn = btn;
+  rec.lang = (cfg && cfg.lang === "ku") ? "ckb-IQ" : ((cfg && cfg.lang === "en") ? "en-US" : "fa-IR");
   rec.interimResults = false;
-  const el = document.getElementById(targetInputId);
-  const vBtn = document.getElementById("voiceDictBtn");
-  if (vBtn) vBtn.textContent = "🔴";
+  rec.maxAlternatives = 1;
+  setVoiceBtnState(btn, true);
+
   rec.onresult = (e) => {
     const transcript = e.results?.[0]?.[0]?.transcript || "";
-    if (el && transcript) {
-      el.value = (el.value ? el.value + " " : "") + transcript;
+    appendSpokenText(targetInputId, transcript);
+  };
+  rec.onerror = (e) => {
+    setVoiceBtnState(btn, false);
+    _activeSpeechRec = null;
+    _activeVoiceBtn = null;
+    const errCode = e?.error || "";
+    if (errCode === "not-allowed" || errCode === "service-not-allowed") {
+      showAppNotice(tr(
+        "دسترسی به میکروفون مجاز نیست. لطفاً مجوز میکروفون را در تنظیمات مرورگر یا گوشی فعال کنید.",
+        "مۆڵەتی مایکرۆفۆن نەدراوە. لە ڕێکخستنی وێبگەڕ یان مۆبایل چالاکی بکە.",
+        "Microphone access is blocked. Please allow microphone permission in browser/device settings."
+      ));
+    } else if (errCode === "language-not-supported") {
+      showAppNotice(tr(
+        "زبان گفتاری انتخاب‌شده در این دستگاه پشتیبانی نمی‌شود.",
+        "زمانی دەنگی هەڵبژێردراو لەم ئامێرەدا پشتگیری ناکرێت.",
+        "Selected speech language is not supported on this device."
+      ));
     }
   };
-  rec.onend = () => { if (vBtn) vBtn.textContent = "🎙️"; };
-  rec.onerror = () => { if (vBtn) vBtn.textContent = "🎙️"; };
-  try { rec.start(); } catch (e) { if (vBtn) vBtn.textContent = "🎙️"; }
+  rec.onend = () => {
+    setVoiceBtnState(btn, false);
+    _activeSpeechRec = null;
+    _activeVoiceBtn = null;
+  };
+  try {
+    rec.start();
+  } catch (e) {
+    setVoiceBtnState(btn, false);
+    _activeSpeechRec = null;
+    _activeVoiceBtn = null;
+  }
 }
 
 function toggleChecklistItem(k, idx, lineIdx) {
