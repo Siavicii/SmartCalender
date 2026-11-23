@@ -1,6 +1,6 @@
 {
-  "version": "71.8",
+  "version": "72",
   "updated_at": "2026-11-23",
-  "notes": "گسترش پوشش تقویم و تعطیلات به بیش از ۱۳۰ کشور جهان همراه با پشتیبان داخلی چندمنبعی",
-  "apk_url": "https://github.com/Siavicii/SmartCal-Android/releases/latest"
+  "notes": "اصلاح فیلترهای مناسبت‌ها و تعطیلات کشور، جداسازی روزهای جهانی و بازگرداندن ایموجی مناسبت‌ها در نسخه ۷۲",
+  "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }
