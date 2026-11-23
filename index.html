@@ -2560,6 +2560,7 @@ html:not(.app-ready) .view.active {
    ========================================================================= */
 .nav {
   position: fixed !important;
+  top: auto !important;
   left: 14px !important;
   right: 14px !important;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
@@ -2585,9 +2586,9 @@ html:not(.app-ready) .view.active {
 #navActivePill {
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
   width: 25%;
+  height: 100%;
   border-radius: 999px;
   background: color-mix(in srgb, var(--pri) 16%, transparent);
   border: 1px solid color-mix(in srgb, var(--pri) 26%, transparent);
@@ -2595,8 +2596,42 @@ html:not(.app-ready) .view.active {
   pointer-events: none;
   z-index: 0;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.36s cubic-bezier(0.22, 1.16, 0.36, 1), width 0.36s cubic-bezier(0.22, 1.16, 0.36, 1), opacity 0.2s ease;
-  will-change: transform, width;
+  transition: transform 0.36s cubic-bezier(0.22, 1.16, 0.36, 1), width 0.36s cubic-bezier(0.22, 1.16, 0.36, 1), height 0.36s cubic-bezier(0.22, 1.16, 0.36, 1), opacity 0.2s ease;
+  will-change: transform, width, height;
+}
+/* Desktop & Widescreen (>= 1100px): Clean Floating Vertical Liquid Glass Side Rail */
+@media (min-width: 1100px) {
+  .nav,
+  [data-ui="ios26"] .nav,
+  [data-ui="android17"] .nav {
+    top: 50% !important;
+    bottom: auto !important;
+    right: 22px !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+    width: 96px !important;
+    max-width: 96px !important;
+    margin: 0 !important;
+    padding: 10px 8px !important;
+    border-radius: 28px !important;
+  }
+  html[dir="ltr"] .nav,
+  html[dir="ltr"] [data-ui="ios26"] .nav,
+  html[dir="ltr"] [data-ui="android17"] .nav {
+    left: 22px !important;
+    right: auto !important;
+  }
+  .nav-in {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  #navActivePill {
+    border-radius: 18px !important;
+  }
+  .nbtn {
+    border-radius: 18px !important;
+    padding: 11px 4px !important;
+  }
 }
 .nbtn {
   position: relative !important;
@@ -4655,18 +4690,22 @@ function updateNavActivePill(instant = false) {
   const actBtn = document.querySelector(".nav-in .nbtn.act");
   if (!pill || !navIn || !actBtn) return;
   const x = actBtn.offsetLeft;
+  const y = actBtn.offsetTop;
   const w = actBtn.offsetWidth;
-  if (!w) return;
+  const h = actBtn.offsetHeight;
+  if (!w || !h) return;
   if (instant) {
     const prevTr = pill.style.transition;
     pill.style.transition = "none";
     pill.style.width = w + "px";
-    pill.style.transform = `translate3d(${x}px, 0, 0)`;
+    pill.style.height = h + "px";
+    pill.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     void pill.offsetWidth;
     pill.style.transition = prevTr || "";
   } else {
     pill.style.width = w + "px";
-    pill.style.transform = `translate3d(${x}px, 0, 0)`;
+    pill.style.height = h + "px";
+    pill.style.transform = `translate3d(${x}px, ${y}px, 0)`;
   }
 }
 window.addEventListener("resize", () => updateNavActivePill(true));
