@@ -2338,12 +2338,12 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
         </div>
       </div>
       <div class="mhead">
-        <button class="ibtn" id="prev" title="ماه/سال قبل">❯</button>
+        <button class="ibtn" id="prev" title="ماه/سال قبل" aria-label="ماه قبل"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="9 18 15 12 9 6"/></svg></button>
         <div id="calHeaderTap" onclick="handleCalHeaderClick()" title="کلیک برای تمام‌صفحه و جابجایی ماهانه/سالانه" style="text-align:center;cursor:pointer;padding:2px 10px;border-radius:12px">
           <b id="jTit" style="font-size:16px"></b>
           <div id="gTit" style="font-size:11px;color:var(--sec);margin-top:2px"></div>
         </div>
-        <button class="ibtn" id="next" title="ماه/سال بعد">❮</button>
+        <button class="ibtn" id="next" title="ماه/سال بعد" aria-label="ماه بعد"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="15 18 9 12 15 6"/></svg></button>
       </div>
       <div id="calScrollArea" style="touch-action:pan-y;user-select:none;overflow-x:auto;scroll-behavior:smooth">
         <div id="monthWrap">
@@ -2919,7 +2919,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v70.1";
+  const VER = "v70.2";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -6640,7 +6640,7 @@ function renderYearTahvilCard(activeJy) {
   if (!box) return;
   if (_tahvilCountdownTimer) { clearInterval(_tahvilCountdownTimer); _tahvilCountdownTimer = null; }
 
-  const isLastDayOfYear = (sel.jm === 12 && sel.jd === jLen(sel.jy, 12));
+  const isLastDayOfYear = (sel.jm === 12 && sel.jd === mLen(sel.jy, 12));
   const isFirstDayOfYear = (sel.jm === 1 && sel.jd === 1);
   if (!isLastDayOfYear && !isFirstDayOfYear) {
     box.style.display = "none";
@@ -6754,7 +6754,7 @@ function renderYearTahvilCard(activeJy) {
 const HAPPY_KW_RE = /تولد|میلاد|سالگرد|ازدواج|عروسی|نامزدی|عقد|جشن|مبارک|ولنتاین|عشق|فارغ.?التحصیل|موفقیت|پیروزی|خوشبختی|به‌دنیا|به دنیا|birthday|anniversary|wedding|party|congrats|لەدایکبوون|هاوسەرگیری/i;
 
 function nextJalaliDay(jy, jm, jd) {
-  const len = jLen(jy, jm);
+  const len = mLen(jy, jm);
   if (jd < len) return { jy, jm, jd: jd + 1 };
   if (jm < 12) return { jy, jm: jm + 1, jd: 1 };
   return { jy: jy + 1, jm: 1, jd: 1 };
@@ -7296,8 +7296,8 @@ function render(){
 
   renderSunBox(sg.gy, sg.gm, sg.gd);
   renderYearTahvilCard(sel.jy);
-  if (typeof renderEmergencyHolidayBox === "function") renderEmergencyHolidayBox(sel.jy, sel.jm, sel.jd);
-  if (typeof renderHappyReminderAndCelebration === "function") renderHappyReminderAndCelebration(sel.jy, sel.jm, sel.jd);
+  try { if (typeof renderEmergencyHolidayBox === "function") renderEmergencyHolidayBox(sel.jy, sel.jm, sel.jd); } catch (e) {}
+  try { if (typeof renderHappyReminderAndCelebration === "function") renderHappyReminderAndCelebration(sel.jy, sel.jm, sel.jd); } catch (e) {}
   updateOpenNotesBadge();
   let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
   if (typeof getPersonalCalEventsForGDate === "function") {
