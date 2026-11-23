@@ -1,6 +1,6 @@
 {
   "version": "72",
   "updated_at": "2026-11-23",
-  "notes": "افزودن صندوق نقره نقران به لیست صندوق‌های بورسی در نسخه ۷۲",
+  "notes": "افزودن منبع جایگزین (TGJU و TSETMC) در صورت عدم دریافت نرخ صندوق‌های بورسی از rahavard365.com در نسخه ۷۲",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }

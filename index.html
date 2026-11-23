@@ -3100,11 +3100,9 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
             <div style="font-size:10px;color:var(--sec)">با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید</div>
           </div>
           <div style="display:flex;gap:5px">
-            <button type="button" class="ibtn" id="inspectTgjuBtn" onclick="inspectLiveTgjuKeys()" style="height:26px;padding:0 8px;font-size:10.5px;color:var(--pri);border-color:var(--pri)">🔎 کلیدهای TGJU</button>
             <button type="button" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
           </div>
         </div>
-        <div id="tgjuKeysDiagBox" style="display:none;padding:8px 10px;border-radius:12px;background:var(--card);border:1px solid var(--brd);font-size:10.5px;line-height:1.7;max-height:160px;overflow-y:auto;direction:ltr;text-align:left"></div>
         <div id="mktWatchItemsList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
       </div>
 
@@ -3237,7 +3235,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     </button>
     <button class="nbtn" id="nav-mkt" onclick="switchTab('mkt')">
       <svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15 9a6 6 0 1 1-6 6"/><path d="M9 7v4m-1.5-2h3"/></svg>
-      طلا و ارز
+      دارایی‌ها
     </button>
     <button class="nbtn" id="nav-fal" onclick="switchTab('fal')">
       <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>
@@ -5732,7 +5730,7 @@ function applyLanguageUI() {
   const navFal = document.getElementById("nav-fal");
   const navNotes = document.getElementById("nav-notes");
   if (navCal && navCal.lastChild) navCal.lastChild.textContent = " " + tr("تقویم", "ڕۆژژمێر", "Calendar");
-  if (navMkt && navMkt.lastChild) navMkt.lastChild.textContent = " " + tr("طلا و ارز", "زێڕ و دراو", "Markets");
+  if (navMkt && navMkt.lastChild) navMkt.lastChild.textContent = " " + tr("دارایی‌ها", "داراییەکان", "Assets");
   if (navFal && navFal.lastChild) navFal.lastChild.textContent = " " + tr("طالع و فال", "بەخت و فاڵ", "Horoscope");
   if (navNotes && navNotes.lastChild) navNotes.lastChild.textContent = " " + tr("یادداشت‌ها", "تێبینییەکان", "Notes");
 
@@ -5786,7 +5784,7 @@ function applyLanguageUI() {
   }
 
   // Market View
-  setTxt("#view-mkt .mkt-head b", "💰 نرخ لحظه‌ای طلا، سکه و ارز", "💰 نرخی زیندووی زێڕ و دراو", "💰 Live Gold, Coin & FX Rates");
+  setTxt("#mktMainHdrTitle", "💰 دارایی‌ها و نرخ لحظه‌ای", "💰 داراییەکان و نرخی زیندوو", "💰 Assets & Live Rates");
   setTxt("#mktRefreshBtn", "🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh");
   const mktGoldB = document.querySelector("#mktGoldBlock > b");
   const mktFxB = document.querySelector("#mktFxBlock > b");
@@ -6642,19 +6640,201 @@ async function fetchTgjuLive(bust = "") {
           chf:       pickKey(["price_chf", "chf"], true),
           cny:       pickKey(["price_cny", "cny", "price_yuan"], true),
           sar:       pickKey(["price_sar", "sar"], true),
-          iqd1k:     pickKey(["price_iqd", "iqd"], true),
-          etf_ayar:    pickKey(["etf_ayar", "ayar", "bourse_ayar"], true),
-          etf_mesghal: pickKey(["etf_mesghal", "mesghal", "bourse_mesghal"], true),
-          etf_gohar:   pickKey(["etf_gohar", "gohar", "bourse_gohar"], true),
-          etf_noghran: pickKey(["etf_noghran", "noghran_silver", "noghran_etf", "noghran"], true),
-          etf_noghreh: pickKey(["etf_noghreh", "noghreh_etf", "silver_etf", "bourse_silver"], true),
-          etf_simorgh: pickKey(["etf_simorgh", "simorgh_silver", "simorgh_etf", "simorgh"], true),
-          etf_saat:    pickKey(["etf_saat", "saat_silver", "saat_etf", "saat"], true)
+          iqd1k:     pickKey(["price_iqd", "iqd"], true)
         }
       };
     }
   } catch (e) {}
   return null;
+}
+
+const RAHAVARD_ETF_SYMBOLS = {
+  etf_ayar:    ["عیار", "AYAR"],
+  etf_mesghal: ["مثقال", "MESGHAL"],
+  etf_gohar:   ["گوهر", "GOHAR"],
+  etf_noghreh: ["نقره", "NOGHREH", "SILVER"],
+  etf_simorgh: ["سیمرغ", "SIMORGH"],
+  etf_saat:    ["ساعت", "SAAT"],
+  etf_noghran: ["نقران", "NOGHRAN"]
+};
+
+function parseRahavardPriceToToman(rawVal) {
+  const num = Number(String(rawVal ?? "").replace(/,/g, "").trim());
+  if (!isFinite(num) || num <= 0) return 0;
+  // Rahavard365 / TSETMC quotes may arrive in Rials (10x Toman) or Tomans
+  return num >= 200000 ? Math.round(num / 10) : Math.round(num);
+}
+
+function extractEtfEntryFromObj(obj, targetSyms) {
+  if (!obj || typeof obj !== "object") return null;
+  const symStr = String(obj.symbol || obj.ticker || obj.name || obj.title || obj.fa || obj.en || "").trim();
+  if (!symStr) return null;
+  const matched = targetSyms.some(s => symStr === s || symStr.includes(s) || symStr.toUpperCase().includes(String(s).toUpperCase()));
+  if (!matched) return null;
+  const rawPrice = obj.last_price ?? obj.last ?? obj.close ?? obj.price ?? obj.p ?? obj.nav ?? obj.final_price ?? 0;
+  const tomanP = parseRahavardPriceToToman(rawPrice);
+  if (tomanP <= 0) return null;
+  const rawChg = obj.change_percent ?? obj.dp ?? obj.pct_change ?? obj.changePct ?? obj.change ?? obj.c ?? null;
+  let chgStr = "+0.00%";
+  if (rawChg !== null && rawChg !== undefined && rawChg !== "") {
+    const cleaned = String(rawChg).replace("%", "").trim();
+    const chgNum = Number(cleaned);
+    if (isFinite(chgNum)) chgStr = fmtPct(chgNum, "+0.00%");
+  }
+  return { p: tomanP, c: chgStr, unit: "toman", src: "rahavard365.com" };
+}
+
+function scanRahavardJsonForEtfs(payload) {
+  const found = {};
+  const walk = (node) => {
+    if (!node) return;
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+      return;
+    }
+    if (typeof node === "object") {
+      Object.keys(RAHAVARD_ETF_SYMBOLS).forEach(ico => {
+        if (!found[ico]) {
+          const hit = extractEtfEntryFromObj(node, RAHAVARD_ETF_SYMBOLS[ico]);
+          if (hit) found[ico] = hit;
+        }
+      });
+      Object.values(node).forEach(v => {
+        if (v && typeof v === "object") walk(v);
+      });
+    }
+  };
+  walk(payload);
+  return found;
+}
+
+function scanRahavardHtmlForEtfs(htmlTxt) {
+  const found = {};
+  if (!htmlTxt || typeof htmlTxt !== "string") return found;
+  const plain = htmlTxt.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
+  Object.keys(RAHAVARD_ETF_SYMBOLS).forEach(ico => {
+    const syms = RAHAVARD_ETF_SYMBOLS[ico];
+    for (const sym of syms) {
+      const escSym = sym.replace(/[.*+?^${}()|[\]\]/g, "\$&");
+      const re = new RegExp(escSym + "[^0-9۰-۹\-]{0,45}([0-9۰-۹,]{3,12})(?:[^0-9۰-۹%\-]{0,25}([+\-]?[0-9۰-۹.]+)\s*%)?", "i");
+      const m = plain.match(re);
+      if (m && m[1]) {
+        const latNum = m[1].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/,/g, "");
+        const tomanP = parseRahavardPriceToToman(latNum);
+        if (tomanP >= 500 && tomanP <= 500000000) {
+          let chgStr = "+0.00%";
+          if (m[2]) {
+            const latChg = m[2].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+            const cn = Number(latChg);
+            if (isFinite(cn)) chgStr = fmtPct(cn, "+0.00%");
+          }
+          found[ico] = { p: tomanP, c: chgStr, unit: "toman", src: "rahavard365.com" };
+          break;
+        }
+      }
+    }
+  });
+  return found;
+}
+
+async function fetchRahavardEtfs(bust = "") {
+  const endpoints = [
+    "https://rahavard365.com/api/v2/market/symbols?market=bourse&type=etf",
+    "https://rahavard365.com/api/v1/market/symbols?category=etf",
+    "https://rahavard365.com/api/v2/symbols?type=gold_etf",
+    "https://rahavard365.com/asset/gold-etf",
+    "https://rahavard365.com/asset/etf",
+    "https://rahavard365.com/stock-market"
+  ];
+  const results = await Promise.all(
+    endpoints.map(async (ep) => {
+      const url = ep + (ep.includes("?") ? "&" : "?") + "_=" + bust;
+      const txt = await fetchTextViaProxy(url, 5500);
+      if (!txt) return {};
+      try {
+        const parsed = JSON.parse(txt);
+        return scanRahavardJsonForEtfs(parsed);
+      } catch (e) {
+        return scanRahavardHtmlForEtfs(txt);
+      }
+    })
+  );
+  const merged = {};
+  results.forEach(res => {
+    if (res && typeof res === "object") {
+      Object.keys(res).forEach(k => {
+        if (!merged[k]) merged[k] = res[k];
+      });
+    }
+  });
+  return merged;
+}
+
+async function fetchFallbackBourseEtfs(bust = "", tgjuLive = null) {
+  const found = {};
+  // 1. Check TGJU live feed for any ETF keys if present
+  try {
+    const qs = bust ? "?_=" + bust : "";
+    let txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json" + qs, 5000);
+    if (!txt) txt = await fetchTextViaProxy("https://call4.tgju.org/ajax.json" + qs, 5000);
+    if (txt) {
+      const cur = JSON.parse(txt)?.current || {};
+      const keyCandidates = {
+        etf_ayar:    ["etf_ayar", "ayar", "bourse_ayar", "price_ayar"],
+        etf_mesghal: ["etf_mesghal", "mesghal", "bourse_mesghal", "price_mesghal"],
+        etf_gohar:   ["etf_gohar", "gohar", "bourse_gohar", "price_gohar"],
+        etf_noghreh: ["etf_noghreh", "noghreh_etf", "silver_etf", "bourse_silver", "price_silver_etf"],
+        etf_simorgh: ["etf_simorgh", "simorgh_silver", "simorgh_etf", "simorgh"],
+        etf_saat:    ["etf_saat", "saat_silver", "saat_etf", "saat"],
+        etf_noghran: ["etf_noghran", "noghran_silver", "noghran_etf", "noghran"]
+      };
+      Object.keys(keyCandidates).forEach(ico => {
+        for (const k of keyCandidates[ico]) {
+          const node = cur[k];
+          if (node && node.p) {
+            const rawNum = Number(String(node.p).replace(/,/g, ""));
+            const tomanP = rawNum >= 200000 ? Math.round(rawNum / 10) : Math.round(rawNum);
+            if (tomanP > 0) {
+              const dpNum = (node.dt === "low" ? -1 : 1) * Math.abs(Number(node.dp || 0));
+              found[ico] = { p: tomanP, c: fmtPct(dpNum, "+0.00%"), unit: "toman", src: "tgju.org" };
+              break;
+            }
+          }
+        }
+      });
+    }
+  } catch (e) {}
+
+  // 2. Fallback to TSETMC / Iranian bourse market pages when still missing
+  const missing = Object.keys(RAHAVARD_ETF_SYMBOLS).filter(k => !found[k]);
+  if (missing.length) {
+    const bourseUrls = [
+      "https://www.tsetmc.com/Loader.aspx?ParTree=15",
+      "https://tsetmc.ir/",
+      "https://www.irbourse.com/"
+    ];
+    const bourseRes = await Promise.all(
+      bourseUrls.map(async (u) => {
+        const bTxt = await fetchTextViaProxy(u, 5000);
+        if (!bTxt) return {};
+        try {
+          return scanRahavardJsonForEtfs(JSON.parse(bTxt));
+        } catch (e) {
+          return scanRahavardHtmlForEtfs(bTxt);
+        }
+      })
+    );
+    bourseRes.forEach(res => {
+      if (res && typeof res === "object") {
+        Object.keys(res).forEach(k => {
+          if (!found[k] && res[k] && res[k].p > 0) {
+            found[k] = { ...res[k], src: res[k].src || "tsetmc.com" };
+          }
+        });
+      }
+    });
+  }
+  return found;
 }
 
 async function fetchCryptoIrStats(bust = "") {
@@ -6754,11 +6934,14 @@ async function fetchMarket(manual = false) {
 
   const bust = String(Date.now());
   try {
-    const [tgju, cryptoIr, globalData] = await Promise.all([
+    const [tgju, cryptoIr, globalData, rahavardEtfs] = await Promise.all([
       fetchTgjuLive(bust),
       fetchCryptoIrStats(bust),
-      fetchGlobalFxAndGold()
+      fetchGlobalFxAndGold(),
+      fetchRahavardEtfs(bust)
     ]);
+    const fallbackEtfs = await fetchFallbackBourseEtfs(bust, tgju);
+    const mergedEtfs = { ...(fallbackEtfs || {}), ...(rahavardEtfs || {}) };
 
     let usdPrice = 0, srcName = "";
     if (tgju?.usd?.p >= 50000) { usdPrice = tgju.usd.p; srcName = "TGJU زنده"; }
@@ -6815,7 +6998,8 @@ async function fetchMarket(manual = false) {
         { ico: "try", n: "لیر ترکیه (TRY)", p: tryPrice, c: tgju?.tryP?.dp ? fmtPct(tgju.tryP.dp, b.chg.tryP) : dynPct(tryPrice, b.tryP, b.chg.tryP) },
         { ico: "cad", n: "دلار کانادا (CAD)", p: cadPrice, c: tgju?.cad?.dp ? fmtPct(tgju.cad.dp, b.chg.cad) : dynPct(cadPrice, b.cad, b.chg.cad) }
       ],
-      liveExtra: tgju?.liveExtra || null
+      liveExtra: tgju?.liveExtra || null,
+      rahavardEtfs: mergedEtfs
     };
 
     localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(payload));
@@ -7015,16 +7199,18 @@ function enrichMarketData(d) {
   const sarP = Math.round(usd * 0.2666 / 10) * 10;
   const iqd1kP = Math.max(100, Math.round(usd * 0.00076 / 5) * 5);
 
-  // Realistic Bourse Gold ETF scaling anchored to 18K 1g gold & live TGJU ETF keys when present
-  const etfBaseUnit = Math.max(1000, Math.round((g18P * 1.28) / 100) * 100);
-  const etfDefs = [
-    { ico: "etf_ayar",    mult: 1.00, c: g18Obj.c || "+0.35%" },
-    { ico: "etf_mesghal", mult: 1.04, c: "+0.41%" },
-    { ico: "etf_gohar",   mult: 0.97, c: "+0.28%" },
-    { ico: "etf_kahroba", mult: 1.02, c: "+0.39%" },
-    { ico: "etf_lotus",   mult: 0.96, c: "+0.31%" },
-    { ico: "etf_zar",     mult: 1.01, c: "+0.34%" }
-  ];
+  // Live ETF prices sourced directly from rahavard365.com (zero synthetic/estimated prices)
+  const rEtfs = (d && d.rahavardEtfs) || {};
+  const etfCatalogIds = ["etf_ayar", "etf_mesghal", "etf_gohar", "etf_noghreh", "etf_simorgh", "etf_saat", "etf_noghran"];
+  etfCatalogIds.forEach(ico => {
+    const meta = MKT_NAME_I18N[ico] || { fa: ico };
+    const hit = rEtfs[ico];
+    if (hit && hit.p > 0) {
+      allItemsMap.set(ico, { ico, n: meta.fa, p: hit.p, c: hit.c || "+0.00%", unit: "toman", rahavardLive: true });
+    } else {
+      allItemsMap.set(ico, { ico, n: meta.fa, p: null, c: null, unit: "toman", rahavardLive: false });
+    }
+  });
 
   const allItemsMap = new Map();
   (d.gold || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: x.ico === "ounce" ? "usd" : "toman" }));
@@ -7063,74 +7249,74 @@ function enrichMarketData(d) {
     allItemsMap.set(e.ico, { ico: e.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
   });
 
-  etfDefs.forEach(ef => {
-    const meta = MKT_NAME_I18N[ef.ico] || { fa: ef.ico };
-    const formulaP = Math.round((etfBaseUnit * ef.mult) / 100) * 100;
-    const res = resolveTgjuOrFormula(ef.ico, formulaP, ef.c, "toman");
-    allItemsMap.set(ef.ico, { ico: ef.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
-  });
+
 
   return allItemsMap;
 }
 
 function getAssetIconHtml(ico) {
-  if (ico === "silver_g" || ico === "silver_oz") return getAssetBadgeSvg("Ag", "#E2E8F0", "#0F172A");
-  if (ico === "plat_oz") return getAssetBadgeSvg("Pt", "#CBD5E1", "#1E293B");
-  if (ico === "pall_oz") return getAssetBadgeSvg("Pd", "#DDD6FE", "#4C1D95");
-  if (ico === "chf") return getAssetBadgeSvg("CHF", "#FEE2E2", "#B91C1C");
-  if (ico === "cny") return getAssetBadgeSvg("CNY", "#FEF3C7", "#B45309");
-  if (ico === "sar") return getAssetBadgeSvg("SAR", "#DCFCE7", "#15803D");
-  if (ico === "iqd1k") return getAssetBadgeSvg("IQD", "#E0F2FE", "#0369A1");
+  const flagFrame = (inner) => `
+    <span style="width:38px;height:28px;border-radius:8px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(148,163,184,0.28);box-shadow:0 3px 8px rgba(0,0,0,0.18);background:#1E293B">
+      <svg viewBox="0 0 48 36" width="38" height="28" style="display:block;width:100%;height:100%">${inner}</svg>
+    </span>`;
+
+  const metalBadge = (codeTxt, c1, c2, fgHex) => `
+    <span style="width:38px;height:36px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.22)">
+      <svg viewBox="0 0 44 42" width="38" height="36" style="display:block">
+        <defs><linearGradient id="m_${ico}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs>
+        <rect x="2" y="2" width="40" height="38" rx="12" fill="url(#m_${ico})" stroke="rgba(255,255,255,0.32)" stroke-width="1.2"/>
+        <polygon points="9,30 13.5,16 30.5,16 35,30" fill="rgba(255,255,255,0.24)" stroke="${fgHex}" stroke-width="1.1"/>
+        <text x="22" y="26" font-size="9.5" font-weight="900" fill="${fgHex}" text-anchor="middle">${codeTxt}</text>
+      </svg>
+    </span>`;
+
+  if (ico === "silver_g" || ico === "silver_oz") return metalBadge("Ag", "#E2E8F0", "#64748B", "#0F172A");
+  if (ico === "plat_oz") return metalBadge("Pt", "#CBD5E1", "#475569", "#0F172A");
+  if (ico === "pall_oz") return metalBadge("Pd", "#DDD6FE", "#5B21B6", "#1E1B4B");
+
+  if (ico === "chf") return flagFrame(`
+    <rect width="48" height="36" fill="#DA291C"/>
+    <rect x="20.5" y="8" width="7" height="20" rx="1" fill="#FFFFFF"/>
+    <rect x="14" y="14.5" width="20" height="7" rx="1" fill="#FFFFFF"/>
+  `);
+  if (ico === "cny") return flagFrame(`
+    <rect width="48" height="36" fill="#DE2910"/>
+    <polygon points="11,8 12.6,12.8 17.6,12.8 13.6,15.7 15.1,20.5 11,17.6 6.9,20.5 8.4,15.7 4.4,12.8 9.4,12.8" fill="#FFDE00"/>
+    <circle cx="21" cy="7.5" r="1.4" fill="#FFDE00"/><circle cx="23.5" cy="11" r="1.4" fill="#FFDE00"/>
+    <circle cx="23.5" cy="15.5" r="1.4" fill="#FFDE00"/><circle cx="21" cy="19" r="1.4" fill="#FFDE00"/>
+  `);
+  if (ico === "sar") return flagFrame(`
+    <rect width="48" height="36" fill="#165B33"/>
+    <rect x="9" y="10" width="30" height="3.5" rx="1.5" fill="#FFFFFF"/>
+    <rect x="13" y="15.5" width="22" height="3" rx="1.2" fill="#FFFFFF"/>
+    <rect x="11" y="23.5" width="26" height="2.4" rx="1" fill="#FFFFFF"/>
+    <line x1="11" y1="27.5" x2="37" y2="27.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  `);
+  if (ico === "iqd1k") return flagFrame(`
+    <rect y="0" width="48" height="12" fill="#CE1126"/>
+    <rect y="12" width="48" height="12" fill="#FFFFFF"/>
+    <rect y="24" width="48" height="12" fill="#000000"/>
+    <text x="24" y="20.5" font-size="6.8" font-weight="900" fill="#007A3D" text-anchor="middle">الله أكبر</text>
+  `);
+
   if (ico.startsWith("etf_")) {
-    const shortMap = { etf_ayar: "عیار", etf_mesghal: "مثقال", etf_gohar: "گوهر", etf_noghreh: "نقره", etf_simorgh: "سیمرغ", etf_saat: "ساعت", etf_noghran: "نقران" };
-    return getAssetBadgeSvg(shortMap[ico] || "ETF", "rgba(245,158,11,0.18)", "#D97706");
+    const fundBadgeMap = {
+      etf_ayar:    { lbl: "عیار",   bg: "linear-gradient(135deg,#FBBF24,#B45309)", fg: "#1C1917" },
+      etf_mesghal: { lbl: "مثقال",  bg: "linear-gradient(135deg,#F59E0B,#92400E)", fg: "#FFFBEB" },
+      etf_gohar:   { lbl: "گوهر",   bg: "linear-gradient(135deg,#FDE047,#CA8A04)", fg: "#1E293B" },
+      etf_noghreh: { lbl: "نقره",   bg: "linear-gradient(135deg,#E2E8F0,#64748B)", fg: "#0F172A" },
+      etf_simorgh: { lbl: "سیمرغ",  bg: "linear-gradient(135deg,#94A3B8,#334155)", fg: "#F8FAFC" },
+      etf_saat:    { lbl: "ساعت",   bg: "linear-gradient(135deg,#CBD5E1,#475569)", fg: "#FFFFFF" },
+      etf_noghran: { lbl: "نقران",  bg: "linear-gradient(135deg,#BAE6FD,#0369A1)", fg: "#082F49" }
+    };
+    const fb = fundBadgeMap[ico] || { lbl: "ETF", bg: "linear-gradient(135deg,#F59E0B,#B45309)", fg: "#FFFFFF" };
+    return `<span style="min-width:44px;height:36px;padding:0 6px;border-radius:12px;background:${fb.bg};color:${fb.fg};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;border:1px solid rgba(255,255,255,0.28);box-shadow:0 3px 9px rgba(0,0,0,0.2)">${esc(fb.lbl)}</span>`;
   }
+
   return getMarketSvg(ico);
 }
 
 
-async function inspectLiveTgjuKeys() {
-  const box = document.getElementById("tgjuKeysDiagBox");
-  const btn = document.getElementById("inspectTgjuBtn");
-  if (!box) return;
-  box.style.display = "block";
-  box.style.direction = "rtl";
-  box.style.textAlign = "right";
-  box.textContent = "⏳ در حال دریافت و بررسی کلیدهای زنده از TGJU...";
-  if (btn) btn.disabled = true;
-
-  const bust = String(Date.now());
-  let txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json?_=" + bust, 6500);
-  if (!txt) txt = await fetchTextViaProxy("https://call4.tgju.org/ajax.json?_=" + bust, 6500);
-
-  if (btn) btn.disabled = false;
-  if (!txt) {
-    box.textContent = "⚠️ امکان دسترسی مستقیم به فید TGJU در این لحظه وجود نداشت؛ برنامه از نرخ‌های پایه و محاسبات زنده استفاده می‌کند.";
-    return;
-  }
-
-  try {
-    const cur = JSON.parse(txt)?.current || {};
-    const matched = Object.keys(cur)
-      .filter(k => /silver|noghreh|ons|xag|xpt|xpd|plat|pall|chf|cny|sar|iqd|eur|gbp|aed|try|cad|etf|geram|sek|dollar/i.test(k))
-      .sort();
-
-    if (!matched.length) {
-      box.textContent = "ℹ️ کلیدهای تطبیق‌یافته در current یافت نشد.";
-      return;
-    }
-
-    box.style.direction = "ltr";
-    box.style.textAlign = "left";
-    box.innerHTML = `<div style="direction:rtl;text-align:right;font-weight:800;color:var(--pri);margin-bottom:4px">✅ ${fa(matched.length)} کلید زنده در TGJU پیدا شد:</div>` +
-      matched.map(k => {
-        const node = cur[k] || {};
-        return `<div><b>${esc(k)}</b>: p=${esc(node.p || "")} | dp=${esc(node.dp || "")} | dt=${esc(node.dt || "")}</div>`;
-      }).join("");
-  } catch (e) {
-    box.textContent = "⚠️ خطا در خواندن ساختار JSON فید TGJU.";
-  }
-}
 
 function renderMarket(d, isCached) {
   if (d) lastMarketPayload = d;
@@ -7165,18 +7351,29 @@ function renderMarket(d, isCached) {
   const buildRowHtml = prefItem => {
     const x = dataMap.get(prefItem.ico);
     if (!x) return "";
+    const itemName = MKT_NAME_I18N[x.ico]?.[l] || prefItem[l] || x.n;
+    const starBadge = prefItem.star ? `<span class="mkt-prio-tag">⭐ ${tr("ویژه", "تایبەت", "Priority")}</span>` : "";
+    if (x.p === null || x.p === undefined) {
+      const noRateLbl = tr("نرخ فعلاً در دسترس نیست", "نرخ لەم کاتەدا بەردەست نییە", "Rate currently unavailable");
+      return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
+        <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
+        <div class="mkt-val">
+          <div class="mkt-price" style="font-size:11.5px;color:var(--sec)">${esc(noRateLbl)}</div>
+          <span style="color:var(--sec);font-size:10px">rahavard365 / tsetmc</span>
+        </div>
+      </div>`;
+    }
     const isNeg = String(x.c).startsWith("-");
     const isZero = String(x.c) === "0.00%";
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
-    const itemName = MKT_NAME_I18N[x.ico]?.[l] || prefItem[l] || x.n;
     const unitStr = x.unit === "usd" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
-    const starBadge = prefItem.star ? `<span class="mkt-prio-tag">⭐ ${tr("ویژه", "تایبەت", "Priority")}</span>` : "";
+    const subMeta = x.rahavardLive ? `rahavard365 • ${fa(x.c)}` : fa(x.c);
     return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
       <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
       <div class="mkt-val">
         <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${unitStr}</span></div>
-        <span style="color:${badgeColor};font-size:11px;font-weight:700;direction:ltr;display:inline-block">${arrow}${fa(x.c)}</span>
+        <span style="color:${badgeColor};font-size:10.5px;font-weight:700;direction:ltr;display:inline-block">${arrow}${subMeta}</span>
       </div>
     </div>`;
   };
