@@ -2198,6 +2198,77 @@ body {
   box-shadow: 0 8px 20px rgba(236,72,153,0.35);
 }
 
+
+/* In-App Smart Update Banner (v70.3) */
+#appUpdateBanner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  z-index: 99990;
+  display: none;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 13px 14px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--pri);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+  animation: slideUpUpd 0.35s cubic-bezier(.22,1.2,.36,1);
+}
+#appUpdateBanner.open { display: block; }
+@keyframes slideUpUpd {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.upd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.upd-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--pri);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.upd-desc {
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--txt);
+  margin-bottom: 10px;
+}
+.upd-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.upd-btn-main {
+  flex: 1;
+  background: var(--pri);
+  color: var(--onpri);
+  border: none;
+  border-radius: 11px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.upd-btn-later {
+  background: var(--sub);
+  color: var(--sec);
+  border: 1px solid var(--brd);
+  border-radius: 11px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2919,7 +2990,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v70.2";
+  const VER = "v70.3";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -9639,6 +9710,115 @@ function resetCardOrder() {
 // Re-apply saved order on startup & whenever Horoscope re-renders
 setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
+
+
+// ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
+const APP_CURRENT_VER = "70.3";
+let _pendingUpdateInfo = null;
+
+function cmpSemVer(a, b) {
+  const pa = String(a || "0").replace(/^v/i, "").split(".").map(n => parseInt(n, 10) || 0);
+  const pb = String(b || "0").replace(/^v/i, "").split(".").map(n => parseInt(n, 10) || 0);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const x = pa[i] || 0, y = pb[i] || 0;
+    if (x > y) return 1;
+    if (x < y) return -1;
+  }
+  return 0;
+}
+
+function isAndroidAppEnv() {
+  return !!(window.AndroidBridge || location.protocol === "file:" || location.hostname === "appassets.androidplatform.net");
+}
+
+function showAppUpdateBanner(info) {
+  const el = document.getElementById("appUpdateBanner");
+  if (!el || !info || !info.version) return;
+  _pendingUpdateInfo = info;
+  const verEl = document.getElementById("updBannerVer");
+  const descEl = document.getElementById("updBannerDesc");
+  const btnEl = document.getElementById("updNowBtn");
+  if (verEl) verEl.textContent = "v" + String(info.version).replace(/^v/i, "");
+  if (descEl) {
+    descEl.textContent = info.notes
+      ? `تغییرات نسخه جدید: ${info.notes}`
+      : "نسخه جدید SmartCal با امکانات و اصلاحات تازه منتشر شد. برای تجربه بهتر همین حالا بروزرسانی کنید.";
+  }
+  if (btnEl) {
+    btnEl.textContent = isAndroidAppEnv() ? "⬇️ دانلود و نصب نسخه جدید" : "🔄 بروزرسانی فوری";
+  }
+  el.classList.add("open");
+}
+
+function dismissAppUpdateBanner() {
+  const el = document.getElementById("appUpdateBanner");
+  if (el) el.classList.remove("open");
+  if (_pendingUpdateInfo && _pendingUpdateInfo.version) {
+    localStorage.setItem("smartcal_upd_dismiss_ver", String(_pendingUpdateInfo.version));
+    localStorage.setItem("smartcal_upd_dismiss_ts", String(Date.now()));
+  }
+}
+
+async function applyAppUpdateNow() {
+  if (isAndroidAppEnv()) {
+    const url = (_pendingUpdateInfo && _pendingUpdateInfo.apk_url) || "https://github.com/Siavicii/SmartCal-Android/releases/latest";
+    window.open(url, "_blank");
+    dismissAppUpdateBanner();
+    return;
+  }
+  // Web / PWA: clear caches and hard reload
+  try {
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+    if ("serviceWorker" in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.update()));
+    }
+  } catch (e) {}
+  location.reload(true);
+}
+
+async function checkForAppUpdate(manual = false) {
+  const isAnd = isAndroidAppEnv();
+  const urls = isAnd
+    ? [
+        "https://raw.githubusercontent.com/Siavicii/SmartCal-Android/main/version.json",
+        "https://raw.githubusercontent.com/Siavicii/SmartCal-Android/main/app/src/main/assets/www/version.json"
+      ]
+    : [
+        "./version.json",
+        "https://raw.githubusercontent.com/Siavicii/SmartCal-Android/main/version.json"
+      ];
+
+  for (const u of urls) {
+    try {
+      const r = await fetch(u + (u.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) continue;
+      const data = await r.json();
+      if (!data || !data.version) continue;
+      if (cmpSemVer(data.version, APP_CURRENT_VER) > 0) {
+        const disVer = localStorage.getItem("smartcal_upd_dismiss_ver");
+        const disTs = Number(localStorage.getItem("smartcal_upd_dismiss_ts") || 0);
+        if (!manual && disVer === String(data.version) && (Date.now() - disTs) < 86400000) {
+          return false;
+        }
+        showAppUpdateBanner(data);
+        return true;
+      } else {
+        if (manual) alert(`✅ برنامه شما به‌روز است (نسخه فعلی: v${APP_CURRENT_VER}).`);
+        return false;
+      }
+    } catch (e) {}
+  }
+  if (manual) alert("⚠️ امکان بررسی بروزرسانی وجود ندارد. اتصال اینترنت را بررسی کنید.");
+  return false;
+}
+
+setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 2600);
+
 </script>
 
 <!-- Universal Themed Select / Dropdown Picker Sheet -->
@@ -9693,6 +9873,20 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
     <div class="cel-title" id="celTitle">مبارک باد!</div>
     <div class="cel-sub" id="celSub"></div>
     <button type="button" class="cel-close-btn" onclick="closeCelebration()">✨ ممنونم!</button>
+  </div>
+</div>
+
+
+<!-- In-App Update Notification Banner -->
+<div id="appUpdateBanner" role="dialog" aria-live="polite">
+  <div class="upd-head">
+    <span class="upd-title" id="updBannerTitle">🚀 نسخه جدید منتشر شد!</span>
+    <span class="tag" id="updBannerVer" style="font-size:10.5px;font-weight:800;direction:ltr"></span>
+  </div>
+  <div class="upd-desc" id="updBannerDesc">نسخه جدید تقویم هوشمند آماده است. برای دریافت آخرین امکانات و اصلاحات همین حالا بروزرسانی کنید.</div>
+  <div class="upd-actions">
+    <button type="button" class="upd-btn-main" id="updNowBtn" onclick="applyAppUpdateNow()">⬇️ بروزرسانی سریع</button>
+    <button type="button" class="upd-btn-later" onclick="dismissAppUpdateBanner()">بعداً</button>
   </div>
 </div>
 
