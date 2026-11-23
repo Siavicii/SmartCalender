@@ -2065,6 +2065,139 @@ body {
   color: var(--sec);
 }
 
+
+/* Festive Celebration Overlay & Smart Happy Occasion Banners (v70.1) */
+#happyBannerBox {
+  margin-top: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 7px;
+}
+.happy-card {
+  padding: 11px 13px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(236,72,153,0.14), rgba(139,92,246,0.14), rgba(245,158,11,0.12));
+  border: 1px solid rgba(236,72,153,0.38);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.happy-card.reminder-tomorrow {
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.11));
+  border-color: rgba(59,130,246,0.36);
+}
+.happy-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.happy-card-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--pri);
+}
+.happy-card-desc {
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--txt);
+}
+.happy-btn {
+  background: var(--pri);
+  color: var(--onpri);
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+#celebrationOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 24, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 20px;
+}
+#celebrationOverlay.open {
+  display: flex;
+  animation: fadeInCel 0.35s ease;
+}
+@keyframes fadeInCel {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+#celebrationCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100000;
+}
+.cel-modal {
+  position: relative;
+  z-index: 100001;
+  width: min(360px, 92vw);
+  background: var(--card);
+  color: var(--txt);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  border-radius: 24px;
+  padding: 24px 20px 18px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  animation: popCel 0.45s cubic-bezier(.22,1.28,.36,1);
+}
+@keyframes popCel {
+  0% { transform: scale(0.75) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.cel-emoji {
+  font-size: 52px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  display: inline-block;
+  animation: bounceCel 1.2s ease-in-out infinite;
+}
+@keyframes bounceCel {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-7px) scale(1.08); }
+}
+.cel-title {
+  font-size: 19px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #F59E0B, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+.cel-sub {
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--txt);
+  margin-bottom: 16px;
+}
+.cel-close-btn {
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(236,72,153,0.35);
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2236,6 +2369,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div id="sunTimesBox" style="margin-top:9px;padding:8px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:8px"></div>
       <div id="yearTahvilBox" style="margin-top:8px;padding:9px 11px;border-radius:13px;background:var(--sub);border:1px solid var(--brd)"></div>
       <div id="emergencyHolBox"></div>
+      <div id="happyBannerBox"></div>
       <div id="evBox"></div>
       <div class="note-box">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
@@ -2785,7 +2919,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v68.7";
+  const VER = "v70.1";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -2923,79 +3057,8 @@ const toG=(y,m,d)=>d2g(j2d(y,m,d)),toJ=(y,m,d)=>d2j(g2d(y,m,d));
 const wDay=(y,m,d)=>{const g=toG(y,m,d);return(new Date(g.gy,g.gm-1,g.gd).getDay()+1)%7};
 
 // Official Iranian Calendar Events & Holidays
-const BASE_EV={
-  // فروردین
-  "1-1":[["جشن نوروز و آغاز سال نو (تعطیل رسمی)",1]],
-  "1-2":[["عید نوروز (تعطیل رسمی)",1]],
-  "1-3":[["عید نوروز (تعطیل رسمی)",1]],
-  "1-4":[["عید نوروز (تعطیل رسمی)",1]],
-  "1-6":[["زادروز زرتشت پیامبر و روز امید",0]],
-  "1-12":[["روز جمهوری اسلامی ایران (تعطیل رسمی)",1]],
-  "1-13":[["جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)",1]],
-  "1-19":[["جشن فروردینگان",0]],
-  "1-25":[["روز بزرگداشت عطار نیشابوری",0]],
-  // اردیبهشت
-  "2-1":[["روز بزرگداشت سعدی",0]],
-  "2-3":[["جشن اردیبهشتگان و روز بزرگداشت شیخ بهایی",0]],
-  "2-10":[["روز ملی خلیج فارس",0]],
-  "2-12":[["روز معلم",0]],
-  "2-25":[["روز بزرگداشت فردوسی و پاسداشت زبان فارسی",0]],
-  "2-28":[["روز بزرگداشت حکیم عمر خیام",0]],
-  // خرداد
-  "3-1":[["روز بزرگداشت ملاصدرا",0]],
-  "3-3":[["سالروز آزادسازی خرمشهر",0]],
-  "3-6":[["جشن خردادگان",0]],
-  "3-14":[["رحلت حضرت امام خمینی (ره) (تعطیل رسمی)",1]],
-  "3-15":[["قیام ۱۵ خرداد (تعطیل رسمی)",1]],
-  "3-25":[["روز ملی گل و گیاه",0]],
-  // تیر
-  "4-1":[["آغاز فصل تابستان و روز اصناف",0]],
-  "4-10":[["روز صنعت و معدن",0]],
-  "4-13":[["جشن تیرگان",0]],
-  "4-14":[["روز قلم",0]],
-  // مرداد
-  "5-7":[["جشن امردادگان",0]],
-  "5-14":[["سالروز صدور فرمان مشروطیت",0]],
-  "5-17":[["روز خبرنگار",0]],
-  // شهریور
-  "6-1":[["روز بزرگداشت ابوعلی سینا و روز پزشک",0]],
-  "6-4":[["جشن شهریورگان و روز کارمند",0]],
-  "6-5":[["روز بزرگداشت محمدبن زکریای رازی و روز داروساز",0]],
-  "6-13":[["روز بزرگداشت ابوریحان بیرونی",0]],
-  "6-21":[["روز سینما",0]],
-  "6-27":[["روز شعر و ادب فارسی و بزرگداشت استاد شهریار",0]],
-  // مهر
-  "7-1":[["آغاز فصل پاییز",0]],
-  "7-7":[["روز آتش‌نشانی و ایمنی",0]],
-  "7-8":[["روز بزرگداشت مولوی",0]],
-  "7-16":[["جشن مهرگان",0]],
-  "7-20":[["روز بزرگداشت حافظ شیرازی",0]],
-  // آبان
-  "8-7":[["روز کوروش بزرگ",0]],
-  "8-10":[["جشن آبانگان",0]],
-  "8-13":[["روز دانش‌آموز",0]],
-  "8-24":[["روز کتاب و کتاب‌خوانی",0]],
-  // آذر
-  "9-9":[["جشن آذرگان",0]],
-  "9-16":[["روز دانشجو",0]],
-  "9-25":[["روز پژوهش",0]],
-  "9-30":[["شب یلدا (شب چله)",0]],
-  // دی
-  "10-1":[["آغاز فصل زمستان و جشن خرم‌روز",0]],
-  "10-5":[["روز ایمنی در برابر زلزله",0]],
-  "10-15":[["جشن دیگان",0]],
-  // بهمن
-  "11-2":[["جشن بهمنگان",0]],
-  "11-10":[["جشن سده",0]],
-  "11-22":[["پیروزی انقلاب اسلامی (تعطیل رسمی)",1]],
-  "11-29":[["جشن سپندارمذگان (روز عشق ایرانی)",0]],
-  // اسفند
-  "12-5":[["روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس",0]],
-  "12-15":[["روز درختکاری",0]],
-  "12-25":[["پایان سرایش شاهنامه",0]],
-  "12-29":[["روز ملی شدن صنعت نفت ایران (تعطیل رسمی)",1]]
-};
-const IR_OFFICIAL_YEAR_HOL={"1405":{"1-1":[["عید سعید فطر (تعطیل رسمی)",1]],"1-2":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]],"1-25":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"3-6":[["عید سعید قربان (تعطیل رسمی)",1]],"3-14":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"4-3":[["تاسوعای حسینی (تعطیل رسمی)",1]],"4-4":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-13":[["اربعین حسینی (تعطیل رسمی)",1]],"5-21":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-22":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-30":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"6-8":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-22":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"10-2":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-16":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"11-4":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"12-9":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-19":[["عید سعید فطر (تعطیل رسمی)",1]],"12-20":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]},"1406":{"1-14":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"2-27":[["عید سعید قربان (تعطیل رسمی)",1]],"3-4":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"3-24":[["تاسوعای حسینی (تعطیل رسمی)",1]],"3-25":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-3":[["اربعین حسینی (تعطیل رسمی)",1]],"5-11":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-12":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-20":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"5-29":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-11":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"9-21":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-5":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"10-23":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"11-28":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-8":[["عید سعید فطر (تعطیل رسمی)",1]],"12-9":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]]}};
+const BASE_EV={"1-1":[["جشن نوروز و آغاز سال نو (تعطیل رسمی)",1]],"1-2":[["عید نوروز (تعطیل رسمی)",1]],"1-3":[["عید نوروز (تعطیل رسمی)",1]],"1-4":[["عید نوروز (تعطیل رسمی)",1]],"1-6":[["زادروز زرتشت پیامبر و روز امید",0]],"1-7":[["روز هنرهای نمایشی",0]],"1-12":[["روز جمهوری اسلامی ایران (تعطیل رسمی)",1]],"1-13":[["جشن سیزده‌بدر / روز طبیعت (تعطیل رسمی)",1]],"1-18":[["روز سلامتی",0]],"1-19":[["جشن فروردینگان",0]],"1-20":[["روز ملی فناوری هسته‌ای و روز هنر انقلاب اسلامی",0]],"1-25":[["روز بزرگداشت عطار نیشابوری",0]],"1-29":[["روز ارتش جمهوری اسلامی ایران",0]],"1-30":[["روز علوم آزمایشگاهی",0]],"2-1":[["روز بزرگداشت سعدی و روز نثر فارسی",0]],"2-2":[["روز زمین پاک",0]],"2-3":[["جشن اردیبهشتگان، روز بزرگداشت شیخ بهایی و روز معماری",0]],"2-7":[["روز ایمنی حمل‌ونقل",0]],"2-9":[["روز شوراها و روز روانشناس و مشاور",0]],"2-10":[["روز ملی خلیج فارس",0]],"2-11":[["روز جهانی کار و کارگر",0]],"2-12":[["روز معلم",0]],"2-15":[["روز جهانی ماما",0]],"2-18":[["روز بیماری‌های خاص و روز جهانی هلال احمر",0]],"2-19":[["روز اسناد ملی و میراث مکتوب",0]],"2-20":[["روز گل محمدی و گلاب",0]],"2-25":[["روز بزرگداشت حکیم ابوالقاسم فردوسی و پاسداشت زبان فارسی",0]],"2-27":[["روز ارتباطات و روابط عمومی",0]],"2-28":[["روز بزرگداشت حکیم عمر خیام و روز جهانی موزه",0]],"2-30":[["روز ملی جمعیت",0]],"2-31":[["روز اهدای عضو، اهدای زندگی",0]],"3-1":[["روز بزرگداشت ملاصدرا و روز بهره‌وری",0]],"3-3":[["سالروز آزادسازی خرمشهر",0]],"3-4":[["روز دزفول",0]],"3-6":[["جشن خردادگان",0]],"3-7":[["روز نقشه‌برداری",0]],"3-14":[["رحلت حضرت امام خمینی (ره) (تعطیل رسمی)",1]],"3-15":[["قیام خونین ۱۵ خرداد (تعطیل رسمی)",1],["روز جهانی محیط زیست",0]],"3-20":[["روز صنایع دستی و روز ملی فرش",0]],"3-25":[["روز ملی گل و گیاه",0]],"3-27":[["روز جهاد کشاورزی",0]],"3-29":[["درگذشت دکتر علی شریعتی",0]],"3-31":[["شهادت دکتر مصطفی چمران",0]],"4-1":[["آغاز فصل تابستان و روز اصناف",0]],"4-6":[["روز عینک‌سازی و بینایی‌سنجی",0]],"4-7":[["روز قوه قضاییه",0]],"4-10":[["روز صنعت و معدن و بزرگداشت صائب تبریزی",0]],"4-13":[["جشن تیرگان",0]],"4-14":[["روز قلم و روز شهرداری و دهیاری",0]],"4-16":[["روز مالیات",0]],"4-18":[["روز ادبیات کودکان و نوجوانان",0]],"4-22":[["روز فناوری اطلاعات و بزرگداشت خوارزمی",0]],"4-25":[["روز بهزیستی و تأمین اجتماعی",0]],"4-30":[["روز خلبان",0]],"5-6":[["روز کارآفرینی و آموزش‌های فنی و حرفه‌ای",0]],"5-7":[["جشن امردادگان",0]],"5-8":[["روز بزرگداشت شیخ شهاب‌الدین سهروردی",0]],"5-9":[["روز اهدای خون",0]],"5-14":[["سالروز صدور فرمان مشروطیت",0]],"5-16":[["تشکیل جهاد دانشگاهی",0]],"5-17":[["روز خبرنگار",0]],"5-26":[["سالروز بازگشت آزادگان",0]],"5-28":[["روز جهانی عکاسی",0]],"6-1":[["روز بزرگداشت ابوعلی سینا و روز پزشک",0]],"6-2":[["آغاز هفته دولت",0]],"6-4":[["جشن شهریورگان و روز کارمند",0]],"6-5":[["روز بزرگداشت محمدبن زکریای رازی و روز داروساز",0]],"6-11":[["روز صنعت چاپ",0]],"6-13":[["روز بزرگداشت ابوریحان بیرونی و روز تعاون",0]],"6-21":[["روز سینما",0]],"6-27":[["روز شعر و ادب فارسی و بزرگداشت استاد شهریار",0]],"6-31":[["آغاز هفته دفاع مقدس",0]],"7-1":[["آغاز فصل پاییز و بازگشایی مدارس",0]],"7-5":[["روز جهانی گردشگری",0]],"7-7":[["روز آتش‌نشانی و ایمنی",0]],"7-8":[["روز بزرگداشت مولوی",0]],"7-9":[["روز جهانی سالمندان",0]],"7-13":[["روز نیروی انتظامی",0]],"7-14":[["روز دامپزشکی",0]],"7-16":[["جشن مهرگان و روز جهانی کودک",0]],"7-17":[["روز جهانی پست",0]],"7-20":[["روز بزرگداشت حافظ شیرازی",0]],"7-22":[["روز جهانی استاندارد",0]],"7-24":[["روز پیوند اولیا و مربیان و روز جهانی غذا",0]],"7-26":[["روز تربیت بدنی و ورزش",0]],"7-29":[["روز صادرات",0]],"8-1":[["روز آمار و برنامه‌ریزی",0]],"8-7":[["روز کوروش بزرگ",0]],"8-8":[["روز نوجوان",0]],"8-10":[["جشن آبانگان",0]],"8-13":[["روز دانش‌آموز",0]],"8-14":[["روز فرهنگ عمومی",0]],"8-18":[["روز ملی کیفیت",0]],"8-24":[["روز کتاب، کتاب‌خوانی و کتابدار",0]],"9-4":[["روز زیتون",0],["روز جهانی مبارزه با خشونت علیه زنان",0]],"9-5":[["روز بسیج مستضعفان",0]],"9-7":[["روز نیروی دریایی",0]],"9-9":[["جشن آذرگان و روز جزایر سه‌گانه خلیج فارس",0]],"9-10":[["روز مجلس",0],["روز جهانی ایدز",0]],"9-12":[["روز قانون اساسی و روز جهانی معلولان",0]],"9-13":[["روز بیمه",0]],"9-15":[["روز حسابدار",0]],"9-16":[["روز دانشجو",0]],"9-25":[["روز پژوهش",0]],"9-26":[["روز حمل‌ونقل و رانندگان",0]],"9-27":[["روز وحدت حوزه و دانشگاه",0]],"9-30":[["شب یلدا (شب چله)",0]],"10-1":[["آغاز فصل زمستان و جشن خرم‌روز",0]],"10-5":[["روز ایمنی در برابر زلزله",0]],"10-8":[["جشن دی‌به‌آذر",0]],"10-15":[["جشن دیگان",0]],"10-20":[["سالروز شهادت امیرکبیر",0]],"11-2":[["جشن بهمنگان",0]],"11-10":[["جشن سده",0]],"11-12":[["آغاز دهه فجر",0]],"11-14":[["روز فناوری فضایی",0]],"11-19":[["روز نیروی هوایی",0]],"11-22":[["پیروزی انقلاب اسلامی ایران (تعطیل رسمی)",1]],"11-29":[["جشن سپندارمذگان (روز عشق ایرانی)",0]],"12-5":[["روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس",0]],"12-7":[["روز وکیل مدافع",0]],"12-8":[["روز امور تربیتی",0]],"12-9":[["روز حمایت از حقوق مصرف‌کنندگان",0]],"12-14":[["روز احسان و نیکوکاری",0]],"12-15":[["روز درختکاری",0]],"12-18":[["روز بزرگداشت سید جمال‌الدین اسدآبادی",0]],"12-20":[["روز راهیان نور",0]],"12-21":[["روز بزرگداشت نظامی گنجوی",0]],"12-25":[["پایان سرایش شاهنامه و بزرگداشت پروین اعتصامی",0]],"12-29":[["روز ملی شدن صنعت نفت ایران (تعطیل رسمی)",1]],"9-1":[["آذر جشن",0]],"9-19":[["روز جهانی حقوق بشر",0]],"9-20":[["روز جهانی کوهستان",0]]};
+const IR_OFFICIAL_YEAR_HOL={"1405":{"1-1":[["عید سعید فطر (تعطیل رسمی)",1]],"1-2":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]],"1-25":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"3-6":[["عید سعید قربان (تعطیل رسمی)",1]],"3-14":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"4-3":[["تاسوعای حسینی (تعطیل رسمی)",1]],"4-4":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-13":[["اربعین حسینی (تعطیل رسمی)",1]],"5-21":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-22":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-30":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"6-8":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-22":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"10-2":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-16":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"11-4":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"12-9":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-19":[["عید سعید فطر (تعطیل رسمی)",1]],"12-20":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]],"1-30":[["ولادت حضرت معصومه (س) و روز دختر",0]],"2-9":[["ولادت امام رضا (ع)",0]],"2-28":[["سالروز ازدواج حضرت علی (ع) و حضرت فاطمه (س) و روز ازدواج",0]],"3-5":[["روز عرفه (روز نیایش)",0]],"9-9":[["ولادت حضرت فاطمه زهرا (س) و روز زن و مادر",0]],"9-20":[["ولادت امام محمد باقر (ع)",0]],"9-22":[["شهادت امام علی النقی (ع)",0]],"9-29":[["ولادت امام محمد تقی (ع)",0]]},"1406":{"1-14":[["شهادت امام جعفر صادق (ع) (تعطیل رسمی)",1]],"2-27":[["عید سعید قربان (تعطیل رسمی)",1]],"3-4":[["عید سعید غدیر خم (تعطیل رسمی)",1]],"3-24":[["تاسوعای حسینی (تعطیل رسمی)",1]],"3-25":[["عاشورای حسینی (تعطیل رسمی)",1]],"5-3":[["اربعین حسینی (تعطیل رسمی)",1]],"5-11":[["رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع) (تعطیل رسمی)",1]],"5-12":[["شهادت امام رضا (ع) (تعطیل رسمی)",1]],"5-20":[["شهادت امام حسن عسکری (ع) (تعطیل رسمی)",1]],"5-29":[["ولادت حضرت رسول اکرم (ص) و امام جعفر صادق (ع) (تعطیل رسمی)",1]],"8-11":[["شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)",1]],"9-21":[["ولادت امام علی (ع) و روز پدر (تعطیل رسمی)",1]],"10-5":[["مبعث حضرت رسول اکرم (ص) (تعطیل رسمی)",1]],"10-23":[["ولادت حضرت قائم (عج) / نیمه شعبان (تعطیل رسمی)",1]],"11-28":[["شهادت امام علی (ع) (تعطیل رسمی)",1]],"12-8":[["عید سعید فطر (تعطیل رسمی)",1]],"12-9":[["تعطیل به مناسبت عید سعید فطر (تعطیل رسمی)",1]],"1-19":[["ولادت حضرت معصومه (س) و روز دختر",0]],"1-29":[["ولادت امام رضا (ع)",0]],"2-18":[["سالروز ازدواج حضرت علی (ع) و حضرت فاطمه (س) و روز ازدواج",0]],"2-26":[["روز عرفه (روز نیایش)",0]],"8-28":[["ولادت حضرت فاطمه زهرا (س) و روز زن و مادر",0]]}};
 const REMOTE_IR_HOL_KEY="smartcal_remote_ir_hol_v1";
 let remoteIrHol=JSON.parse(localStorage.getItem(REMOTE_IR_HOL_KEY)||"{}");
 async function syncRemoteIrHolidays(force=false){
@@ -3401,9 +3464,10 @@ async function updateHolidaysOnline(){
     const okRemote = await syncRemoteIrHolidays(true);
     const yrMap = (remoteIrHol && remoteIrHol[String(sel.jy)]) || IR_OFFICIAL_YEAR_HOL[String(sel.jy)] || {};
     const yrCount = Object.keys(yrMap).length;
+    const lastChk = (remoteIrHol && remoteIrHol._meta && remoteIrHol._meta.last_time_ir_check) ? ` • تطبیق time.ir: ${fa(remoteIrHol._meta.last_time_ir_check)}` : "";
     if (st) st.textContent = okRemote
-      ? `✅ تعطیلات رسمی ایران از مخزن آنلاین همگام‌سازی شد (${fa(yrCount)} تعطیلی سال ${fa(sel.jy)}).`
-      : `✅ تقویم رسمی ایران (${fa(yrCount)} تعطیلی سالانه + مناسبت‌های شمسی) فعال است.`;
+      ? `✅ تقویم رسمی ایران همگام‌سازی شد (${fa(yrCount)} مورد سال ${fa(sel.jy)}${lastChk}).`
+      : `✅ تقویم رسمی ایران (${fa(yrCount)} مورد سالانه + مناسبت‌های شمسی) فعال است.`;
   } else if (totalFetched > 0) {
     if (st) st.textContent = `✅ ${fa(totalFetched)} تعطیلی رسمی برای ${cLabel} بروزرسانی و ذخیره شد.`;
   } else {
@@ -6564,20 +6628,58 @@ function calcVernalEquinoxIRST(jy) {
   };
 }
 
+function getEquinoxUtcMs(eq) {
+  // eq.gy/gm/gd + eq.h/m/s are in IRST (UTC+03:30)
+  return Date.UTC(eq.gy, eq.gm - 1, eq.gd, eq.h, eq.m, eq.s) - (3.5 * 3600000);
+}
+
+let _tahvilCountdownTimer = null;
+
 function renderYearTahvilCard(activeJy) {
   const box = document.getElementById("yearTahvilBox");
   if (!box) return;
-  const isFirstDayOfYear = (sel.jm === 1 && sel.jd === 1);
+  if (_tahvilCountdownTimer) { clearInterval(_tahvilCountdownTimer); _tahvilCountdownTimer = null; }
+
   const isLastDayOfYear = (sel.jm === 12 && sel.jd === jLen(sel.jy, 12));
-  if (!isFirstDayOfYear && !isLastDayOfYear) {
+  const isFirstDayOfYear = (sel.jm === 1 && sel.jd === 1);
+  if (!isLastDayOfYear && !isFirstDayOfYear) {
     box.style.display = "none";
     box.innerHTML = "";
     return;
   }
-  const targetJy = isLastDayOfYear ? (activeJy + 1) : activeJy;
+
   box.style.display = "block";
   const isKu = (cfg.calType === "kurdish" || cfg.lang === "ku");
   const isEn = (cfg.lang === "en");
+
+  // On 1 Farvardin: show a clean New Year Greeting + Animal Sign (without duplicating Tahvil time)
+  if (isFirstDayOfYear) {
+    const animal = getYearAnimalInfo(activeJy);
+    const animName = isEn ? animal.en : (isKu ? animal.ku : animal.fa);
+    const dispYear = cfg.calType === "kurdish" ? (activeJy + 1321) : activeJy;
+    const leapStatus = isLeap(activeJy)
+      ? tr("کبیسه (۳۶۶ روز)", "ساڵی پڕ (٣٦٦ ڕۆژ)", "Leap Year (366 days)")
+      : tr("عادی (۳۶۵ روز)", "ساڵی ئاسایی (٣٦٥ ڕۆژ)", "Common Year (365 days)");
+    box.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:22px;line-height:1">${animal.ico}</span>
+          <div>
+            <div style="font-size:10.5px;color:var(--sec)">🌸 ${tr("نوروز و آغاز سال نو", "نەورۆز و سەرەتای ساڵی نوێ", "Happy New Year")} ${fa(dispYear)}</div>
+            <b style="font-size:13px;color:var(--pri)">${tr("سال", "ساڵی", "Year of the")} ${esc(animName)}</b>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="tag" style="font-size:10.5px;font-weight:700">${leapStatus}</span>
+          <button type="button" class="happy-btn" onclick="triggerNewYearCelebration(${activeJy})">🎆 ${tr("جشن سال نو", "جەژن", "Celebrate")}</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // On Last Day of Current Year (۲۹ یا ۳۰ اسفند): show the Upcoming New Year's Tahvil Moment + Live Countdown
+  const targetJy = activeJy + 1;
   const animal = getYearAnimalInfo(targetJy);
   const eq = calcVernalEquinoxIRST(targetJy);
   const animName = isEn ? animal.en : (isKu ? animal.ku : animal.fa);
@@ -6595,18 +6697,24 @@ function renderYearTahvilCard(activeJy) {
     ? tr("کبیسه (۳۶۶ روز)", "ساڵی پڕ (٣٦٦ ڕۆژ)", "Leap Year (366 days)")
     : tr("عادی (۳۶۵ روز)", "ساڵی ئاسایی (٣٦٥ ڕۆژ)", "Common Year (365 days)");
 
+  const targetMs = getEquinoxUtcMs(eq);
+  const showCountdown = (targetMs > Date.now() && (targetMs - Date.now()) < 48 * 3600000);
+
   box.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:7px">
         <span style="font-size:22px;line-height:1">${animal.ico}</span>
         <div>
-          <div style="font-size:10.5px;color:var(--sec)">${tr("نوع سال", "جۆری ساڵ", "Year Sign")} (${fa(dispYear)})</div>
+          <div style="font-size:10.5px;color:var(--sec)">${tr("تحویل سال پیش‌رو", "گۆڕینی ساڵی نوێ", "Upcoming Year")} (${fa(dispYear)})</div>
           <b style="font-size:13px;color:var(--pri)">${tr("سال", "ساڵی", "Year of the")} ${esc(animName)}</b>
         </div>
       </div>
-      <span class="tag" style="font-size:10.5px;font-weight:700">${leapStatus}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="tag" style="font-size:10.5px;font-weight:700">${leapStatus}</span>
+        <button type="button" class="happy-btn" onclick="triggerNewYearCelebration(${targetJy})">🎆 ${tr("پیش‌نمایش جشن", "پێشبینین", "Preview")}</button>
+      </div>
     </div>
-    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--brd);display:flex;flex-direction:column;gap:3px;font-size:11.5px">
+    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--brd);display:flex;flex-direction:column;gap:4px;font-size:11.5px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
         <span style="color:var(--sec)">🌸 ${tr("لحظه تحویل سال", "کاتی گۆڕینی ساڵ", "Vernal Equinox")} ${fa(dispYear)}:</span>
         <b style="color:var(--grn);direction:ltr;display:inline-block">⏰ ${timeFormatted}</b>
@@ -6615,9 +6723,314 @@ function renderYearTahvilCard(activeJy) {
         <span>📅 ${wdName} ${fa(eq.jd)} ${eqMonthName} ${fa(eqJyDisp)}</span>
         <span dir="ltr" style="color:var(--sec);font-weight:700">${gregStr}</span>
       </div>
+      ${showCountdown ? `<div id="tahvilCountdownLine" style="margin-top:4px;padding:6px 10px;border-radius:10px;background:rgba(16,185,129,0.12);color:var(--grn);font-size:11.5px;font-weight:800;text-align:center"></div>` : ""}
     </div>
   `;
+
+  if (showCountdown) {
+    const updateCd = () => {
+      const el = document.getElementById("tahvilCountdownLine");
+      if (!el) return;
+      const diff = targetMs - Date.now();
+      if (diff <= 0) {
+        el.textContent = "🌸 لحظه تحویل سال فرا رسید! سال نو مبارک! 🌸";
+        clearInterval(_tahvilCountdownTimer);
+        _tahvilCountdownTimer = null;
+        return;
+      }
+      const totalSec = Math.floor(diff / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      const fmt = `${fa(String(h).padStart(2,"0"))}:${fa(String(m).padStart(2,"0"))}:${fa(String(s).padStart(2,"0"))}`;
+      el.textContent = `⏳ شمارش معکوس تا تحویل سال ${fa(dispYear)}: ${fmt}`;
+    };
+    updateCd();
+    _tahvilCountdownTimer = setInterval(updateCd, 1000);
+  }
 }
+
+// ====== SMART HAPPY OCCASIONS (BIRTHDAY, ANNIVERSARY, ETC.) + FIREWORKS ANIMATION ======
+const HAPPY_KW_RE = /تولد|میلاد|سالگرد|ازدواج|عروسی|نامزدی|عقد|جشن|مبارک|ولنتاین|عشق|فارغ.?التحصیل|موفقیت|پیروزی|خوشبختی|به‌دنیا|به دنیا|birthday|anniversary|wedding|party|congrats|لەدایکبوون|هاوسەرگیری/i;
+
+function nextJalaliDay(jy, jm, jd) {
+  const len = jLen(jy, jm);
+  if (jd < len) return { jy, jm, jd: jd + 1 };
+  if (jm < 12) return { jy, jm: jm + 1, jd: 1 };
+  return { jy: jy + 1, jm: 1, jd: 1 };
+}
+
+function getHappyUserOccasions(jy, jm, jd) {
+  const found = [];
+  const pushUnique = (title, kind, emoji) => {
+    if (!found.some(x => x.title === title)) found.push({ title, kind, emoji });
+  };
+  // 1. User's own birthday from settings
+  if (birthCfg && birthCfg.m === jm && birthCfg.d === jd) {
+    pushUnique(tr("سالروز تولد شما", "ڕۆژی لەدایکبوونت", "Your Birthday"), "birthday", "🎂");
+  }
+  // 2. Custom user events (match exact year OR recurring month-day for happy events)
+  if (customUserEv && typeof customUserEv === "object") {
+    const exactKey = `${jy}-${jm}-${jd}`;
+    const mdSuffix = `-${jm}-${jd}`;
+    Object.keys(customUserEv).forEach(k => {
+      if (k === exactKey || k.endsWith(mdSuffix)) {
+        const arr = customUserEv[k];
+        if (Array.isArray(arr)) {
+          arr.forEach(ev => {
+            const t = Array.isArray(ev) ? String(ev[0] || "") : String(ev || "");
+            if (HAPPY_KW_RE.test(t)) {
+              const isWed = /ازدواج|عروسی|نامزدی|عقد|سالگرد|wedding|anniversary|هاوسەرگیری/i.test(t);
+              const isBday = /تولد|میلاد|birthday|لەدایکبوون/i.test(t);
+              pushUnique(t, isWed ? "anniversary" : (isBday ? "birthday" : "happy"), isWed ? "💍" : (isBday ? "🎂" : "🎉"));
+            }
+          });
+        }
+      }
+    });
+  }
+  // 3. Notes on that day with happy keywords
+  if (typeof notes === "object" && notes) {
+    const nKey = dayKey(jy, jm, jd);
+    const nArr = notes[nKey];
+    if (Array.isArray(nArr)) {
+      nArr.forEach(n => {
+        const t = (typeof n === "string") ? n : String((n && (n.t || n.text || n.title)) || "");
+        if (HAPPY_KW_RE.test(t)) {
+          const isWed = /ازدواج|عروسی|نامزدی|عقد|سالگرد|wedding|anniversary|هاوسەرگیری/i.test(t);
+          const isBday = /تولد|میلاد|birthday|لەدایکبوون/i.test(t);
+          pushUnique(t, isWed ? "anniversary" : (isBday ? "birthday" : "happy"), isWed ? "💍" : (isBday ? "🎂" : "🎉"));
+        }
+      });
+    }
+  }
+  return found;
+}
+
+function getGreetingCopy(occ) {
+  if (occ.kind === "birthday") {
+    return {
+      title: `🎂 تولد مبارک! 🎈`,
+      sub: `«${occ.title}» رو از صمیم قلب تبریک میگیم! براتون سالی پر از سلامتی، لبخند و اتفاق‌های فوق‌العاده آرزومندیم. ✨`
+    };
+  }
+  if (occ.kind === "anniversary") {
+    return {
+      title: `💍 سالگردتون مبارک! 💖`,
+      sub: `«${occ.title}» خجسته باد! آرزوی عشق پایدار، آرامش و روزهای درخشان در کنار هم. 🌹✨`
+    };
+  }
+  return {
+    title: `🎉 این روز شاد مبارک! 🎆`,
+    sub: `«${occ.title}» مبارک باد! امیدواریم امروز یکی از بهترین و به‌یادماندنی‌ترین روزهاتون باشه. 🌟`
+  };
+}
+
+function triggerNewYearCelebration(targetJy) {
+  const animal = getYearAnimalInfo(targetJy);
+  const dispYear = cfg.calType === "kurdish" ? (targetJy + 1321) : targetJy;
+  const animName = cfg.lang === "en" ? animal.en : ((cfg.calType === "kurdish" || cfg.lang === "ku") ? animal.ku : animal.fa);
+  launchCelebration(
+    "🌸",
+    `سال نو ${fa(dispYear)} مبارک! 🎆`,
+    `لحظه تحویل سال ${fa(dispYear)} (${animal.ico} سال ${animName}) فرا رسید!<br>سالی سرشار از سلامتی، برکت، شادی و موفقیت‌های بزرگ براتون آرزو می‌کنیم. ✨🌷`
+  );
+}
+
+function triggerHappyOccasionCelebration(title, kind, emoji) {
+  const copy = getGreetingCopy({ title, kind, emoji });
+  launchCelebration(emoji || "🎉", copy.title, copy.sub);
+}
+
+let _fwRaf = null;
+function closeCelebration() {
+  const ov = document.getElementById("celebrationOverlay");
+  if (ov) ov.classList.remove("open");
+  if (_fwRaf) { cancelAnimationFrame(_fwRaf); _fwRaf = null; }
+}
+
+function launchCelebration(emoji, title, htmlSub) {
+  const ov = document.getElementById("celebrationOverlay");
+  const cv = document.getElementById("celebrationCanvas");
+  if (!ov || !cv) return;
+  document.getElementById("celEmoji").textContent = emoji || "🎆";
+  document.getElementById("celTitle").textContent = title || "مبارک باد!";
+  document.getElementById("celSub").innerHTML = htmlSub || "";
+  ov.classList.add("open");
+
+  const ctx = cv.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const resize = () => {
+    cv.width = window.innerWidth * dpr;
+    cv.height = window.innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  resize();
+
+  const colors = ["#F59E0B", "#EC4899", "#8B5CF6", "#10B981", "#3B82F6", "#EF4444", "#FBBF24", "#34D399"];
+  const particles = [];
+  const spawnBurst = (x, y, count = 42) => {
+    for (let i = 0; i < count; i++) {
+      const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
+      const spd = 2.2 + Math.random() * 5.2;
+      particles.push({
+        x, y,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - 1.2,
+        life: 1,
+        decay: 0.012 + Math.random() * 0.012,
+        size: 2.5 + Math.random() * 3.5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        confetti: Math.random() > 0.55,
+        rot: Math.random() * 6.28
+      });
+    }
+  };
+
+  // Initial bursts
+  spawnBurst(window.innerWidth * 0.28, window.innerHeight * 0.28, 44);
+  spawnBurst(window.innerWidth * 0.72, window.innerHeight * 0.26, 44);
+  spawnBurst(window.innerWidth * 0.50, window.innerHeight * 0.20, 50);
+
+  let frame = 0;
+  const startTime = Date.now();
+  if (_fwRaf) cancelAnimationFrame(_fwRaf);
+
+  const tick = () => {
+    if (!ov.classList.contains("open")) { _fwRaf = null; return; }
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    frame++;
+    if (frame % 36 === 0 && (Date.now() - startTime) < 12000) {
+      spawnBurst(
+        window.innerWidth * (0.18 + Math.random() * 0.64),
+        window.innerHeight * (0.14 + Math.random() * 0.36),
+        36
+      );
+    }
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.075;
+      p.vx *= 0.985;
+      p.life -= p.decay;
+      p.rot += 0.12;
+      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.translate(p.x, p.y);
+      if (p.confetti) {
+        ctx.rotate(p.rot);
+        ctx.fillRect(-p.size, -p.size * 0.55, p.size * 2, p.size * 1.1);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    if (particles.length > 0 || (Date.now() - startTime) < 12000) {
+      _fwRaf = requestAnimationFrame(tick);
+    } else {
+      _fwRaf = null;
+    }
+  };
+  _fwRaf = requestAnimationFrame(tick);
+}
+
+function renderHappyReminderAndCelebration(jy, jm, jd) {
+  const box = document.getElementById("happyBannerBox");
+  if (!box) return;
+  const todayOccs = getHappyUserOccasions(jy, jm, jd);
+  const tom = nextJalaliDay(jy, jm, jd);
+  const tomOccs = getHappyUserOccasions(tom.jy, tom.jm, tom.jd);
+
+  if (!todayOccs.length && !tomOccs.length) {
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+
+  const cards = [];
+  todayOccs.forEach(occ => {
+    const copy = getGreetingCopy(occ);
+    const safeTitle = esc(occ.title).replace(/'/g, "");
+    cards.push(`
+      <div class="happy-card">
+        <div class="happy-card-head">
+          <span class="happy-card-title">${occ.emoji} ${copy.title}</span>
+          <button type="button" class="happy-btn" onclick="triggerHappyOccasionCelebration('${safeTitle}','${occ.kind}','${occ.emoji}')">🎆 آتش‌بازی</button>
+        </div>
+        <div class="happy-card-desc">${copy.sub}</div>
+      </div>
+    `);
+  });
+
+  tomOccs.forEach(occ => {
+    cards.push(`
+      <div class="happy-card reminder-tomorrow">
+        <div class="happy-card-head">
+          <span class="happy-card-title">🔔 یادآوری هوشمند برای فردا (${occ.emoji})</span>
+          <span class="tag" style="font-size:10px;font-weight:800">۱ روز مانده</span>
+        </div>
+        <div class="happy-card-desc">فردا <b>«${esc(occ.title)}»</b> است! یادت نره برای تبریک و سورپرایز آماده بشی. 🎁✨</div>
+      </div>
+    `);
+  });
+
+  box.style.display = "flex";
+  box.innerHTML = cards.join("");
+}
+
+// Auto-trigger celebration on exact Tahvil moment OR today's happy occasion (once per day) + tomorrow's notification
+function initSmartCelebrationWatcher() {
+  try {
+    const nowG = new Date();
+    const tj = toJ(nowG.getFullYear(), nowG.getMonth() + 1, nowG.getDate());
+    const todayKey = `${tj.jy}-${tj.jm}-${tj.jd}`;
+
+    // 1) Auto-celebrate today's happy occasion once per day
+    const todayOccs = getHappyUserOccasions(tj.jy, tj.jm, tj.jd);
+    if (todayOccs.length && localStorage.getItem("smartcal_cel_shown_" + todayKey) !== "1") {
+      localStorage.setItem("smartcal_cel_shown_" + todayKey, "1");
+      setTimeout(() => {
+        triggerHappyOccasionCelebration(todayOccs[0].title, todayOccs[0].kind, todayOccs[0].emoji);
+      }, 900);
+    }
+
+    // 2) Smart 1-day-before notification for tomorrow's happy occasions
+    const tom = nextJalaliDay(tj.jy, tj.jm, tj.jd);
+    const tomOccs = getHappyUserOccasions(tom.jy, tom.jm, tom.jd);
+    if (tomOccs.length && localStorage.getItem("smartcal_rem_tom_" + todayKey) !== "1") {
+      localStorage.setItem("smartcal_rem_tom_" + todayKey, "1");
+      const msg = `فردا «${tomOccs[0].title}» است! آماده تبریک هستید؟ 🎁`;
+      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        try { new Notification("🔔 یادآوری مناسبت شاد (SmartCal)", { body: msg }); } catch (e) {}
+      }
+    }
+
+    // 3) Live watcher for exact Vernal Equinox (لحظه تحویل سال)
+    const checkTahvilNow = () => {
+      const curNow = Date.now();
+      const candYears = [tj.jy, tj.jy + 1];
+      for (const y of candYears) {
+        const eq = calcVernalEquinoxIRST(y);
+        const eqMs = getEquinoxUtcMs(eq);
+        const diff = curNow - eqMs;
+        // Fire if within 0..180 seconds after exact Tahvil moment
+        if (diff >= 0 && diff <= 180000 && localStorage.getItem("smartcal_tahvil_shown_" + y) !== "1") {
+          localStorage.setItem("smartcal_tahvil_shown_" + y, "1");
+          triggerNewYearCelebration(y);
+          break;
+        }
+      }
+    };
+    checkTahvilNow();
+    setInterval(checkTahvilNow, 5000);
+  } catch (e) {}
+}
+setTimeout(initSmartCelebrationWatcher, 1200);
 
 function renderSunBox(gy, gm, gd) {
   const box = document.getElementById("sunTimesBox");
@@ -6884,6 +7297,7 @@ function render(){
   renderSunBox(sg.gy, sg.gm, sg.gd);
   renderYearTahvilCard(sel.jy);
   if (typeof renderEmergencyHolidayBox === "function") renderEmergencyHolidayBox(sel.jy, sel.jm, sel.jd);
+  if (typeof renderHappyReminderAndCelebration === "function") renderHappyReminderAndCelebration(sel.jy, sel.jm, sel.jd);
   updateOpenNotesBadge();
   let evHtml = sevs.map(e => `<div class="ev ${e[1] ? 'hol' : ''}">• ${esc(e[0])}</div>`).join("");
   if (typeof getPersonalCalEventsForGDate === "function") {
@@ -9267,6 +9681,18 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
   <div style="display:flex;gap:5px;flex-shrink:0">
     <button type="button" class="ibtn" id="layoutResetBtn" onclick="resetCardOrder()" style="height:30px;padding:0 9px;font-size:11px">♻️ پیش‌فرض</button>
     <button type="button" class="ibtn" id="layoutDoneBtn" onclick="toggleLayoutEditMode(false)" style="background:var(--pri);color:var(--onpri);border:none;height:30px;padding:0 11px;font-size:11px">✅ ذخیره</button>
+  </div>
+</div>
+
+
+<!-- Celebration Fireworks & Greeting Overlay -->
+<div id="celebrationOverlay" onclick="if(event.target===this)closeCelebration()">
+  <canvas id="celebrationCanvas"></canvas>
+  <div class="cel-modal">
+    <div class="cel-emoji" id="celEmoji">🎆</div>
+    <div class="cel-title" id="celTitle">مبارک باد!</div>
+    <div class="cel-sub" id="celSub"></div>
+    <button type="button" class="cel-close-btn" onclick="closeCelebration()">✨ ممنونم!</button>
   </div>
 </div>
 
