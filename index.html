@@ -2304,48 +2304,62 @@ body {
 }
 
 
-/* In-App Smart Update Banner (v70.3) */
+/* Sleek Modern In-App Update Card (v71.6) */
 #appUpdateBanner {
   position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  left: 14px;
+  right: 14px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   z-index: 99990;
   display: none;
-  max-width: 460px;
+  max-width: 440px;
   margin: 0 auto;
-  padding: 13px 14px;
-  border-radius: 18px;
+  padding: 15px 16px;
+  border-radius: 22px;
   background: var(--card);
-  border: 1.5px solid var(--pri);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
-  animation: slideUpUpd 0.35s cubic-bezier(.22,1.2,.36,1);
+  border: 1.5px solid color-mix(in srgb, var(--pri) 45%, transparent);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.24), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  animation: slideUpUpd 0.34s cubic-bezier(.22,1.2,.36,1);
+  overflow: hidden;
+}
+#appUpdateBanner::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, var(--pri), #8B5CF6, #EC4899);
 }
 #appUpdateBanner.open { display: block; }
-@keyframes slideUpUpd {
-  from { transform: translateY(24px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
 .upd-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 .upd-title {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: var(--pri);
-  display: flex;
+  color: var(--txt);
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+}
+.upd-badge {
+  background: var(--pri-bg);
+  color: var(--pri);
+  border: 1px solid color-mix(in srgb, var(--pri) 28%, transparent);
+  border-radius: 99px;
+  padding: 2px 9px;
+  font-size: 10.5px;
+  font-weight: 800;
+  direction: ltr;
 }
 .upd-desc {
   font-size: 11.5px;
-  line-height: 1.65;
-  color: var(--txt);
-  margin-bottom: 10px;
+  line-height: 1.7;
+  color: var(--sec);
+  margin-bottom: 12px;
 }
 .upd-actions {
   display: flex;
@@ -2354,26 +2368,54 @@ body {
 }
 .upd-btn-main {
   flex: 1;
-  background: var(--pri);
-  color: var(--onpri);
+  background: linear-gradient(135deg, var(--pri), #4F46E5);
+  color: #fff;
   border: none;
-  border-radius: 11px;
-  padding: 8px 12px;
+  border-radius: 13px;
+  padding: 9px 14px;
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--pri) 35%, transparent);
 }
 .upd-btn-later {
   background: var(--sub);
   color: var(--sec);
   border: 1px solid var(--brd);
-  border-radius: 11px;
-  padding: 8px 12px;
+  border-radius: 13px;
+  padding: 9px 13px;
   font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
 }
-
+#cleanNoticeToast {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  z-index: 99995;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--txt);
+  border: 1.5px solid var(--pri);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.65;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+#cleanNoticeToast.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
 
 /* Delayed Friendly Permission Guide (v70.4) */
 #permGuideOverlay {
@@ -3186,7 +3228,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v71.5";
+  const VER = "v71.6";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -5627,7 +5669,11 @@ function saveSettings(reload=false){
       "زمانی بەرنامە گۆڕدرا. بۆ جێبەجێکردنی تەواوی گۆڕانکارییەکان، تکایە بەرنامەکە جارێک دابخە و دووبارە بیکەرەوە.",
       "App language changed. Please close and reopen the app once to apply all changes completely."
     );
-    alert(msg);
+    if (typeof showCleanLangNotice === "function") {
+      showCleanLangNotice(msg);
+    } else if (typeof showToast === "function") {
+      showToast(msg);
+    }
   }
 }
 
@@ -10111,7 +10157,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "71.5";
+const APP_CURRENT_VER = "71.6";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
@@ -10130,21 +10176,44 @@ function isAndroidAppEnv() {
   return !!(window.AndroidBridge || location.protocol === "file:" || location.hostname === "appassets.androidplatform.net");
 }
 
+function showCleanLangNotice(msg) {
+  const t = document.getElementById("cleanNoticeToast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window.__cleanNoticeTimer);
+  window.__cleanNoticeTimer = setTimeout(() => { t.classList.remove("show"); }, 4500);
+}
+
 function showAppUpdateBanner(info) {
   const el = document.getElementById("appUpdateBanner");
   if (!el || !info || !info.version) return;
   _pendingUpdateInfo = info;
+  const titleEl = document.getElementById("updBannerTitle");
   const verEl = document.getElementById("updBannerVer");
   const descEl = document.getElementById("updBannerDesc");
   const btnEl = document.getElementById("updNowBtn");
+  const laterEl = document.getElementById("updLaterBtn");
+  if (titleEl) {
+    titleEl.textContent = tr("✨ نسخه جدید در دسترس است", "✨ وەشانی نوێ بەردەستە", "✨ New Update Available");
+  }
   if (verEl) verEl.textContent = "v" + String(info.version).replace(/^v/i, "");
   if (descEl) {
-    descEl.textContent = info.notes
-      ? `تغییرات نسخه جدید: ${info.notes}`
-      : "نسخه جدید SmartCal با امکانات و اصلاحات تازه منتشر شد. برای تجربه بهتر همین حالا بروزرسانی کنید.";
+    const defDesc = tr(
+      "نسخه جدید تقویم هوشمند با امکانات و بهبودهای تازه آماده است.",
+      "وەشانی نوێی ڕۆژژمێری زیرەک بە تایبەتمەندیی نوێ ئامادەیە.",
+      "A new version of SmartCal is ready with fresh features and improvements."
+    );
+    const notesPrefix = tr("تغییرات: ", "گۆڕانکارییەکان: ", "What's new: ");
+    descEl.textContent = info.notes ? (notesPrefix + info.notes) : defDesc;
   }
   if (btnEl) {
-    btnEl.textContent = isAndroidAppEnv() ? "⬇️ دانلود و نصب نسخه جدید" : "🔄 بروزرسانی فوری";
+    btnEl.textContent = isAndroidAppEnv()
+      ? tr("⬇️ دریافت نسخه جدید", "⬇️ وەرگرتنی وەشانی نوێ", "⬇️ Get Update")
+      : tr("🔄 بروزرسانی فوری", "🔄 نوێکردنەوەی دەستبەجێ", "🔄 Update Now");
+  }
+  if (laterEl) {
+    laterEl.textContent = tr("بعداً", "دواتر", "Later");
   }
   el.classList.add("open");
 }
@@ -10353,18 +10422,21 @@ setTimeout(() => {
 </div>
 
 
-<!-- In-App Update Notification Banner -->
+<!-- Sleek Modern In-App Update Notification -->
 <div id="appUpdateBanner" role="dialog" aria-live="polite">
   <div class="upd-head">
-    <span class="upd-title" id="updBannerTitle">🚀 نسخه جدید منتشر شد!</span>
-    <span class="tag" id="updBannerVer" style="font-size:10.5px;font-weight:800;direction:ltr"></span>
+    <span class="upd-title" id="updBannerTitle">✨ نسخه جدید در دسترس است</span>
+    <span class="upd-badge" id="updBannerVer"></span>
   </div>
-  <div class="upd-desc" id="updBannerDesc">نسخه جدید تقویم هوشمند آماده است. برای دریافت آخرین امکانات و اصلاحات همین حالا بروزرسانی کنید.</div>
+  <div class="upd-desc" id="updBannerDesc"></div>
   <div class="upd-actions">
-    <button type="button" class="upd-btn-main" id="updNowBtn" onclick="applyAppUpdateNow()">⬇️ بروزرسانی سریع</button>
-    <button type="button" class="upd-btn-later" onclick="dismissAppUpdateBanner()">بعداً</button>
+    <button type="button" class="upd-btn-main" id="updNowBtn" onclick="applyAppUpdateNow()"></button>
+    <button type="button" class="upd-btn-later" id="updLaterBtn" onclick="dismissAppUpdateBanner()"></button>
   </div>
 </div>
+
+<!-- Clean In-App Notice Toast (no browser/WebView origin prefix) -->
+<div id="cleanNoticeToast" onclick="this.classList.remove('show')"></div>
 
 
 <!-- Delayed Friendly Permission Guide Modal -->
