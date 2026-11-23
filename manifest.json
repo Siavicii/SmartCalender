@@ -31,7 +31,7 @@
       "purpose": "maskable"
     }
   ],
-  "version": "71.1",
+  "version": "71.5",
   "display_override": [
     "window-controls-overlay",
     "standalone",

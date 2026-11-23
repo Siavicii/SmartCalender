@@ -2767,8 +2767,8 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <!-- Saved Notes List -->
       <div id="notesListBlock" data-reorder-group="notes" data-reorder-item="notesListBlock">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <b style="font-size:12px;color:var(--sec)">🗂️ لیست یادداشت‌ها و چک‌لیست‌ها</b>
-          <span style="font-size:10px;color:var(--sec)">لمس تاریخ = پرش به روز در تقویم</span>
+          <b id="notesListSecTitle" style="font-size:12px;color:var(--sec)">🗂️ لیست یادداشت‌ها و چک‌لیست‌ها</b>
+          <span id="notesListSecHint" style="font-size:10px;color:var(--sec)">لمس تاریخ = پرش به روز در تقویم</span>
         </div>
         <div id="allNotesBox" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
@@ -2893,14 +2893,14 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <!-- Custom City Search Modal -->
 <div class="modal" id="cityModal">
   <div class="sheet">
-    <div class="s-head"><b>📍 انتخاب یا افزودن شهر دلخواه</b><button class="ibtn" onclick="closeModals()">✕</button></div>
-    <div style="font-size:11px;color:var(--sec)">نام شهر مورد نظر خود را به فارسی یا انگلیسی جستجو کنید (مثلاً: سقز، بوکان، رشت، لندن، دبی):</div>
+    <div class="s-head"><b id="cityModalTitle">📍 انتخاب یا افزودن شهر دلخواه</b><button class="ibtn" onclick="closeModals()">✕</button></div>
+    <div id="cityModalDesc" style="font-size:11px;color:var(--sec)">نام شهر مورد نظر خود را به فارسی یا انگلیسی جستجو کنید (مثلاً: سقز، بوکان، رشت، لندن، دبی):</div>
     <div class="note-row">
       <input type="text" id="citySearchInput" placeholder="نام هر شهر، بخش یا روستایی را بنویسید..." oninput="debouncedCitySearch()" onkeydown="if(event.key==='Enter')searchCityOnline()">
-      <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 14px" onclick="searchCityOnline()">جستجو</button>
+      <button id="citySearchBtn" class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 14px" onclick="searchCityOnline()">جستجو</button>
     </div>
     <div id="citySearchResults" style="display:flex;flex-direction:column;gap:6px"></div>
-    <b style="font-size:12px;color:var(--sec);margin-top:4px">شهرهای ذخیره شده و پیش‌فرض:</b>
+    <b id="savedCitiesLabel" style="font-size:12px;color:var(--sec);margin-top:4px">شهرهای ذخیره شده و پیش‌فرض:</b>
     <div id="savedCitiesList" style="display:flex;flex-wrap:wrap;gap:6px"></div>
   </div>
 </div>
@@ -3053,11 +3053,11 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <select id="setFont" style="margin-top:5px" onchange="saveSettings()">
         <option value="vazirmatn">۱. وزیرمتن + اینتر (Vazirmatn & Inter - مدرن و استاندارد)</option>
         <option value="iransans">۲. ایران‌سنس + اینتر (IRANSans & Inter - شیک، یکدست و چندزبانه)</option>
-        <option value="estedad">۲. استعداد + جاکارتا (Estedad & Jakarta - هندسی و لوکس)</option>
-        <option value="sahel">۳. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)</option>
-        <option value="notosans">۴. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)</option>
-        <option value="notonaskh">۵. نوتو نسخ اصیل (Noto Naskh - کلاسیک و ادبی)</option>
-        <option value="dastkhat">۶. دستخط (Dastkhat - مدرن و خوش‌خوان)</option>
+        <option value="estedad">۳. استعداد + جاکارتا (Estedad & Jakarta - هندسی و لوکس)</option>
+        <option value="sahel">۴. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)</option>
+        <option value="notosans">۵. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)</option>
+        <option value="notonaskh">۶. نوتو نسخ اصیل (Noto Naskh - کلاسیک و ادبی)</option>
+        <option value="dastkhat">۷. دستخط (Dastkhat - مدرن و خوش‌خوان)</option>
       </select>
     </div>
 
@@ -3186,7 +3186,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v71.1";
+  const VER = "v71.5";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3252,12 +3252,152 @@ const EV_TR_MAP={
   "روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس":{ku:"ڕۆژی ئەندازیار (خاجە نەسیرەدینی تووسی)",en:"Engineers' Day (Nasir al-Din al-Tusi)"},
   "روز ملی شدن صنعت نفت ایران (تعطیل رسمی)":{ku:"خۆماڵیکردنی پیشەسازیی نەوت (پشووی فەرمی)",en:"Oil Nationalization Day (Official Holiday)"}
 };
+
+
+const EXTRA_KU_EV_MAP = {
+  "جشن آبانگان": "جەژنی ئابانگان",
+  "روز فرهنگ عمومی": "ڕۆژی فەرهەنگی گشتی",
+  "روز ملی کیفیت": "ڕۆژی نیشتمانیی کوالێتی",
+  "شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)": "شەهیدبوونی حەزرەتی فاتیمەی زەهرا (پشووی فەرمی)",
+  "شهادت حضرت فاطمه زهرا (س)": "شەهیدبوونی حەزرەتی فاتیمەی زەهرا",
+  "روز کتاب، کتاب‌خوانی و کتابدار": "ڕۆژی کتێب، خوێندنەوە و کتێبخانە",
+  "آذر جشن": "جەژنی ئازەر",
+  "روز زیتون": "ڕۆژی زەیتوون",
+  "روز جهانی مبارزه با خشونت علیه زنان": "ڕۆژی جیهانیی بەرەنگاربوونەوەی توندوتیژی دژی ژنان",
+  "روز بسیج مستضعفان": "ڕۆژی بەسیج",
+  "روز نیروی دریایی": "ڕۆژی هێزی دەریایی",
+  "جشن آذرگان و روز جزایر سه‌گانه خلیج فارس": "جەژنی ئازەرگان و ڕۆژی دوورگەکانی کەنداوی فارس",
+  "ولادت حضرت فاطمه زهرا (س) و روز زن و مادر": "لەدایکبوونی حەزرەتی فاتیمە و ڕۆژی ژن و دایک",
+  "روز مجلس": "ڕۆژی پەرلەمان",
+  "روز جهانی ایدز": "ڕۆژی جیهانیی ئایدز",
+  "روز قانون اساسی و روز جهانی معلولان": "ڕۆژی دەستوور و ڕۆژی جیهانیی کەمئەندامان",
+  "روز بیمه": "ڕۆژی بیمە",
+  "روز حسابدار": "ڕۆژی ژمێریار",
+  "روز دانشجو": "ڕۆژی خوێندکاری زانکۆ",
+  "روز جهانی حقوق بشر": "ڕۆژی جیهانیی مافەکانی مرۆڤ",
+  "روز جهانی کوهستان": "ڕۆژی جیهانیی شاخ",
+  "ولادت امام محمد باقر (ع)": "لەدایکبوونی ئیمام محەممەد باقر",
+  "شهادت امام علی النقی (ع)": "شەهیدبوونی ئیمام عەلی نەقی",
+  "روز پژوهش": "ڕۆژی توێژینەوە",
+  "روز حمل‌ونقل و رانندگان": "ڕۆژی گواستنەوە و شۆفێران",
+  "روز وحدت حوزه و دانشگاه": "ڕۆژی یەکێتیی حەوزە و زانکۆ",
+  "ولادت امام محمد تقی (ع)": "لەدایکبوونی ئیمام محەممەد تەقی",
+  "شب یلدا (شب چله)": "شەوی یەڵدا (شەوی چلە)",
+  "روز جهانی دیابت": "ڕۆژی جیهانیی شەکرە",
+  "روز جهانی کودک": "ڕۆژی جیهانیی منداڵ",
+  "روز جهانی مبارزه با ایدز": "ڕۆژی جیهانیی بەرەنگاربوونەوەی ئایدز",
+  "روز جهانی افراد دارای معلولیت": "ڕۆژی جیهانیی کەسانی خاوەن پێداویستیی تایبەت",
+  "روز جهانی قلب": "ڕۆژی جیهانیی دڵ",
+  "روز جهانی معلم": "ڕۆژی جیهانیی مامۆستا",
+  "روز جهانی سلامت روان": "ڕۆژی جیهانیی تەندروستیی دەروونی",
+  "روز جهانی غذا": "ڕۆژی جیهانیی خۆراک",
+  "روز جهانی زمین": "ڕۆژی جیهانیی زەوی",
+  "روز جهانی محیط زیست": "ڕۆژی جیهانیی ژینگە",
+  "روز جهانی آب": "ڕۆژی جیهانیی ئاو",
+  "روز جهانی بهداشت": "ڕۆژی جیهانیی تەندروستی",
+  "روز جهانی کارگر": "ڕۆژی جیهانیی کرێکاران",
+  "روز جهانی زن": "ڕۆژی جیهانیی ژنان",
+  "روز جهانی صلح": "ڕۆژی جیهانیی ئاشتی",
+  "روز جهانی گردشگری": "ڕۆژی جیهانیی گەشتیاری",
+  "روز جهانی کتاب": "ڕۆژی جیهانیی کتێب",
+  "روز جهانی ولنتاین / عشق": "ڕۆژی جیهانیی ڤالانتاین / خۆشەویستی",
+  "آغاز سال نو میلادی (New Year's Day)": "سەرەتای ساڵی نوێی زایینی",
+  "جشن کریسمس (Christmas Day)": "جەژنی کریسمس",
+  "روز مادر": "ڕۆژی دایک",
+  "روز پدر": "ڕۆژی باوک"
+};
+const EXTRA_EN_EV_MAP = {
+  "جشن آبانگان": "Abanegan Festival",
+  "روز فرهنگ عمومی": "Public Culture Day",
+  "روز ملی کیفیت": "National Quality Day",
+  "شهادت حضرت فاطمه زهرا (س) (تعطیل رسمی)": "Martyrdom of Lady Fatimah (Official Holiday)",
+  "شهادت حضرت فاطمه زهرا (س)": "Martyrdom of Lady Fatimah",
+  "روز کتاب، کتاب‌خوانی و کتابدار": "Book, Reading & Librarian Day",
+  "آذر جشن": "Azar Festival",
+  "روز زیتون": "Olive Day",
+  "روز جهانی مبارزه با خشونت علیه زنان": "Int'l Day for the Elimination of Violence against Women",
+  "روز بسیج مستضعفان": "Basij Day",
+  "روز نیروی دریایی": "Iranian Navy Day",
+  "جشن آذرگان و روز جزایر سه‌گانه خلیج فارس": "Azargan Festival & Persian Gulf Islands Day",
+  "ولادت حضرت فاطمه زهرا (س) و روز زن و مادر": "Birth of Lady Fatimah & Mother's Day",
+  "روز مجلس": "Parliament Day",
+  "روز جهانی ایدز": "World AIDS Day",
+  "روز قانون اساسی و روز جهانی معلولان": "Constitution Day & Int'l Day of Persons with Disabilities",
+  "روز بیمه": "Insurance Day",
+  "روز حسابدار": "Accountant's Day",
+  "روز دانشجو": "University Student's Day",
+  "روز جهانی حقوق بشر": "Human Rights Day",
+  "روز جهانی کوهستان": "International Mountain Day",
+  "ولادت امام محمد باقر (ع)": "Birth of Imam Muhammad al-Baqir",
+  "شهادت امام علی النقی (ع)": "Martyrdom of Imam Ali al-Hadi",
+  "روز پژوهش": "Research Day",
+  "روز حمل‌ونقل و رانندگان": "Transportation & Drivers' Day",
+  "روز وحدت حوزه و دانشگاه": "Seminary & University Unity Day",
+  "ولادت امام محمد تقی (ع)": "Birth of Imam Muhammad al-Taqi",
+  "شب یلدا (شب چله)": "Yalda Night (Winter Solstice)",
+  "روز جهانی دیابت": "World Diabetes Day",
+  "روز جهانی کودک": "World Children's Day",
+  "روز جهانی مبارزه با ایدز": "World AIDS Day",
+  "روز جهانی افراد دارای معلولیت": "Int'l Day of Persons with Disabilities",
+  "روز جهانی قلب": "World Heart Day",
+  "روز جهانی معلم": "World Teachers' Day",
+  "روز جهانی سلامت روان": "World Mental Health Day",
+  "روز جهانی غذا": "World Food Day",
+  "روز جهانی زمین": "Earth Day",
+  "روز جهانی محیط زیست": "World Environment Day",
+  "روز جهانی آب": "World Water Day",
+  "روز جهانی بهداشت": "World Health Day",
+  "روز جهانی کارگر": "International Workers' Day",
+  "روز جهانی زن": "International Women's Day",
+  "روز جهانی صلح": "International Day of Peace",
+  "روز جهانی گردشگری": "World Tourism Day",
+  "روز جهانی کتاب": "World Book Day",
+  "روز جهانی صليب سرخ": "World Red Cross Day",
+  "روز جهانی هلال احمر": "World Red Crescent Day",
+  "روز جهانی علم در خدمت صلح و توسعه": "World Science Day for Peace and Development",
+  "روز جهانی تلویزیون": "World Television Day",
+  "روز جهانی رادیو": "World Radio Day",
+  "روز جهانی تئاتر": "World Theatre Day",
+  "روز جهانی موزه": "International Museum Day",
+  "روز جهانی عکاسی": "World Photography Day",
+  "روز جهانی زبان مادری": "International Mother Language Day",
+  "روز جهانی مبارزه با سرطان": "World Cancer Day",
+  "روز جهانی ولنتاین / عشق": "Valentine's Day",
+  "آغاز سال نو میلادی (New Year's Day)": "New Year's Day",
+  "جشن کریسمس (Christmas Day)": "Christmas Day",
+  "روز مادر": "Mother's Day",
+  "روز پدر": "Father's Day"
+};
 const trEvTitle=t=>{
   const l=(typeof cfg!=="undefined"&&cfg?.lang)||"fa";
   if(l==="fa") return t;
   if(EV_TR_MAP[t]) return EV_TR_MAP[t][l]||t;
-  if(l==="en") return t.replace("(تعطیل رسمی)","(Official Holiday)").replace("(تعطیل)","(Holiday)");
-  if(l==="ku") return t.replace("(تعطیل رسمی)","(پشووی فەرمی)").replace("(تعطیل)","(پشوو)");
+  if(l==="en") {
+    const clean = String(t || "").replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "").trim();
+    const icoMatch = String(t || "").match(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]+/u);
+    const ico = icoMatch ? (icoMatch[0] + " ") : "";
+    if (EXTRA_EN_EV_MAP[t]) return EXTRA_EN_EV_MAP[t];
+    if (EXTRA_EN_EV_MAP[clean]) return ico + EXTRA_EN_EV_MAP[clean];
+    const noHol = clean.replace(/\s*\(تعطیل رسمی\)/g, "").replace(/\s*\(تعطیل\)/g, "").trim();
+    if (EXTRA_EN_EV_MAP[noHol]) {
+      const suf = clean.includes("تعطیل رسمی") ? " (Official Holiday)" : (clean.includes("تعطیل") ? " (Holiday)" : "");
+      return ico + EXTRA_EN_EV_MAP[noHol] + suf;
+    }
+    return t.replace("(تعطیل رسمی)","(Official Holiday)").replace("(تعطیل)","(Holiday)");
+  }
+  if(l==="ku") {
+    const clean = String(t || "").replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "").trim();
+    const icoMatch = String(t || "").match(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]+/u);
+    const ico = icoMatch ? (icoMatch[0] + " ") : "";
+    if (EXTRA_KU_EV_MAP[t]) return EXTRA_KU_EV_MAP[t];
+    if (EXTRA_KU_EV_MAP[clean]) return ico + EXTRA_KU_EV_MAP[clean];
+    const noHol = clean.replace(/\s*\(تعطیل رسمی\)/g, "").replace(/\s*\(تعطیل\)/g, "").trim();
+    if (EXTRA_KU_EV_MAP[noHol]) {
+      const suf = clean.includes("تعطیل رسمی") ? " (پشووی فەرمی)" : (clean.includes("تعطیل") ? " (پشوو)" : "");
+      return ico + EXTRA_KU_EV_MAP[noHol] + suf;
+    }
+    return t.replace("(تعطیل رسمی)","(پشووی فەرمی)").replace("(تعطیل)","(پشوو)");
+  }
   return t;
 };
 
@@ -5139,6 +5279,8 @@ function applyLanguageUI() {
     if (evB) evB.textContent = tr("مناسبت‌ها و تعطیلات این ماه", "بۆنە و پشووەکانی ئەم مانگە", "Events & Holidays This Month");
     const evUpdBtn = evCard.querySelector("div > .ibtn");
     if (evUpdBtn) evUpdBtn.textContent = tr("🔄 بروزرسانی مناسبت‌ها", "🔄 نوێکردنەوەی بۆنەکان", "🔄 Sync Holidays");
+    const detCountryBtn = evCard.querySelector("button[onclick*=\"detectAndSyncUserCountry\"]");
+    if (detCountryBtn) detCountryBtn.textContent = tr("🌐 تشخیص کشور", "🌐 دیاریکردنی وڵات", "🌐 Detect Country");
     const addEvB = evCard.querySelector(".note-box > b");
     if (addEvB) addEvB.textContent = tr("➕ افزودن رویداد، مناسبت یا هشدار زمانی به این روز", "➕ زیادکردنی بۆنە یان ئاگادارکەرەوە بۆ ئەم ڕۆژە", "➕ Add Custom Event or Timed Reminder");
     setPh("#customEvInput", "عنوان رویداد یا مناسبت...", "ناونیشانی بۆنە...", "Event or occasion title...");
@@ -5151,9 +5293,12 @@ function applyLanguageUI() {
   // Market View
   setTxt("#view-mkt .mkt-head b", "💰 نرخ لحظه‌ای طلا، سکه و ارز", "💰 نرخی زیندووی زێڕ و دراو", "💰 Live Gold, Coin & FX Rates");
   setTxt("#mktRefreshBtn", "🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh");
-  const mktSecTitles = document.querySelectorAll("#view-mkt .card > b");
-  if (mktSecTitles[0]) mktSecTitles[0].textContent = tr("🪙 بازار طلا و سکه (تومان)", "🪙 بازاڕی زێڕ و سکە (تمەن)", "🪙 Gold & Coins Market (Toman)");
-  if (mktSecTitles[1]) mktSecTitles[1].textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Exchange Rates (Toman)");
+  const mktGoldB = document.querySelector("#mktGoldBlock > b");
+  const mktFxB = document.querySelector("#mktFxBlock > b");
+  if (mktGoldB) mktGoldB.textContent = tr("🪙 بازار طلا و سکه (تومان)", "🪙 بازاڕی زێڕ و سکە (تمەن)", "🪙 Gold & Coins Market (Toman)");
+  if (mktFxB) mktFxB.textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Exchange Rates (Toman)");
+  setTxt("#notesListSecTitle", "🗂️ لیست یادداشت‌ها و چک‌لیست‌ها", "🗂️ لیستی تێبینییەکان و چێکلیست", "🗂️ Notes & Checklists");
+  setTxt("#notesListSecHint", "لمس تاریخ = پرش به روز در تقویم", "دەستدان لە بەروار = چوونە ڕۆژژمێر", "Tap date = jump to calendar");
 
   // Notes Hub View
   setTxt("#notesHubTitle", "📒 استودیو هوشمند یادداشت و وظایف", "📒 ستۆدیۆی زیرەکی تێبینی و ئەرکەکان", "📒 Smart Notes & Tasks Studio");
@@ -5192,6 +5337,10 @@ function applyLanguageUI() {
   if (styleAccB) styleAccB.textContent = tr("رنگ تاکیدی (Accent Color)", "ڕەنگی سەرەکی (Accent Color)", "Accent Color");
   setTxt("#cityModal .s-head b", "📍 انتخاب یا افزودن شهر دلخواه", "📍 هەڵبژاردن یان زیادکردنی شار", "📍 Select or Search City");
   setPh("#citySearchInput", "نام شهر را بنویسید...", "ناوی شار بنووسە...", "Enter city name (e.g. Tehran, London)...");
+  setTxt("#cityModalTitle", "📍 انتخاب یا افزودن شهر دلخواه", "📍 هەڵبژاردن یان زیادکردنی شار", "📍 Select or Add City");
+  setTxt("#cityModalDesc", "نام شهر مورد نظر خود را به فارسی یا انگلیسی جستجو کنید (مثلاً: سقز، بوکان، رشت، لندن، دبی):", "ناوی شارەکە بە کوردی، فارسی یان ئینگلیزی بنووسە (وەک: سەقز، بۆکان، سنە، لەندەن، دوبەی):", "Search any city by name in English, Persian, or Kurdish (e.g. Sanandaj, London, Dubai):");
+  setTxt("#citySearchBtn", "جستجو", "گەڕان", "Search");
+  setTxt("#savedCitiesLabel", "شهرهای ذخیره شده و پیش‌فرض:", "شارە پاشەکەوتکراوەکان و پێشوەختە:", "Saved & Default Cities:");
   setTxt("#convModal .s-head b", "🔄 مبدل جامع تاریخ (شمسی / کوردی / میلادی)", "🔄 گۆڕەری گشتیی ڕێکەوت (هەتاوی / کوردی / زایینی)", "🔄 Universal Date Converter (Jalali / Kurdish / Gregorian)");
   const convOpts = document.getElementById("convMode")?.options;
   if (convOpts && convOpts.length >= 3) {
@@ -5249,13 +5398,14 @@ function applyLanguageUI() {
 
   // Settings modal full localization (Font options, Week/Weekend, Notifications, Backup)
   const fontOpts = document.getElementById("setFont")?.options;
-  if (fontOpts && fontOpts.length >= 6) {
+  if (fontOpts && fontOpts.length >= 7) {
     fontOpts[0].textContent = tr("۱. وزیرمتن + اینتر (Vazirmatn & Inter - مدرن و استاندارد)", "١. ڤەزیرمەتن + ئینتەر - مۆدێرن و ستاندارد", "1. Vazirmatn & Inter (Modern & Standard)");
-    fontOpts[1].textContent = tr("۲. استعداد + جاکارتا (Estedad & Jakarta - هندسی و لوکس)", "٢. ئیستعداد + جاکارتا - ئەندازەیی و ڕێک", "2. Estedad & Jakarta (Geometric & Clean)");
-    fontOpts[2].textContent = tr("۳. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)", "٣. ساحل + ڕووبیک - نەرم و خوێندراوە", "3. Sahel & Rubik (Soft & Readable)");
-    fontOpts[3].textContent = tr("۴. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)", "٤. نۆتۆ سانس کوردی/فارسی - زۆر ڕوون", "4. Noto Sans Arabic (Crisp & Clear)");
-    fontOpts[4].textContent = tr("۵. نوتو نسخ اصیل (Noto Naskh - کلاسیک و ادبی)", "٥. نۆتۆ نەسخی ڕەسەن - کلاسیک", "5. Noto Naskh (Classic Editorial)");
-    fontOpts[5].textContent = tr("۶. دستخط (Dastkhat - مدرن و خوش‌خوان)", "٦. دەستخەت - مۆدێرن و خۆشخوێن", "6. Dastkhat (Expressive & Clear)");
+    fontOpts[1].textContent = tr("۲. ایران‌سنس + اینتر (IRANSans & Inter - شیک، یکدست و چندزبانه)", "٢. ئێران‌سەنس + ئینتەر - ڕێک و فرەزمان", "2. IRANSans & Inter (Sleek & Multilingual)");
+    fontOpts[2].textContent = tr("۳. استعداد + جاکارتا (Estedad & Jakarta - هندسی و لوکس)", "٣. ئیستعداد + جاکارتا - ئەندازەیی و ڕێک", "3. Estedad & Jakarta (Geometric & Clean)");
+    fontOpts[3].textContent = tr("۴. ساحل + روبیک (Sahel & Rubik - نرم و خوانا)", "٤. ساحل + ڕووبیک - نەرم و خوێندراوە", "4. Sahel & Rubik (Soft & Readable)");
+    fontOpts[4].textContent = tr("۵. نوتو سنس کوردی/فارسی (Noto Sans Arabic - فوق‌العاده تمیز)", "٥. نۆتۆ سانس کوردی/فارسی - زۆر ڕوون", "5. Noto Sans Arabic (Crisp & Clear)");
+    fontOpts[5].textContent = tr("۶. نوتو نسخ اصیل (Noto Naskh - کلاسیک و ادبی)", "٦. نۆتۆ نەسخی ڕەسەن - کلاسیک", "6. Noto Naskh (Classic Editorial)");
+    fontOpts[6].textContent = tr("۷. دستخط (Dastkhat - مدرن و خوش‌خوان)", "٧. دەستخەت - مۆدێرن و خۆشخوێن", "7. Dastkhat (Expressive & Clear)");
   }
   const setSubBs = document.querySelectorAll("#setModal > .sheet > div > b, #setModal > .sheet > div > div > b");
   if (setSubBs.length) {
@@ -5445,6 +5595,8 @@ function saveSettings(reload=false){
   const langChangedNow = !!(langSelEl && langSelEl.value !== (cfg.lang || "fa"));
   if(langSelEl) cfg.lang=langSelEl.value;
   if(document.getElementById("setFont")) cfg.font=document.getElementById("setFont").value;
+  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
+  if (typeof FONT_STACKS !== "undefined") document.documentElement.style.setProperty("--app-font", FONT_STACKS[cfg.font] || FONT_STACKS.vazirmatn);
   if(document.getElementById("setFirstDay")) cfg.firstDay=Number(document.getElementById("setFirstDay").value);
   if(document.getElementById("setAutoSyncCalLang")) cfg.autoSyncCalLang=document.getElementById("setAutoSyncCalLang").checked;
   if(document.getElementById("setAutoLoc")) cfg.autoLoc=document.getElementById("setAutoLoc").checked;
@@ -6073,7 +6225,7 @@ async function fetchMarket(manual = false) {
 
   mktFetching = true;
   if (btn) { btn.disabled = true; btn.innerHTML = "⏳ در حال دریافت..."; btn.style.opacity = "0.75"; }
-  if (updEl) updEl.textContent = "🔄 در حال استعلام نرخ لحظه‌ای طلا، سکه و ارز...";
+  if (updEl) updEl.textContent = tr("🔄 در حال استعلام نرخ لحظه‌ای طلا، سکه و ارز...", "🔄 وەرگرتنی نرخی زیندووی زێڕ و دراو...", "🔄 Fetching live gold, coin & FX rates...");
 
   const bust = String(Date.now());
   try {
@@ -6152,7 +6304,7 @@ async function fetchMarket(manual = false) {
       btn.disabled = false;
       btn.innerHTML = "✅ بروز شد";
       btn.style.opacity = "1";
-      setTimeout(() => { if (btn) btn.innerHTML = "🔄 بروزرسانی"; }, 1800);
+      setTimeout(() => { if (btn) btn.innerHTML = tr("🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh"); }, 1800);
     }
   }
 }
@@ -9094,6 +9246,9 @@ setTimeout(() => {
   }
 
   window.openSmartSelectPicker = function(selEl) {
+    if (selEl && selEl.id === "setFont" && typeof applyLanguage === "function") {
+      try { applyLanguage(); } catch (e) {}
+    }
     if (!selEl || selEl.disabled) return;
     const now = Date.now();
     if (now - lastOpenTs < 180) return;
@@ -9956,7 +10111,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "71.1";
+const APP_CURRENT_VER = "71.5";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
