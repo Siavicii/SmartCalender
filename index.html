@@ -6715,8 +6715,9 @@ function scanRahavardHtmlForEtfs(htmlTxt) {
   Object.keys(RAHAVARD_ETF_SYMBOLS).forEach(ico => {
     const syms = RAHAVARD_ETF_SYMBOLS[ico];
     for (const sym of syms) {
-      const escSym = sym.replace(/[.*+?^${}()|[\]\]/g, "\$&");
-      const re = new RegExp(escSym + "[^0-9۰-۹\-]{0,45}([0-9۰-۹,]{3,12})(?:[^0-9۰-۹%\-]{0,25}([+\-]?[0-9۰-۹.]+)\s*%)?", "i");
+      const escSym = sym.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const pat = escSym + "[^0-9۰-۹\\-]{0,45}([0-9۰-۹,]{3,12})(?:[^0-9۰-۹%\\-]{0,25}([+\\-]?[0-9۰-۹.]+)\\s*%)?";
+      const re = new RegExp(pat, "i");
       const m = plain.match(re);
       if (m && m[1]) {
         const latNum = m[1].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/,/g, "");

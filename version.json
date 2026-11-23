@@ -1,6 +1,6 @@
 {
   "version": "72",
   "updated_at": "2026-11-23",
-  "notes": "افزودن منبع جایگزین (TGJU و TSETMC) در صورت عدم دریافت نرخ صندوق‌های بورسی از rahavard365.com در نسخه ۷۲",
+  "notes": "رفع خطای RegExp در اسکن نرخ صندوق‌ها و پایداری کامل اجرای تقویم در نسخه ۷۲",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }
