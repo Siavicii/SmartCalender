@@ -2269,6 +2269,45 @@ body {
   cursor: pointer;
 }
 
+
+/* Delayed Friendly Permission Guide (v70.4) */
+#permGuideOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99985;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(10, 14, 24, 0.48);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 14px;
+}
+#permGuideOverlay.open { display: flex; }
+.perm-sheet {
+  width: min(440px, 100%);
+  background: var(--card);
+  color: var(--txt);
+  border: 1px solid var(--brd);
+  border-radius: 22px;
+  padding: 18px 16px 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.32);
+  animation: slideUpUpd 0.3s ease;
+}
+.perm-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  background: var(--sub);
+  border: 1px solid var(--brd);
+  margin-top: 8px;
+}
+.perm-ico { font-size: 20px; line-height: 1.2; flex-shrink: 0; }
+.perm-txt b { font-size: 12px; display: block; margin-bottom: 2px; color: var(--pri); }
+.perm-txt span { font-size: 11px; line-height: 1.6; color: var(--sec); display: block; }
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2296,7 +2335,7 @@ window.__dismissSmartSplash = function() {
   if (window.__splashDone) return;
   window.__splashDone = true;
   var elapsed = Date.now() - (window.__splashStartMs || 0);
-  var waitMs = Math.max(0, 1200 - elapsed);
+  var waitMs = Math.max(0, 250 - elapsed);
   setTimeout(function() {
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
@@ -2990,7 +3029,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v70.3";
+  const VER = "v70.4";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3152,7 +3191,7 @@ async function syncRemoteIrHolidays(force=false){
   }
   return false;
 }
-setTimeout(()=>{try{syncRemoteIrHolidays(false);}catch(e){}},1800);
+setTimeout(()=>{try{syncRemoteIrHolidays(false);}catch(e){}},3500);
 
 // Emergency AI-Detected Closures (matched to user's selected city or nationwide)
 function normFaCity(s) {
@@ -7098,7 +7137,8 @@ function initSmartCelebrationWatcher() {
       }
     };
     checkTahvilNow();
-    setInterval(checkTahvilNow, 5000);
+    const nearEquinox = [tj.jy, tj.jy + 1].some(y => Math.abs(Date.now() - getEquinoxUtcMs(calcVernalEquinoxIRST(y))) < 48 * 3600000);
+    if (nearEquinox) setInterval(checkTahvilNow, 5000);
   } catch (e) {}
 }
 setTimeout(initSmartCelebrationWatcher, 1200);
@@ -7397,8 +7437,22 @@ function render(){
   }).join("");
 
   const mBox = document.getElementById("monthEvBox");
-  mBox.innerHTML = mList.length
-    ? mList.map(x => `<div class="m-ev ${x.h ? 'hol' : ''}" onclick="sel={jy:${x.j.jy},jm:${x.j.jm},jd:${x.j.jd}};render()"><span class="badge">${x.label}</span><span>${esc(x.t)}</span></div>`).join("")
+  const groupedMList = [];
+  const grpMap = new Map();
+  mList.forEach(x => {
+    const gk = `${x.j.jy}-${x.j.jm}-${x.j.jd}`;
+    if (!grpMap.has(gk)) {
+      const obj = { label: x.label, j: x.j, titles: [x.t], h: !!x.h };
+      grpMap.set(gk, obj);
+      groupedMList.push(obj);
+    } else {
+      const obj = grpMap.get(gk);
+      if (!obj.titles.includes(x.t)) obj.titles.push(x.t);
+      if (x.h) obj.h = true;
+    }
+  });
+  mBox.innerHTML = groupedMList.length
+    ? groupedMList.map(x => `<div class="m-ev ${x.h ? 'hol' : ''}" onclick="sel={jy:${x.j.jy},jm:${x.j.jm},jd:${x.j.jd}};render()"><span class="badge">${x.label}</span><span style="line-height:1.65">${x.titles.map(t => esc(t)).join(' <span style="opacity:.45">•</span> ')}</span></div>`).join("")
     : `<div style="font-size:12px;opacity:.6;padding-top:4px">${tr("مناسبتی ثبت نشده است","بۆنەیەک تۆمار نەکراوە","No events this month")}</div>`;
 }
 
@@ -8167,7 +8221,7 @@ initPwaInstallAndSw();
 
   let knownStamp = localStorage.getItem("smartcal_remote_stamp") || "";
   const checkRemoteUpdate = async () => {
-    if (location.protocol !== "https:" && location.protocol !== "http:") return;
+    if ((typeof isAndroidAppEnv === "function" && isAndroidAppEnv()) || location.hostname === "appassets.androidplatform.net" || (location.protocol !== "https:" && location.protocol !== "http:")) return;
     try {
       const vResp = await fetch("./version.json?_v=" + Date.now(), { cache: "no-store" }).catch(() => null);
       let stamp = "";
@@ -8215,7 +8269,7 @@ initPwaInstallAndSw();
     }, { once: true });
   }
   setTimeout(checkRemoteUpdate, 1000);
-  setInterval(checkRemoteUpdate, 25000);
+  setInterval(checkRemoteUpdate, 300000);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") checkRemoteUpdate();
   });
@@ -9713,7 +9767,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "70.3";
+const APP_CURRENT_VER = "70.4";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
@@ -9817,7 +9871,64 @@ async function checkForAppUpdate(manual = false) {
   return false;
 }
 
-setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 2600);
+setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 4500);
+
+
+
+// ====== DELAYED FRIENDLY PERMISSION GUIDE (4s after launch) ======
+function checkMissingCorePermissions() {
+  let needNotif = false, needLoc = false;
+  if (window.AndroidBridge) {
+    try { if (window.AndroidBridge.hasNotificationPermission && !window.AndroidBridge.hasNotificationPermission()) needNotif = true; } catch (e) {}
+    try { if (window.AndroidBridge.hasLocationPermission && !window.AndroidBridge.hasLocationPermission()) needLoc = true; } catch (e) {}
+  } else {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") needNotif = true;
+  }
+  return { needNotif, needLoc };
+}
+
+function dismissPermGuide() {
+  const ov = document.getElementById("permGuideOverlay");
+  if (ov) ov.classList.remove("open");
+  localStorage.setItem("smartcal_perm_guide_ts", String(Date.now()));
+}
+
+function grantGuidedPermissions() {
+  const { needNotif, needLoc } = checkMissingCorePermissions();
+  dismissPermGuide();
+  if (window.AndroidBridge) {
+    if (needNotif && window.AndroidBridge.requestNotificationPermission) {
+      try { window.AndroidBridge.requestNotificationPermission(); } catch (e) {}
+    }
+    if (needLoc && window.AndroidBridge.requestLocationPermission) {
+      setTimeout(() => {
+        try { window.AndroidBridge.requestLocationPermission(); } catch (e) {}
+      }, needNotif ? 1400 : 100);
+    }
+  } else {
+    if (needNotif && typeof Notification !== "undefined" && Notification.requestPermission) {
+      try { Notification.requestPermission(); } catch (e) {}
+    }
+    if (needLoc && typeof detectUserLocation === "function") {
+      try { detectUserLocation(true); } catch (e) {}
+    }
+  }
+}
+
+setTimeout(() => {
+  try {
+    const lastTs = Number(localStorage.getItem("smartcal_perm_guide_ts") || 0);
+    if (Date.now() - lastTs < 7 * 86400000) return;
+    const { needNotif, needLoc } = checkMissingCorePermissions();
+    if (!needNotif && !needLoc) return;
+    const nEl = document.getElementById("permGuideNotifItem");
+    const lEl = document.getElementById("permGuideLocItem");
+    if (nEl) nEl.style.display = needNotif ? "flex" : "none";
+    if (lEl) lEl.style.display = needLoc ? "flex" : "none";
+    const ov = document.getElementById("permGuideOverlay");
+    if (ov) ov.classList.add("open");
+  } catch (e) {}
+}, 4000);
 
 </script>
 
@@ -9887,6 +9998,38 @@ setTimeout(() => { try { checkForAppUpdate(false); } catch (e) {} }, 2600);
   <div class="upd-actions">
     <button type="button" class="upd-btn-main" id="updNowBtn" onclick="applyAppUpdateNow()">⬇️ بروزرسانی سریع</button>
     <button type="button" class="upd-btn-later" onclick="dismissAppUpdateBanner()">بعداً</button>
+  </div>
+</div>
+
+
+<!-- Delayed Friendly Permission Guide Modal -->
+<div id="permGuideOverlay" onclick="if(event.target===this)dismissPermGuide()">
+  <div class="perm-sheet">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <b style="font-size:14px">✨ فعال‌سازی امکانات هوشمند تقویم</b>
+      <button type="button" class="ibtn" onclick="dismissPermGuide()" style="width:28px;height:28px;padding:0;justify-content:center">✕</button>
+    </div>
+    <div style="font-size:11.5px;color:var(--sec);margin-top:4px;line-height:1.6">
+      برای تجربه کامل‌تر SmartCal، اجازه دسترسی به موارد زیر را پیشنهاد می‌کنیم:
+    </div>
+    <div id="permGuideNotifItem" class="perm-item">
+      <span class="perm-ico">🔔</span>
+      <div class="perm-txt">
+        <b>دسترسی اعلان‌ها (Notifications)</b>
+        <span>برای یادآوری به‌موقع یادداشت‌ها، هشدارهای زمانی، تولدها و مناسبت‌های شاد شما.</span>
+      </div>
+    </div>
+    <div id="permGuideLocItem" class="perm-item">
+      <span class="perm-ico">📍</span>
+      <div class="perm-txt">
+        <b>دسترسی موقعیت مکانی (Location)</b>
+        <span>برای نمایش دقیق آب‌وهوای شهر شما، ساعت طلوع/غروب و تشخیص خودکار تعطیلات اضطراری استانی.</span>
+      </div>
+    </div>
+    <div class="upd-actions" style="margin-top:14px">
+      <button type="button" class="upd-btn-main" onclick="grantGuidedPermissions()">✅ تأیید و فعال‌سازی</button>
+      <button type="button" class="upd-btn-later" onclick="dismissPermGuide()">فعلاً نه</button>
+    </div>
   </div>
 </div>
 
