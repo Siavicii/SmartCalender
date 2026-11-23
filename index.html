@@ -3228,7 +3228,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v71.6";
+  const VER = "v71.8";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -3694,6 +3694,89 @@ const COUNTRY_CATALOG = [
   { code: "ZA", fa: "آفریقای جنوبی", ku: "ئەفریقای باشوور", en: "South Africa", fallback: { "1-1":[["New Year's Day",1]], "4-27":[["Freedom Day",1]], "12-25":[["Christmas Day",1]] } }
 ];
 
+
+const EXTRA_WORLD_COUNTRIES = [
+  { code: "AL", fa: "آلبانی", ku: "ئەلبانیا", en: "Albania", fallback: { "1-1":[["سال نو",1]], "11-28":[["روز استقلال آلبانی",1]] } },
+  { code: "DZ", fa: "الجزایر", ku: "جەزائیر", en: "Algeria", fallback: { "1-1":[["سال نو",1]], "7-5":[["روز استقلال الجزایر",1]], "11-1":[["روز انقلاب الجزایر",1]] } },
+  { code: "AD", fa: "آندورا", ku: "ئاندۆرا", en: "Andorra", fallback: { "1-1":[["سال نو",1]], "9-8":[["روز ملی آندورا",1]], "12-25":[["کریسمس",1]] } },
+  { code: "AO", fa: "آنگولا", ku: "ئەنگۆلا", en: "Angola", fallback: { "1-1":[["سال نو",1]], "11-11":[["روز استقلال آنگولا",1]] } },
+  { code: "BD", fa: "بنگلادش", ku: "بەنگلادیش", en: "Bangladesh", fallback: { "2-21":[["روز زبان مادری",1]], "3-26":[["روز استقلال بنگلادش",1]], "12-16":[["روز پیروزی",1]] } },
+  { code: "BY", fa: "بلاروس", ku: "بیلاڕووس", en: "Belarus", fallback: { "1-1":[["سال نو",1]], "5-9":[["روز پیروزی",1]], "7-3":[["روز استقلال بلاروس",1]] } },
+  { code: "BO", fa: "بولیوی", ku: "بۆلیڤیا", en: "Bolivia", fallback: { "1-1":[["سال نو",1]], "8-6":[["روز استقلال بولیوی",1]] } },
+  { code: "BA", fa: "بوسنی و هرزگوین", ku: "بۆسنیا و هەرزەگۆڤینا", en: "Bosnia & Herzegovina", fallback: { "1-1":[["سال نو",1]], "11-25":[["روز ملی بوسنی",1]] } },
+  { code: "BG", fa: "بلغارستان", ku: "بولگاریا", en: "Bulgaria", fallback: { "1-1":[["سال نو",1]], "3-3":[["روز ملی بلغارستان",1]], "5-1":[["روز کارگر",1]] } },
+  { code: "KH", fa: "کامبوج", ku: "کەمبۆدیا", en: "Cambodia", fallback: { "1-1":[["سال نو",1]], "11-9":[["روز استقلال کامبوج",1]] } },
+  { code: "CM", fa: "کامرون", ku: "کامیرۆن", en: "Cameroon", fallback: { "1-1":[["سال نو",1]], "5-20":[["روز ملی کامرون",1]] } },
+  { code: "CL", fa: "شیلی", ku: "چیلی", en: "Chile", fallback: { "1-1":[["سال نو",1]], "9-18":[["روز استقلال شیلی",1]] } },
+  { code: "CO", fa: "کلمبیا", ku: "کۆڵۆمبیا", en: "Colombia", fallback: { "1-1":[["سال نو",1]], "7-20":[["روز استقلال کلمبیا",1]], "8-7":[["نبرد بویاکا",1]] } },
+  { code: "CR", fa: "کاستاریکا", ku: "کۆستاریکا", en: "Costa Rica", fallback: { "1-1":[["سال نو",1]], "9-15":[["روز استقلال کاستاریکا",1]] } },
+  { code: "HR", fa: "کرواسی", ku: "کرواتیا", en: "Croatia", fallback: { "1-1":[["سال نو",1]], "5-30":[["روز ملی کرواسی",1]], "12-25":[["کریسمس",1]] } },
+  { code: "CU", fa: "کوبا", ku: "کووبا", en: "Cuba", fallback: { "1-1":[["روز آزادی کوبا",1]], "7-26":[["روز قیام ملی",1]] } },
+  { code: "CY", fa: "قبرس", ku: "قوبرس", en: "Cyprus", fallback: { "1-1":[["سال نو",1]], "10-1":[["روز استقلال قبرس",1]] } },
+  { code: "DO", fa: "جمهوری دومینیکن", ku: "دۆمینیکا", en: "Dominican Republic", fallback: { "1-1":[["سال نو",1]], "2-27":[["روز استقلال",1]] } },
+  { code: "EC", fa: "اکوادور", ku: "ئێکوادۆر", en: "Ecuador", fallback: { "1-1":[["سال نو",1]], "8-10":[["روز استقلال اکوادور",1]] } },
+  { code: "SV", fa: "السالوادور", ku: "ئێلسالڤادۆر", en: "El Salvador", fallback: { "1-1":[["سال نو",1]], "9-15":[["روز استقلال",1]] } },
+  { code: "EE", fa: "استونی", ku: "ئیستۆنیا", en: "Estonia", fallback: { "1-1":[["سال نو",1]], "2-24":[["روز استقلال استونی",1]], "12-25":[["کریسمس",1]] } },
+  { code: "ET", fa: "اتیوپی", ku: "ئەسیۆپیا", en: "Ethiopia", fallback: { "1-1":[["سال نو میلادی",1]], "9-11":[["سال نو اتیوپی (Enkutatash)",1]] } },
+  { code: "GH", fa: "غنا", ku: "غانا", en: "Ghana", fallback: { "1-1":[["سال نو",1]], "3-6":[["روز استقلال غنا",1]] } },
+  { code: "GT", fa: "گواتمالا", ku: "گواتیمالا", en: "Guatemala", fallback: { "1-1":[["سال نو",1]], "9-15":[["روز استقلال گواتمالا",1]] } },
+  { code: "HN", fa: "هندوراس", ku: "هۆندووراس", en: "Honduras", fallback: { "1-1":[["سال نو",1]], "9-15":[["روز استقلال هندوراس",1]] } },
+  { code: "HK", fa: "هنگ‌کنگ", ku: "هۆنگ کۆنگ", en: "Hong Kong", fallback: { "1-1":[["سال نو",1]], "7-1":[["روز تأسیس هنگ‌کنگ",1]], "10-1":[["روز ملی",1]] } },
+  { code: "HU", fa: "مجارستان", ku: "هەنگاریا", en: "Hungary", fallback: { "1-1":[["سال نو",1]], "3-15":[["روز ملی مجارستان",1]], "8-20":[["روز سنت استفان",1]] } },
+  { code: "IS", fa: "ایسلند", ku: "ئایسلەند", en: "Iceland", fallback: { "1-1":[["سال نو",1]], "6-17":[["روز ملی ایسلند",1]], "12-25":[["کریسمس",1]] } },
+  { code: "IQ_KRG", fa: "اقلیم کوردستان عراق", ku: "هەرێمی کوردستان", en: "Kurdistan Region (Iraq)", fallback: { "3-5":[["ڕۆژی ڕاپەڕین",1]], "3-21":[["جەژنی نەورۆز",1]], "5-1":[["ڕۆژی کرێکاران",1]] } },
+  { code: "IL_PSE", fa: "فلسطین", ku: "فەڵەستین", en: "Palestine", fallback: { "1-1":[["سال نو",1]], "11-15":[["روز استقلال فلسطین",1]] } },
+  { code: "JM", fa: "جامائیکا", ku: "جامایکا", en: "Jamaica", fallback: { "1-1":[["سال نو",1]], "8-6":[["روز استقلال جامائیکا",1]] } },
+  { code: "KZ", fa: "قزاقستان", ku: "کازاخستان", en: "Kazakhstan", fallback: { "1-1":[["سال نو",1]], "3-21":[["نوروز",1]], "12-16":[["روز استقلال قزاقستان",1]] } },
+  { code: "KE", fa: "کنیا", ku: "کینیا", en: "Kenya", fallback: { "1-1":[["سال نو",1]], "6-1":[["روز ماداراکا",1]], "12-12":[["روز جامهوری کنیا",1]] } },
+  { code: "KG", fa: "قرقیزستان", ku: "قرغیزستان", en: "Kyrgyzstan", fallback: { "1-1":[["سال نو",1]], "3-21":[["نوروز",1]], "8-31":[["روز استقلال قرقیزستان",1]] } },
+  { code: "LA", fa: "لائوس", ku: "لاوس", en: "Laos", fallback: { "1-1":[["سال نو",1]], "12-2":[["روز ملی لائوس",1]] } },
+  { code: "LV", fa: "لتونی", ku: "لاتڤیا", en: "Latvia", fallback: { "1-1":[["سال نو",1]], "11-18":[["روز استقلال لتونی",1]] } },
+  { code: "LT", fa: "لیتوانی", ku: "لیتوانیا", en: "Lithuania", fallback: { "1-1":[["سال نو",1]], "2-16":[["روز استقلال لیتوانی",1]], "3-11":[["بازگردانی استقلال",1]] } },
+  { code: "LU", fa: "لوکزامبورگ", ku: "لوکسەمبورگ", en: "Luxembourg", fallback: { "1-1":[["سال نو",1]], "6-23":[["روز ملی لوکزامبورگ",1]], "12-25":[["کریسمس",1]] } },
+  { code: "MO", fa: "ماکائو", ku: "ماکاو", en: "Macao", fallback: { "1-1":[["سال نو",1]], "12-20":[["روز بازگشت ماکائو",1]] } },
+  { code: "MG", fa: "ماداگاسکار", ku: "ماداگاسکار", en: "Madagascar", fallback: { "1-1":[["سال نو",1]], "6-26":[["روز استقلال ماداگاسکار",1]] } },
+  { code: "MT", fa: "مالت", ku: "ماڵتا", en: "Malta", fallback: { "1-1":[["سال نو",1]], "9-21":[["روز استقلال مالت",1]], "12-25":[["کریسمس",1]] } },
+  { code: "MD", fa: "مولداوی", ku: "مۆڵدۆڤا", en: "Moldova", fallback: { "1-1":[["سال نو",1]], "8-27":[["روز استقلال مولداوی",1]] } },
+  { code: "MN", fa: "مغولستان", ku: "مەنگۆلیا", en: "Mongolia", fallback: { "1-1":[["سال نو",1]], "7-11":[["جشن نادام",1]] } },
+  { code: "ME", fa: "مونته‌نگرو", ku: "مۆنتینیگرۆ", en: "Montenegro", fallback: { "1-1":[["سال نو",1]], "5-21":[["روز استقلال مونته‌نگرو",1]] } },
+  { code: "MZ", fa: "موزامبیک", ku: "مۆزامبیک", en: "Mozambique", fallback: { "1-1":[["سال نو",1]], "6-25":[["روز استقلال موزامبیک",1]] } },
+  { code: "MM", fa: "میانمار", ku: "میانمار", en: "Myanmar", fallback: { "1-4":[["روز استقلال میانمار",1]], "2-12":[["روز اتحاد",1]] } },
+  { code: "NA", fa: "نامیبیا", ku: "نامیبیا", en: "Namibia", fallback: { "1-1":[["سال نو",1]], "3-21":[["روز استقلال نامیبیا",1]] } },
+  { code: "NP", fa: "نپال", ku: "نیپاڵ", en: "Nepal", fallback: { "9-20":[["روز قانون اساسی نپال",1]] } },
+  { code: "NI", fa: "نیکاراگوئه", ku: "نیکاراگوا", en: "Nicaragua", fallback: { "1-1":[["سال نو",1]], "9-15":[["روز استقلال نیکاراگوئه",1]] } },
+  { code: "NG", fa: "نیجریه", ku: "نەیجیریا", en: "Nigeria", fallback: { "1-1":[["سال نو",1]], "10-1":[["روز استقلال نیجریه",1]] } },
+  { code: "MK", fa: "مقدونیه شمالی", ku: "مەقدۆنیای باکوور", en: "North Macedonia", fallback: { "1-1":[["سال نو",1]], "9-8":[["روز استقلال مقدونیه",1]] } },
+  { code: "PA", fa: "پاناما", ku: "پەنەما", en: "Panama", fallback: { "1-1":[["سال نو",1]], "11-3":[["روز جدایی از کلمبیا",1]], "11-28":[["روز استقلال پاناما",1]] } },
+  { code: "PY", fa: "پاراگوئه", ku: "پاراگوای", en: "Paraguay", fallback: { "1-1":[["سال نو",1]], "5-14":[["روز استقلال پاراگوئه",1]] } },
+  { code: "PE", fa: "پرو", ku: "پێرۆ", en: "Peru", fallback: { "1-1":[["سال نو",1]], "7-28":[["روز استقلال پرو",1]] } },
+  { code: "PH", fa: "فیلیپین", ku: "فلیپین", en: "Philippines", fallback: { "1-1":[["سال نو",1]], "6-12":[["روز استقلال فیلیپین",1]], "12-25":[["کریسمس",1]] } },
+  { code: "PR", fa: "پورتوریکو", ku: "پۆرتۆ ڕیکۆ", en: "Puerto Rico", fallback: { "1-1":[["سال نو",1]], "7-25":[["روز قانون اساسی",1]] } },
+  { code: "RO", fa: "رومانی", ku: "ڕۆمانیا", en: "Romania", fallback: { "1-1":[["سال نو",1]], "12-1":[["روز ملی رومانی",1]], "12-25":[["کریسمس",1]] } },
+  { code: "RW", fa: "رواندا", ku: "ڕواندا", en: "Rwanda", fallback: { "1-1":[["سال نو",1]], "7-1":[["روز استقلال رواندا",1]], "7-4":[["روز آزادی",1]] } },
+  { code: "SM", fa: "سان مارینو", ku: "سان مارینۆ", en: "San Marino", fallback: { "1-1":[["سال نو",1]], "9-3":[["روز تأسیس سان مارینو",1]] } },
+  { code: "SN", fa: "سنگال", ku: "سەنیگال", en: "Senegal", fallback: { "1-1":[["سال نو",1]], "4-4":[["روز استقلال سنگال",1]] } },
+  { code: "RS", fa: "صربستان", ku: "سڕبیا", en: "Serbia", fallback: { "1-1":[["سال نو",1]], "2-15":[["روز حاکمیت ملی صربستان",1]] } },
+  { code: "SK", fa: "اسلواکی", ku: "سلۆڤاکیا", en: "Slovakia", fallback: { "1-1":[["سال نو",1]], "1-1":[["روز تأسیس اسلواکی",1]], "9-1":[["روز قانون اساسی",1]] } },
+  { code: "SI", fa: "اسلوونی", ku: "سلۆڤینیا", en: "Slovenia", fallback: { "1-1":[["سال نو",1]], "6-25":[["روز ملی اسلوونی",1]], "12-26":[["روز استقلال و اتحاد",1]] } },
+  { code: "LK", fa: "سریلانکا", ku: "سریلانکا", en: "Sri Lanka", fallback: { "2-4":[["روز استقلال سریلانکا",1]] } },
+  { code: "SR", fa: "سورینام", ku: "سورینام", en: "Suriname", fallback: { "1-1":[["سال نو",1]], "11-25":[["روز استقلال سورینام",1]] } },
+  { code: "SY", fa: "سوریه", ku: "سووریا", en: "Syria", fallback: { "1-1":[["سال نو",1]], "4-17":[["روز استقلال سوریه",1]] } },
+  { code: "TW", fa: "تایوان", ku: "تایوان", en: "Taiwan", fallback: { "1-1":[["سال نو",1]], "2-28":[["روز صلح و یادبود",1]], "10-10":[["روز ملی تایوان",1]] } },
+  { code: "TZ", fa: "تانزانیا", ku: "تانزانیا", en: "Tanzania", fallback: { "1-1":[["سال نو",1]], "4-26":[["روز اتحاد تانزانیا",1]], "12-9":[["روز استقلال",1]] } },
+  { code: "TN", fa: "تونس", ku: "توونس", en: "Tunisia", fallback: { "1-1":[["سال نو",1]], "3-20":[["روز استقلال تونس",1]] } },
+  { code: "TM", fa: "ترکمنستان", ku: "تورکمانستان", en: "Turkmenistan", fallback: { "1-1":[["سال نو",1]], "3-21":[["نوروز",1]], "9-27":[["روز استقلال ترکمنستان",1]] } },
+  { code: "UG", fa: "اوگاندا", ku: "ئۆگاندا", en: "Uganda", fallback: { "1-1":[["سال نو",1]], "10-9":[["روز استقلال اوگاندا",1]] } },
+  { code: "UY", fa: "اروگوئه", ku: "ئۆرۆگوای", en: "Uruguay", fallback: { "1-1":[["سال نو",1]], "8-25":[["روز استقلال اروگوئه",1]] } },
+  { code: "UZ", fa: "ازبکستان", ku: "ئۆزبەکستان", en: "Uzbekistan", fallback: { "1-1":[["سال نو",1]], "3-21":[["نوروز",1]], "9-1":[["روز استقلال ازبکستان",1]] } },
+  { code: "VE", fa: "ونزوئلا", ku: "ڤەنزوێلا", en: "Venezuela", fallback: { "1-1":[["سال نو",1]], "7-5":[["روز استقلال ونزوئلا",1]] } },
+  { code: "VN", fa: "ویتنام", ku: "ڤێتنام", en: "Vietnam", fallback: { "1-1":[["سال نو",1]], "9-2":[["روز ملی ویتنام",1]] } },
+  { code: "YE", fa: "یمن", ku: "یەمەن", en: "Yemen", fallback: { "5-22":[["روز اتحاد یمن",1]] } },
+  { code: "ZM", fa: "زامبیا", ku: "زامبیا", en: "Zambia", fallback: { "1-1":[["سال نو",1]], "10-24":[["روز استقلال زامبیا",1]] } },
+  { code: "ZW", fa: "زیمبابوه", ku: "زیمبابۆی", en: "Zimbabwe", fallback: { "1-1":[["سال نو",1]], "4-18":[["روز استقلال زیمبابوه",1]] } }
+];
+COUNTRY_CATALOG.push(...EXTRA_WORLD_COUNTRIES);
+
 function getCountryMeta(code) {
   return COUNTRY_CATALOG.find(c => c.code === code) || COUNTRY_CATALOG[0];
 }
@@ -3708,9 +3791,10 @@ async function fetchCountryHolidaysForYear(code, gy) {
   if (Array.isArray(countryHolidaysCache[cacheKey]) && countryHolidaysCache[cacheKey].length) {
     return countryHolidaysCache[cacheKey];
   }
+  // 1. Primary API: Nager.Date
   try {
     const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 5500);
+    const tid = setTimeout(() => ctrl.abort(), 5000);
     const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${gy}/${code}`, { cache: "force-cache", signal: ctrl.signal });
     clearTimeout(tid);
     if (r && r.ok) {
@@ -3726,6 +3810,25 @@ async function fetchCountryHolidaysForYear(code, gy) {
       }
     }
   } catch (e) {}
+
+  // 2. Secondary fallback: Country's built-in official holiday map expanded across full Gregorian year
+  const meta = getCountryMeta(code);
+  const fbMap = (meta && meta.fallback) || (typeof BUILTIN_COUNTRY_HOL_GM !== "undefined" && BUILTIN_COUNTRY_HOL_GM[code]) || null;
+  if (fbMap && code !== "IR") {
+    const mappedFb = [];
+    Object.keys(fbMap).forEach(key => {
+      const [mm, dd] = key.split("-").map(Number);
+      if (!mm || !dd) return;
+      (fbMap[key] || []).forEach(item => {
+        mappedFb.push({ gy, gm: mm, gd: dd, name: item[0] });
+      });
+    });
+    if (mappedFb.length) {
+      countryHolidaysCache[cacheKey] = mappedFb;
+      try { localStorage.setItem("smartcal_country_hol_v1", JSON.stringify(countryHolidaysCache)); } catch (e) {}
+      return mappedFb;
+    }
+  }
   return [];
 }
 
@@ -3824,6 +3927,19 @@ function toggleCountryHolFilter() {
   render();
 }
 
+const BUILTIN_COUNTRY_HOL_GM = {
+  IE: {
+    "1-1":  [["New Year's Day (تعطیل رسمی ایرلند)", 1]],
+    "2-1":  [["Saint Brigid's Day (تعطیل رسمی ایرلند)", 1]],
+    "3-17": [["Saint Patrick's Day (روز ملی و تعطیل رسمی ایرلند)", 1]],
+    "5-1":  [["May Day / Labour Day (تعطیل رسمی ایرلند)", 1]],
+    "8-3":  [["August Bank Holiday (تعطیل رسمی ایرلند)", 1]],
+    "10-26":[["October Bank Holiday (تعطیل رسمی ایرلند)", 1]],
+    "12-25":[["Christmas Day (کریسمس - تعطیل رسمی ایرلند)", 1]],
+    "12-26":[["St. Stephen's Day (تعطیل رسمی ایرلند)", 1]]
+  }
+};
+
 function getExtraWorldAndCountryEv(jy, jm, jd) {
   const out = [];
   const g = toG(jy, jm, jd);
@@ -3841,10 +3957,13 @@ function getExtraWorldAndCountryEv(jy, jm, jd) {
     const matchedApi = apiList.filter(x => x.gm === g.gm && x.gd === g.gd);
     if (matchedApi.length) {
       matchedApi.forEach(x => out.push([`🏳️ ${x.name} (${cLabel})`, 1]));
-    } else if (cMeta.fallback) {
-      const fbKey = cCode === "IR" ? `${jm}-${jd}` : `${g.gm}-${g.gd}`;
-      const fbList = cMeta.fallback[fbKey] || [];
-      fbList.forEach(item => out.push([`🏳️ ${item[0]} (${cLabel})`, item[1]]));
+    } else {
+      const fbMap = (cMeta && cMeta.fallback) || BUILTIN_COUNTRY_HOL_GM[cCode] || null;
+      if (fbMap) {
+        const fbKey = cCode === "IR" ? `${jm}-${jd}` : `${g.gm}-${g.gd}`;
+        const fbList = fbMap[fbKey] || [];
+        fbList.forEach(item => out.push([`🏳️ ${item[0]} (${cLabel})`, item[1]]));
+      }
     }
   }
   return out;
@@ -3881,7 +4000,7 @@ function isDupEvTitle(list, title) {
 function getEv(y,m,d){
   const k=m+"-"+d,yk=y+"-"+m+"-"+d,r=[];
   const activeCountry = cfg?.countryCode || "IR";
-  if (activeCountry === "IR" || cfg?.calType === "jalali" || cfg?.calType === "kurdish") {
+  if (activeCountry === "IR") {
     if(BASE_EV[k])r.push(...BASE_EV[k]);
     const yrHol = (remoteIrHol && remoteIrHol[String(y)]) || IR_OFFICIAL_YEAR_HOL[String(y)];
     if(yrHol && yrHol[k]) {
@@ -3898,7 +4017,7 @@ function getEv(y,m,d){
       });
     }
   }
-  if((cfg?.calType==="kurdish" || cfg?.lang==="ku") && KURDISH_EV[k]) r.push(...KURDISH_EV[k]);
+  if((activeCountry === "IR" || activeCountry === "IQ") && (cfg?.calType==="kurdish" || cfg?.lang==="ku") && KURDISH_EV[k]) r.push(...KURDISH_EV[k]);
   if(customUserEv[yk])r.push(...customUserEv[yk]);
   if (typeof getExtraWorldAndCountryEv === "function") {
     const extra = getExtraWorldAndCountryEv(y,m,d);
@@ -10157,7 +10276,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "71.6";
+const APP_CURRENT_VER = "71.8";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
