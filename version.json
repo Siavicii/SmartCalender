@@ -1,6 +1,6 @@
 {
   "version": "72",
   "updated_at": "2026-11-24",
-  "notes": "افزودن ۴ تم طراحی جدید (AMOLED، Matcha، Sunset، Paper) و ۴ تم مناسبتی خودکار (نوروز، کریسمس، یلدا، تولد) همراه با تغییر خودکار آیکون‌ها و افکت‌های سبک در نسخه ۷۲",
+  "notes": "رفع خطای نحوی در انتخاب‌گر تاریخ تولد (initBirthInputs) که مانع اجرای برنامه در اندروید و PWA می‌شد - نسخه ۷۲ پایدار",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }

@@ -9579,14 +9579,14 @@ function initBirthInputs(){
   } else if (cType === "kurdish") {
     const mArr = getKM();
     mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
-    for(let y=1320+1321;y<=1405+1321;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`);
+    for(let y=1320+1321;y<=1405+1321;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value = birthCfg.d;
     mS.value = birthCfg.m;
     yS.value = birthCfg.y + 1321;
   } else {
     const mArr = getJM();
     mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
-    for(let y=1320;y<=1405;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`);
+    for(let y=1320;y<=1405;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
     dS.value = birthCfg.d;
     mS.value = birthCfg.m;
     yS.value = birthCfg.y;
