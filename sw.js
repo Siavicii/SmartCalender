@@ -1,5 +1,5 @@
-const CACHE_NAME = "smartcal-pwa-v72";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./version.json", "./icon-192.png", "./icon-512.png"];
+const CACHE_NAME = "smartcal-pwa-v74.1";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./version.json", "./holidays.json", "./daily_fal.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();
@@ -28,7 +28,7 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
   if (url.origin === location.origin) {
-    const isHtmlOrSw = url.pathname.endsWith("/") || url.pathname.endsWith("/index.html") || url.pathname.endsWith("/sw.js") || url.pathname.endsWith("/manifest.json") || url.pathname.endsWith("/version.json");
+    const isHtmlOrSw = url.pathname.endsWith("/") || url.pathname.endsWith("/index.html") || url.pathname.endsWith("/sw.js") || url.pathname.endsWith("/manifest.json") || url.pathname.endsWith("/version.json") || url.pathname.endsWith("/holidays.json") || url.pathname.endsWith("/daily_fal.json");
     if (isHtmlOrSw) {
       e.respondWith(
         fetch(new Request(e.request.url + (e.request.url.includes("?") ? "&" : "?") + "_t=" + Date.now(), { cache: "no-store" }))
