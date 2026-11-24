@@ -1,164 +1,66 @@
-<p align="center">
-  <h1>📅 Smart Cal — PWA (Web App)</h1>
-  <p><strong>A Smart, Lightweight, Offline-Capable Tri-Calendar Progressive Web App</strong></p>
-  <p><em>Persian (Jalali) • Kurdish (Sorani) • English (Gregorian)</em></p>
-  <p>
-    <a href="https://siavicii.github.io/SmartCalender/">
-      <img src="https://img.shields.io/badge/🌐_Open_PWA_(iOS_%2F_Android)-1F2B3B?style=for-the-badge" alt="Open Smart Cal PWA" />
-    </a>
-    <a href="https://github.com/Siavicii/SmartCal-Android/releases/latest">
-      <img src="https://img.shields.io/badge/🤖_Android_APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK" />
-    </a>
-  </p>
-  <p>
-    <a href="#-english-overview">🇬🇧 English</a> •
-    <a href="#-معرفی-نسخه-وب-و-pwa-فارسی">🇮🇷 فارسی</a>
-  </p>
-</p>
+# 🌐 Smart Cal — تقویم هوشمند جامع (نسخه وب / PWA v72)
+
+![Version](https://img.shields.io/badge/Version-72-1B6EF3?style=for-the-badge)
+![PWA](https://img.shields.io/badge/PWA-Installable%20%7C%20Offline-059669?style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20Android%20%7C%20Desktop-8B5CF6?style=for-the-badge)
+![Languages](https://img.shields.io/badge/Languages-FA%20%7C%20KU%20%7C%20EN-EC4899?style=for-the-badge)
+
+نسخه **وب‌اپلیکیشن پیشرونده (PWA)** تقویم هوشمند **Smart Cal** — قابل اجرا روی تمام مرورگرها و قابل نصب به‌صورت تمام‌صفحه (Edge-to-Edge) روی **آیفون (iOS)، اندروید، ویندوز و مک** بدون نیاز به دانلود از استور.
 
 ---
 
-## 🇬🇧 English Overview
+## ✨ امکانات نسخه ۷۲
 
-**Smart Cal PWA** is a lightweight, offline-capable Progressive Web App supporting **Persian (Jalali)**, **Kurdish (Sorani)**, and **Gregorian** calendar systems. Designed for instant installation on **iOS, Android, and Desktop** directly from the browser via **GitHub Pages**, it delivers full feature parity with the native Android edition—including live financial rates, weather forecasts, horoscope & daily fal, smooth launch animations, and optional Google Calendar synchronization.
+* **🗓️ تقویم سه‌گانه و کامل:** پشتیبانی از تقویم‌های **هجری شمسی، کوردی و میلادی** در سه زبان **فارسی، کوردی و انگلیسی** با چیدمان استاندارد `RTL / LTR`.
+* **📱 طراحی کاملاً واکنش‌گرا (Responsive):**
+  * **موبایل:** نوار ناوبری شناور شیشه‌ای (Liquid Glass) در پایین صفحه با انیمیشن نرم.
+  * **تبلت:** چیدمان دو ستونه هوشمند برای تقویم و کارت‌ها.
+  * **دسکتاپ:** نوار ناوبری عمودی شناور در کناره صفحه و داشبورد عریض.
+* **🎨 ۱۸ تم طراحی + ۴ تم مناسبتی خودکار:** شامل `iOS 26 Liquid Glass`، `Android 17 Expressive`، `AMOLED Pure Black`، `Matcha`، `Sunset Glow`، `E-Ink Paper` و تم‌های خودکار **نوروز، کریسمس، شب یلدا و روز تولد شما** با آیکون‌های اختصاصی و افکت‌های بسیار سبک.
+* **💰 بازار لحظه‌ای دارایی‌ها (سبک و هوشمند):** نرخ زنده طلا، سکه، نقره، ارزهای خارجی و صندوق‌های بورسی (**عیار** و **نقران**) با **تشخیص هوشمند ساعات کاری بازار** برای جلوگیری از درخواست‌های اضافی در ساعات تعطیل.
+* **📒 استودیو یادداشت و چک‌لیست:** یادداشت رنگی، چک‌لیست تیک‌دار، تایپ صوتی (Web Speech API)، یادآور، خروجی `.ics` و پشتیبان‌گیری متنی.
+* **🔮 طالع و فال روزانه:** انتخاب‌گر تاریخ تولد منطبق با تقویم فعال (شمسی / کوردی / میلادی) و طالع هوشمند روزانه.
+* **🌦️ آب‌وهوا و کیفیت هوا (AQI):** پیش‌بینی ۴ روزه، آیکون‌های پویا برای روز و شب و جستجوی آنلاین تمام شهرها.
+* **⚡ عملکرد آفلاین (Service Worker):** کش هوشمند فایل‌ها برای اجرای فوری حتی بدون اینترنت.
 
-### 🔗 Direct App & Install Links
+---
 
-* **🌐 Launch & Install PWA (iOS / Android / Desktop):** <https://siavicii.github.io/SmartCalender/>
-* **🤖 Native Android App (APK Releases):** <https://github.com/Siavicii/SmartCal-Android/releases/latest>
+## 📲 راهنمای نصب روی گوشی و دسکتاپ (PWA)
 
-## 📸 Screenshots
+### 🍎 آیفون و آیپد (Safari)
+1. آدرس سایت را در مرورگر **Safari** باز کنید.
+2. دکمه **Share (⬆️)** در پایین صفحه را لمس کنید.
+3. گزینه **Add to Home Screen** را انتخاب کنید.
 
-> 💡 *Tip: Create a `screenshots/` folder in your repository root and upload your app screenshots (`home.png`, `styles.png`, `markets.png`, `settings.png`) so they appear automatically below.*
+### 🤖 اندروید (Chrome / Edge)
+1. سایت را باز کرده و روی دکمه **«نصب»** در بالای صفحه (یا منوی `⋮` ← `Install app`) بزنید.
 
-| Home & Calendar | Themes & UI Styles | Weather & Markets | Settings & Sync |
-| :---: | :---: | :---: | :---: |
-| ![Home](screenshots/home.png) | ![Styles](screenshots/styles.png) | ![Markets](screenshots/markets.png) | ![Settings](screenshots/settings.png) |
+### 💻 ویندوز و مک (Chrome / Edge)
+1. روی آیکون نصب (➕ / 📥) در سمت راست نوار آدرس کلیک کنید تا به‌صورت اپلیکیشن مستقل نصب شود.
 
-## ✨ Key Features (`v64.3`)
+---
 
-* **🌐 Tri-Calendar & Tri-Language Support:** Switch seamlessly between **Persian (Jalali)**, **Kurdish (Sorani)**, and **English (Gregorian)** with full localization.
-* **📱 True PWA Experience (Offline & Installable):** Powered by a Service Worker (`sw.js`) and Web App Manifest (`manifest.json`) with the minimalist **LINKS** maskable icon (`#1F2B3B` theme) for clean home-screen integration on iOS and Android.
-* **⚡ 60fps Launch & Lag-Free Startup:** Hardware-accelerated minimalist splash animation with staggered background network loading so the UI renders immediately without freezing.
-* **💹 Real-Time Financial & Gold Rates:** Synchronized with the Android edition using TGJU (`call5` / `call4` fallback) and global markets via a **6-route parallel CORS proxy race** for fast, reliable updates on mobile networks.
-* **📆 Optional Google Calendar Sync (`OAuth 2.0` + `.ics`):**
-  * Connect directly to your Google Account using **Google Identity Services** for two-way event viewing and creation.
-  * Built-in quick **"Add to Google Calendar"** button and standard **`.ics` export** that works immediately with zero API setup.
-* **🔮 Horoscope & Daily Fal:** Fully restored and integrated daily horoscope and fal section.
-* **🎨 8 Modern UI Styles & Live Weather:** Includes *iOS 26 Liquid Glass*, *Android 17 Expressive*, *Bento*, *Swiss Minimal*, automatic Dark/Light themes, and live weather forecasts.
+## 🚀 استقرار روی GitHub Pages
 
-## 📲 How to Install on Mobile
-
-### 🍎 iOS (iPhone / iPad — Safari)
-
-1. Open the live web app in **Safari**: [**Open Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
-2. Tap the **Share** icon (`⬆️`) at the bottom of the screen.
-3. Scroll down and tap **Add to Home Screen**, then tap **Add**.
-
-### 🤖 Android (Chrome / Edge — PWA or Native APK)
-
-* **Option 1 — Install Web App (PWA):**
-  1. Open the live web app in **Chrome**: [**Open Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
-  2. Tap the **⋮ (Menu)** button and select **Install app** or **Add to Home screen**.
-* **Option 2 — Native Android App (with Dynamic Home-Screen Icons & Alarms):**
-  * Download and install the latest `.apk` directly from [**GitHub Releases**](https://github.com/Siavicii/SmartCal-Android/releases/latest).
-
-## 🔑 Optional: Enabling Live Google Calendar OAuth
-
-If you want direct two-way Google Account login on your GitHub Pages domain:
-
-1. Open [Google Cloud Console](https://console.cloud.google.com) and create/select a project.
-2. Go to **APIs & Services > Library** and enable **Google Calendar API**.
-3. Go to **APIs & Services > Credentials > Create Credentials > OAuth client ID** and choose **Web application**.
-4. Under **Authorized JavaScript origins**, add your GitHub Pages domain (`https://siavicii.github.io`).
-5. Paste the generated **Client ID** inside **Settings > Google Calendar Sync** in Smart Cal PWA and sign in.
-
-## 🏗️ Repository Structure
+فایل‌های این بسته آماده انتشار مستقیم هستند:
 
 ```text
-SmartCalender/
-├── index.html          # Complete single-file application core (v64.3)
-├── manifest.json       # PWA metadata, theme colors (#1F2B3B), and icon definitions
-├── sw.js               # Service Worker for offline support and automatic cache updates
-├── version.json        # Version metadata for update checks (64.3)
-├── icon-192.png        # Minimalist LINKS PWA icon (192x192)
-├── icon-512.png        # Minimalist LINKS PWA icon (512x512)
-└── .nojekyll           # Ensures clean static deployment on GitHub Pages
+SmartCal-PWA/
+├── index.html        # هسته اصلی وب‌اپلیکیشن (نسخه ۷۲)
+├── manifest.json     # تنظیمات نصب PWA و نمایش تمام‌صفحه
+├── sw.js             # Service Worker برای کش آفلاین و بروزرسانی
+├── holidays.json     # پایگاه داده مناسبت‌ها و تعطیلات
+├── daily_fal.json    # داده طالع روزانه
+├── version.json      # شناسه نسخه
+├── icon-192.png      # آیکون استاندارد PWA
+├── icon-512.png      # آیکون باکیفیت PWA
+└── .nojekyll         # جلوگیری از پردازش Jekyll در GitHub Pages
 ```
 
-## 🚀 Deploying to GitHub Pages
-
-1. Upload all 7 files from the release archive directly to the root of your repository.
-2. Go to **Settings > Pages** in your GitHub repository.
-3. Under **Build and deployment**, select **Deploy from a branch**, choose `main` and `/ (root)`, then click **Save**.
-4. Your PWA will be live at `https://siavicii.github.io/SmartCalender/`.
+1. تمام فایل‌ها را در شاخه `main` مخزن خود Commit کنید.
+2. از مسیر **Settings → Pages** منبع را روی `Deploy from a branch` و شاخه `main` (مسیر `/root`) قرار دهید.
 
 ---
 
-<div dir="rtl">
-
-## 🇮🇷 معرفی نسخه وب و PWA (فارسی)
-
-**Smart Cal PWA** نسخه تحت‌وب و قابل‌نصب اپلیکیشن تقویم هوشمند است که تقویم‌های **شمسی، کوردی و میلادی** را بدون نیاز به دانلود فایل نصبی، مستقیماً از طریق مرورگر روی گوشی‌های **آیفون (iOS)، اندروید و دسکتاپ** اجرا می‌کند. این نسخه از نظر امکانات و طراحی کاملاً با نسخه بومی اندروید هماهنگ است و از طریق **GitHub Pages** میزبانی می‌شود.
-
-### 🔗 لینک‌های مستقیم نصب و اجرا
-
-* **🌐 اجرای آنلاین و نصب روی آیفون (iOS) و اندروید (نسخه PWA):**
-  [🚀 باز کردن Smart Cal PWA](https://siavicii.github.io/SmartCalender/)
-* **🤖 دانلود نسخه بومی اندروید (فایل APK با آیکون پویا و آلارم پس‌زمینه):**
-  [📦 دانلود آخرین نسخه از GitHub Releases](https://github.com/Siavicii/SmartCal-Android/releases/latest)
-
-## 📸 تصاویر برنامه
-
-> 💡 *راهنما: پوشه‌ای با نام `screenshots` در ریشه مخزن گیت‌هاب بسازید و تصاویر برنامه را با نام‌های `home.png`، `styles.png`، `markets.png` و `settings.png` در آن آپلود کنید تا در جدول زیر نمایش داده شوند.*
-
-| صفحه اصلی و تقویم | سبک‌های طراحی | آب‌وهوا و بازار مالی | تنظیمات و همگام‌سازی |
-| :---: | :---: | :---: | :---: |
-| ![صفحه اصلی](screenshots/home.png) | ![سبک‌های طراحی](screenshots/styles.png) | ![بازار مالی](screenshots/markets.png) | ![تنظیمات](screenshots/settings.png) |
-
-## ✨ امکانات کلیدی (نسخه `v64.3`)
-
-* **🌐 پشتیبانی از ۳ تقویم و ۳ زبان:** جابه‌جایی سریع میان تقویم‌های **شمسی (فارسی)**، **کوردی (سورانی)** و **میلادی (انگلیسی)** با ترجمه کامل رابط کاربری.
-* **📱 تجربه کامل PWA (آفلاین و قابل‌نصب):** بهره‌گیری از Service Worker (`sw.js`) و آیکون مینیمال و مفهومی **LINKS** روی پس‌زمینه سرمه‌ای `#1F2B3B` (سازگار با آیکون‌های Maskable در اندروید و iOS) به همراه بروزرسانی خودکار کش پس از انتشار نسخه جدید.
-* **⚡ شروع روان و بدون لگ (۶۰ فریم):** انیمیشن خوش‌آمدگویی مینیمال با شتاب سخت‌افزاری و انتقال درخواست‌های شبکه به پس‌زمینه پس از پایان انیمیشن.
-* **💹 نرخ لحظه‌ای طلا، سکه و ارز (هماهنگ با اندروید):** دریافت نرخ زنده از سرورهای TGJU (`call5` و جایگزین `call4`) و بازار جهانی با **مکانیزم مسابقه موازی ۶ مسیر پروکسی (CORS Race)** برای پایداری بالا روی اینترنت موبایل.
-* **📆 همگام‌سازی اختیاری با تقویم گوگل (`OAuth 2.0` + فایل `.ics`):**
-  * اتصال زنده و دوطرفه به اکانت گوگل کاربر از طریق **Google Identity Services** برای مشاهده و ثبت رویدادها.
-  * دکمه سریع **«ثبت در Google Calendar»** و **خروجی استاندارد `.ics`** بدون نیاز به کلید API.
-* **🔮 بخش طالع و فال:** نمایش کامل و اصلاح‌شده بخش طالع‌بینی و فال روزانه در نسخه `v64.3`.
-* **🎨 ۸ سبک طراحی مدرن و آب‌وهوای زنده:** پشتیبانی از استایل‌های متنوع (*Liquid Glass*، *Expressive*، *Bento*، *Swiss Minimal* و...)، حالت شب و روز خودکار و پیش‌بینی وضعیت هوا.
-
-## 📲 راهنمای نصب روی گوشی
-
-### 🍎 آیفون و آیپد / iOS (مرورگر Safari)
-
-1. وارد لینک برنامه در مرورگر **سافاری (Safari)** شوید: [**باز کردن Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
-2. روی دکمه **Share** (`⬆️`) در پایین صفحه بزنید.
-3. گزینه **Add to Home Screen** و سپس **Add** را انتخاب کنید تا آیکون برنامه کنار سایر اپلیکیشن‌ها اضافه شود.
-
-### 🤖 اندروید (نسخه PWA یا فایل نصبی APK)
-
-* **روش اول — نصب نسخه وب (PWA):**
-  1. لینک برنامه را در مرورگر **کروم (Chrome)** باز کنید: [**باز کردن Smart Cal PWA**](https://siavicii.github.io/SmartCalender/)
-  2. روی منوی **⋮** بالا بزنید و گزینه **Install app** یا **Add to Home screen** را انتخاب کنید.
-* **روش دوم — نصب اپلیکیشن بومی اندروید (APK):**
-  * برای استفاده از **آیکون پویای تاریخ در صفحه اصلی** و **آلارم بومی پس‌زمینه**، فایل APK را مستقیم از [**بخش Releases گیت‌هاب**](https://github.com/Siavicii/SmartCal-Android/releases/latest) دانلود و نصب کنید.
-
-## 🔑 راهنمای فعال‌سازی اتصال زنده به اکانت گوگل (اختیاری)
-
-برای فعال‌کردن ورود مستقیم با اکانت گوگل روی دامنه GitHub Pages (فقط یک‌بار):
-
-1. وارد [Google Cloud Console](https://console.cloud.google.com) شوید و یک پروژه بسازید.
-2. از بخش **APIs & Services > Library**، سرویس **Google Calendar API** را فعال (**Enable**) کنید.
-3. در **APIs & Services > Credentials**، روی **Create Credentials > OAuth client ID** بزنید و نوع آن را **Web application** انتخاب کنید.
-4. در بخش **Authorized JavaScript origins**، آدرس دامنه GitHub Pages خود (`https://siavicii.github.io`) را ثبت و ذخیره کنید.
-5. شناسه `Client ID` را در بخش **تنظیمات > همگام‌سازی با تقویم گوگل** داخل برنامه وارد کرده و لاگین کنید.
-
-## 🚀 راه‌اندازی روی GitHub Pages
-
-1. هر ۷ فایل موجود در بسته نهایی (`index.html`، `manifest.json`، `sw.js`، `version.json`، `icon-192.png`، `icon-512.png` و `.nojekyll`) را در ریشه مخزن گیت‌هاب آپلود و **Commit** کنید.
-2. وارد **Settings > Pages** در مخزن خود شوید.
-3. در بخش **Build and deployment**، گزینه **Deploy from a branch** را انتخاب کرده، شاخه `main` و مسیر `/ (root)` را تنظیم و ذخیره کنید.
-4. برنامه روی آدرس `https://siavicii.github.io/SmartCalender/` فعال خواهد شد.
-
-</div>
+## 📄 مجوز
+توسعه‌یافته برای انتشار مستقیم از طریق GitHub Pages.
