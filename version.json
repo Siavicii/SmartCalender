@@ -1,6 +1,6 @@
 {
   "version": "72",
   "updated_at": "2026-11-24",
-  "notes": "افزودن دکمه اختیاری ثبت هوشمند با هوش مصنوعی (✨ AI) در استودیو یادداشت‌ها با پشتیبانی از Gemini API و Cloudflare Worker + موتور آفلاین در نسخه ۷۲",
+  "notes": "رفع خطای نحوی در پیام راهنمای دستیار هوشمند یادداشت‌ها (AI) و اصلاح عبارات باقاعده تشخیص تاریخ در نسخه ۷۲ پایدار",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }

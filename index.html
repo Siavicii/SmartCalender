@@ -7753,8 +7753,7 @@ async function addHubQuickNoteAI() {
   }
   const aiCfg = loadAiNotesCfg();
   if (!aiCfg.endpoint && !aiCfg.apiKey) {
-    showAppNotice(tr("برای استفاده از دکمه ✨ AI، از بخش تنظیمات (⚙️) کلید رایگان Gemini API یا لینک Cloudflare Worker را وارد کنید.
-فعلاً با موتور هوشمند آفلاین ثبت شد.", "بۆ بەکارهێنانی ✨ AI لە ڕێکخستنەکان کلیلی Gemini API بنووسە. ئێستا بە شێوەی ئۆفلاین تۆمار کرا.", "Configure a Gemini API Key or Cloudflare Worker in Settings (⚙️) to use ✨ AI. Saved using offline smart parser for now."));
+    showAppNotice(tr("برای استفاده از دکمه ✨ AI، از بخش تنظیمات (⚙️) کلید رایگان Gemini API یا لینک Cloudflare Worker را وارد کنید.\nفعلاً با موتور هوشمند آفلاین ثبت شد.", "بۆ بەکارهێنانی ✨ AI لە ڕێکخستنەکان کلیلی Gemini API بنووسە. ئێستا بە شێوەی ئۆفلاین تۆمار کرا.", "Configure a Gemini API Key or Cloudflare Worker in Settings (⚙️) to use ✨ AI. Saved using offline smart parser for now."));
     await addHubQuickNote();
     return;
   }
@@ -8136,7 +8135,7 @@ function parseSmartPersianTask(rawText) {
   let matchedDate = false;
 
   // 1) Explicit Jalali slash date: 1405/09/20
-  const slashM = norm.match(/(1[34]\d{2})\/(\d{1,2})\/(\d{1,2})/);
+  const slashM = norm.match(/\b(1[34]\d{2})\/(\d{1,2})\/(\d{1,2})\b/);
   if (slashM) {
     const sy = parseInt(slashM[1], 10), sm = parseInt(slashM[2], 10), sd = parseInt(slashM[3], 10);
     if (sm >= 1 && sm <= 12 && sd >= 1 && sd <= mLen(sy, sm)) {
@@ -8197,7 +8196,7 @@ function parseSmartPersianTask(rawText) {
     } else if (/ماه\s*(دیگه|دیگر|بعد|آینده)|مانگی\s*داهاتوو|next month/i.test(norm)) {
       targetDate = addMonthsToTod(1);
       matchedDate = true;
-    } else if (norm.includes("امروز") || norm.includes("ئەمڕۆ") || /today/.test(lower)) {
+    } else if (norm.includes("امروز") || norm.includes("ئەمڕۆ") || /\btoday\b/.test(lower)) {
       targetDate = { ...tod };
       matchedDate = true;
     }
@@ -8228,7 +8227,7 @@ function parseSmartPersianTask(rawText) {
 
   // 6) Time extraction (supports "ساعت 10", "ساعت 10:30", "ساعت 5 و نیم عصر", "at 5 pm")
   const timeMatch = norm.match(/ساعت\s*(\d{1,2})(?::(\d{2}))?(?:\s*و\s*(نیم|ربع))?\s*(صبح|ظهر|بعدازظهر|بعد از ظهر|عصر|شب)?/)
-    || lower.match(/at\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+    || lower.match(/\bat\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/);
   if (timeMatch) {
     let hh = parseInt(timeMatch[1], 10);
     let mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
