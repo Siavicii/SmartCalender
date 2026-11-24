@@ -1,4 +1,4 @@
-# 🌐 Smart Cal — تقویم هوشمند جامع (نسخه وب / PWA v72)
+# 🌐 Smart Cal — تقویم هوشمند جامع (نسخه وب / PWA)
 
 ![Version](https://img.shields.io/badge/Version-72-1B6EF3?style=for-the-badge)
 ![PWA](https://img.shields.io/badge/PWA-Ready-059669?style=for-the-badge)
