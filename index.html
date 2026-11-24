@@ -3212,7 +3212,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
           <input type="text" id="hubQuickNoteInp" placeholder="✍️ ثبت هوشمند (مثلاً: فردا ساعت ۱۰ جلسه کاری #مهم)..." style="flex:1;background:var(--card);font-size:12px;padding:8px 10px" onkeydown="if(event.key==='Enter')addHubQuickNote()">
           <button class="ibtn" id="voiceDictBtn" onclick="startVoiceNote('hubQuickNoteInp', event)" title="تایپ صوتی هوشمند (فارسی/کوردی/انگلیسی)" style="background:var(--card);padding:0 8px">🎙️</button>
           <button class="ibtn" id="hubAiNoteBtn" onclick="addHubQuickNoteAI()" title="تحلیل هوشمند جمله پیچیده با هوش مصنوعی (AI)" style="background:var(--pri-bg);color:var(--pri);border-color:var(--pri);padding:0 8px">✨ AI</button>
-          <button class="ibtn" onclick="addHubQuickNote()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 11px">ثبت</button>
+          <button class="ibtn" id="hubAddNoteBtn" onclick="addHubQuickNote()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 11px">ثبت</button>
         </div>
         <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px">
           <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="insertNoteTemplate('💼 جلسه کاری ساعت ۱۰ صبح #کاری')">💼 قالب جلسه</button>
@@ -5836,7 +5836,7 @@ function applyLanguageUI() {
   const progSpan = document.querySelector("#view-notes .card > div:nth-of-type(2) span");
   if (progSpan) progSpan.textContent = tr("📊 پیشرفت انجام کارها و یادآورها", "📊 پێشکەوتنی ئەنجامدانی ئەرکەکان", "📊 Tasks & Reminders Progress");
   setPh("#hubQuickNoteInp", "✍️ ثبت هوشمند (مثلاً: فردا ساعت ۱۰ جلسه کاری #مهم)...", "✍️ تۆماری زیرەک (بۆ نموونە: سبەی کاتژمێر ١٠ کۆبوونەوە)...", "✍️ Smart entry (e.g. Meeting tomorrow at 10 #important)...");
-  const hubAddBtn = document.querySelector("#hubQuickNoteInp")?.parentElement?.querySelectorAll(".ibtn")[1];
+  const hubAddBtn = document.getElementById("hubAddNoteBtn");
   if (hubAddBtn) hubAddBtn.textContent = tr("ثبت", "تۆمار", "Add");
   setPh("#noteSearchInput", "🔍 جستجو در متن، تگ‌ها (#) یا دسته‌بندی یادداشت‌ها...", "🔍 گەڕان لە دەق، تاگەکان (#) یان پۆلێنی تێبینییەکان...", "🔍 Search notes, #tags, or categories...");
   const fChips = document.querySelectorAll("#noteFilterChips .fchip");
@@ -6923,29 +6923,47 @@ const RAHAVARD_ETF_SYMBOLS = {
   etf_noghran: ["نقران", "NOGHRAN"]
 };
 
-function parseRahavardPriceToToman(rawVal) {
+function parseRahavardPriceToToman(rawVal, forceRial = false) {
   const num = Number(String(rawVal ?? "").replace(/,/g, "").trim());
   if (!isFinite(num) || num <= 0) return 0;
-  return num >= 200000 ? Math.round(num / 10) : Math.round(num);
+  const toman = forceRial ? Math.round(num / 10) : (num >= 200000 ? Math.round(num / 10) : Math.round(num));
+  // Sanity check: Bourse ETF unit prices in Iran are between 100 Toman and 5,000,000 Toman
+  if (toman < 100 || toman > 5000000) return 0;
+  return toman;
+}
+
+function normFaSym(s) {
+  return String(s || "").replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/\u200c/g, "").replace(/\s+/g, "").trim();
 }
 
 function extractEtfEntryFromObj(obj, targetSyms) {
   if (!obj || typeof obj !== "object") return null;
-  const symStr = String(obj.symbol || obj.ticker || obj.name || obj.title || obj.fa || obj.en || "").trim();
-  if (!symStr) return null;
-  const matched = targetSyms.some(s => symStr === s || symStr.includes(s) || symStr.toUpperCase().includes(String(s).toUpperCase()));
+  const rawSym = String(obj.lva || obj.lVal18AFC || obj.symbol || obj.ticker || obj.name || obj.title || "").trim();
+  if (!rawSym) return null;
+  const nSym = normFaSym(rawSym);
+  const matched = targetSyms.some(s => {
+    const ns = normFaSym(s);
+    return nSym === ns || nSym.toUpperCase() === ns.toUpperCase();
+  });
   if (!matched) return null;
-  const rawPrice = obj.last_price ?? obj.last ?? obj.close ?? obj.price ?? obj.p ?? obj.nav ?? obj.final_price ?? 0;
-  const tomanP = parseRahavardPriceToToman(rawPrice);
+
+  const isTsetmc = (obj.pDrCotVal !== undefined || obj.pClosing !== undefined);
+  const rawPrice = obj.pDrCotVal ?? obj.pClosing ?? obj.last_price ?? obj.last ?? obj.close ?? obj.price ?? obj.p ?? obj.nav ?? 0;
+  const tomanP = parseRahavardPriceToToman(rawPrice, isTsetmc);
   if (tomanP <= 0) return null;
-  const rawChg = obj.change_percent ?? obj.dp ?? obj.pct_change ?? obj.changePct ?? obj.change ?? obj.c ?? null;
-  let chgStr = "+0.00%";
-  if (rawChg !== null && rawChg !== undefined && rawChg !== "") {
-    const cleaned = String(rawChg).replace("%", "").trim();
-    const chgNum = Number(cleaned);
-    if (isFinite(chgNum)) chgStr = fmtPct(chgNum, "+0.00%");
+
+  let chgStr = "0.00%";
+  if (isTsetmc && Number(obj.priceYesterday) > 0 && Number(rawPrice) > 0) {
+    const pct = ((Number(rawPrice) - Number(obj.priceYesterday)) / Number(obj.priceYesterday)) * 100;
+    if (isFinite(pct) && Math.abs(pct) <= 25) chgStr = fmtPct(pct, "0.00%");
+  } else {
+    const rawChg = obj.change_percent ?? obj.dp ?? obj.pct_change ?? obj.changePct ?? obj.change ?? obj.c ?? null;
+    if (rawChg !== null && rawChg !== undefined && rawChg !== "") {
+      const chgNum = Number(String(rawChg).replace("%", "").trim());
+      if (isFinite(chgNum) && Math.abs(chgNum) <= 25) chgStr = fmtPct(chgNum, "0.00%");
+    }
   }
-  return { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true };
+  return { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true, src: isTsetmc ? "TSETMC" : "ره‌آورد" };
 }
 
 function scanRahavardJsonForEtfs(payload) {
@@ -6972,57 +6990,58 @@ function scanRahavardJsonForEtfs(payload) {
   return found;
 }
 
-function scanRahavardHtmlForEtfs(htmlTxt) {
+function parseTsetmcMarketWatchText(rawTxt) {
   const found = {};
-  if (!htmlTxt || typeof htmlTxt !== "string") return found;
-  const plain = htmlTxt.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
-  const sp = String.fromCharCode(92);
-  const escRe = s => s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, sp + "$&");
-  Object.keys(RAHAVARD_ETF_SYMBOLS).forEach(ico => {
-    const syms = RAHAVARD_ETF_SYMBOLS[ico];
-    for (const sym of syms) {
-      try {
-        const pat = escRe(sym) + "[^0-9۰-۹" + sp + "-]{0,45}([0-9۰-۹,]{3,12})(?:[^0-9۰-۹%" + sp + "-]{0,25}([+" + sp + "-]?[0-9۰-۹.]+)" + sp + "s*%)?";
-        const re = new RegExp(pat, "i");
-        const m = plain.match(re);
-        if (m && m[1]) {
-          const latNum = m[1].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/,/g, "");
-          const tomanP = parseRahavardPriceToToman(latNum);
-          if (tomanP >= 500 && tomanP <= 500000000) {
-            let chgStr = "+0.00%";
-            if (m[2]) {
-              const latChg = m[2].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-              const cn = Number(latChg);
-              if (isFinite(cn)) chgStr = fmtPct(cn, "+0.00%");
-            }
-            found[ico] = { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true };
-            break;
+  if (!rawTxt || typeof rawTxt !== "string" || !rawTxt.includes("@")) return found;
+  const sections = rawTxt.split("@");
+  const rowsStr = sections[2] || "";
+  if (!rowsStr) return found;
+  const rows = rowsStr.split(";");
+  for (const row of rows) {
+    const cols = row.split(",");
+    if (cols.length < 14) continue;
+    const sym = normFaSym(cols[2]);
+    if (!sym) continue;
+    for (const ico of Object.keys(RAHAVARD_ETF_SYMBOLS)) {
+      if (found[ico]) continue;
+      const targets = RAHAVARD_ETF_SYMBOLS[ico].map(normFaSym);
+      if (targets.includes(sym)) {
+        const lastRial = Number(cols[7]) || Number(cols[6]) || 0;
+        const yestRial = Number(cols[13]) || 0;
+        const tomanP = parseRahavardPriceToToman(lastRial, true);
+        if (tomanP > 0) {
+          let chgStr = "0.00%";
+          if (yestRial > 0) {
+            const pct = ((lastRial - yestRial) / yestRial) * 100;
+            if (isFinite(pct) && Math.abs(pct) <= 25) chgStr = fmtPct(pct, "0.00%");
           }
+          found[ico] = { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true, src: "TSETMC" };
         }
-      } catch (e) {}
+      }
     }
-  });
+  }
   return found;
 }
 
 async function fetchRahavardEtfs(bust = "") {
   const endpoints = [
+    "https://cdn.tsetmc.com/api/ClosingPrice/GetMarketWatch?market=0&industrialGroup=&paperTypes%5B0%5D=8&showTraded=false&withBestLimits=false",
+    "https://old.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0",
     "https://rahavard365.com/api/v2/market/symbols?market=bourse&type=etf",
-    "https://rahavard365.com/api/v1/market/symbols?category=etf",
-    "https://rahavard365.com/api/v2/symbols?type=gold_etf",
-    "https://rahavard365.com/asset/gold-etf",
-    "https://rahavard365.com/asset/etf",
-    "https://rahavard365.com/stock-market"
+    "https://rahavard365.com/api/v2/symbols?type=gold_etf"
   ];
   const results = await Promise.all(
     endpoints.map(async (ep) => {
       const url = ep + (ep.includes("?") ? "&" : "?") + "_=" + bust;
-      const txt = await fetchTextViaProxy(url, 5000);
+      const txt = await fetchTextViaProxy(url, 5500);
       if (!txt) return {};
+      if (ep.includes("MarketWatchInit.aspx")) {
+        return parseTsetmcMarketWatchText(txt);
+      }
       try {
         return scanRahavardJsonForEtfs(JSON.parse(txt));
       } catch (e) {
-        return scanRahavardHtmlForEtfs(txt);
+        return {};
       }
     })
   );
@@ -7030,7 +7049,7 @@ async function fetchRahavardEtfs(bust = "") {
   results.forEach(res => {
     if (res && typeof res === "object") {
       Object.keys(res).forEach(k => {
-        if (!merged[k]) merged[k] = res[k];
+        if (!merged[k] && res[k] && res[k].p > 0) merged[k] = res[k];
       });
     }
   });
@@ -7053,11 +7072,10 @@ async function fetchFallbackBourseEtfs(bust = "") {
         for (const k of keyCandidates[ico]) {
           const node = cur[k];
           if (node && node.p) {
-            const rawNum = Number(String(node.p).replace(/,/g, ""));
-            const tomanP = rawNum >= 200000 ? Math.round(rawNum / 10) : Math.round(rawNum);
+            const tomanP = parseRahavardPriceToToman(node.p, true);
             if (tomanP > 0) {
               const dpNum = (node.dt === "low" ? -1 : 1) * Math.abs(Number(node.dp || 0));
-              found[ico] = { p: tomanP, c: fmtPct(dpNum, "+0.00%"), unit: "toman", rahavardLive: true };
+              found[ico] = { p: tomanP, c: fmtPct(dpNum, "0.00%"), unit: "toman", rahavardLive: true, src: "TGJU" };
               break;
             }
           }
@@ -7065,34 +7083,6 @@ async function fetchFallbackBourseEtfs(bust = "") {
       });
     }
   } catch (e) {}
-
-  const missing = Object.keys(RAHAVARD_ETF_SYMBOLS).filter(k => !found[k]);
-  if (missing.length) {
-    const bourseUrls = [
-      "https://cdn.tsetmc.com/api/ClosingPrice/GetMarketWatch?market=0&industrialGroup=&paperTypes%5B0%5D=8&showTraded=false&withBestLimits=false",
-      "https://old.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0"
-    ];
-    const bourseRes = await Promise.all(
-      bourseUrls.map(async (u) => {
-        const bTxt = await fetchTextViaProxy(u, 4500);
-        if (!bTxt) return {};
-        try {
-          return scanRahavardJsonForEtfs(JSON.parse(bTxt));
-        } catch (e) {
-          return scanRahavardHtmlForEtfs(bTxt);
-        }
-      })
-    );
-    bourseRes.forEach(res => {
-      if (res && typeof res === "object") {
-        Object.keys(res).forEach(k => {
-          if (!found[k] && res[k] && res[k].p > 0) {
-            found[k] = res[k];
-          }
-        });
-      }
-    });
-  }
   return found;
 }
 
@@ -7446,7 +7436,7 @@ function enrichMarketData(d) {
         rahavardLive: isEtfOpenNow,
         etfSrc: hit.src || "بورس / ره‌آورد"
       });
-    } else if (savedRealEtfs[ico] && savedRealEtfs[ico].p > 0) {
+    } else if (savedRealEtfs[ico] && savedRealEtfs[ico].p >= 100 && savedRealEtfs[ico].p <= 5000000) {
       allItemsMap.set(ico, {
         ico, n: meta.fa, p: savedRealEtfs[ico].p, c: savedRealEtfs[ico].c || "0.00%", unit: "toman",
         rahavardLive: false,
