@@ -660,6 +660,98 @@ body::before {
   margin: 0 auto 6px;
 }
 
+
+/* ====== 4 NEW DESIGN THEMES (AMOLED, MATCHA, SUNSET, PAPER) ====== */
+[data-ui="amoled"]{
+  --bg:#000000;--card:#0A0A0C;--sub:#121216;--brd:rgba(255,255,255,0.12);--rad:20px;
+  --txt:#FFFFFF;--sec:#9CA3AF;--shadow:none;
+}
+[data-ui="matcha"]{
+  --bg:linear-gradient(155deg,#F2F5EE 0%,#E4ECE0 100%);
+  --card:#FBFDF9;--sub:#EBF2E6;--brd:rgba(63,98,18,0.16);--rad:22px;
+  --txt:#1A2E1A;--sec:#4B634B;--shadow:0 6px 20px rgba(34,84,61,0.06);
+}
+[data-theme=dark][data-ui="matcha"]{
+  --bg:linear-gradient(155deg,#0E1510 0%,#141F17 100%);
+  --card:#162219;--sub:#1E2E22;--brd:rgba(134,239,172,0.16);
+  --txt:#ECFDF5;--sec:#86EFAC;--shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+[data-ui="sunset"]{
+  --bg:linear-gradient(145deg,#FFF1EB 0%,#FFE4D6 50%,#F5E6FF 100%);
+  --card:rgba(255,255,255,0.82);--sub:rgba(255,237,225,0.75);--brd:rgba(234,88,12,0.18);--rad:24px;
+  --txt:#2D1610;--sec:#7C4A3A;--shadow:0 8px 26px rgba(234,88,12,0.09);
+}
+[data-theme=dark][data-ui="sunset"]{
+  --bg:linear-gradient(145deg,#1C1018 0%,#28141E 50%,#181026 100%);
+  --card:rgba(36,20,30,0.86);--sub:rgba(52,28,42,0.78);--brd:rgba(251,146,60,0.24);
+  --txt:#FFF7ED;--sec:#FDBA74;--shadow:0 10px 28px rgba(0,0,0,0.45);
+}
+[data-ui="paper"]{
+  --bg:#F5F3EE;--card:#FCFBF8;--sub:#EAE6DC;--brd:#262626;--rad:6px;
+  --txt:#111111;--sec:#44403C;--shadow:none;
+}
+[data-theme=dark][data-ui="paper"]{
+  --bg:#141413;--card:#1C1C1A;--sub:#262623;--brd:#A8A29E;
+  --txt:#F5F5F4;--sec:#A8A29E;--shadow:none;
+}
+
+/* ====== 4 FESTIVE OCCASION THEMES (NOWRUZ, CHRISTMAS, YALDA, BIRTHDAY) ====== */
+[data-ui="nowruz"]{
+  --bg:linear-gradient(145deg,#ECFDF5 0%,#FDF2F8 52%,#FEF9C3 100%);
+  --card:rgba(255,255,255,0.86);--sub:rgba(236,253,245,0.82);--brd:rgba(16,185,129,0.26);--rad:24px;
+  --pri:#059669;--pri-bg:rgba(5,150,105,0.15);--txt:#064E3B;--sec:#047857;
+  --shadow:0 8px 26px rgba(16,185,129,0.12);
+}
+[data-theme=dark][data-ui="nowruz"]{
+  --bg:linear-gradient(145deg,#062018 0%,#1F1020 55%,#1C1908 100%);
+  --card:rgba(12,34,27,0.84);--sub:rgba(20,50,40,0.78);--brd:rgba(52,211,153,0.26);
+  --pri:#34D399;--pri-bg:rgba(52,211,153,0.18);--txt:#ECFDF5;--sec:#A7F3D0;
+}
+[data-ui="christmas"]{
+  --bg:linear-gradient(145deg,#FEF2F2 0%,#F0FDF4 55%,#EFF6FF 100%);
+  --card:rgba(255,255,255,0.88);--sub:rgba(254,242,242,0.72);--brd:rgba(220,38,38,0.24);--rad:24px;
+  --pri:#DC2626;--pri-bg:rgba(220,38,38,0.14);--txt:#1E293B;--sec:#15803D;
+  --shadow:0 8px 28px rgba(220,38,38,0.10);
+}
+[data-theme=dark][data-ui="christmas"]{
+  --bg:linear-gradient(145deg,#1C0A0C 0%,#081F15 55%,#0B1324 100%);
+  --card:rgba(24,18,22,0.86);--sub:rgba(36,24,28,0.80);--brd:rgba(248,113,113,0.28);
+  --pri:#F87171;--pri-bg:rgba(248,113,113,0.18);--txt:#F8FAFC;--sec:#86EFAC;
+}
+[data-ui="yalda"]{
+  --bg:linear-gradient(145deg,#2A0812 0%,#140914 52%,#0A1F18 100%);
+  --card:rgba(38,12,22,0.86);--sub:rgba(58,18,32,0.76);--brd:rgba(244,63,94,0.34);--rad:22px;
+  --pri:#FB7185;--pri-bg:rgba(251,113,133,0.18);--txt:#FFF1F2;--sec:#FDA4AF;
+  --shadow:0 10px 28px rgba(159,18,57,0.28);
+}
+[data-ui="birthday"]{
+  --bg:linear-gradient(145deg,#FDF4FF 0%,#FFF7ED 50%,#EFF6FF 100%);
+  --card:rgba(255,255,255,0.86);--sub:rgba(250,245,255,0.82);--brd:rgba(217,70,239,0.26);--rad:26px;
+  --pri:#D946EF;--pri-bg:rgba(217,70,239,0.15);--txt:#3B0764;--sec:#9333EA;
+  --shadow:0 8px 28px rgba(217,70,239,0.14);
+}
+[data-theme=dark][data-ui="birthday"]{
+  --bg:linear-gradient(145deg,#1F0B2E 0%,#26121A 55%,#111834 100%);
+  --card:rgba(32,16,46,0.86);--sub:rgba(48,22,66,0.78);--brd:rgba(232,121,249,0.3);
+  --pri:#E879F9;--pri-bg:rgba(232,121,249,0.18);--txt:#FAF5FF;--sec:#F0ABFC;
+}
+
+/* Lightweight GPU-only Festive Ambient Particles (Zero 120Hz lag) */
+#festiveAmbientLayer{
+  position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;display:none;
+}
+#festiveAmbientLayer.show{display:block}
+.fest-p{
+  position:absolute;top:-24px;opacity:0.55;user-select:none;will-change:transform;
+  animation:festFall linear infinite;
+}
+@keyframes festFall{
+  0%{transform:translate3d(0,-20px,0) rotate(0deg);opacity:0}
+  10%{opacity:0.55}
+  90%{opacity:0.45}
+  100%{transform:translate3d(26px,105vh,0) rotate(320deg);opacity:0}
+}
+
 /* Dynamic Weather & Season Atmosphere */
 body.atm-spring { background-image: radial-gradient(circle at 12% 10%, rgba(16,185,129,0.18), transparent 45%), radial-gradient(circle at 88% 85%, rgba(244,114,182,0.15), transparent 45%) !important; }
 body.atm-summer { background-image: radial-gradient(circle at 85% 8%, rgba(245,158,11,0.22), transparent 48%), radial-gradient(circle at 15% 85%, rgba(56,189,248,0.15), transparent 45%) !important; }
@@ -3042,7 +3134,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="card">
       <div class="mkt-head">
         <div>
-          <b style="font-size:15px">💰 نرخ لحظه‌ای طلا، سکه و ارز</b>
+          <b id="mktMainHdrTitle" style="font-size:15px">💰 نرخ لحظه‌ای طلا، سکه و ارز</b>
           <div style="font-size:11px;color:var(--sec);margin-top:2px" id="mktUpd">در حال اتصال به پایگاه داده نرخ لحظه‌ای...</div>
         </div>
         <button class="ibtn" id="mktRefreshBtn" onclick="fetchMarket(true)">🔄 بروزرسانی</button>
@@ -3061,11 +3153,11 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div class="mkt-watch-panel" id="mktWatchPanel">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
           <div>
-            <b style="font-size:12px;color:var(--pri)">⭐ انتخاب دارایی‌ها و تعیین اولویت نمایش</b>
-            <div style="font-size:10px;color:var(--sec)">با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید</div>
+            <b id="mktWatchPanelTitle" style="font-size:12px;color:var(--pri)">⭐ انتخاب دارایی‌ها و تعیین اولویت نمایش</b>
+            <div id="mktWatchPanelSub" style="font-size:10px;color:var(--sec)">با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید</div>
           </div>
           <div style="display:flex;gap:5px">
-            <button type="button" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
+            <button type="button" id="mktWatchResetBtn" class="ibtn" onclick="resetMarketWatchPrefs()" style="height:26px;padding:0 8px;font-size:10.5px">♻️ پیش‌فرض</button>
           </div>
         </div>
         <div id="mktWatchItemsList" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
@@ -3250,6 +3342,18 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
         </div>
         <label class="sc-switch" aria-label="تطبیق خودکار با آب‌وهوا و فصل">
           <input type="checkbox" id="setAutoAtm" onchange="cfg.autoAtm=this.checked;localStorage.setItem('cal_cfg_v4',JSON.stringify(cfg));applyCfg();">
+          <span class="sc-switch-track"></span>
+        </label>
+      </div>
+    </div>
+    <div class="sn-card" id="festiveAutoCard">
+      <div class="sn-top">
+        <div class="sn-meta">
+          <b class="sn-title" id="festiveAutoTitle">🎉 تم و آیکون‌های مناسبتی خودکار</b>
+          <span class="sn-sub" id="festiveAutoSub">تغییر خودکار تم و آیکون‌ها در نوروز، کریسمس، یلدا و تولد شما</span>
+        </div>
+        <label class="sc-switch" aria-label="تم و آیکون‌های مناسبتی خودکار">
+          <input type="checkbox" id="setAutoFestive" onchange="cfg.autoFestive=this.checked;localStorage.setItem('cal_cfg_v4',JSON.stringify(cfg));applyCfg();">
           <span class="sc-switch-track"></span>
         </label>
       </div>
@@ -3812,7 +3916,15 @@ const UI_STYLES=[
   {id:"neumorph",name:"نئومورفیسم برجسته",desc:"سایه‌های نرم سه‌بعدی",bg:"linear-gradient(145deg,#F0F3F9,#D5DAE3)",rad:"8px"},
   {id:"cyber",name:"نئون کهکشانی",desc:"حالت شب مدرن و درخشان",bg:"linear-gradient(135deg,#1E1B4B,#4C1D95,#0E7490)",rad:"6px"},
   {id:"persian",name:"کلاسیک ایرانی",desc:"گرم، کاغذی و چشم‌نواز",bg:"linear-gradient(135deg,#F5EFE6,#E2D4BE)",rad:"8px"},
-  {id:"nordic",name:"نوردیک یخی",desc:"آرام، خنثی و مینیمال",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"6px"}
+  {id:"nordic",name:"نوردیک یخی",desc:"آرام، خنثی و مینیمال",bg:"linear-gradient(135deg,#E2E8F0,#CBD5E1)",rad:"6px"},
+  {id:"amoled",name:"مشکی مطلق (AMOLED)",desc:"کاملاً مشکی، کم‌مصرف و کنتراست بالا",bg:"#000000",rad:"8px"},
+  {id:"matcha",name:"آرامش طبیعت (Matcha)",desc:"سبز زیتونی ملایم و چشم‌نواز",bg:"linear-gradient(135deg,#D9F99D,#BBF7D0)",rad:"10px"},
+  {id:"sunset",name:"غروب آفتاب (Sunset)",desc:"گرادیانت گرم مرجانی، طلایی و بنفش",bg:"linear-gradient(135deg,#FDBA74,#F9A8D4,#C4B5FD)",rad:"12px"},
+  {id:"paper",name:"کاغذی / کتابی (Paper)",desc:"کنتراست بالا شبیه صفحه‌نمایش کتاب‌خوان",bg:"#F5F3EE",rad:"3px"},
+  {id:"nowruz",name:"🌸 نوروز و سال نو شمسی",desc:"حال‌وهوای بهاری، شکوفه و آیکون‌های نوروزی",bg:"linear-gradient(135deg,#6EE7B7,#F9A8D4,#FDE047)",rad:"12px"},
+  {id:"christmas",name:"🎄 کریسمس و سال نو میلادی",desc:"تم زمستانی، بارش برف و آیکون‌های کریسمس",bg:"linear-gradient(135deg,#EF4444,#16A34A,#E0F2FE)",rad:"12px"},
+  {id:"yalda",name:"🍉 شب یلدا (چله)",desc:"تم شب اناری، سبز یشمی و طلایی",bg:"linear-gradient(135deg,#9F1239,#14532D,#F59E0B)",rad:"10px"},
+  {id:"birthday",name:"🎂 جشن تولد",desc:"تم شاد و رنگارنگ ویژه روز تولد شما",bg:"linear-gradient(135deg,#F59E0B,#EC4899,#8B5CF6)",rad:"14px"}
 ];
 
 const toLatDigits = s => String(s ?? "").replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
@@ -4508,6 +4620,7 @@ if(cfg.firstDay===undefined) cfg.firstDay=0;
 if(!Array.isArray(cfg.weekends)) cfg.weekends=[6];
 if(cfg.autoLoc===undefined) cfg.autoLoc=false;
 if(cfg.autoSyncCalLang===undefined) cfg.autoSyncCalLang=true;
+if(cfg.autoFestive===undefined) cfg.autoFestive=true;
 if(cfg.calType==="gregorian"){ vy=now.getFullYear(); vm=now.getMonth()+1; }
 else if(cfg.calType==="kurdish"){ vy=tod.jy+1321; vm=tod.jm; }
 let notes=JSON.parse(localStorage.getItem("cal_notes_v4")||'{}');
@@ -4536,7 +4649,15 @@ const UI_STYLES_I18N={
   neumorph:{ku:["نیومۆرفیسمی ٣ ڕەهەندی","سێبەری نەرمی سێ ڕەهەندی"],en:["3D Neumorphism","Soft extruded tactile shadows"]},
   cyber:{ku:["نیۆنی گەردوونی","دۆخی شەوی درەوشاوە"],en:["Cosmic Cyber Neon","Glowing dark futuristic neon theme"]},
   persian:{ku:["کلاسیکی ڕەسەن","گەرم و کاغەزی"],en:["Warm Parchment","Warm paper tones & classic elegance"]},
-  nordic:{ku:["نۆردیکی سەهۆڵی","ئارام و مینیمال"],en:["Nordic Frost","Calm slate & ice minimal palette"]}
+  nordic:{ku:["نۆردیکی سەهۆڵی","ئارام و مینیمال"],en:["Nordic Frost","Calm slate & ice minimal palette"]},
+  amoled:{ku:["ڕەشی تەواو (AMOLED)","ڕەشی تەواو بۆ کەمکردنەوەی بەکارهێنانی باتری"],en:["Pure Black (AMOLED)","True #000000 black for OLED displays"]},
+  matcha:{ku:["ئارامیی سروشت (Matcha)","سەوزی نەرم و ئارامبەخش بۆ چاو"],en:["Nature Matcha","Soft sage green & calm organic tones"]},
+  sunset:{ku:["خۆرئاوابوون (Sunset)","ڕەنگی گەرمی ئێوارە و زێڕین"],en:["Sunset Glow","Warm coral, amber & soft violet"]},
+  paper:{ku:["کاغەزی کتێب (Paper)","کۆنتراستی بەرز وەک خوێنەری کتێب"],en:["E-Ink Paper","High-contrast book paper aesthetic"]},
+  nowruz:{ku:["🌸 نەورۆز و سەری ساڵ","کەشوهەوای بەهار و ئایکۆنی نەورۆزی"],en:["🌸 Nowruz Spring","Spring blossoms & festive Nowruz icons"]},
+  christmas:{ku:["🎄 کریسمس و سەری ساڵی نوێ","بەفر و ئایکۆنی تایبەتی کریسمس"],en:["🎄 Christmas & New Year","Winter snow & festive holiday icons"]},
+  yalda:{ku:["🍉 شەوی یەڵدا (چلە)","ڕەنگی هەناری و شەوی درێژ"],en:["🍉 Yalda Night","Crimson pomegranate & winter solstice"]},
+  birthday:{ku:["🎂 جەژنی لەدایکبوون","دیزاینی شاد و ڕەنگاوڕەنگ"],en:["🎂 Birthday Celebration","Vibrant festive celebration theme"]}
 };
 function renderStyleCards(){
   const box=document.getElementById("styleCards");
@@ -5003,13 +5124,21 @@ const UI_STATUS_HEX = {
   neumorph: { light: "#E6E9EF", dark: "#161920" },
   cyber:    { light: "#090514", dark: "#090514" },
   persian:  { light: "#F5EFE6", dark: "#14110E" },
-  nordic:   { light: "#E8EEF2", dark: "#0F172A" }
+  nordic:   { light: "#E8EEF2", dark: "#0F172A" },
+  amoled:   { light: "#000000", dark: "#000000" },
+  matcha:   { light: "#F2F5EE", dark: "#0E1510" },
+  sunset:   { light: "#FFF1EB", dark: "#1C1018" },
+  paper:    { light: "#F5F3EE", dark: "#141413" },
+  nowruz:   { light: "#ECFDF5", dark: "#062018" },
+  christmas:{ light: "#FEF2F2", dark: "#1C0A0C" },
+  yalda:    { light: "#2A0812", dark: "#2A0812" },
+  birthday: { light: "#FDF4FF", dark: "#1F0B2E" }
 };
 
 function syncPwaStatusBar(isDark) {
   const uiKey = cfg.ui || "classic";
   const pair = UI_STATUS_HEX[uiKey] || UI_STATUS_HEX.classic;
-  const effectiveDark = (uiKey === "cyber") ? true : isDark;
+  const effectiveDark = (uiKey === "cyber" || uiKey === "amoled" || uiKey === "yalda") ? true : isDark;
   const hexColor = effectiveDark ? pair.dark : pair.light;
 
   // 1. Update CSS variable, HTML & Body solid background for iOS overscroll & Edge-to-Edge status bar continuity
@@ -5401,7 +5530,8 @@ async function updatePersistentStatusDate(forcePost = false) {
   const g = toG(tod.jy, tod.jm, tod.jd);
   const sw = wDay(tod.jy, tod.jm, tod.jd);
   const isKu = (cType === "kurdish" || (cfg && cfg.lang === "ku"));
-  const weekDayName = isKu ? WD_SAT_KU[sw] : WD[(sw + 6) % 7];
+  const isEnNotif = (cType === "gregorian" || (cfg && cfg.lang === "en"));
+  const weekDayName = isEnNotif ? WD_SAT_EN[sw] : (isKu ? WD_SAT_KU[sw] : WD_SAT_FA[sw]);
   const toFaNum = s => String(s ?? "").replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
   const fmtIconNum = n => (typeof cfg !== "undefined" && cfg && cfg.lang === "en") ? String(n) : toFaNum(n);
   const primaryDayStr = cType === "gregorian" ? fmtIconNum(g.gd) : fmtIconNum(tod.jd);
@@ -5452,11 +5582,13 @@ async function updatePersistentStatusDate(forcePost = false) {
   }
   if (window.AndroidBridge && window.AndroidBridge.showStatusDateNotification) {
     const gregMonthWithNumA = `${GM_EN[g.gm - 1]} (${toLatDigits(g.gm)})`;
-    const jalaliFullA = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
-    const kurdishFullA = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
+    const jMonA = isEnNotif ? JM_EN[tod.jm - 1] : JM[tod.jm - 1];
+    const kMonA = isEnNotif ? KM_EN[tod.jm - 1] : KM[tod.jm - 1];
+    const jalaliFullA = `${weekDayName} ${fa(tod.jd)} ${jMonA} ${fa(tod.jy)}`;
+    const kurdishFullA = `${weekDayName} ${fa(tod.jd)}${isEnNotif ? " " : "ی "}${kMonA} ${fa(tod.jy + 1321)}`;
     const gregFullA = `${toLatDigits(g.gd)} ${gregMonthWithNumA} ${toLatDigits(g.gy)}`;
-    const kurdishShortA = `${fa(tod.jd)} ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
-    const jalaliShortA = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
+    const kurdishShortA = `${fa(tod.jd)} ${kMonA} ${fa(tod.jy + 1321)}`;
+    const jalaliShortA = `${fa(tod.jd)} ${jMonA} ${fa(tod.jy)}`;
     const nTitleA = cType === "kurdish" ? kurdishFullA : (cType === "gregorian" ? `${gregFullA} (${weekDayName})` : jalaliFullA);
     const nBodyA = cType === "kurdish"
       ? `${jalaliShortA}  •  ${gregFullA}`
@@ -5473,12 +5605,14 @@ async function updatePersistentStatusDate(forcePost = false) {
   if (Notification.permission !== "granted") return;
 
   const gregMonthWithNum = `${GM_EN[g.gm - 1]} (${toLatDigits(g.gm)})`;
-  const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
-  const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
+  const jMonW = isEnNotif ? JM_EN[tod.jm - 1] : JM[tod.jm - 1];
+  const kMonW = isEnNotif ? KM_EN[tod.jm - 1] : KM[tod.jm - 1];
+  const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${jMonW} ${fa(tod.jy)}`;
+  const kurdishFull = `${weekDayName} ${fa(tod.jd)}${isEnNotif ? " " : "ی "}${kMonW} ${fa(tod.jy + 1321)}`;
   const gregFull = `${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}`;
 
-  const kurdishShort = `${fa(tod.jd)} ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
-  const jalaliShort = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
+  const kurdishShort = `${fa(tod.jd)} ${kMonW} ${fa(tod.jy + 1321)}`;
+  const jalaliShort = `${fa(tod.jd)} ${jMonW} ${fa(tod.jy)}`;
   let notifTitle = "";
   let notifSubDates = "";
   if (cType === "kurdish") {
@@ -5672,6 +5806,9 @@ function applyLanguageUI() {
   // Market View
   setTxt("#mktMainHdrTitle", "💰 دارایی‌ها و نرخ لحظه‌ای", "💰 داراییەکان و نرخی زیندوو", "💰 Assets & Live Rates");
   setTxt("#mktRefreshBtn", "🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh");
+  setTxt("#mktWatchPanelTitle", "⭐ انتخاب دارایی‌ها و تعیین اولویت نمایش", "⭐ هەڵبژاردنی دارایی و پێشەنگی", "⭐ Watchlist & Priority Order");
+  setTxt("#mktWatchPanelSub", "با ⬆️⬇️ اولویت را بالا/پایین ببرید و با ⭐ در اولویت ویژه قرار دهید", "بە ⬆️⬇️ پێشەنگی بگۆڕە و بە ⭐ تایبەتی بکە", "Use ⬆️⬇️ to reorder and ⭐ to pin priority items");
+  setTxt("#mktWatchResetBtn", "♻️ پیش‌فرض", "♻️ بنەڕەتی", "♻️ Reset");
   const mktGoldB = document.querySelector("#mktGoldBlock > b");
   const mktFxB = document.querySelector("#mktFxBlock > b");
   if (mktGoldB) mktGoldB.textContent = tr("🪙 بازار طلا و سکه (تومان)", "🪙 بازاڕی زێڕ و سکە (تمەن)", "🪙 Gold & Coins Market (Toman)");
@@ -5705,12 +5842,21 @@ function applyLanguageUI() {
 
   // Horoscope & Daily Omen View (Clean, no postcard)
   setTxt("#falMainTitle", "🔮 طالع‌بینی و فال روزانه", "🔮 بورج و فاڵی ڕۆژانە", "🔮 Daily Horoscope & Omen");
-  setTxt("#falBirthTitle", "🎂 تاریخ تولد شما (شمسی):", "🎂 ڕێکەوتی لەدایکبوونت (هەتاوی):", "🎂 Your Birth Date (Solar Hijri):");
+  const activeCalForBirth = cfg.calType || "jalali";
+  if (activeCalForBirth === "gregorian") {
+    setTxt("#falBirthTitle", "🎂 تاریخ تولد شما (میلادی):", "🎂 ڕێکەوتی لەدایکبوونت (زایینی):", "🎂 Your Birth Date (Gregorian):");
+  } else if (activeCalForBirth === "kurdish") {
+    setTxt("#falBirthTitle", "🎂 تاریخ تولد شما (کوردی):", "🎂 ڕێکەوتی لەدایکبوونت (کوردی):", "🎂 Your Birth Date (Kurdish):");
+  } else {
+    setTxt("#falBirthTitle", "🎂 تاریخ تولد شما (شمسی):", "🎂 ڕێکەوتی لەدایکبوونت (هەتاوی):", "🎂 Your Birth Date (Solar Hijri):");
+  }
   setTxt("#falSaveBirthBtn", "✨ ثبت تاریخ تولد و مشاهده طالع روزانه", "✨ تۆمارکردنی لەدایکبوون و بینینی بەختی ڕۆژانە", "✨ Save Birth Date & View Horoscope");
   initBirthInputs();
 
   // Modals (Style, City, Note, Converter, Settings)
   setTxt("#styleModal .s-head b", "🎨 طراحی، سبک‌ها و همگام‌سازی جوی", "🎨 دیزاین، ستایل و هاوکاتکردنی کەشوهەوا", "🎨 Themes, UI Styles & Weather Sync");
+  setTxt("#festiveAutoTitle", "🎉 تم و آیکون‌های مناسبتی خودکار", "🎉 دیزاین و ئایکۆنی بۆنەکان بە خۆکاری", "🎉 Auto Festive Themes & Icons");
+  setTxt("#festiveAutoSub", "تغییر خودکار تم و آیکون‌ها در نوروز، کریسمس، یلدا و تولد شما", "گۆڕینی خۆکاری ڕەنگ و ئایکۆن لە نەورۆز، کریسمس، یەڵدا و لەدایکبوون", "Auto-switch theme & icons on Nowruz, Christmas, Yalda & your Birthday");
 
   const styleAccB = document.querySelector("#styleSwatches")?.previousElementSibling;
   if (styleAccB) styleAccB.textContent = tr("رنگ تاکیدی (Accent Color)", "ڕەنگی سەرەکی (Accent Color)", "Accent Color");
@@ -5858,6 +6004,107 @@ function isSystemDarkNow() {
   }
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
+
+// ====== FESTIVE OCCASION AUTO-THEME, DYNAMIC ICONS & AMBIENT PARTICLES ======
+function getAutoFestiveThemeId() {
+  try {
+    // 1. User's Birthday (highest personal priority)
+    if (typeof birthCfg !== "undefined" && birthCfg && tod.jm === birthCfg.m && tod.jd === birthCfg.d) {
+      return "birthday";
+    }
+    // 2. Nowruz (Esfand 29/30 to Farvardin 13)
+    if ((tod.jm === 12 && tod.jd >= 29) || (tod.jm === 1 && tod.jd <= 13)) {
+      return "nowruz";
+    }
+    // 3. Yalda Night (Azar 29-30)
+    if (tod.jm === 9 && (tod.jd === 29 || tod.jd === 30)) {
+      return "yalda";
+    }
+    // 4. Christmas & Gregorian New Year (Dec 24 - Jan 2)
+    const g = toG(tod.jy, tod.jm, tod.jd);
+    if ((g.gm === 12 && g.gd >= 24) || (g.gm === 1 && g.gd <= 2)) {
+      return "christmas";
+    }
+  } catch (e) {}
+  return null;
+}
+
+const DEFAULT_NAV_SVGS = {
+  cal: '<rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="8" y="14" width="3" height="3" rx="0.5" fill="currentColor"/>',
+  mkt: '<circle cx="9" cy="9" r="6"/><path d="M15 9a6 6 0 1 1-6 6"/><path d="M9 7v4m-1.5-2h3"/>',
+  fal: '<path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/>',
+  notes: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>',
+  tod: '<rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/>'
+};
+
+const FESTIVE_NAV_SVGS = {
+  nowruz: {
+    cal: '<circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 3c2 2.5 2 5 0 6.5C10 8 10 5.5 12 3z"/><path d="M12 21c-2-2.5-2-5 0-6.5 2 1.5 2 4 0 6.5z"/><path d="M3 12c2.5-2 5-2 6.5 0C8 14 5.5 14 3 12z"/><path d="M21 12c-2.5 2-5 2-6.5 0 1.5-2 4-2 6.5 0z"/>',
+    mkt: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 4v2m0 12v2m8-8h-2M6 12H4"/>',
+    fal: '<path d="M12 2c2 5 6 7 6 12a6 6 0 1 1-12 0c0-5 4-7 6-12z"/><path d="M12 10v8"/>',
+    notes: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M12 7c1 1.5 1 3 0 4-1-1-1-2.5 0-4z"/>',
+    tod: '<circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 3v3m0 12v3M3 12h3m12 0h3m-3.2-6.8-2.1 2.1M8.3 15.7l-2.1 2.1m0-12.6 2.1 2.1m7.4 7.4 2.1 2.1"/>'
+  },
+  christmas: {
+    cal: '<polygon points="12 2 5 11 9 11 4 18 20 18 15 11 19 11 12 2"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/>',
+    mkt: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
+    fal: '<polygon points="12 2 15 9 22 9.5 16.5 14 18.2 21 12 17.3 5.8 21 7.5 14 2 9.5 9 9 12 2"/>',
+    notes: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+    tod: '<line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/><line x1="19.1" y1="4.9" x2="4.9" y2="19.1"/>'
+  },
+  yalda: {
+    cal: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+    mkt: '<circle cx="12" cy="13" r="7"/><path d="M9 6l1.5-2.5L12 5l1.5-1.5L15 6"/><circle cx="10" cy="13" r="1" fill="currentColor"/><circle cx="14" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="15.5" r="1" fill="currentColor"/>',
+    fal: '<path d="M12 2c2 3 3 5 3 7a3 3 0 1 1-6 0c0-2 1-4 3-7z"/><rect x="9" y="13" width="6" height="8" rx="1"/>',
+    notes: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    tod: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+  },
+  birthday: {
+    cal: '<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M12 7v4"/><path d="M12 3c1 1.5 1 2.5 0 3.5-1-1-1-2 0-3.5z"/>',
+    mkt: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>',
+    fal: '<polygon points="12 2 15 9 22 9.5 16.5 14 18.2 21 12 17.3 5.8 21 7.5 14 2 9.5 9 9 12 2"/>',
+    notes: '<path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/>',
+    tod: '<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M12 7v4"/>'
+  }
+};
+
+function applyFestiveVisuals(activeUi) {
+  const isFest = !!(FESTIVE_NAV_SVGS[activeUi]);
+  const pack = isFest ? FESTIVE_NAV_SVGS[activeUi] : DEFAULT_NAV_SVGS;
+  [["#nav-cal svg", "cal"], ["#nav-mkt svg", "mkt"], ["#nav-fal svg", "fal"], ["#nav-notes svg", "notes"], ["#todBtn svg", "tod"]].forEach(([sel, key]) => {
+    const el = document.querySelector(sel);
+    if (el && pack[key]) el.innerHTML = pack[key];
+  });
+
+  // Lightweight ambient particles (max 10 elements, pure CSS GPU animation)
+  let layer = document.getElementById("festiveAmbientLayer");
+  if (!isFest) {
+    if (layer) { layer.classList.remove("show"); layer.innerHTML = ""; }
+    return;
+  }
+  if (!layer) {
+    layer = document.createElement("div");
+    layer.id = "festiveAmbientLayer";
+    document.body.appendChild(layer);
+  }
+  if (layer.getAttribute("data-fest") !== activeUi) {
+    layer.setAttribute("data-fest", activeUi);
+    const glyphMap = { nowruz: ["🌸", "🌿", "✨"], christmas: ["❄️", "✨", "⭐"], yalda: ["✨", "🍉", "🕯️"], birthday: ["🎉", "✨", "🎈"] };
+    const glyphs = glyphMap[activeUi] || ["✨"];
+    let pHtml = "";
+    for (let i = 0; i < 10; i++) {
+      const g = glyphs[i % glyphs.length];
+      const leftPct = (i * 10 + 4) % 96;
+      const dur = 9 + (i % 5) * 2.4;
+      const delay = -(i * 1.3);
+      const sz = 12 + (i % 3) * 4;
+      pHtml += `<span class="fest-p" style="left:${leftPct}%;font-size:${sz}px;animation-duration:${dur}s;animation-delay:${delay}s">${g}</span>`;
+    }
+    layer.innerHTML = pHtml;
+  }
+  layer.classList.add("show");
+}
+
 function applyCfg(){
   const rootStyle = document.documentElement.style;
   const sysDark = isSystemDarkNow();
@@ -5912,7 +6159,14 @@ function applyCfg(){
     rootStyle.removeProperty("--sub");
   }
 
+  if (cfg.autoFestive !== false) {
+    const autoFest = getAutoFestiveThemeId();
+    if (autoFest) effectiveUi = autoFest;
+  }
   document.documentElement.setAttribute("data-ui", effectiveUi);
+  const festChk = document.getElementById("setAutoFestive");
+  if (festChk) festChk.checked = cfg.autoFestive !== false;
+  applyFestiveVisuals(effectiveUi);
   const fontStack = FONT_STACKS[cfg.font] || FONT_STACKS.vazirmatn;
   rootStyle.setProperty("--app-font", fontStack);
   if (typeof applyFontScaleUI === "function") applyFontScaleUI(cfg.fontScale || 100);
@@ -6553,17 +6807,10 @@ async function fetchTgjuLive(bust = "") {
           silver_oz: pickKey(["silver_ons", "ons_silver", "xag", "price_xag", "silver_ounce"], false),
           plat_oz:   pickKey(["platinum", "ons_platinum", "xpt", "price_xpt"], false),
           pall_oz:   pickKey(["palladium", "ons_palladium", "xpd", "price_xpd"], false),
-          chf:       pickKey(["price_chf", "chf"], true),
           cny:       pickKey(["price_cny", "cny", "price_yuan"], true),
-          sar:       pickKey(["price_sar", "sar"], true),
           iqd1k:     pickKey(["price_iqd", "iqd"], true),
           etf_ayar:    pickKey(["etf_ayar", "ayar", "bourse_ayar"], true),
-          etf_mesghal: pickKey(["etf_mesghal", "mesghal", "bourse_mesghal"], true),
-          etf_gohar:   pickKey(["etf_gohar", "gohar", "bourse_gohar"], true),
-          etf_noghran: pickKey(["etf_noghran", "noghran_silver", "noghran_etf", "noghran"], true),
-          etf_noghreh: pickKey(["etf_noghreh", "noghreh_etf", "silver_etf", "bourse_silver"], true),
-          etf_simorgh: pickKey(["etf_simorgh", "simorgh_silver", "simorgh_etf", "simorgh"], true),
-          etf_saat:    pickKey(["etf_saat", "saat_silver", "saat_etf", "saat"], true)
+          etf_noghran: pickKey(["etf_noghran", "noghran_silver", "noghran_etf", "noghran"], true)
         }
       };
     }
@@ -6640,9 +6887,7 @@ async function fetchGlobalFxAndGold() {
     if (fxData.rates.AED) lastFxRatios.AED = 1 / fxData.rates.AED;
     if (fxData.rates.TRY) lastFxRatios.TRY = 1 / fxData.rates.TRY;
     if (fxData.rates.CAD) lastFxRatios.CAD = 1 / fxData.rates.CAD;
-    if (fxData.rates.CHF) lastFxRatios.CHF = 1 / fxData.rates.CHF;
     if (fxData.rates.CNY) lastFxRatios.CNY = 1 / fxData.rates.CNY;
-    if (fxData.rates.SAR) lastFxRatios.SAR = 1 / fxData.rates.SAR;
     if (fxData.rates.IQD) lastFxRatios.IQD = 1000 / fxData.rates.IQD;
     out.fxUpdated = true;
   }
@@ -6662,11 +6907,6 @@ const PWA_MKT_CACHE_KEY = "mkt_cache_smartcal_v62";
 
 const RAHAVARD_ETF_SYMBOLS = {
   etf_ayar:    ["عیار", "AYAR"],
-  etf_mesghal: ["مثقال", "MESGHAL"],
-  etf_gohar:   ["گوهر", "GOHAR"],
-  etf_noghreh: ["نقره", "NOGHREH", "SILVER"],
-  etf_simorgh: ["سیمرغ", "SIMORGH"],
-  etf_saat:    ["ساعت", "SAAT"],
   etf_noghran: ["نقران", "NOGHRAN"]
 };
 
@@ -6794,11 +7034,6 @@ async function fetchFallbackBourseEtfs(bust = "") {
       const cur = JSON.parse(txt)?.current || {};
       const keyCandidates = {
         etf_ayar:    ["etf_ayar", "ayar", "bourse_ayar", "price_ayar"],
-        etf_mesghal: ["etf_mesghal", "mesghal", "bourse_mesghal", "price_mesghal"],
-        etf_gohar:   ["etf_gohar", "gohar", "bourse_gohar", "price_gohar"],
-        etf_noghreh: ["etf_noghreh", "noghreh_etf", "silver_etf", "bourse_silver", "price_silver_etf"],
-        etf_simorgh: ["etf_simorgh", "simorgh_silver", "simorgh_etf", "simorgh"],
-        etf_saat:    ["etf_saat", "saat_silver", "saat_etf", "saat"],
         etf_noghran: ["etf_noghran", "noghran_silver", "noghran_etf", "noghran"]
       };
       Object.keys(keyCandidates).forEach(ico => {
@@ -6887,7 +7122,7 @@ async function fetchMarket(manual = false) {
   }
 
   mktFetching = true;
-  if (btn) { btn.disabled = true; btn.innerHTML = "⏳ در حال دریافت..."; btn.style.opacity = "0.75"; }
+  if (btn) { btn.disabled = true; btn.innerHTML = tr("⏳ در حال دریافت...", "⏳ وەرگرتن...", "⏳ Fetching..."); btn.style.opacity = "0.75"; }
   if (updEl) updEl.textContent = tr("🔄 در حال استعلام نرخ لحظه‌ای طلا، سکه و ارز...", "🔄 وەرگرتنی نرخی زیندووی زێڕ و دراو...", "🔄 Fetching live gold, coin & FX rates...");
 
   const bust = String(Date.now());
@@ -6976,7 +7211,7 @@ async function fetchMarket(manual = false) {
     mktFetching = false;
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = "✅ بروز شد";
+      btn.innerHTML = tr("✅ بروز شد", "✅ نوێکرایەوە", "✅ Updated");
       btn.style.opacity = "1";
       setTimeout(() => { if (btn) btn.innerHTML = tr("🔄 بروزرسانی", "🔄 نوێکردنەوە", "🔄 Refresh"); }, 1800);
     }
@@ -7009,18 +7244,11 @@ const DEFAULT_MKT_CATALOG = [
   { ico: "try",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "لیر ترکیه (TRY)", ku: "لیرەی تورکی (TRY)", en: "Turkish Lira (TRY)" },
   { ico: "cad",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "دلار کانادا (CAD)", ku: "دۆلاری کەنەدی (CAD)", en: "Canadian Dollar (CAD)" },
   // Extra FX
-  { ico: "chf",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "فرانک سوئیس (CHF)", ku: "فرانکی سویسرا (CHF)", en: "Swiss Franc (CHF)" },
   { ico: "cny",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "یوان چین (CNY)", ku: "یوانی چین (CNY)", en: "Chinese Yuan (CNY)" },
-  { ico: "sar",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "ریال عربستان (SAR)", ku: "ڕیاڵی سعوودیە (SAR)", en: "Saudi Riyal (SAR)" },
   { ico: "iqd1k",     sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "هزار دینار عراق (IQD)", ku: "هەزار دیناری عێراق (IQD)", en: "1,000 Iraqi Dinar (IQD)" },
 
-  // Stock Market Gold ETFs (صندوق‌های طلای بورس ایران - شاخص‌محور بر اساس نرخ طلای ۱۸ عیار)
-    { ico: "etf_ayar",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار", ku: "سندووقی زێڕی عەیار", en: "Ayar Gold ETF" },
-  { ico: "etf_mesghal", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای مثقال", ku: "سندووقی زێڕی میسقاڵ", en: "Mesghal Gold ETF" },
-  { ico: "etf_gohar",   sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای گوهر", ku: "سندووقی زێڕی گەوهەر", en: "Gohar Gold ETF" },
-  { ico: "etf_noghreh", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره (بورس)", ku: "سندووقی زیو (بۆرسە)", en: "Silver ETF (Bourse)" },
-  { ico: "etf_simorgh", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره سیمرغ", ku: "سندووقی زیوی سیمرغ", en: "Simorgh Silver ETF" },
-  { ico: "etf_saat",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره ساعت", ku: "سندووقی زیوی ساعەت", en: "Saat Silver ETF" },
+  // Stock Market Gold & Silver ETFs
+  { ico: "etf_ayar",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار", ku: "سندووقی زێڕی عەیار", en: "Ayar Gold ETF" },
   { ico: "etf_noghran", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره نقران", ku: "سندووقی زیوی نەقران", en: "Noghran Silver ETF" }
 ];
 
@@ -7175,9 +7403,7 @@ function enrichMarketData(d) {
   setFromLive("pall_oz", "usd", 0, "0.00%");
 
   // Extra FX: live TGJU or live open.er-api.com ratio
-  setFromLive("chf", "toman", (usd > 0 && lastFxRatios.CHF) ? Math.round((usd * lastFxRatios.CHF) / 50) * 50 : 0);
   setFromLive("cny", "toman", (usd > 0 && lastFxRatios.CNY) ? Math.round((usd * lastFxRatios.CNY) / 10) * 10 : 0);
-  setFromLive("sar", "toman", (usd > 0 && lastFxRatios.SAR) ? Math.round((usd * lastFxRatios.SAR) / 10) * 10 : 0);
   setFromLive("iqd1k", "toman", (usd > 0 && lastFxRatios.IQD) ? Math.round((usd * lastFxRatios.IQD) / 5) * 5 : 0);
 
   // Bourse ETFs: ONLY real fetched prices from Rahavard365 / TSETMC / TGJU (NEVER fake anchors!)
@@ -7195,7 +7421,7 @@ function enrichMarketData(d) {
   const irHrEtf = irNowEtf.getUTCHours();
   const isEtfOpenNow = (irWdEtf !== 4 && irWdEtf !== 5) && irHrEtf >= 12 && irHrEtf < 18;
 
-  ["etf_ayar", "etf_mesghal", "etf_gohar", "etf_noghreh", "etf_simorgh", "etf_saat", "etf_noghran"].forEach(ico => {
+  ["etf_ayar", "etf_noghran"].forEach(ico => {
     const meta = MKT_NAME_I18N[ico] || { fa: ico };
     const hit = rEtfs[ico] || (lx[ico] && lx[ico].p > 0 ? { p: lx[ico].p, c: fmtPct(lx[ico].dp, "0.00%"), src: "TGJU" } : null);
     if (hit && hit.p > 0) {
@@ -7244,23 +7470,11 @@ function getAssetIconHtml(ico) {
   if (ico === "plat_oz") return metalBadge("Pt", "#CBD5E1", "#475569", "#0F172A");
   if (ico === "pall_oz") return metalBadge("Pd", "#DDD6FE", "#5B21B6", "#1E1B4B");
 
-  if (ico === "chf") return flagFrame(`
-    <rect width="48" height="36" fill="#DA291C"/>
-    <rect x="20.5" y="8" width="7" height="20" rx="1" fill="#FFFFFF"/>
-    <rect x="14" y="14.5" width="20" height="7" rx="1" fill="#FFFFFF"/>
-  `);
   if (ico === "cny") return flagFrame(`
     <rect width="48" height="36" fill="#DE2910"/>
     <polygon points="11,8 12.6,12.8 17.6,12.8 13.6,15.7 15.1,20.5 11,17.6 6.9,20.5 8.4,15.7 4.4,12.8 9.4,12.8" fill="#FFDE00"/>
     <circle cx="21" cy="7.5" r="1.4" fill="#FFDE00"/><circle cx="23.5" cy="11" r="1.4" fill="#FFDE00"/>
     <circle cx="23.5" cy="15.5" r="1.4" fill="#FFDE00"/><circle cx="21" cy="19" r="1.4" fill="#FFDE00"/>
-  `);
-  if (ico === "sar") return flagFrame(`
-    <rect width="48" height="36" fill="#165B33"/>
-    <rect x="9" y="10" width="30" height="3.5" rx="1.5" fill="#FFFFFF"/>
-    <rect x="13" y="15.5" width="22" height="3" rx="1.2" fill="#FFFFFF"/>
-    <rect x="11" y="23.5" width="26" height="2.4" rx="1" fill="#FFFFFF"/>
-    <line x1="11" y1="27.5" x2="37" y2="27.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
   `);
   if (ico === "iqd1k") return flagFrame(`
     <rect y="0" width="48" height="12" fill="#CE1126"/>
@@ -7272,11 +7486,6 @@ function getAssetIconHtml(ico) {
   if (ico.startsWith("etf_")) {
     const fundBadgeMap = {
       etf_ayar:    { lbl: "عیار",   bg: "linear-gradient(135deg,#FBBF24,#B45309)", fg: "#1C1917" },
-      etf_mesghal: { lbl: "مثقال",  bg: "linear-gradient(135deg,#F59E0B,#92400E)", fg: "#FFFBEB" },
-      etf_gohar:   { lbl: "گوهر",   bg: "linear-gradient(135deg,#FDE047,#CA8A04)", fg: "#1E293B" },
-      etf_noghreh: { lbl: "نقره",   bg: "linear-gradient(135deg,#E2E8F0,#64748B)", fg: "#0F172A" },
-      etf_simorgh: { lbl: "سیمرغ",  bg: "linear-gradient(135deg,#94A3B8,#334155)", fg: "#F8FAFC" },
-      etf_saat:    { lbl: "ساعت",   bg: "linear-gradient(135deg,#CBD5E1,#475569)", fg: "#FFFFFF" },
       etf_noghran: { lbl: "نقران",  bg: "linear-gradient(135deg,#BAE6FD,#0369A1)", fg: "#082F49" }
     };
     const fb = fundBadgeMap[ico] || { lbl: "ETF", bg: "linear-gradient(135deg,#F59E0B,#B45309)", fg: "#FFFFFF" };
@@ -9355,15 +9564,33 @@ function rollFreshFalEntropy() {
 function initBirthInputs(){
   const dS=document.getElementById("bDay"),mS=document.getElementById("bMon"),yS=document.getElementById("bYear");
   if(!dS||!mS||!yS)return;
-  const isKu = (cfg.lang==="ku" || cfg.calType==="kurdish");
-  const mArr = isKu ? getKM() : getJM();
+  const cType = (cfg && cfg.calType) || "jalali";
   dS.innerHTML=""; mS.innerHTML=""; yS.innerHTML="";
   for(let d=1;d<=31;d++) dS.innerHTML+=`<option value="${d}">${fa(d)}</option>`;
-  mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
-  for(let y=1320;y<=1405;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
-  dS.value=birthCfg.d;
-  mS.value=birthCfg.m;
-  yS.value=birthCfg.y;
+
+  if (cType === "gregorian") {
+    const mArr = (cfg.lang === "en") ? GM_EN : GM;
+    mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
+    for(let y=1940;y<=2026;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`;
+    const gB = toG(birthCfg.y, birthCfg.m, birthCfg.d);
+    dS.value = gB.gd;
+    mS.value = gB.gm;
+    yS.value = Math.min(2026, Math.max(1940, gB.gy));
+  } else if (cType === "kurdish") {
+    const mArr = getKM();
+    mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
+    for(let y=1320+1321;y<=1405+1321;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`);
+    dS.value = birthCfg.d;
+    mS.value = birthCfg.m;
+    yS.value = birthCfg.y + 1321;
+  } else {
+    const mArr = getJM();
+    mArr.forEach((m,i)=>mS.innerHTML+=`<option value="${i+1}">${m}</option>`);
+    for(let y=1320;y<=1405;y++) yS.innerHTML+=`<option value="${y}">${fa(y)}</option>`);
+    dS.value = birthCfg.d;
+    mS.value = birthCfg.m;
+    yS.value = birthCfg.y;
+  }
 }
 
 function checkBirthdaySurprise(justSaved=false){
@@ -9412,9 +9639,25 @@ function saveBirthAndCalcFal(){
   const m=Number(document.getElementById("bMon").value);
   const y=Number(document.getElementById("bYear").value);
   const name=birthCfg.name||"";
-  const validDay=Math.min(d,mLen(y,m));
-  document.getElementById("bDay").value=validDay;
-  birthCfg={y,m,d:validDay,name};
+  const cType = (cfg && cfg.calType) || "jalali";
+  let jy, jm, jd;
+  if (cType === "gregorian") {
+    const gMax = new Date(y, m, 0).getDate();
+    const validGd = Math.min(d, gMax);
+    document.getElementById("bDay").value = validGd;
+    const jConv = toJ(y, m, validGd);
+    jy = jConv.jy; jm = jConv.jm; jd = jConv.jd;
+  } else if (cType === "kurdish") {
+    jy = y - 1321;
+    jm = m;
+    jd = Math.min(d, mLen(jy, jm));
+    document.getElementById("bDay").value = jd;
+  } else {
+    jy = y; jm = m;
+    jd = Math.min(d, mLen(jy, jm));
+    document.getElementById("bDay").value = jd;
+  }
+  birthCfg={y:jy,m:jm,d:jd,name};
   localStorage.setItem("cal_birth_v1",JSON.stringify(birthCfg));
   falExtraOffset=0;
   render();
