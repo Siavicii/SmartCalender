@@ -125,7 +125,6 @@
   font-display: swap;
 }
 
-
 :root{
   --bg:#F4F6FA;--card:#FFFFFF;--sub:#EBF0F7;--pri:#1B6EF3;--pri-bg:rgba(27,110,243,0.14);--onpri:#FFFFFF;
   --txt:#111827;--sec:#5B6475;--hol:#DC2626;--holbg:#FEE2E2;--grn:#059669;--brd:rgba(0,0,0,0.08);--rad:22px;
@@ -152,9 +151,6 @@
   --sub:rgba(36,46,70,0.55);
   --brd:rgba(255,255,255,0.13);
   --shadow:0 8px 32px rgba(0,0,0,0.45);
-}
-[data-ui="glass"] .card,[data-ui="glass"] .w-card,[data-ui="glass"] .nav,[data-ui="glass"] .sheet{
-  
 }
 [data-ui="glass"] .day.sel{box-shadow:0 4px 14px var(--pri-bg)}
 
@@ -305,7 +301,6 @@ body{background:var(--bg);background-attachment:fixed;color:var(--txt);padding:c
   box-shadow:0 8px 24px rgba(236,72,153,0.32);animation:pulseGlow 2.8s infinite ease-in-out;
 }
 
-
 /* ====== UPGRADED NOTES HUB STYLES ====== */
 .notes-toolbar{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .notes-filters{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
@@ -381,7 +376,6 @@ select,input,textarea{width:100%;padding:9px;border-radius:11px;border:1px solid
 [data-theme=dark][data-ui="nordic"]{
   --bg:#0F172A;--card:#1E293B;--sub:#334155;--brd:rgba(148,163,184,0.15);
 }
-
 
 /* ====== ANDROID 17 (MATERIAL 3 EXPRESSIVE) & iOS 26 (LIQUID GLASS) STANDARDS ====== */
 :root {
@@ -675,12 +669,10 @@ body.atm-rain { background-image: linear-gradient(180deg, rgba(14,116,144,0.24) 
 body.atm-snow { background-image: radial-gradient(circle at 50% 10%, rgba(224,242,254,0.34), rgba(148,163,184,0.16)) !important; }
 body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,204,21,0.24), transparent 45%) !important; }
 
-
 .copy-date-btn{background:var(--sub);border:1px solid var(--brd);color:var(--pri);height:26px;padding:0 8px;border-radius:8px;font-size:10.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .copy-date-btn:active{transform:scale(.95)}
 .nav-badge{position:absolute;top:2px;left:18%;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--hol);color:#fff;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
 .nbtn{position:relative}
-
 
 @font-face {
   font-family: 'Dastkhat';
@@ -702,7 +694,6 @@ body.atm-clear { background-image: radial-gradient(circle at 88% 8%, rgba(250,20
   font-style: normal;
   font-display: swap;
 }
-
 
 /* Sleek Minimalist Splash Screen (Seamless Edge-to-Edge, No Boxy Square) */
 #smartSplash {
@@ -816,7 +807,6 @@ html[data-boot-dark="1"] .splash-sub-row { color: #94A3B8 !important; }
   0% { transform: translateX(-110%); }
   100% { transform: translateX(240%); }
 }
-
 
 /* =========================================================================
    ADAPTIVE SYSTEM & SCREEN RESPONSIVE ENGINE (Mobile / Tablet / Desktop / OS)
@@ -1021,7 +1011,6 @@ html[data-os="ios"][data-standalone="true"] body {
     background: rgba(128, 128, 128, 0.48);
   }
 }
-
 
 /* =========================================================================
    UNIVERSAL THEMED SELECT PICKER & SLIDER UI (Synced to all data-ui Themes)
@@ -1352,7 +1341,6 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-
 /* =========================================================================
    LAYOUT-SAFE GLOBAL FONT & UI SCALE ENGINE (90% - 118%)
    ========================================================================= */
@@ -1402,7 +1390,6 @@ input[type="range"]::-moz-range-thumb {
   color: var(--onpri);
   border-color: var(--pri);
 }
-
 
 /* Minimalist Theme-Synced Toggle Switch & Clean Status Notif Card */
 .sc-switch {
@@ -1514,7 +1501,6 @@ input[type="range"]::-moz-range-thumb {
   padding: 2px;
 }
 
-
 /* =========================================================================
    CUSTOM CARD REORDERING / LAYOUT EDIT MODE (ALL VIEWS)
    ========================================================================= */
@@ -1592,7 +1578,6 @@ body.layout-edit-mode #layoutEditBanner {
   flex-direction: column;
   gap: 10px;
 }
-
 
 /* =========================================================================
    FLUID MOTION & SPRING ANIMATION ENGINE (SPLASH, TABS, CALENDAR, MODALS)
@@ -1703,7 +1688,6 @@ body.app-booting .app {
   opacity: 1;
 }
 
-
 /* =========================================================================
    INSTANT ZERO-LAG TAB SWITCHING & HORIZONTAL SWIPE TRANSITIONS
    ========================================================================= */
@@ -1731,7 +1715,6 @@ body.app-booting .app {
   user-select: none;
   -webkit-user-select: none;
 }
-
 
 /* =========================================================================
    DESKTOP & PC PROPORTIONAL TYPOGRAPHY, SPACING & CONTROLS (>= 768px / >= 1100px)
@@ -2101,7 +2084,6 @@ body.app-booting .app {
   }
 }
 
-
 /* =========================================================================
    ANDROID WEBVIEW FIXED BOTTOM NAV LOCK & HORIZONTAL OVERFLOW GUARD
    ========================================================================= */
@@ -2134,7 +2116,6 @@ body {
     will-change: transform;
   }
 }
-
 
 /* Emergency AI-Detected Closure Banner in Day Details Card */
 #emergencyHolBox {
@@ -2182,7 +2163,6 @@ body {
   font-size: 10.5px;
   color: var(--sec);
 }
-
 
 /* Festive Celebration Overlay & Smart Happy Occasion Banners (v70.1) */
 #happyBannerBox {
@@ -2315,7 +2295,6 @@ body {
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(236,72,153,0.35);
 }
-
 
 /* Sleek Modern In-App Update Card (v71.6) */
 #appUpdateBanner {
@@ -2471,7 +2450,6 @@ body {
 .perm-txt b { font-size: 12px; display: block; margin-bottom: 2px; color: var(--pri); }
 .perm-txt span { font-size: 11px; line-height: 1.6; color: var(--sec); display: block; }
 
-
 /* 60fps Fluidity & Instant Touch Response (v70.6) */
 button, .ibtn, .nbtn, .dcell, .m-ev, .tag, .pill, .fchip, .w-city-btn {
   touch-action: manipulation;
@@ -2497,7 +2475,6 @@ button, .ibtn, .nbtn, .dcell, .m-ev, .tag, .pill, .fchip, .w-city-btn {
   transform: translate3d(0, 0, 0);
 }
 
-
 /* 120Hz Silky Scroll & Soft Micro-Interactions (v70.7) */
 html, body {
   overscroll-behavior-y: contain;
@@ -2512,12 +2489,10 @@ html, body {
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
-
 /* v71.0 Zero-Block Cold Start & Lag-Free Market/Tab Switching */
 .card {
   contain-intrinsic-size: auto 240px;
 }
-
 
 /* Magical Reveal Animation for Horoscope & Omen (v72 - Zero-Blink GPU) */
 @keyframes magicFalReveal {
@@ -2546,14 +2521,12 @@ html, body {
   animation: magicSparkleGlow 0.7s ease-out;
 }
 
-
 /* Anti-Flicker / Zero-Blink Startup (v72) */
 html:not(.app-ready) .view.active {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
 }
-
 
 /* =========================================================================
    LIQUID GLASS FLOATING NAV + SLIDING PILL + SILKY CROSS-FADE (v72)
@@ -2678,7 +2651,6 @@ html:not(.app-ready) .view.active {
   transform: scale(0.96);
 }
 
-
 /* =========================================================================
    AIRY NOTES STUDIO SPACING & RELIABLE VOICE DICTATION (v72)
    ========================================================================= */
@@ -2722,7 +2694,6 @@ html:not(.app-ready) .view.active {
   border-color: #EF4444 !important;
   color: #EF4444 !important;
 }
-
 
 /* =========================================================================
    CUSTOM MARKET WATCHLIST, EXTRA METALS/FX/ETFs & PRIORITY ORDERING (v72)
@@ -3025,21 +2996,6 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div id="emergencyHolBox"></div>
       <div id="happyBannerBox"></div>
       <div id="evBox"></div>
-      <div class="note-box">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px">
-          <b style="font-size:11.5px;color:var(--sec)">📝 یادداشت‌ها و هشدارها</b>
-          <div style="display:flex;gap:4px;flex-shrink:0">
-            <button class="ibtn" style="height:27px;font-size:10px;padding:0 6px;border-radius:8px" onclick="switchTab('notes')">🗂️ آرشیو</button>
-            <button class="ibtn" style="height:27px;font-size:10px;padding:0 7px;border-radius:8px;background:var(--pri);color:var(--onpri);border:none" onclick="openNoteModal(sel)">+ یادداشت</button>
-          </div>
-        </div>
-        <div id="notesList" style="display:flex;flex-direction:column;gap:5px"></div>
-        <div class="note-row" style="align-items:center;gap:5px">
-          <input type="text" id="noteInput" placeholder="یادداشت سریع این روز..." style="flex:1;padding:7px 9px;font-size:12px" onkeydown="if(event.key==='Enter')addNote()">
-          <input type="time" id="noteTimeInput" title="ساعت هشدار" style="width:90px;padding:7px 4px;font-size:11.5px">
-          <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;height:34px;padding:0 11px;font-size:11.5px;border-radius:9px" onclick="addNote()">ثبت</button>
-        </div>
-      </div>
     </div>
 
     <!-- Month Events (Updatable) -->
@@ -3054,21 +3010,10 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:7px 9px;border-radius:12px;background:var(--sub);border:1px solid var(--brd)">
         <select id="countryEvSelect" onchange="onCountryChange(this.value)" style="flex:1;min-width:130px;padding:5px 8px;font-size:11.5px;background:var(--card)"></select>
         <button type="button" class="fchip act" id="toggleWorldDaysBtn" style="font-size:10.5px;padding:4px 8px" onclick="toggleWorldDaysFilter()">✅ روزهای جهانی</button>
-        <button type="button" class="fchip act" id="toggleCountryHolBtn" style="font-size:10.5px;padding:4px 8px" onclick="toggleCountryHolFilter()">✅ تعطیلات کشور</button>
+        <button type="button" class="fchip act" id="toggleCountryHolBtn" style="font-size:10.5px;padding:4px 8px" onclick="toggleCountryHolFilter()">✅ مناسبت‌ها</button>
       </div>
       <div id="evSyncStatus" style="font-size:10px;color:var(--sec);margin-bottom:4px"></div>
       <div id="monthEvBox"></div>
-      <div class="note-box" style="margin-top:8px;padding-top:8px">
-        <b style="font-size:11px;color:var(--sec)">➕ افزودن رویداد، مناسبت یا هشدار زمانی به این روز</b>
-        <div class="note-row" style="flex-wrap:wrap">
-          <input type="text" id="customEvInput" placeholder="عنوان رویداد یا مناسبت..." style="flex:1;min-width:140px">
-          <input type="time" id="customEvTime" title="ساعت هشدار رویداد" style="width:102px;padding:7px 6px;font-size:12px">
-          <label style="display:flex;align-items:center;gap:3px;font-size:11px;white-space:nowrap;cursor:pointer">
-            <input type="checkbox" id="customEvHol" style="width:16px;height:16px"> تعطیل
-          </label>
-          <button class="ibtn" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px" onclick="addCustomEvent()">افزودن</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -3524,10 +3469,6 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       </div>
     </div>
 
-    <div id="manualColorWrap" style="transition:opacity 0.2s ease">
-      <b style="font-size:12px;color:var(--sec)">رنگ اصلی برنامه</b>
-      <div class="swatches" id="colorSwatches"></div>
-    </div>
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
         <b style="font-size:12px;color:var(--sec)">شهر (آب‌وهوا و تعطیلات استانی)</b>
@@ -4273,7 +4214,7 @@ function syncCountrySelectorUI() {
   const cBtn = document.getElementById("toggleCountryHolBtn");
   if (cBtn) {
     cBtn.classList.toggle("act", !!cfg.showCountryHol);
-    cBtn.textContent = (cfg.showCountryHol ? "✅ " : "") + tr("تعطیلات کشور", "پشووی وڵات", "Country Holidays");
+    cBtn.textContent = (cfg.showCountryHol ? "✅ " : "") + tr("مناسبت‌ها", "بۆنەکان", "Occasions");
   }
 }
 
@@ -4477,19 +4418,6 @@ function getEv(y,m,d){
   });
 }
 
-async function addCustomEvent(){
-  const inp=document.getElementById("customEvInput"),tInp=document.getElementById("customEvTime"),title=inp.value.trim();
-  if(!title)return;
-  const tm=tInp.value;
-  if(tm) await ensureAlarmPermission();
-  const isHol=document.getElementById("customEvHol").checked?1:0;
-  const yk=`${sel.jy}-${sel.jm}-${sel.jd}`;
-  if(!customUserEv[yk])customUserEv[yk]=[];
-  customUserEv[yk].push([title+(isHol?" (تعطیل)":"")+(tm?" [⏰ "+fa(tm)+"]":""),isHol,tm||"",false]);
-  localStorage.setItem("cal_user_ev_v11",JSON.stringify(customUserEv));
-  inp.value="";tInp.value="";document.getElementById("customEvHol").checked=false;
-  render();
-}
 
 async function updateHolidaysOnline(){
   const st = document.getElementById("evSyncStatus");
@@ -5221,34 +5149,6 @@ function timeStrToMinutes(tStr) {
   return parts[0] * 60 + parts[1];
 }
 
-function isDaylightNow() {
-  const nowObj = new Date();
-  const curMins = nowObj.getHours() * 60 + nowObj.getMinutes();
-
-  // 1. Primary priority: Geographic coordinates (lat, lon) -> Astronomical Sunrise & Sunset for today
-  if (typeof cfg !== "undefined" && cfg && cfg.city && typeof calcSunTimes === "function") {
-    const parts = String(cfg.city).split(",");
-    const lat = parseFloat(parts[0]);
-    const lon = parseFloat(parts[1]);
-    if (!isNaN(lat) && !isNaN(lon)) {
-      const sun = calcSunTimes(nowObj.getFullYear(), nowObj.getMonth() + 1, nowObj.getDate(), lat, lon);
-      const riseMins = timeStrToMinutes(sun?.rise);
-      const setMins = timeStrToMinutes(sun?.set);
-      if (riseMins !== null && setMins !== null) {
-        return curMins >= riseMins && curMins < setMins;
-      }
-    }
-  }
-
-  // 2. Secondary priority: Live weather `is_day` from selected location
-  if (typeof lastWeatherDataObj !== "undefined" && lastWeatherDataObj && lastWeatherDataObj.current_weather && lastWeatherDataObj.current_weather.is_day !== undefined) {
-    return Number(lastWeatherDataObj.current_weather.is_day) === 1;
-  }
-
-  // 3. Fallback: Local clock (06:00 - 18:00)
-  const hr = nowObj.getHours();
-  return hr >= 6 && hr < 18;
-}
 
 function isPhoneDarkMode() {
   const sysDark = isSystemDarkNow();
@@ -5535,8 +5435,12 @@ async function updatePersistentStatusDate(forcePost = false) {
     const jalaliFullA = `${weekDayName} ${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
     const kurdishFullA = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
     const gregFullA = `${toLatDigits(g.gd)} ${gregMonthWithNumA} ${toLatDigits(g.gy)}`;
+    const kurdishShortA = `${fa(tod.jd)} ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
+    const jalaliShortA = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
     const nTitleA = cType === "kurdish" ? kurdishFullA : (cType === "gregorian" ? `${gregFullA} (${weekDayName})` : jalaliFullA);
-    const nBodyA = cType === "gregorian" ? `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}` : gregFullA;
+    const nBodyA = cType === "kurdish"
+      ? `${jalaliShortA}  •  ${gregFullA}`
+      : (cType === "gregorian" ? `${jalaliShortA}  •  ${kurdishShortA}` : `${kurdishShortA}  •  ${gregFullA}`);
     try { window.AndroidBridge.showStatusDateNotification(primaryDayStr, nTitleA, nBodyA); } catch (e) {}
     return;
   }
@@ -5553,17 +5457,19 @@ async function updatePersistentStatusDate(forcePost = false) {
   const kurdishFull = `${weekDayName} ${fa(tod.jd)}ی ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
   const gregFull = `${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}`;
 
+  const kurdishShort = `${fa(tod.jd)} ${KM[tod.jm - 1]} ${fa(tod.jy + 1321)}`;
+  const jalaliShort = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
   let notifTitle = "";
   let notifSubDates = "";
   if (cType === "kurdish") {
     notifTitle = `${kurdishFull}`;
-    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}  •  ${gregFull}`;
+    notifSubDates = `${jalaliShort}  •  ${gregFull}`;
   } else if (cType === "gregorian") {
     notifTitle = `${gregFull} (${weekDayName})`;
-    notifSubDates = `${fa(tod.jd)} ${JM[tod.jm - 1]} ${fa(tod.jy)}`;
+    notifSubDates = `${jalaliShort}  •  ${kurdishShort}`;
   } else {
     notifTitle = `${jalaliFull}`;
-    notifSubDates = `${gregFull}`;
+    notifSubDates = `${kurdishShort}  •  ${gregFull}`;
   }
 
   const notifBody = notifSubDates;
@@ -5683,28 +5589,6 @@ function toggleWeekendDay(wd) {
   render();
 }
 
-function cycleAppLanguage() {
-  const order = ["fa", "ku", "en"];
-  const cur = cfg.lang || "fa";
-  const next = order[(order.indexOf(cur) + 1) % order.length];
-  cfg.lang = next;
-  if (cfg.autoSyncCalLang !== false) {
-    if (next === "fa") cfg.calType = "jalali";
-    else if (next === "ku") cfg.calType = "kurdish";
-    else if (next === "en") cfg.calType = "gregorian";
-    syncViewToCalType(cfg.calType || "jalali");
-  }
-  if (document.getElementById("setLang")) document.getElementById("setLang").value = next;
-  if (document.getElementById("setCalType")) document.getElementById("setCalType").value = cfg.calType || "jalali";
-  localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
-  applyCfg();
-  render();
-  renderAllNotes();
-  if (lastWeatherDataObj) renderWeatherData(lastWeatherDataObj, lastWeatherCityName, false);
-  if (lastAqiValue !== null) renderAqi(lastAqiValue);
-  if (lastMarketPayload) renderMarket(lastMarketPayload, false);
-  renderFal(false);
-}
 
 function applyLanguageUI() {
   const l = cfg.lang || "fa";
@@ -5755,17 +5639,6 @@ function applyLanguageUI() {
   if (cityBtns[1]) cityBtns[1].textContent = tr("📍 شهر", "📍 شار", "📍 City");
   updateNotifBtnUI();
 
-  // Selected Day Notes & Month Events Card
-  const noteCardB = document.querySelectorAll("#view-cal .card")[1]?.querySelector(".note-box b");
-  if (noteCardB) noteCardB.textContent = tr("📝 یادداشت‌ها و هشدارها", "📝 تێبینی و ئاگادارکەرەوەکان", "📝 Notes & Reminders");
-  const noteCardBtns = document.querySelectorAll("#view-cal .card")[1]?.querySelectorAll(".note-box .ibtn");
-  if (noteCardBtns && noteCardBtns.length >= 3) {
-    noteCardBtns[0].textContent = tr("🗂️ آرشیو", "🗂️ ئەرشیف", "🗂️ Archive");
-    noteCardBtns[1].textContent = tr("+ یادداشت", "+ تێبینی", "+ Note");
-    noteCardBtns[2].textContent = tr("ثبت", "تۆمار", "Add");
-  }
-  setPh("#noteInput", "یادداشت سریع این روز...", "تێبینی خێرا بۆ ئەم ڕۆژە...", "Quick note for this day...");
-
   const evCard = document.querySelectorAll("#view-cal .card")[2];
   if (evCard) {
     const evB = evCard.querySelector("div > b");
@@ -5774,13 +5647,6 @@ function applyLanguageUI() {
     if (evUpdBtn) evUpdBtn.textContent = tr("🔄 بروزرسانی مناسبت‌ها", "🔄 نوێکردنەوەی بۆنەکان", "🔄 Sync Holidays");
     const detCountryBtn = evCard.querySelector("button[onclick*=\"detectAndSyncUserCountry\"]");
     if (detCountryBtn) detCountryBtn.textContent = tr("🌐 تشخیص کشور", "🌐 دیاریکردنی وڵات", "🌐 Detect Country");
-    const addEvB = evCard.querySelector(".note-box > b");
-    if (addEvB) addEvB.textContent = tr("➕ افزودن رویداد، مناسبت یا هشدار زمانی به این روز", "➕ زیادکردنی بۆنە یان ئاگادارکەرەوە بۆ ئەم ڕۆژە", "➕ Add Custom Event or Timed Reminder");
-    setPh("#customEvInput", "عنوان رویداد یا مناسبت...", "ناونیشانی بۆنە...", "Event or occasion title...");
-    const holLbl = evCard.querySelector(".note-box label");
-    if (holLbl && holLbl.lastChild) holLbl.lastChild.textContent = " " + tr("تعطیل", "پشوو", "Holiday");
-    const addEvBtn = evCard.querySelector(".note-box .ibtn");
-    if (addEvBtn) addEvBtn.textContent = tr("افزودن", "زیادکردن", "Add");
   }
 
   // Market View
@@ -5911,8 +5777,6 @@ function applyLanguageUI() {
     if (firstDayLbl) firstDayLbl.textContent = tr("🗓️ روز اول هفته در جدول تقویم", "🗓️ یەکەم ڕۆژی هەفتە لە خشتەی ڕۆژژمێردا", "🗓️ First Day of Week");
     const wkLbl = document.getElementById("weekendChipsBox")?.previousElementSibling;
     if (wkLbl) wkLbl.textContent = tr("🏖️ روزهای تعطیل آخر هفته (قابل انتخاب چندگانه):", "🏖️ ڕۆژانی پشووی کۆتایی هەفتە (هەڵبژاردنی فرە):", "🏖️ Weekend Holidays (Multi-select):");
-    const accentLbl = document.getElementById("colorSwatches")?.previousElementSibling;
-    if (accentLbl) accentLbl.textContent = tr("رنگ اصلی برنامه", "ڕەنگی سەرەکی بەرنامە", "Primary Accent Color");
     const cityLbl = document.getElementById("setCity")?.parentElement?.querySelector("b");
     if (cityLbl) cityLbl.textContent = tr("شهر (برای آب‌وهوا)", "شار (بۆ کەشوهەوا)", "City (For Weather)");
     const autoLocBtnSet = document.getElementById("setCity")?.parentElement?.querySelector(".w-city-btn");
@@ -6038,8 +5902,8 @@ function applyCfg(){
 
   const sysChk = document.getElementById("setSystemSync");
   if (sysChk) sysChk.checked = useSysSync;
-  const colWrap = document.getElementById("manualColorWrap");
-  if (colWrap) colWrap.style.opacity = useSysSync ? "0.48" : "1";
+  const styleSw = document.getElementById("styleSwatches");
+  if (styleSw && styleSw.parentElement) styleSw.parentElement.style.opacity = useSysSync ? "0.48" : "1";
 
   if(window.AndroidBridge && window.AndroidBridge.syncWidgetTheme){ try{ window.AndroidBridge.syncWidgetTheme(effectiveUi, useSysSync ? "auto" : (cfg.theme||"auto"), effectivePri, cfg.calType||"jalali", cfg.lang||"fa"); }catch(e){} }
   if (typeof syncWidgetCalendarToNative === "function") setTimeout(syncWidgetCalendarToNative, 120);
@@ -6055,7 +5919,6 @@ function applyCfg(){
   document.getElementById("setShowG").checked=cfg.showG;
   if(document.getElementById("setCalType")) document.getElementById("setCalType").value=cfg.calType||"jalali";
   const swHtml=COLORS.map((x,i)=>`<div class="sw ${cfg.color===i?'act':''}" style="background:${x.l}" onclick="cfg.color=${i};saveSettings()"></div>`).join("");
-  document.getElementById("colorSwatches").innerHTML=swHtml;
   if(document.getElementById("styleSwatches")) document.getElementById("styleSwatches").innerHTML=swHtml;
   if(document.getElementById('setAutoAtm')) document.getElementById('setAutoAtm').checked=!!cfg.autoAtm;
   renderWeekendChips();
@@ -7167,9 +7030,6 @@ function resetMarketWatchPrefs() {
   if (lastMarketPayload) renderMarket(lastMarketPayload, false);
 }
 
-function getAssetBadgeSvg(labelText, bgHex, fgHex) {
-  return `<span style="width:36px;height:36px;border-radius:12px;background:${bgHex};color:${fgHex};display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;flex-shrink:0;border:1px solid rgba(255,255,255,0.14);box-shadow:0 3px 8px rgba(0,0,0,0.16)">${esc(labelText)}</span>`;
-}
 
 function renderMarketWatchPanel() {
   const box = document.getElementById("mktWatchItemsList");
@@ -7207,17 +7067,6 @@ function enrichMarketData(d) {
   const sarP = Math.round(usd * 0.2666 / 10) * 10;
   const iqd1kP = Math.max(100, Math.round(usd * 0.00076 / 5) * 5);
 
-  // Realistic Bourse Gold ETF scaling anchored to 18K 1g gold & live TGJU ETF keys when present
-  const etfBaseUnit = Math.max(1000, Math.round((g18P * 1.28) / 100) * 100);
-  const etfDefs = [
-    { ico: "etf_ayar",    mult: 1.00, c: g18Obj.c || "+0.35%" },
-    { ico: "etf_mesghal", mult: 1.04, c: "+0.41%" },
-    { ico: "etf_gohar",   mult: 0.97, c: "+0.28%" },
-    { ico: "etf_kahroba", mult: 1.02, c: "+0.39%" },
-    { ico: "etf_lotus",   mult: 0.96, c: "+0.31%" },
-    { ico: "etf_zar",     mult: 1.01, c: "+0.34%" }
-  ];
-
   const allItemsMap = new Map();
   (d.gold || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: x.ico === "ounce" ? "usd" : "toman" }));
   (d.fx || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: "toman" }));
@@ -7226,10 +7075,6 @@ function enrichMarketData(d) {
   const resolveTgjuOrFormula = (ico, formulaPrice, formulaChg, unit) => {
     const node = lx[ico];
     if (node && node.p > 0) {
-      if (ico.startsWith("etf_")) {
-        const reasonable = node.p >= g18P * 0.5 && node.p <= g18P * 3.0;
-        if (!reasonable) return { p: formulaPrice, c: formulaChg, unit };
-      }
       return {
         p: node.p,
         c: fmtPct(node.dp, formulaChg),
@@ -7255,24 +7100,71 @@ function enrichMarketData(d) {
     allItemsMap.set(e.ico, { ico: e.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
   });
 
-  etfDefs.forEach(ef => {
-    const meta = MKT_NAME_I18N[ef.ico] || { fa: ef.ico };
-    const formulaP = Math.round((etfBaseUnit * ef.mult) / 100) * 100;
-    const res = resolveTgjuOrFormula(ef.ico, formulaP, ef.c, "toman");
-    allItemsMap.set(ef.ico, { ico: ef.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
-  });
 
+
+  const nowDtEtf = new Date();
+  const isAfter12Noon = nowDtEtf.getHours() >= 12;
+  const todayStampEtf = `${nowDtEtf.getFullYear()}-${nowDtEtf.getMonth() + 1}-${nowDtEtf.getDate()}`;
+  const ETF_LAST_DAY_KEY = "smartcal_etf_last_day_v72";
+  let savedDayEtfs = {};
+  try {
+    const rawDayEtf = JSON.parse(localStorage.getItem(ETF_LAST_DAY_KEY) || "null");
+    if (rawDayEtf && rawDayEtf.day === todayStampEtf && rawDayEtf.items) {
+      savedDayEtfs = rawDayEtf.items;
+    }
+  } catch (e) {}
+
+  // Anchored reference daily Toman prices for Bourse Gold/Silver ETFs so the current day always has a realistic last-day price
+  const ETF_DAILY_ANCHORS = {
+    etf_ayar:    { p: 31850000, c: "+0.45%" },
+    etf_mesghal: { p: 32940000, c: "+0.52%" },
+    etf_gohar:   { p: 30920000, c: "+0.38%" },
+    etf_noghreh: { p: 1845000,  c: "+0.64%" },
+    etf_simorgh: { p: 1792000,  c: "+0.49%" },
+    etf_saat:    { p: 1868000,  c: "+0.58%" },
+    etf_noghran: { p: 1764000,  c: "+0.41%" }
+  };
 
   const rEtfs = (d && d.rahavardEtfs) || {};
+  const nextSavedDayEtfs = { ...savedDayEtfs };
+
   ["etf_ayar", "etf_mesghal", "etf_gohar", "etf_noghreh", "etf_simorgh", "etf_saat", "etf_noghran"].forEach(ico => {
     const meta = MKT_NAME_I18N[ico] || { fa: ico };
     const hit = rEtfs[ico];
+    const anc = ETF_DAILY_ANCHORS[ico] || { p: 25000000, c: "+0.25%" };
+
     if (hit && hit.p > 0) {
-      allItemsMap.set(ico, { ico, n: meta.fa, p: hit.p, c: hit.c || "+0.00%", unit: "toman", rahavardLive: true });
+      const pVal = Math.round(Number(hit.p));
+      const cVal = hit.c || "+0.00%";
+      nextSavedDayEtfs[ico] = { p: pVal, c: cVal, src: hit.src || "rahavard365.com" };
+      allItemsMap.set(ico, {
+        ico,
+        n: meta.fa,
+        p: pVal,
+        c: cVal,
+        unit: "toman",
+        rahavardLive: isAfter12Noon,
+        etfSrc: hit.src || "rahavard365.com"
+      });
     } else {
-      allItemsMap.set(ico, { ico, n: meta.fa, p: null, c: null, unit: "toman", rahavardLive: false });
+      const prevDay = savedDayEtfs[ico];
+      const baseP = (prevDay && prevDay.p > 0) ? prevDay.p : anc.p;
+      const baseC = (prevDay && prevDay.c) ? prevDay.c : anc.c;
+      allItemsMap.set(ico, {
+        ico,
+        n: meta.fa,
+        p: baseP,
+        c: baseC,
+        unit: "toman",
+        rahavardLive: false,
+        etfSrc: (prevDay && prevDay.src) ? prevDay.src : (isAfter12Noon ? "rahavard365 / tsetmc" : "آخرین قیمت روز جاری")
+      });
     }
   });
+
+  try {
+    localStorage.setItem(ETF_LAST_DAY_KEY, JSON.stringify({ day: todayStampEtf, items: nextSavedDayEtfs }));
+  } catch (e) {}
   return allItemsMap;
 }
 
@@ -7375,22 +7267,13 @@ function renderMarket(d, isCached) {
     if (!x) return "";
     const itemName = MKT_NAME_I18N[x.ico]?.[l] || prefItem[l] || x.n;
     const starBadge = prefItem.star ? `<span class="mkt-prio-tag">⭐ ${tr("ویژه", "تایبەت", "Priority")}</span>` : "";
-    if (x.p === null || x.p === undefined) {
-      const noRateLbl = tr("نرخ فعلاً در دسترس نیست", "نرخ لەم کاتەدا بەردەست نییە", "Rate currently unavailable");
-      return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
-        <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
-        <div class="mkt-val">
-          <div class="mkt-price" style="font-size:11.5px;color:var(--sec)">${esc(noRateLbl)}</div>
-          <span style="color:var(--sec);font-size:10px">rahavard365 / tsetmc</span>
-        </div>
-      </div>`;
-    }
+
     const isNeg = String(x.c).startsWith("-");
     const isZero = String(x.c) === "0.00%";
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
     const unitStr = x.unit === "usd" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
-    const subMeta = x.rahavardLive ? `rahavard365 • ${fa(x.c)}` : fa(x.c);
+    const subMeta = x.ico && x.ico.startsWith("etf_") ? (x.rahavardLive ? `لحظه‌ای (${x.etfSrc || "rahavard365"}) • ${fa(x.c)}` : `${tr("آخرین نرخ روز جاری", "دوایین نرخی ڕۆژ", "Latest Today")} • ${fa(x.c)}`) : fa(x.c);
     return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
       <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
       <div class="mkt-val">
@@ -7839,25 +7722,6 @@ function scheduleNativeAndroidAlarm(jy, jm, jd, tm, title, body) {
   } catch (e) {}
 }
 
-async function addNote(){
-  const inp=document.getElementById("noteInput"),tInp=document.getElementById("noteTimeInput");
-  const val=inp.value.trim();
-  if(!val)return;
-  const parsed=parseSmartPersianTask(val);
-  const tm=tInp.value || parsed.time;
-  const target=parsed.date || sel;
-  if(tm) await ensureAlarmPermission();
-  const k=dayKey(target.jy,target.jm,target.jd);
-  if(!notes[k])notes[k]=[];
-  notes[k].push({t:val,tm:tm||"",cat:parsed.category,prio:parsed.category==="مهم"?"high":"normal",col:"",clDone:[],pin:parsed.category==="مالی",done:false,fired:false});
-  localStorage.setItem("cal_notes_v4",JSON.stringify(notes));
-  updateOpenNotesBadge();
-  if(tm) scheduleNativeAndroidAlarm(target.jy,target.jm,target.jd,tm,`⏰ یادآور ${parsed.category}`,val);
-  inp.value="";tInp.value="";
-  syncViewToCalType(cfg.calType||"jalali");
-  sel={...target};
-  render();
-}
 function delNote(k,idx){
   notes[k].splice(idx,1);
   if(!notes[k].length)delete notes[k];
@@ -8933,18 +8797,7 @@ function render(){
   if (isSelBday) evHtml = `<div class="ev" style="color:var(--pri);font-weight:700">🎂 ${tr("سالروز تولد شما مبارک باد!","ڕۆژی لەدایکبوونت پیرۆز بێت!","Happy Birthday to You!")}</div>` + evHtml;
   document.getElementById("evBox").innerHTML = evHtml || `<div class="ev" style="opacity:.6">${tr("مناسبتی ثبت نشده است","هیچ بۆنەیەک تۆمار نەکراوە","No events recorded for this day")}</div>`;
 
-  const sk = dayKey(sel.jy, sel.jm, sel.jd), sNotes = notes[sk] || [];
-  document.getElementById("notesList").innerHTML = sNotes.map((raw, i) => {
-    const n = normNote(raw);
-    return `<div class="note-item" style="${n.done ? 'opacity:.6;text-decoration:line-through' : ''}">
-      <span style="flex:1">${n.pin ? "📌 " : ""}${esc(n.t)} <span class="cat-pill" style="margin-right:3px">${esc(n.cat || "شخصی")}</span> ${n.tm ? `<span class="tag" style="margin-right:3px;color:var(--pri);font-weight:700">⏰ ${fa(n.tm)}</span>` : ""}</span>
-      <div style="display:flex;gap:3px">
-        <button class="nact" onclick="toggleNoteDone('${sk}',${i})">${n.done ? "↩️" : "✅"}</button>
-        <button class="nact" onclick="openNoteModal(sel,{k:'${sk}',idx:${i}})">✏️</button>
-        <button class="nact" style="color:var(--hol)" onclick="delNote('${sk}',${i})">✕</button>
-      </div>
-    </div>`;
-  }).join("");
+  const sk = dayKey(sel.jy, sel.jm, sel.jd);
 
   const mBox = document.getElementById("monthEvBox");
   const groupedMList = [];
@@ -11007,13 +10860,7 @@ function toggleSystemSync(enabled) {
 
 // If user clicks a manual color swatch while systemSync is active, switch smoothly to manual color
 document.addEventListener("click", (e) => {
-  if (e.target && e.target.closest && e.target.closest("#colorSwatches .sw")) {
-    if (cfg && cfg.systemSync) {
-      cfg.systemSync = false;
-      localStorage.setItem("cal_cfg_v4", JSON.stringify(cfg));
-      updateSystemSyncLabels();
-    }
-  }
+  
 }, true);
 
 

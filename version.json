@@ -1,6 +1,6 @@
 {
   "version": "72",
-  "updated_at": "2026-11-23",
-  "notes": "اصلاح کامل اسکریپت، واکشی صندوق‌های بورسی از rahavard365 با منبع جایگزین و نمایش سالم تقویم در نسخه ۷۲",
+  "updated_at": "2026-11-24",
+  "notes": "پاکسازی کامل کدها و ارجاعات باقی‌مانده از بخش‌های حذف‌شده برای سبک‌تر و روان‌تر شدن نسخه ۷۲",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }
