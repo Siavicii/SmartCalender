@@ -3470,8 +3470,8 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="sn-card" id="systemSyncCard">
       <div class="sn-top">
         <div class="sn-meta">
-          <b class="sn-title" id="systemSyncTitle">🎨 هماهنگی با رنگ، تم و UI گوشی</b>
-          <span class="sn-sub" id="systemSyncSub">تطبیق خودکار با رنگ والپیپر (Material You)، حالت شب/روز و رابط کاربری دستگاه</span>
+          <b class="sn-title" id="systemSyncTitle">🎨 هماهنگی با رنگ و تم گوشی</b>
+          <span class="sn-sub" id="systemSyncSub">تطبیق رنگ والپیپر (Material You) و حالت شب/روز گوشی روی تم انتخابی شما</span>
         </div>
         <label class="sc-switch" aria-label="هماهنگی با رنگ و تم گوشی">
           <input type="checkbox" id="setSystemSync" onchange="toggleSystemSync(this.checked)">
@@ -3815,7 +3815,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
         <button type="button" id="btnFullJsonBackup" class="ibtn" style="justify-content:center;color:var(--pri);border-color:rgba(27,110,243,0.35)" onclick="downloadFullJsonBackup()">💾 دانلود بکاپ کامل (.json)</button>
-        <button type="button" id="btnFullJsonRestore" class="ibtn" style="justify-content:center;color:var(--grn);border-color:rgba(22,163,74,0.35)" onclick="document.getElementById('fullJsonRestoreInp').click()">📂 بازیابی فایل (.json)</button>
+        <button type="button" id="btnFullJsonRestore" class="ibtn" style="justify-content:center;color:var(--grn);border-color:rgba(22,163,74,0.35)" onclick="triggerFullJsonRestore()">📂 بازیابی فایل (.json)</button>
         <input type="file" id="fullJsonRestoreInp" accept=".json,application/json" style="display:none" onchange="restoreFullJsonBackup(this)">
       </div>
 
@@ -3853,7 +3853,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v74.6";
+  const VER = "v74.9";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -5792,7 +5792,7 @@ async function updatePersistentStatusDate(forcePost = false) {
     const kMonA = isEnNotif ? KM_EN[tod.jm - 1] : KM[tod.jm - 1];
     const jalaliFullA = `${weekDayName} ${fa(tod.jd)} ${jMonA} ${fa(tod.jy)}`;
     const kurdishFullA = `${weekDayName} ${fa(tod.jd)}${isEnNotif ? " " : "ی "}${kMonA} ${fa(tod.jy + 1321)}`;
-    const gregFullA = `${toLatDigits(g.gd)} ${gregMonthWithNumA} ${toLatDigits(g.gy)}`;
+    const gregFullA = `\u2066\u200E${toLatDigits(g.gd)} ${gregMonthWithNumA} ${toLatDigits(g.gy)}\u2069`;
     const kurdishShortA = `${fa(tod.jd)} ${kMonA} ${fa(tod.jy + 1321)}`;
     const jalaliShortA = `${fa(tod.jd)} ${jMonA} ${fa(tod.jy)}`;
     const nTitleA = cType === "kurdish" ? kurdishFullA : (cType === "gregorian" ? `${gregFullA} (${weekDayName})` : jalaliFullA);
@@ -5824,7 +5824,7 @@ async function updatePersistentStatusDate(forcePost = false) {
   const kMonW = isEnNotif ? KM_EN[tod.jm - 1] : KM[tod.jm - 1];
   const jalaliFull = `${weekDayName} ${fa(tod.jd)} ${jMonW} ${fa(tod.jy)}`;
   const kurdishFull = `${weekDayName} ${fa(tod.jd)}${isEnNotif ? " " : "ی "}${kMonW} ${fa(tod.jy + 1321)}`;
-  const gregFull = `${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}`;
+  const gregFull = `\u2066\u200E${toLatDigits(g.gd)} ${gregMonthWithNum} ${toLatDigits(g.gy)}\u2069`;
 
   const kurdishShort = `${fa(tod.jd)} ${kMonW} ${fa(tod.jy + 1321)}`;
   const jalaliShort = `${fa(tod.jd)} ${jMonW} ${fa(tod.jy)}`;
@@ -6336,7 +6336,7 @@ function applyCfg(){
   const isDark = useSysSync ? sysDark : (cfg.theme==="dark"||(cfg.theme==="auto"&&sysDark));
   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
 
-  // Resolve effective UI style (OS-matched when systemSync is ON)
+  // Always preserve the user's chosen UI style; systemSync adapts device Material You color & dark/light mode to it
   let effectiveUi = cfg.ui || "ios26";
   let effectivePri = (COLORS[cfg.color] || COLORS[0])[isDark ? "d" : "l"];
   let sysInfo = null;
@@ -6345,19 +6345,20 @@ function applyCfg(){
     if (window.AndroidBridge && typeof window.AndroidBridge.getSystemThemeJson === "function") {
       try { sysInfo = JSON.parse(window.AndroidBridge.getSystemThemeJson() || "null"); } catch (e) {}
     }
-    const ua = navigator.userAgent || "";
-    const isApple = /iPhone|iPad|iPod|Macintosh/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    const isAnd = /Android/i.test(ua) || !!window.AndroidBridge;
-    effectiveUi = (sysInfo && sysInfo.uiStyle) || (isApple ? "ios26" : (isAnd ? "android17" : "classic"));
-
     if (sysInfo && sysInfo.supported) {
       effectivePri = (isDark ? sysInfo.priDark : sysInfo.priLight) || effectivePri;
-      const dynBg = isDark ? sysInfo.bgDark : sysInfo.bgLight;
-      const dynCard = isDark ? sysInfo.cardDark : sysInfo.cardLight;
-      const dynSub = isDark ? sysInfo.subDark : sysInfo.subLight;
-      if (dynBg) rootStyle.setProperty("--bg", dynBg);
-      if (dynCard) rootStyle.setProperty("--card", dynCard);
-      if (dynSub) rootStyle.setProperty("--sub", dynSub);
+      if (effectiveUi === "android17" || effectiveUi === "classic") {
+        const dynBg = isDark ? sysInfo.bgDark : sysInfo.bgLight;
+        const dynCard = isDark ? sysInfo.cardDark : sysInfo.cardLight;
+        const dynSub = isDark ? sysInfo.subDark : sysInfo.subLight;
+        if (dynBg) rootStyle.setProperty("--bg", dynBg);
+        if (dynCard) rootStyle.setProperty("--card", dynCard);
+        if (dynSub) rootStyle.setProperty("--sub", dynSub);
+      } else {
+        rootStyle.removeProperty("--bg");
+        rootStyle.removeProperty("--card");
+        rootStyle.removeProperty("--sub");
+      }
     } else {
       rootStyle.removeProperty("--bg");
       rootStyle.removeProperty("--card");
@@ -11392,16 +11393,16 @@ function updateSystemSyncLabels() {
   const tEl = document.getElementById("systemSyncTitle");
   if (tEl) {
     tEl.textContent = tr(
-      "🎨 هماهنگی با رنگ، تم و UI گوشی",
-      "🎨 هاوئاهەنگی لەگەڵ ڕەنگ و ڕووکاری مۆبایل",
-      "🎨 Match Phone Color, Theme & UI"
+      "🎨 هماهنگی با رنگ و تم گوشی",
+      "🎨 هاوئاهەنگی لەگەڵ ڕەنگ و دۆخی مۆبایل",
+      "🎨 Match Phone Color & Dark Mode"
     );
   }
   const sEl = document.getElementById("systemSyncSub");
   if (sEl) {
     sEl.textContent = cfg.systemSync
-      ? tr("فعال • همگام با رنگ و رابط کاربری سیستم", "چالاک • هاوکات لەگەڵ ڕەنگ و سیستەمی مۆبایل", "Active • Synced with system palette & UI")
-      : tr("تطبیق خودکار با رنگ والپیپر (Material You)، حالت شب/روز و UI دستگاه", "گونجاندنی خۆکار لەگەڵ ڕەنگی مۆبایل و دۆخی ڕووناک/تاریک", "Auto-match device wallpaper color, dark mode & OS UI");
+      ? tr("فعال • رنگ والپیپر و حالت شب/روز گوشی روی تم انتخابی شما اعمال شده", "چالاک • ڕەنگی مۆبایل لەسەر ڕووکارە هەڵبژێردراوەکەت جێبەجێ کراوە", "Active • Phone wallpaper accent & dark mode applied to your chosen theme")
+      : tr("تطبیق رنگ والپیپر (Material You) و حالت شب/روز گوشی روی تم انتخابی شما", "گونجاندنی ڕەنگی مۆبایل و دۆخی تاریک/ڕووناک لەسەر ڕووکاری خۆت", "Adapt device wallpaper color (Material You) & dark mode to your selected theme");
   }
 }
 
@@ -11814,7 +11815,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "74.6";
+const APP_CURRENT_VER = "74.9";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
@@ -12729,11 +12730,48 @@ setTimeout(() => {
     grid.innerHTML = items.map(x => `<div class="prayer-pill ${x.k === nextKey ? "next" : ""}"><span class="pn">${x.n}</span><span class="pt">${fmtPrayerHr(x.v)}</span></div>`).join("");
   };
 
-  // --- 9. FULL JSON BACKUP & RESTORE ---
+  // --- 9. FULL JSON BACKUP & RESTORE (Native Android SAF + PWA Browser) ---
+  function applyFullJsonBackupText(rawText) {
+    try {
+      const parsed = JSON.parse(String(rawText || "{}"));
+      const d = parsed.data || parsed;
+      if (!d || typeof d !== "object") throw new Error("invalid");
+      let restoredAny = false;
+      if (d.cal_cfg_v4) { localStorage.setItem("cal_cfg_v4", JSON.stringify(d.cal_cfg_v4)); restoredAny = true; }
+      if (d.cal_notes_v4) { localStorage.setItem("cal_notes_v4", JSON.stringify(d.cal_notes_v4)); restoredAny = true; }
+      if (d.smartcal_portfolio_v74) { localStorage.setItem(PF_KEY, JSON.stringify(d.smartcal_portfolio_v74)); restoredAny = true; }
+      if (d.smartcal_price_alerts_v74) { localStorage.setItem(PA_KEY, JSON.stringify(d.smartcal_price_alerts_v74)); restoredAny = true; }
+      if (d.smartcal_recurring_v74) { localStorage.setItem(REC_KEY, JSON.stringify(d.smartcal_recurring_v74)); restoredAny = true; }
+      if (d.smartcal_mkt_prefs_v72) { localStorage.setItem("smartcal_mkt_prefs_v72", JSON.stringify(d.smartcal_mkt_prefs_v72)); restoredAny = true; }
+      if (!restoredAny) throw new Error("empty");
+      triggerHaptic("medium");
+      if (typeof showToast === "function") showToast(tr("بازیابی کامل انجام شد! در حال بارگذاری مجدد...", "گەڕاندنەوە سەرکەوتوو بوو!", "Restore complete! Reloading..."));
+      setTimeout(() => location.reload(), 700);
+    } catch(e) {
+      triggerHaptic("heavy");
+      if (typeof showToast === "function") showToast(tr("فایل بکاپ معتبر نیست ❌", "فایلەکە دروست نییە ❌", "Invalid backup file ❌"));
+    }
+  }
+
+  window.onNativeFileSaved = function(ok) {
+    if (ok) {
+      triggerHaptic("medium");
+      if (typeof showToast === "function") showToast(tr("فایل بکاپ کامل با موفقیت ذخیره شد ✅", "فایلی پاڵپشت بە سەرکەوتوویی پاشەکەوت کرا ✅", "Full JSON backup saved ✅"));
+    } else {
+      if (typeof showToast === "function") showToast(tr("ذخیره فایل بکاپ لغو شد", "پاشەکەوتکردن هەڵوەشایەوە", "Backup save cancelled"));
+    }
+  };
+
+  window.onNativeJsonBackupPicked = function(rawText) {
+    if (rawText && String(rawText).trim().length > 2) {
+      applyFullJsonBackupText(rawText);
+    }
+  };
+
   window.downloadFullJsonBackup = function() {
     const payload = {
       app: "SmartCal",
-      version: "74",
+      version: "74.8",
       exportedAt: new Date().toISOString(),
       data: {
         cal_cfg_v4: safeJsonParse("cal_cfg_v4", cfg),
@@ -12744,38 +12782,43 @@ setTimeout(() => {
         smartcal_mkt_prefs_v72: safeJsonParse("smartcal_mkt_prefs_v72", null)
       }
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const jsonStr = JSON.stringify(payload, null, 2);
+    const filename = "SmartCal-Backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    triggerHaptic("medium");
+    if (window.AndroidBridge && typeof window.AndroidBridge.saveTextFileNative === "function") {
+      try {
+        window.AndroidBridge.saveTextFileNative(filename, "application/json", jsonStr);
+        return;
+      } catch(e) {}
+    }
+    const blob = new Blob([jsonStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "SmartCal-Backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 300);
-    triggerHaptic("medium");
     if (typeof showToast === "function") showToast(tr("فایل بکاپ کامل ذخیره شد ✅", "فایلی پاڵپشت پاشەکەوت کرا ✅", "Full JSON backup downloaded ✅"));
+  };
+
+  window.triggerFullJsonRestore = function() {
+    triggerHaptic("light");
+    if (window.AndroidBridge && typeof window.AndroidBridge.pickTextFileNative === "function") {
+      try {
+        window.AndroidBridge.pickTextFileNative("application/json");
+        return;
+      } catch(e) {}
+    }
+    const inp = document.getElementById("fullJsonRestoreInp");
+    if (inp) inp.click();
   };
 
   window.restoreFullJsonBackup = function(input) {
     const file = input?.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function() {
-      try {
-        const parsed = JSON.parse(String(reader.result || "{}"));
-        const d = parsed.data || parsed;
-        if (d.cal_cfg_v4) localStorage.setItem("cal_cfg_v4", JSON.stringify(d.cal_cfg_v4));
-        if (d.cal_notes_v4) localStorage.setItem("cal_notes_v4", JSON.stringify(d.cal_notes_v4));
-        if (d.smartcal_portfolio_v74) localStorage.setItem(PF_KEY, JSON.stringify(d.smartcal_portfolio_v74));
-        if (d.smartcal_price_alerts_v74) localStorage.setItem(PA_KEY, JSON.stringify(d.smartcal_price_alerts_v74));
-        if (d.smartcal_recurring_v74) localStorage.setItem(REC_KEY, JSON.stringify(d.smartcal_recurring_v74));
-        if (d.smartcal_mkt_prefs_v72) localStorage.setItem("smartcal_mkt_prefs_v72", JSON.stringify(d.smartcal_mkt_prefs_v72));
-        if (typeof showToast === "function") showToast(tr("بازیابی کامل انجام شد! در حال بارگذاری مجدد...", "گەڕاندنەوە سەرکەوتوو بوو!", "Restore complete! Reloading..."));
-        setTimeout(() => location.reload(), 700);
-      } catch(e) {
-        if (typeof showToast === "function") showToast(tr("فایل بکاپ معتبر نیست ❌", "فایلەکە دروست نییە ❌", "Invalid backup file ❌"));
-      }
-    };
+    reader.onload = function() { applyFullJsonBackupText(reader.result); };
     reader.readAsText(file);
     input.value = "";
   };
