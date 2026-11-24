@@ -1,7 +1,7 @@
 # 🌐 Smart Cal — تقویم هوشمند جامع (نسخه وب / PWA v72)
 
 ![Version](https://img.shields.io/badge/Version-72-1B6EF3?style=for-the-badge)
-![PWA](https://img.shields.io/badge/PWA-Installable%20%7C%20Offline-059669?style=for-the-badge)
+![PWA](https://img.shields.io/badge/PWA-Offline_Ready-059669?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20Android%20%7C%20Desktop-8B5CF6?style=for-the-badge)
 ![Languages](https://img.shields.io/badge/Languages-FA%20%7C%20KU%20%7C%20EN-EC4899?style=for-the-badge)
 
@@ -13,7 +13,7 @@
 
 | پلتفرم / نسخه | لینک دسترسی | توضیحات |
 | :--- | :--- | :--- |
-| **🌐 اجرای مستقیم نسخه وب (PWA)** | [باز کردن Smart Cal Web](https://siavicii.github.io/SmartCalender-Android/) | قابل استفاده در آیفون، اندروید، ویندوز و مک |
+| **🌐 اجرای مستقیم نسخه وب (PWA)** | [باز کردن Smart Cal Web](https://siavicii.github.io/SmartCalender-PWA/) | قابل استفاده در آیفون، اندروید، ویندوز و مک |
 | **📥 دانلود نسخه بومی اندروید (APK)** | [آخرین نسخه اندروید](https://github.com/Siavicii/SmartCalender-Android/releases/latest) | دارای ویجت، آیکون روزشمار و آلارم بومی |
 
 ---
@@ -84,7 +84,7 @@ SmartCal-PWA/
 
 1. تمام فایل‌ها را در شاخه `main` مخزن خود Commit کنید.
 2. از مسیر **Settings → Pages** منبع را روی `Deploy from a branch` و شاخه `main` (مسیر `/root`) قرار دهید.
-3. پس از ۱ تا ۲ دقیقه، وب‌اپلیکیشن روی آدرس `https://<username>.github.io/<repo-name>/` در دسترس خواهد بود.
+3. پس از ۱ تا ۲ دقیقه، وب‌اپلیکیشن روی آدرس `https://siavicii.github.io/SmartCalender-PWA/` در دسترس خواهد بود.
 
 ---
 
