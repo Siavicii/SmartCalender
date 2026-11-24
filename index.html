@@ -3210,8 +3210,9 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div id="notesQuickBlock" data-reorder-group="notes" data-reorder-item="notesQuickBlock" style="background:var(--sub);padding:9px 10px;border-radius:14px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:6px">
         <div style="display:flex;gap:5px;align-items:center">
           <input type="text" id="hubQuickNoteInp" placeholder="✍️ ثبت هوشمند (مثلاً: فردا ساعت ۱۰ جلسه کاری #مهم)..." style="flex:1;background:var(--card);font-size:12px;padding:8px 10px" onkeydown="if(event.key==='Enter')addHubQuickNote()">
-          <button class="ibtn" id="voiceDictBtn" onclick="startVoiceNote('hubQuickNoteInp', event)" title="تایپ صوتی هوشمند (فارسی/کوردی/انگلیسی)" style="background:var(--card);padding:0 9px">🎙️</button>
-          <button class="ibtn" onclick="addHubQuickNote()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px">ثبت</button>
+          <button class="ibtn" id="voiceDictBtn" onclick="startVoiceNote('hubQuickNoteInp', event)" title="تایپ صوتی هوشمند (فارسی/کوردی/انگلیسی)" style="background:var(--card);padding:0 8px">🎙️</button>
+          <button class="ibtn" id="hubAiNoteBtn" onclick="addHubQuickNoteAI()" title="تحلیل هوشمند جمله پیچیده با هوش مصنوعی (AI)" style="background:var(--pri-bg);color:var(--pri);border-color:var(--pri);padding:0 8px">✨ AI</button>
+          <button class="ibtn" onclick="addHubQuickNote()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 11px">ثبت</button>
         </div>
         <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px">
           <button type="button" class="fchip" style="font-size:10px;padding:3px 8px" onclick="insertNoteTemplate('💼 جلسه کاری ساعت ۱۰ صبح #کاری')">💼 قالب جلسه</button>
@@ -3633,6 +3634,17 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <!-- Backup & Restore -->
     <div style="border-top:1px solid var(--brd);padding-top:10px;display:flex;flex-direction:column;gap:8px">
       <b style="font-size:12px;color:var(--sec)">💾 پشتیبان‌گیری و بازیابی یادداشت‌ها و تنظیمات</b>
+      <!-- AI Smart Notes Assistant Config (Optional, Local-Only) -->
+      <div id="aiNotesSettingsBox" style="background:var(--sub);padding:11px;border-radius:14px;border:1px solid var(--brd);display:flex;flex-direction:column;gap:7px;margin-bottom:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+          <b id="aiNotesBoxTitle" style="font-size:12px;color:var(--pri)">✨ دستیار هوش مصنوعی یادداشت‌ها (AI)</b>
+          <span class="tag" style="font-size:10px">اختیاری • محلی</span>
+        </div>
+        <div id="aiNotesStatusText" style="font-size:11px;color:var(--sec);line-height:1.55">برای تحلیل جملات پیچیده و چندمرحله‌ای، کلید Gemini API یا لینک Cloudflare Worker خود را وارد کنید (فقط روی گوشی شما ذخیره می‌شود):</div>
+        <input id="aiNoteEndpointInp" type="text" placeholder="لینک Cloudflare Worker (اختیاری - مثلاً https://...workers.dev)" style="font-size:11px;direction:ltr;text-align:left" onchange="saveAiNotesCfg()">
+        <input id="aiNoteKeyInp" type="password" placeholder="یا کلید Gemini API (مثلاً AIzaSy...)" style="font-size:11px;direction:ltr;text-align:left" onchange="saveAiNotesCfg()">
+      </div>
+
       <!-- Google & Personal Calendar Sync (Optional) -->
       <div id="gcalSettingsBox" style="background:var(--sub);padding:11px;border-radius:14px;border:1px solid var(--bdr);display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
@@ -5904,6 +5916,7 @@ function applyLanguageUI() {
   setTxt("#copyJalaliDateBtn", "📋 شمسی", "📋 هەتاوی", "📋 Jalali");
   setTxt("#copyGregDateBtn", "📋 میلادی", "📋 زایینی", "📋 Gregorian");
   if (typeof updateGcalSettingsUI === "function") updateGcalSettingsUI();
+  if (typeof syncAiNotesCfgUI === "function") syncAiNotesCfgUI();
   if (typeof updateAiFalBtnLabel === "function") updateAiFalBtnLabel(false);
   if (typeof applyFontScaleUI === "function") applyFontScaleUI(cfg.fontScale || 100);
   if (typeof updateSystemSyncLabels === "function") updateSystemSyncLabels();
@@ -7700,6 +7713,127 @@ function insertNoteTemplate(tplText) {
   }
 }
 
+
+// ====== OPTIONAL AI SMART NOTES PARSER (GEMINI API / CLOUDFLARE WORKER + OFFLINE FALLBACK) ======
+function loadAiNotesCfg() {
+  try {
+    return JSON.parse(localStorage.getItem("smartcal_ai_notes_cfg_v1") || "{}") || {};
+  } catch (e) { return {}; }
+}
+function saveAiNotesCfg() {
+  const ep = (document.getElementById("aiNoteEndpointInp")?.value || "").trim();
+  const key = (document.getElementById("aiNoteKeyInp")?.value || "").trim();
+  try { localStorage.setItem("smartcal_ai_notes_cfg_v1", JSON.stringify({ endpoint: ep, apiKey: key })); } catch (e) {}
+  const st = document.getElementById("aiNotesStatusText");
+  if (st) {
+    st.textContent = (ep || key)
+      ? tr("✅ دستیار هوشمند AI فعال است و آماده تحلیل جملات پیچیده.", "✅ یاریدەدەری AI چالاکە.", "✅ AI Note Assistant is active and ready.")
+      : tr("برای تحلیل جملات پیچیده، کلید Gemini API یا لینک Cloudflare Worker خود را وارد کنید (فقط روی گوشی شما ذخیره می‌شود):", "کلیلی Gemini API یان لینکی Cloudflare Worker بنووسە:", "Enter your Gemini API Key or Cloudflare Worker URL (stored locally on your device):");
+  }
+}
+function syncAiNotesCfgUI() {
+  const c = loadAiNotesCfg();
+  const epEl = document.getElementById("aiNoteEndpointInp");
+  const kEl = document.getElementById("aiNoteKeyInp");
+  if (epEl) epEl.value = c.endpoint || "";
+  if (kEl) kEl.value = c.apiKey || "";
+  const st = document.getElementById("aiNotesStatusText");
+  if (st && (c.endpoint || c.apiKey)) {
+    st.textContent = tr("✅ دستیار هوشمند AI فعال است و آماده تحلیل جملات پیچیده.", "✅ یاریدەدەری AI چالاکە.", "✅ AI Note Assistant is active and ready.");
+  }
+}
+
+async function addHubQuickNoteAI() {
+  const inp = document.getElementById("hubQuickNoteInp");
+  const btn = document.getElementById("hubAiNoteBtn");
+  const rawVal = (inp?.value || "").trim();
+  if (!rawVal) {
+    showAppNotice(tr("لطفاً ابتدا متن یادداشت را بنویسید یا با میکروفن بگویید.", "تکایە سەرەتا دەقی تێبینییەکە بنووسە.", "Please type or dictate a note first."));
+    return;
+  }
+  const aiCfg = loadAiNotesCfg();
+  if (!aiCfg.endpoint && !aiCfg.apiKey) {
+    showAppNotice(tr("برای استفاده از دکمه ✨ AI، از بخش تنظیمات (⚙️) کلید رایگان Gemini API یا لینک Cloudflare Worker را وارد کنید.
+فعلاً با موتور هوشمند آفلاین ثبت شد.", "بۆ بەکارهێنانی ✨ AI لە ڕێکخستنەکان کلیلی Gemini API بنووسە. ئێستا بە شێوەی ئۆفلاین تۆمار کرا.", "Configure a Gemini API Key or Cloudflare Worker in Settings (⚙️) to use ✨ AI. Saved using offline smart parser for now."));
+    await addHubQuickNote();
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = "⏳"; }
+  try {
+    const gTod = toG(tod.jy, tod.jm, tod.jd);
+    const wdName = WD_SAT_FA[wDay(tod.jy, tod.jm, tod.jd)];
+    const sysPrompt = `You are a Persian/Kurdish/English smart calendar assistant. Today is Jalali ${tod.jy}/${tod.jm}/${tod.jd} (${wdName}), Gregorian ${gTod.gy}-${gTod.gm}-${gTod.gd}.
+Parse the user's note into a JSON array of 1 or more calendar tasks.
+Rules:
+- Each item MUST be: {"text":"clean task text (use '- item' lines if checklist)","jy":number,"jm":number,"jd":number,"time":"HH:MM or empty string","category":"شخصی|کاری|مالی|خرید|مهم","prio":"normal|med|high"}
+- Handle relative dates (e.g. دو هفته دیگه، ۳ روز دیگر، از فردا تا پنجشنبه، شنبه آینده) accurately in Jalali calendar.
+- Return ONLY raw valid JSON array, no markdown fences.`;
+
+    let respText = "";
+    if (aiCfg.endpoint) {
+      const r = await fetch(aiCfg.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: sysPrompt, text: rawVal })
+      });
+      if (!r.ok) throw new Error("Worker HTTP " + r.status);
+      const data = await r.json();
+      respText = data.result || data.text || data?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data);
+    } else {
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(aiCfg.apiKey)}`;
+      const r = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: sysPrompt + "\n\nUser input: " + rawVal }] }],
+          generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+        })
+      });
+      if (!r.ok) throw new Error("Gemini HTTP " + r.status);
+      const data = await r.json();
+      respText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    }
+
+    const cleaned = String(respText || "").replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+    let items = JSON.parse(cleaned);
+    if (!Array.isArray(items)) items = [items];
+    let addedCount = 0;
+
+    for (const it of items) {
+      if (!it || !it.text) continue;
+      const jy = Number(it.jy) || tod.jy;
+      const jm = Math.min(12, Math.max(1, Number(it.jm) || tod.jm));
+      const jd = Math.min(mLen(jy, jm), Math.max(1, Number(it.jd) || tod.jd));
+      const tm = /^\d{2}:\d{2}$/.test(String(it.time || "")) ? String(it.time) : "";
+      const cat = ["شخصی", "کاری", "مالی", "خرید", "مهم"].includes(it.category) ? it.category : "شخصی";
+      const prio = ["normal", "med", "high"].includes(it.prio) ? it.prio : "normal";
+      if (tm) await ensureAlarmPermission();
+      const k = dayKey(jy, jm, jd);
+      if (!notes[k]) notes[k] = [];
+      notes[k].push({ t: String(it.text).trim(), tm, cat, prio, col: "", clDone: [], pin: false, done: false, fired: false });
+      if (tm) scheduleNativeAndroidAlarm(jy, jm, jd, tm, `⏰ یادآور ${cat}`, String(it.text).trim());
+      addedCount++;
+    }
+
+    if (addedCount > 0) {
+      localStorage.setItem("cal_notes_v4", JSON.stringify(notes));
+      if (typeof updateOpenNotesBadge === "function") updateOpenNotesBadge();
+      inp.value = "";
+      render();
+      renderAllNotes();
+      showAppNotice(tr(`✨ ${fa(addedCount)} یادداشت با هوش مصنوعی در تاریخ دقیق ثبت شد.`, `✨ ${fa(addedCount)} تێبینی بە AI تۆمار کرا.`, `✨ ${addedCount} smart note(s) scheduled with AI.`));
+    } else {
+      await addHubQuickNote();
+    }
+  } catch (e) {
+    showAppNotice(tr("⚠️ اتصال به هوش مصنوعی برقرار نشد؛ یادداشت با موتور هوشمند آفلاین ثبت شد.", "⚠️ پەیوەندی بە AI نەکرا؛ بە شێوەی ئۆفلاین تۆمار کرا.", "⚠️ AI unreachable; saved using offline smart parser."));
+    await addHubQuickNote();
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "✨ AI"; }
+  }
+}
+
 async function addHubQuickNote() {
   const inp = document.getElementById("hubQuickNoteInp");
   if (!inp) return;
@@ -7722,7 +7856,9 @@ async function addHubQuickNote() {
     done: false,
     fired: false
   });
+  if (parsed.time) scheduleNativeAndroidAlarm(target.jy, target.jm, target.jd, parsed.time, `⏰ یادآور ${parsed.category}`, val);
   localStorage.setItem("cal_notes_v4", JSON.stringify(notes));
+  if (typeof updateOpenNotesBadge === "function") updateOpenNotesBadge();
   inp.value = "";
   render();
   renderAllNotes();
@@ -7948,28 +8084,161 @@ function triggerScheduledAlarm(title,body){
 }
 
 function parseSmartPersianTask(rawText) {
-  let text = rawText.trim();
+  const text = String(rawText || "").trim();
   let targetDate = { ...sel };
   let timeStr = "";
   let category = "شخصی";
-  if (/چک|قسط|وام|پرداخت|بانک|بدهی|حقوق/.test(text)) category = "مالی";
-  else if (/جلسه|قرار|کار|پروژه|گزارش|اداره/.test(text)) category = "کاری";
-  else if (/خرید|فروشگاه|مارکت|نان|میوه/.test(text)) category = "خرید";
-  else if (/دکتر|پزشک|دارو|آزمایش|ویزیت|فوری|#مهم/.test(text)) category = "مهم";
+  if (/چک|قسط|وام|پرداخت|بانک|بدهی|حقوق|فاکتور|بیمه/.test(text)) category = "مالی";
+  else if (/جلسه|قرار|کار|پروژه|گزارش|اداره|کنفرانس|meeting|work/i.test(text)) category = "کاری";
+  else if (/خرید|فروشگاه|مارکت|نان|میوه|سوپرمارکت|shop|buy/i.test(text)) category = "خرید";
+  else if (/دکتر|پزشک|دارو|آزمایش|ویزیت|فوری|#مهم|urgent|important/i.test(text)) category = "مهم";
 
-  if (text.includes("پس‌فردا") || text.includes("پس فردا")) {
-    targetDate = d2j(j2d(tod.jy, tod.jm, tod.jd) + 2);
-  } else if (text.includes("فردا") || text.includes("سبەی")) {
-    targetDate = d2j(j2d(tod.jy, tod.jm, tod.jd) + 1);
+  // Normalize Persian/Arabic digits & characters
+  const norm = text
+    .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+    .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+    .replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/‌/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const lower = norm.toLowerCase();
+
+  const wordNumMap = {
+    "یک": 1, "یه": 1, "یکی": 1, "یەک": 1, "one": 1, "a": 1,
+    "دو": 2, "دوتا": 2, "دوو": 2, "two": 2,
+    "سه": 3, "سێ": 3, "three": 3,
+    "چهار": 4, "چار": 4, "چوار": 4, "four": 4,
+    "پنج": 5, "پێنج": 5, "five": 5,
+    "شش": 6, "شیش": 6, "شەش": 6, "six": 6,
+    "هفت": 7, "حەوت": 7, "seven": 7,
+    "هشت": 8, "هەشت": 8, "eight": 8,
+    "نه": 9, "نۆ": 9, "nine": 9,
+    "ده": 10, "دە": 10, "ten": 10,
+    "یازده": 11, "دوازده": 12, "سیزده": 13, "چهارده": 14, "پانزده": 15, "پونزده": 15, "بیست": 20, "سی": 30
+  };
+  const parseQty = (tok) => {
+    if (!tok) return null;
+    const t = String(tok).trim().toLowerCase();
+    if (/^\d+$/.test(t)) return parseInt(t, 10);
+    return wordNumMap[t] || null;
+  };
+
+  const todayJdn = j2d(tod.jy, tod.jm, tod.jd);
+  const addMonthsToTod = (mAdd) => {
+    const totalM = (tod.jm - 1) + mAdd;
+    const ny = tod.jy + Math.floor(totalM / 12);
+    const nm = (totalM % 12) + 1;
+    const nd = Math.min(tod.jd, mLen(ny, nm));
+    return { jy: ny, jm: nm, jd: nd };
+  };
+
+  const numTokenPat = "(\d+|یک|یه|یکی|یەک|دو|دوتا|دوو|سه|سێ|چهار|چار|چوار|پنج|پێنج|شش|شیش|شەش|هفت|حەوت|هشت|هەشت|نه|نۆ|ده|دە|یازده|دوازده|پانزده|پونزده|بیست|سی|one|two|three|four|five|six|seven|eight|nine|ten)";
+
+  let matchedDate = false;
+
+  // 1) Explicit Jalali slash date: 1405/09/20
+  const slashM = norm.match(/(1[34]\d{2})\/(\d{1,2})\/(\d{1,2})/);
+  if (slashM) {
+    const sy = parseInt(slashM[1], 10), sm = parseInt(slashM[2], 10), sd = parseInt(slashM[3], 10);
+    if (sm >= 1 && sm <= 12 && sd >= 1 && sd <= mLen(sy, sm)) {
+      targetDate = { jy: sy, jm: sm, jd: sd };
+      matchedDate = true;
+    }
   }
-  const engText = text.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-  const timeMatch = engText.match(/ساعت\s*(\d{1,2})(?::(\d{2}))?\s*(صبح|ظهر|عصر|شب)?/);
+
+  // 2) Explicit Persian month day: "15 آذر" or "بیست دی"
+  if (!matchedDate) {
+    const monPat = new RegExp(`(?:^|\s)${numTokenPat}\s*(فروردین|اردیبهشت|خرداد|تیر|مرداد|شهریور|مهر|آبان|آذر|دی|بهمن|اسفند)(?:\s|$)`);
+    const mHit = norm.match(monPat);
+    if (mHit) {
+      const qd = parseQty(mHit[1]);
+      const qm = JM.indexOf(mHit[2]) + 1;
+      if (qd && qm >= 1 && qd <= 31) {
+        let qy = tod.jy;
+        if (qm < tod.jm || (qm === tod.jm && qd < tod.jd)) qy += 1;
+        targetDate = { jy: qy, jm: qm, jd: Math.min(qd, mLen(qy, qm)) };
+        matchedDate = true;
+      }
+    }
+  }
+
+  // 3) Relative N days / weeks / months (Persian, Kurdish, English)
+  if (!matchedDate) {
+    const dayRe = new RegExp(`(?:^|\s)${numTokenPat}\s*(?:روز|ڕۆژی?)\s*(?:دیگه|دیگر|بعد|آینده|تر)(?:\s|$)`);
+    const weekRe = new RegExp(`(?:^|\s)${numTokenPat}\s*(?:هفته|هەفتەی?)\s*(?:دیگه|دیگر|بعد|آینده|تر)(?:\s|$)`);
+    const monRe = new RegExp(`(?:^|\s)${numTokenPat}\s*(?:ماه|مانگی?)\s*(?:دیگه|دیگر|بعد|آینده|تر)(?:\s|$)`);
+    const enDayRe = new RegExp(`\bin\s+${numTokenPat}\s+days?\b`);
+    const enWeekRe = new RegExp(`\bin\s+${numTokenPat}\s+weeks?\b`);
+    const enMonRe = new RegExp(`\bin\s+${numTokenPat}\s+months?\b`);
+
+    let m;
+    if ((m = norm.match(dayRe)) || (m = lower.match(enDayRe))) {
+      const n = parseQty(m[1]);
+      if (n) { targetDate = d2j(todayJdn + n); matchedDate = true; }
+    } else if ((m = norm.match(weekRe)) || (m = lower.match(enWeekRe))) {
+      const n = parseQty(m[1]);
+      if (n) { targetDate = d2j(todayJdn + n * 7); matchedDate = true; }
+    } else if ((m = norm.match(monRe)) || (m = lower.match(enMonRe))) {
+      const n = parseQty(m[1]);
+      if (n) { targetDate = addMonthsToTod(n); matchedDate = true; }
+    }
+  }
+
+  // 4) Single relative phrases (next week, next month, day after tomorrow, tomorrow, today)
+  if (!matchedDate) {
+    if (norm.includes("پس فردا") || norm.includes("دووبەیانی") || lower.includes("day after tomorrow")) {
+      targetDate = d2j(todayJdn + 2);
+      matchedDate = true;
+    } else if (norm.includes("فردا") || norm.includes("سبەی") || lower.includes("tomorrow")) {
+      targetDate = d2j(todayJdn + 1);
+      matchedDate = true;
+    } else if (/هفته\s*(دیگه|دیگر|بعد|آینده)|هەفتەی\s*داهاتوو|next week/i.test(norm)) {
+      targetDate = d2j(todayJdn + 7);
+      matchedDate = true;
+    } else if (/ماه\s*(دیگه|دیگر|بعد|آینده)|مانگی\s*داهاتوو|next month/i.test(norm)) {
+      targetDate = addMonthsToTod(1);
+      matchedDate = true;
+    } else if (norm.includes("امروز") || norm.includes("ئەمڕۆ") || /today/.test(lower)) {
+      targetDate = { ...tod };
+      matchedDate = true;
+    }
+  }
+
+  // 5) Weekday names (e.g. "شنبه آینده", "دوشنبه", "جمعه بعد")
+  if (!matchedDate) {
+    const wdMap = [
+      { re: /یک\s*شنبه|sunday/i, idx: 1 },
+      { re: /دو\s*شنبه|monday/i, idx: 2 },
+      { re: /سه\s*شنبه|tuesday/i, idx: 3 },
+      { re: /چهار\s*شنبه|wednesday/i, idx: 4 },
+      { re: /پنج\s*شنبه|thursday/i, idx: 5 },
+      { re: /جمعه|هەینی|friday/i, idx: 6 },
+      { re: /شنبه|شەممە|saturday/i, idx: 0 }
+    ];
+    for (const w of wdMap) {
+      if (w.re.test(norm)) {
+        const curW = wDay(tod.jy, tod.jm, tod.jd);
+        let diff = (w.idx - curW + 7) % 7;
+        if (diff === 0) diff = 7;
+        targetDate = d2j(todayJdn + diff);
+        matchedDate = true;
+        break;
+      }
+    }
+  }
+
+  // 6) Time extraction (supports "ساعت 10", "ساعت 10:30", "ساعت 5 و نیم عصر", "at 5 pm")
+  const timeMatch = norm.match(/ساعت\s*(\d{1,2})(?::(\d{2}))?(?:\s*و\s*(نیم|ربع))?\s*(صبح|ظهر|بعدازظهر|بعد از ظهر|عصر|شب)?/)
+    || lower.match(/at\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
   if (timeMatch) {
     let hh = parseInt(timeMatch[1], 10);
-    const mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
-    const period = timeMatch[3] || "";
-    if ((period === "عصر" || period === "شب") && hh < 12) hh += 12;
+    let mm = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+    const frac = timeMatch[3] || "";
+    const period = timeMatch[4] || (timeMatch[3] === "am" || timeMatch[3] === "pm" ? timeMatch[3] : "");
+    if (frac === "نیم") mm = 30;
+    else if (frac === "ربع") mm = 15;
+    if ((period === "عصر" || period === "شب" || period === "بعدازظهر" || period === "بعد از ظهر" || period === "pm") && hh < 12) hh += 12;
     if (period === "ظهر" && hh < 11) hh += 12;
+    if (period === "am" && hh === 12) hh = 0;
     if (hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59) {
       timeStr = String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
     }

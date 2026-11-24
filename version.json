@@ -1,6 +1,6 @@
 {
   "version": "72",
   "updated_at": "2026-11-24",
-  "notes": "رفع خطای نحوی در انتخاب‌گر تاریخ تولد (initBirthInputs) که مانع اجرای برنامه در اندروید و PWA می‌شد - نسخه ۷۲ پایدار",
+  "notes": "افزودن دکمه اختیاری ثبت هوشمند با هوش مصنوعی (✨ AI) در استودیو یادداشت‌ها با پشتیبانی از Gemini API و Cloudflare Worker + موتور آفلاین در نسخه ۷۲",
   "apk_url": "https://github.com/Siavicii/SmartCalender-Android/releases/latest"
 }
