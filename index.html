@@ -5608,6 +5608,15 @@ async function updatePersistentStatusDate(forcePost = false) {
     try { window.AndroidBridge.showStatusDateNotification(primaryDayStr, nTitleA, nBodyA); } catch (e) {}
     return;
   }
+
+  // On iOS PWA, Web Push notifications are sent only once per day (unless user explicitly taps Refresh in Settings)
+  if (isIosDevice() && !forcePost) {
+    const todayIosKey = `${tod.jy}-${tod.jm}-${tod.jd}`;
+    if (localStorage.getItem("smartcal_ios_daily_notif_sent") === todayIosKey) {
+      return;
+    }
+  }
+
   if (!("Notification" in window)) return;
 
   if (Notification.permission === "default" && forcePost) {
@@ -5643,18 +5652,18 @@ async function updatePersistentStatusDate(forcePost = false) {
   if (!forcePost && sig === lastNotifSignature) return;
   lastNotifSignature = sig;
 
-  const simpleOpts = {
+  const iosOpts = {
     body: notifBody,
     icon: "./icon-192.png",
     tag: "smartcal-daily-status",
-    renotify: true
+    renotify: false
   };
   const richOpts = {
     body: notifBody,
     icon: notifTileIconUrl,
     badge: badgeDataUrl,
     tag: "smartcal-daily-status",
-    renotify: true
+    renotify: false
   };
 
   let sent = false;
@@ -5662,12 +5671,17 @@ async function updatePersistentStatusDate(forcePost = false) {
     try {
       const reg = await navigator.serviceWorker.getRegistration().catch(() => null);
       if (reg && reg.showNotification) {
-        try {
-          await reg.showNotification(notifTitle, richOpts);
+        if (isIosDevice()) {
+          await reg.showNotification(notifTitle, iosOpts);
           sent = true;
-        } catch (errRich) {
-          await reg.showNotification(notifTitle, simpleOpts);
-          sent = true;
+        } else {
+          try {
+            await reg.showNotification(notifTitle, richOpts);
+            sent = true;
+          } catch (errRich) {
+            await reg.showNotification(notifTitle, iosOpts);
+            sent = true;
+          }
         }
       }
     } catch (errSw) {
@@ -5675,10 +5689,14 @@ async function updatePersistentStatusDate(forcePost = false) {
     }
   }
 
-  if (!sent) {
+  if (!sent && !isIosDevice()) {
     try {
       new Notification(notifTitle, { body: notifBody, icon: "./icon-192.png", tag: "smartcal-daily-status" });
     } catch (errWin) {}
+  }
+
+  if (isIosDevice()) {
+    try { localStorage.setItem("smartcal_ios_daily_notif_sent", `${tod.jy}-${tod.jm}-${tod.jd}`); } catch (e) {}
   }
 }
 
@@ -5690,6 +5708,7 @@ async function togglePersistentDateNotif(forceVal) {
     statusNotifEnabled = false;
     localStorage.setItem("cal_status_notif_v1", "false");
     lastNotifSignature = "";
+    try { localStorage.removeItem("smartcal_ios_daily_notif_sent"); } catch (e) {}
     if (window.AndroidBridge && typeof window.AndroidBridge.cancelStatusDateNotification === "function") {
       try { window.AndroidBridge.cancelStatusDateNotification(); } catch (e) {}
       try {
@@ -5711,12 +5730,10 @@ async function togglePersistentDateNotif(forceVal) {
   }
 }
 
-// Auto-trigger persistent status bar notification on first user tap or when returning to app
+// Trigger daily status notification cleanly once per day on open/return (avoiding duplicate bursts on iOS)
 document.addEventListener("click", function autoInitNotifOnce() {
-  if (statusNotifEnabled && "Notification" in window) {
-    if (Notification.permission === "default") {
-      updatePersistentStatusDate(true);
-    } else if (Notification.permission === "granted") {
+  if (statusNotifEnabled && "Notification" in window && !isIosDevice()) {
+    if (Notification.permission === "default" || Notification.permission === "granted") {
       updatePersistentStatusDate(true);
     }
   }
@@ -5725,7 +5742,7 @@ document.addEventListener("click", function autoInitNotifOnce() {
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && statusNotifEnabled) {
-    updatePersistentStatusDate(true);
+    updatePersistentStatusDate(false);
   }
 });
 
