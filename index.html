@@ -2950,14 +2950,16 @@ html:not(.app-ready) .view.active {
 .gs-item:active{transform:scale(0.985)}
 .gs-badge{font-size:9.5px;padding:2px 7px;border-radius:99px;background:var(--pri-bg);color:var(--pri);font-weight:700;white-space:nowrap}
 .rec-item{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:9px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px}
-#privacyLockOverlay{position:fixed;inset:0;z-index:99999;background:rgba(12,15,20,0.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;color:#fff}
+#privacyLockOverlay{position:fixed;inset:0;z-index:99999;background:var(--bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;color:var(--txt);font-family:var(--app-font)}
 #privacyLockOverlay.show{display:flex}
-.pin-dots{display:flex;gap:12px;margin:6px 0}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.45);transition:background .15s,transform .15s}
-.pin-dot.filled{background:#fff;border-color:#fff;transform:scale(1.1)}
-.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:12px;direction:ltr}
-.pin-key{width:72px;height:56px;border-radius:16px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.09);color:#fff;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.pin-key:active{background:rgba(255,255,255,0.24);transform:scale(0.95)}
+.pin-sheet{width:100%;max-width:320px;background:var(--card);border:1px solid var(--brd);border-radius:26px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:0 18px 48px rgba(0,0,0,0.22)}
+.pin-dots{display:flex;gap:13px;margin:6px 0 4px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--brd);background:transparent;transition:background .15s,border-color .15s,transform .15s}
+.pin-dot.filled{background:var(--pri);border-color:var(--pri);transform:scale(1.15)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,74px);gap:10px;direction:ltr;margin-top:4px}
+.pin-key{width:74px;height:54px;border-radius:16px;border:1px solid var(--brd);background:var(--sub);color:var(--txt);font-size:20px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:transform .1s,background .12s}
+.pin-key:active{background:var(--pri-bg);border-color:var(--pri);color:var(--pri);transform:scale(0.94)}
+.pin-cancel-btn{margin-top:4px;background:transparent;border:1px solid var(--brd);color:var(--sec);border-radius:12px;padding:7px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .pro-tabs{display:flex;gap:5px;flex-wrap:wrap}
 .pro-tabs .fchip{font-size:11px;padding:5px 10px}
 
@@ -3106,7 +3108,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
     <div class="prayer-card" id="prayerTimesCard">
       <div class="pro-head">
         <span class="pro-title" id="prayerCardTitle">🕌 اوقات شرعی امروز</span>
-        <span class="pro-sub" id="prayerCityLbl">--</span>
+        <button type="button" class="w-city-btn" id="prayerCityBtn" onclick="openCityModal('prayer')" style="font-size:11px;padding:4px 9px">📍 -- ▾</button>
       </div>
       <div class="prayer-grid" id="prayerTimesGrid"></div>
     </div>
@@ -3200,7 +3202,6 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
           <button type="button" class="fchip act" data-mcat="all" onclick="setMarketCatFilter('all', this)">همه</button>
           <button type="button" class="fchip" data-mcat="metals" onclick="setMarketCatFilter('metals', this)">طلا و فلزات</button>
           <button type="button" class="fchip" data-mcat="fx" onclick="setMarketCatFilter('fx', this)">ارزها</button>
-          <button type="button" class="fchip" data-mcat="etf" onclick="setMarketCatFilter('etf', this)">صندوق‌ها</button>
         </div>
         <button type="button" class="ibtn" id="mktWatchToggleBtn" onclick="toggleMarketWatchPanel()" style="color:var(--pri);border-color:var(--pri)">⚙️ اولویت</button>
       </div>
@@ -3226,10 +3227,6 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
         <div id="mktFxBlock" data-reorder-group="mkt" data-reorder-item="mktFxBlock">
           <b id="mktFxSecTitle" style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">💵 نرخ ارزهای خارجی (تومان)</b>
           <div class="mkt-list" id="fxList"></div>
-        </div>
-        <div id="mktEtfBlock" data-reorder-group="mkt" data-reorder-item="mktEtfBlock">
-          <b id="mktEtfSecTitle" style="font-size:12px;color:var(--sec);display:block;margin:4px 0 6px">📈 صندوق‌های طلا و سرمایه‌گذاری بورسی (تومان)</b>
-          <div class="mkt-list" id="etfList"></div>
         </div>
       </div>
 
@@ -3277,9 +3274,10 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
               <option id="paOptAbove" value="above">📈 بالای</option>
               <option id="paOptBelow" value="below">📉 زیر</option>
             </select>
-            <input type="number" step="any" min="0" id="paTargetInp" placeholder="قیمت هدف (تومان)" style="flex:1;min-width:105px;font-size:11.5px;padding:7px 8px">
+            <input type="text" inputmode="numeric" autocomplete="off" dir="ltr" id="paTargetInp" oninput="onPaTargetInput(this)" placeholder="قیمت هدف (تومان)" style="flex:1;min-width:115px;font-size:12px;font-weight:700;padding:7px 9px;text-align:center">
             <button type="button" id="paAddBtn" class="ibtn" onclick="addPriceAlert()" style="background:var(--pri);color:var(--onpri);border:none;padding:0 12px;height:34px">🔔 ثبت</button>
           </div>
+          <div id="paTargetWords" style="display:none;font-size:11px;font-weight:700;color:var(--pri);background:var(--card);border:1px solid var(--brd);border-radius:11px;padding:7px 10px;line-height:1.55"></div>
           <div id="paList" style="display:flex;flex-direction:column;gap:6px"></div>
         </div>
 
@@ -3855,7 +3853,7 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
 <script>
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v74.1";
+  const VER = "v74.6";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -4894,7 +4892,17 @@ function addAndSelectCity(name,lat,lon,province=""){
   selectCity(lat,lon,cleanName,cleanProv);
 }
 
+window.__citySelectMode = "weather";
 function selectCity(lat,lon,name,province=""){
+  if (window.__citySelectMode === "prayer") {
+    cfg.prayerCity = `${lat},${lon},${name}`;
+    localStorage.setItem("cal_cfg_v4",JSON.stringify(cfg));
+    window.__citySelectMode = "weather";
+    closeModals();
+    if (typeof renderPrayerTimes === "function") renderPrayerTimes();
+    if (typeof triggerHaptic === "function") triggerHaptic("medium");
+    return;
+  }
   cfg.city=`${lat},${lon},${name}`;
   if (province) {
     cfg.province = String(province).replace(/^استان\s+/,"").trim();
@@ -4907,9 +4915,17 @@ function selectCity(lat,lon,name,province=""){
   closeModals();
   render();
   fetchWeather(true);
+  if (typeof renderPrayerTimes === "function") renderPrayerTimes();
 }
 
-function openCityModal(){
+function openCityModal(mode = "weather"){
+  window.__citySelectMode = (mode === "prayer") ? "prayer" : "weather";
+  const tit = document.getElementById("cityModalTitle");
+  if (tit) {
+    tit.textContent = (window.__citySelectMode === "prayer")
+      ? tr("🕌 انتخاب شهر اوقات شرعی", "🕌 هەڵبژاردنی شاری کاتەکانی بانگ", "🕌 Select Prayer Times City")
+      : tr("📍 انتخاب یا افزودن شهر دلخواه", "📍 هەڵبژاردنی شار", "📍 Select or Add City");
+  }
   document.getElementById("citySearchInput").value="";
   document.getElementById("citySearchResults").innerHTML="";
   renderSavedCities();
@@ -4919,8 +4935,9 @@ function openCityModal(){
 
 function renderSavedCities(){
   const all=[...DEFAULT_CITIES,...customCities];
+  const activeCityVal = (window.__citySelectMode === "prayer") ? (cfg.prayerCity || cfg.city) : cfg.city;
   document.getElementById("savedCitiesList").innerHTML=all.map((c,idx)=>`
-    <div class="tag" style="cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;${cfg.city.endsWith(','+c.n)?'background:var(--pri);color:var(--onpri);font-weight:700':''}" onclick="selectCity(${c.lat},${c.lon},'${esc(c.n).replace(/'/g,"")}','${esc(c.p||"").replace(/'/g,"")}')">
+    <div class="tag" style="cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;${String(activeCityVal||'').endsWith(','+c.n)?'background:var(--pri);color:var(--onpri);font-weight:700':''}" onclick="selectCity(${c.lat},${c.lon},'${esc(c.n).replace(/'/g,"")}','${esc(c.p||"").replace(/'/g,"")}')">
       <span>${esc(trCity(c.n))}</span>
       ${idx>=DEFAULT_CITIES.length?`<span onclick="event.stopPropagation();removeCustomCity(${idx-DEFAULT_CITIES.length})" style="opacity:.8">✕</span>`:''}
     </div>
@@ -7015,9 +7032,7 @@ async function fetchTgjuLive(bust = "") {
           plat_oz:   pickKey(["platinum", "ons_platinum", "xpt", "price_xpt"], false),
           pall_oz:   pickKey(["palladium", "ons_palladium", "xpd", "price_xpd"], false),
           cny:       pickKey(["price_cny", "cny", "price_yuan"], true),
-          iqd1k:     pickKey(["price_iqd", "iqd"], true),
-          etf_ayar:    pickKey(["etf_ayar", "ayar", "bourse_ayar"], true),
-          etf_noghran: pickKey(["etf_noghran", "noghran_silver", "noghran_etf", "noghran"], true)
+          iqd1k:     pickKey(["price_iqd", "iqd"], true)
         }
       };
     }
@@ -7112,221 +7127,6 @@ let mktFetching = false;
 const PWA_MKT_CACHE_KEY = "mkt_cache_smartcal_v62";
 
 
-const RAHAVARD_ETF_SYMBOLS = {
-  etf_ayar:    ["عیار", "AYAR"],
-  etf_noghran: ["نقران", "NOGHRAN", "NOGHRA"]
-};
-
-function parseRahavardPriceToToman(rawVal, forceRial = false) {
-  const num = Number(String(rawVal ?? "").replace(/,/g, "").trim());
-  if (!isFinite(num) || num <= 0) return 0;
-  const hasDecimal = !Number.isInteger(num);
-  let toman = 0;
-  if (forceRial) {
-    // TSETMC prices are always quoted in Rials -> convert directly to Tomans
-    toman = Math.round(num / 10);
-  } else if (hasDecimal) {
-    // Decimal quotes (e.g. Rahavard NAV/last in Tomans)
-    toman = Math.round(num);
-  } else {
-    toman = num >= 200000 ? Math.round(num / 10) : Math.round(num);
-  }
-  if (toman < 100 || toman > 5000000) return 0;
-  return toman;
-}
-
-function normFaSym(s) {
-  return String(s || "").replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/\u200c/g, "").replace(/\s+/g, "").trim();
-}
-
-function extractEtfEntryFromObj(obj, targetSyms) {
-  if (!obj || typeof obj !== "object") return null;
-  const rawSym = String(obj.lva || obj.lVal18AFC || obj.symbol || obj.ticker || obj.name || obj.title || "").trim();
-  if (!rawSym) return null;
-  const nSym = normFaSym(rawSym);
-  const matched = targetSyms.some(s => {
-    const ns = normFaSym(s);
-    return nSym === ns || nSym.toUpperCase() === ns.toUpperCase();
-  });
-  if (!matched) return null;
-
-  const isTsetmc = (obj.pDrCotVal !== undefined || obj.pClosing !== undefined);
-  const rawPrice = obj.pDrCotVal ?? obj.pClosing ?? obj.last_price ?? obj.last ?? obj.close ?? obj.price ?? obj.p ?? obj.nav ?? 0;
-  const tomanP = parseRahavardPriceToToman(rawPrice, isTsetmc);
-  if (tomanP <= 0) return null;
-
-  let chgStr = "0.00%";
-  if (isTsetmc && Number(obj.priceYesterday) > 0 && Number(rawPrice) > 0) {
-    const pct = ((Number(rawPrice) - Number(obj.priceYesterday)) / Number(obj.priceYesterday)) * 100;
-    if (isFinite(pct) && Math.abs(pct) <= 25) chgStr = fmtPct(pct, "0.00%");
-  } else {
-    const rawChg = obj.change_percent ?? obj.dp ?? obj.pct_change ?? obj.changePct ?? obj.change ?? obj.c ?? null;
-    if (rawChg !== null && rawChg !== undefined && rawChg !== "") {
-      const chgNum = Number(String(rawChg).replace("%", "").trim());
-      if (isFinite(chgNum) && Math.abs(chgNum) <= 25) chgStr = fmtPct(chgNum, "0.00%");
-    }
-  }
-  return { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true, src: isTsetmc ? "TSETMC" : "ره‌آورد" };
-}
-
-function scanRahavardJsonForEtfs(payload) {
-  const found = {};
-  const walk = (node) => {
-    if (!node) return;
-    if (Array.isArray(node)) {
-      node.forEach(walk);
-      return;
-    }
-    if (typeof node === "object") {
-      Object.keys(RAHAVARD_ETF_SYMBOLS).forEach(ico => {
-        if (!found[ico]) {
-          const hit = extractEtfEntryFromObj(node, RAHAVARD_ETF_SYMBOLS[ico]);
-          if (hit) found[ico] = hit;
-        }
-      });
-      Object.values(node).forEach(v => {
-        if (v && typeof v === "object") walk(v);
-      });
-    }
-  };
-  walk(payload);
-  return found;
-}
-
-function parseTsetmcMarketWatchText(rawTxt) {
-  const found = {};
-  if (!rawTxt || typeof rawTxt !== "string" || !rawTxt.includes("@")) return found;
-  const sections = rawTxt.split("@");
-  const rowsStr = sections[2] || "";
-  if (!rowsStr) return found;
-  const rows = rowsStr.split(";");
-  for (const row of rows) {
-    const cols = row.split(",");
-    if (cols.length < 14) continue;
-    const sym = normFaSym(cols[2]);
-    const title = normFaSym(cols[3]);
-    if (!sym && !title) continue;
-    for (const ico of Object.keys(RAHAVARD_ETF_SYMBOLS)) {
-      if (found[ico]) continue;
-      const targets = RAHAVARD_ETF_SYMBOLS[ico].map(normFaSym);
-      const hitSym = targets.some(t => (sym && sym === t) || (ico === "etf_noghran" && (sym.includes("نقران") || title.includes("نقران"))));
-      if (hitSym) {
-        // cols[7] = last trade (PDrCotVal), cols[6] = closing (PClosing), cols[13] = prev close (PriceYesterday)
-        const lastRaw = Number(cols[7]) > 0 ? Number(cols[7]) : Number(cols[6]);
-        const yestRaw = Number(cols[13]) || 0;
-        const tomanP = parseRahavardPriceToToman(lastRaw, true);
-        if (tomanP > 0) {
-          let chgStr = "0.00%";
-          if (yestRaw > 0 && lastRaw > 0) {
-            const pct = ((lastRaw - yestRaw) / yestRaw) * 100;
-            if (isFinite(pct) && Math.abs(pct) <= 25) chgStr = fmtPct(pct, "0.00%");
-          }
-          found[ico] = { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true, src: "TSETMC" };
-        }
-      }
-    }
-  }
-  return found;
-}
-
-function scanHtmlForSymbolPrice(htmlTxt, keywords) {
-  if (!htmlTxt || typeof htmlTxt !== "string") return null;
-  const plain = htmlTxt.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
-  const sp = String.fromCharCode(92);
-  const escRe = s => s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, sp + "$&");
-  for (const kw of keywords) {
-    try {
-      const pat = escRe(kw) + "[^0-9۰-۹" + sp + "-]{0,50}([0-9۰-۹,]{3,10}(?:[.,][0-9۰-۹]{1,2})?)(?:[^0-9۰-۹%" + sp + "-]{0,25}([+" + sp + "-]?[0-9۰-۹.]+)" + sp + "s*%)?";
-      const re = new RegExp(pat, "i");
-      const m = plain.match(re);
-      if (m && m[1]) {
-        const latNum = m[1].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/,/g, "");
-        const tomanP = parseRahavardPriceToToman(latNum, false);
-        if (tomanP >= 100 && tomanP <= 5000000) {
-          let chgStr = "0.00%";
-          if (m[2]) {
-            const latChg = m[2].replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-            const cn = Number(latChg);
-            if (isFinite(cn) && Math.abs(cn) <= 25) chgStr = fmtPct(cn, "0.00%");
-          }
-          return { p: tomanP, c: chgStr, unit: "toman", rahavardLive: true, src: "ره‌آورد" };
-        }
-      }
-    } catch (e) {}
-  }
-  return null;
-}
-
-async function fetchRahavardEtfs(bust = "") {
-  const endpoints = [
-    "https://cdn.tsetmc.com/api/ClosingPrice/GetMarketWatch?market=0&industrialGroup=&paperTypes%5B0%5D=8&showTraded=false&withBestLimits=false",
-    "https://old.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0",
-    "https://rahavard365.com/api/v2/market/symbols?market=bourse&type=etf",
-    "https://rahavard365.com/api/v2/symbols?type=gold_etf",
-    "https://rahavard365.com/asset/noghran",
-    "https://rahavard365.com/asset/ayar"
-  ];
-  const results = await Promise.all(
-    endpoints.map(async (ep) => {
-      const url = ep + (ep.includes("?") ? "&" : "?") + "_=" + bust;
-      const txt = await fetchTextViaProxy(url, 5500);
-      if (!txt) return {};
-      if (ep.includes("MarketWatchInit.aspx")) {
-        return parseTsetmcMarketWatchText(txt);
-      }
-      try {
-        return scanRahavardJsonForEtfs(JSON.parse(txt));
-      } catch (e) {
-        const out = {};
-        const nHit = scanHtmlForSymbolPrice(txt, ["نقران", "NOGHRAN", "صندوق نقره نقران"]);
-        if (nHit) out.etf_noghran = nHit;
-        const aHit = scanHtmlForSymbolPrice(txt, ["عیار", "AYAR", "صندوق طلای عیار"]);
-        if (aHit) out.etf_ayar = aHit;
-        return out;
-      }
-    })
-  );
-  const merged = {};
-  results.forEach(res => {
-    if (res && typeof res === "object") {
-      Object.keys(res).forEach(k => {
-        if (!merged[k] && res[k] && res[k].p > 0) merged[k] = res[k];
-      });
-    }
-  });
-  return merged;
-}
-
-async function fetchFallbackBourseEtfs(bust = "") {
-  const found = {};
-  try {
-    const qs = bust ? "?_=" + bust : "";
-    let txt = await fetchTextViaProxy("https://call5.tgju.org/ajax.json" + qs, 4500);
-    if (!txt) txt = await fetchTextViaProxy("https://call4.tgju.org/ajax.json" + qs, 4500);
-    if (txt) {
-      const cur = JSON.parse(txt)?.current || {};
-      const keyCandidates = {
-        etf_ayar:    ["etf_ayar", "ayar", "bourse_ayar", "price_ayar"],
-        etf_noghran: ["etf_noghran", "noghran_silver", "noghran_etf", "noghran"]
-      };
-      Object.keys(keyCandidates).forEach(ico => {
-        for (const k of keyCandidates[ico]) {
-          const node = cur[k];
-          if (node && node.p) {
-            const tomanP = parseRahavardPriceToToman(node.p, true);
-            if (tomanP > 0) {
-              const dpNum = (node.dt === "low" ? -1 : 1) * Math.abs(Number(node.dp || 0));
-              found[ico] = { p: tomanP, c: fmtPct(dpNum, "0.00%"), unit: "toman", rahavardLive: true, src: "TGJU" };
-              break;
-            }
-          }
-        }
-      });
-    }
-  } catch (e) {}
-  return found;
-}
-
 function getIranMarketHours() {
   const ir = new Date(Date.now() + 3.5 * 3600000);
   const wd = ir.getUTCDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
@@ -7335,9 +7135,7 @@ function getIranMarketHours() {
   const isThursday = (wd === 4);
   // Iran Gold/Coin/FX market: Sat-Wed 10:00-20:30 (10..20), Thu 10:00-15:30 (10..15), Fri closed
   const isGoldFxOpen = !isFriday && (isThursday ? (hr >= 10 && hr < 16) : (hr >= 10 && hr < 21));
-  // Bourse Gold/Silver ETFs: Sat-Wed 12:00-18:00
-  const isEtfOpen = (!isFriday && !isThursday) && (hr >= 12 && hr < 18);
-  return { wd, hr, isFriday, isThursday, isGoldFxOpen, isEtfOpen };
+  return { wd, hr, isFriday, isThursday, isGoldFxOpen };
 }
 
 async function fetchMarket(manual = false) {
@@ -7351,8 +7149,8 @@ async function fetchMarket(manual = false) {
   const hasValidCache = !!(cached && cached.usd >= 50000 && cached.gold?.[0]?.p >= 3000000);
   if (!manual && hasValidCache) {
     renderMarket(cached, true);
-    // Outside Gold/FX & ETF trading hours, use cached closing prices without hitting network automatically
-    if (!irHours.isGoldFxOpen && !irHours.isEtfOpen) {
+    // Outside Gold/FX trading hours, use cached closing prices without hitting network automatically
+    if (!irHours.isGoldFxOpen) {
       if (updEl) {
         const cleanT = String(cached.time || "").split(" (")[0];
         updEl.textContent = tr(
@@ -7371,19 +7169,11 @@ async function fetchMarket(manual = false) {
 
   const bust = String(Date.now());
   try {
-    let cachedRealEtfs = {};
-    try { cachedRealEtfs = JSON.parse(localStorage.getItem("smartcal_etf_real_live_v73") || "{}") || {}; } catch (e) {}
-    const hasCachedEtfs = Object.keys(cachedRealEtfs).length > 0;
-    const shouldFetchEtfs = irHours.isEtfOpen || !hasCachedEtfs || manual;
-
-    const [tgju, cryptoIr, globalData, rahavardEtfs] = await Promise.all([
+    const [tgju, cryptoIr, globalData] = await Promise.all([
       fetchTgjuLive(bust),
       fetchCryptoIrStats(bust),
-      fetchGlobalFxAndGold(),
-      shouldFetchEtfs ? fetchRahavardEtfs(bust) : Promise.resolve({})
+      fetchGlobalFxAndGold()
     ]);
-    const fallbackEtfs = shouldFetchEtfs ? await fetchFallbackBourseEtfs(bust) : {};
-    const mergedEtfs = shouldFetchEtfs ? { ...(fallbackEtfs || {}), ...(rahavardEtfs || {}) } : {};
 
     let usdPrice = 0, srcName = "";
     if (tgju?.usd?.p >= 50000) { usdPrice = tgju.usd.p; srcName = "TGJU زنده"; }
@@ -7441,8 +7231,7 @@ async function fetchMarket(manual = false) {
         { ico: "cad", n: "دلار کانادا (CAD)", p: cadPrice, c: tgju?.cad?.dp ? fmtPct(tgju.cad.dp, b.chg.cad) : dynPct(cadPrice, b.cad, b.chg.cad) }
       ],
       liveExtra: tgju?.liveExtra || null,
-      silverOzLive: globalData.silverOz || null,
-      rahavardEtfs: mergedEtfs
+      silverOzLive: globalData.silverOz || null
     };
 
     localStorage.setItem(PWA_MKT_CACHE_KEY, JSON.stringify(payload));
@@ -7489,11 +7278,7 @@ const DEFAULT_MKT_CATALOG = [
   { ico: "cad",       sec: "fx",   mcat: "fx",     enabled: true,  star: false, unit: "toman", fa: "دلار کانادا (CAD)", ku: "دۆلاری کەنەدی (CAD)", en: "Canadian Dollar (CAD)" },
   // Extra FX
   { ico: "cny",       sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "یوان چین (CNY)", ku: "یوانی چین (CNY)", en: "Chinese Yuan (CNY)" },
-  { ico: "iqd1k",     sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "هزار دینار عراق (IQD)", ku: "هەزار دیناری عێراق (IQD)", en: "1,000 Iraqi Dinar (IQD)" },
-
-  // Stock Market Gold & Silver ETFs
-  { ico: "etf_ayar",    sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق طلای عیار", ku: "سندووقی زێڕی عەیار", en: "Ayar Gold ETF" },
-  { ico: "etf_noghran", sec: "etf", mcat: "etf", enabled: false, star: false, unit: "toman", fa: "صندوق نقره نقران", ku: "سندووقی زیوی نەقران", en: "Noghran Silver ETF" }
+  { ico: "iqd1k",     sec: "fx",   mcat: "fx",     enabled: false, star: false, unit: "toman", fa: "هزار دینار عراق (IQD)", ku: "هەزار دیناری عێراق (IQD)", en: "1,000 Iraqi Dinar (IQD)" }
 ];
 
 const MKT_NAME_I18N = {};
@@ -7601,7 +7386,7 @@ function renderMarketWatchPanel() {
   if (!box) return;
   const l = cfg.lang || "fa";
   const list = loadMarketPrefs();
-  const catLabel = c => c === "metals" ? tr("فلزات و طلا", "کانزا و زێڕ", "Metals") : (c === "etf" ? tr("صندوق بورسی", "سندووقی بۆرسە", "Bourse ETF") : tr("ارز", "دراو", "FX"));
+  const catLabel = c => c === "metals" ? tr("فلزات و طلا", "کانزا و زێڕ", "Metals") : tr("ارز", "دراو", "FX");
   box.innerHTML = list.map((it, i) => {
     const title = it[l] || it.fa;
     return `<div class="mkt-watch-row">
@@ -7650,47 +7435,6 @@ function enrichMarketData(d) {
   setFromLive("cny", "toman", (usd > 0 && lastFxRatios.CNY) ? Math.round((usd * lastFxRatios.CNY) / 10) * 10 : 0);
   setFromLive("iqd1k", "toman", (usd > 0 && lastFxRatios.IQD) ? Math.round((usd * lastFxRatios.IQD) / 5) * 5 : 0);
 
-  // Bourse ETFs: ONLY real fetched prices from Rahavard365 / TSETMC / TGJU (NEVER fake anchors!)
-  const ETF_REAL_CACHE_KEY = "smartcal_etf_real_live_v73";
-  let savedRealEtfs = {};
-  try {
-    savedRealEtfs = JSON.parse(localStorage.getItem(ETF_REAL_CACHE_KEY) || "{}") || {};
-  } catch (e) {}
-
-  const rEtfs = (d && d.rahavardEtfs) || {};
-  const nextSavedReal = { ...savedRealEtfs };
-
-  const irNowEtf = new Date(Date.now() + 3.5 * 3600000);
-  const irWdEtf = irNowEtf.getUTCDay();
-  const irHrEtf = irNowEtf.getUTCHours();
-  const isEtfOpenNow = (irWdEtf !== 4 && irWdEtf !== 5) && irHrEtf >= 12 && irHrEtf < 18;
-
-  ["etf_ayar", "etf_noghran"].forEach(ico => {
-    const meta = MKT_NAME_I18N[ico] || { fa: ico };
-    const hit = rEtfs[ico] || (lx[ico] && lx[ico].p > 0 ? { p: lx[ico].p, c: fmtPct(lx[ico].dp, "0.00%"), src: "TGJU" } : null);
-    if (hit && hit.p > 0) {
-      const pVal = Math.round(Number(hit.p));
-      const cVal = hit.c || "0.00%";
-      nextSavedReal[ico] = { p: pVal, c: cVal, src: hit.src || "بورس / ره‌آورد" };
-      allItemsMap.set(ico, {
-        ico, n: meta.fa, p: pVal, c: cVal, unit: "toman",
-        rahavardLive: isEtfOpenNow,
-        etfSrc: hit.src || "بورس / ره‌آورد"
-      });
-    } else if (savedRealEtfs[ico] && savedRealEtfs[ico].p >= 100 && savedRealEtfs[ico].p <= 5000000) {
-      allItemsMap.set(ico, {
-        ico, n: meta.fa, p: savedRealEtfs[ico].p, c: savedRealEtfs[ico].c || "0.00%", unit: "toman",
-        rahavardLive: false,
-        etfSrc: savedRealEtfs[ico].src || "قیمت روز قبل"
-      });
-    } else {
-      allItemsMap.set(ico, {
-        ico, n: meta.fa, p: 0, c: "", unit: "toman", rahavardLive: false, unavailable: true
-      });
-    }
-  });
-
-  try { localStorage.setItem(ETF_REAL_CACHE_KEY, JSON.stringify(nextSavedReal)); } catch (e) {}
   return allItemsMap;
 }
 
@@ -7727,14 +7471,7 @@ function getAssetIconHtml(ico) {
     <text x="24" y="20.5" font-size="6.8" font-weight="900" fill="#007A3D" text-anchor="middle">الله أكبر</text>
   `);
 
-  if (ico.startsWith("etf_")) {
-    const fundBadgeMap = {
-      etf_ayar:    { lbl: "عیار",   bg: "linear-gradient(135deg,#FBBF24,#B45309)", fg: "#1C1917" },
-      etf_noghran: { lbl: "نقران",  bg: "linear-gradient(135deg,#BAE6FD,#0369A1)", fg: "#082F49" }
-    };
-    const fb = fundBadgeMap[ico] || { lbl: "ETF", bg: "linear-gradient(135deg,#F59E0B,#B45309)", fg: "#FFFFFF" };
-    return `<span style="min-width:44px;height:36px;padding:0 6px;border-radius:12px;background:${fb.bg};color:${fb.fg};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;border:1px solid rgba(255,255,255,0.28);box-shadow:0 3px 9px rgba(0,0,0,0.2)">${esc(fb.lbl)}</span>`;
-  }
+
 
   return getMarketSvg(ico);
 }
@@ -7753,20 +7490,17 @@ function renderMarket(d, isCached) {
 
   // Localize market filter chips & section titles
   const chips = document.querySelectorAll("#mktCatFilterChips .fchip");
-  if (chips.length >= 4) {
+  if (chips.length >= 3) {
     chips[0].textContent = tr("همه", "هەموو", "All");
     chips[1].textContent = tr("طلا و فلزات", "زێڕ و کانزا", "Metals");
     chips[2].textContent = tr("ارزها", "دراوەکان", "FX");
-    chips[3].textContent = tr("صندوق‌ها", "سندووقەکان", "ETFs");
   }
   const wBtn = document.getElementById("mktWatchToggleBtn");
   if (wBtn) wBtn.textContent = tr("⚙️ اولویت", "⚙️ پێشەنگی", "⚙️ Filter");
   const gTitle = document.getElementById("mktGoldSecTitle");
   const fTitle = document.getElementById("mktFxSecTitle");
-  const eTitle = document.getElementById("mktEtfSecTitle");
   if (gTitle) gTitle.textContent = tr("🪙 بازار طلا، نقره و فلزات", "🪙 بازاڕی زێڕ، زیو و کانزاکان", "🪙 Gold, Silver & Metals");
   if (fTitle) fTitle.textContent = tr("💵 نرخ ارزهای خارجی (تومان)", "💵 نرخی دراوە بیانییەکان (تمەن)", "💵 Foreign Currencies (Toman)");
-  if (eTitle) eTitle.textContent = tr("📈 صندوق‌های طلا و نقره بورسی", "📈 سندووقەکانی زێڕ و زیوی بۆرسە", "📈 Gold & Silver Bourse ETFs");
 
   const prefs = loadMarketPrefs();
   const dataMap = enrichMarketData(d);
@@ -7782,7 +7516,7 @@ function renderMarket(d, isCached) {
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
     const unitStr = x.unit === "usd" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
-    const subMeta = x.ico && x.ico.startsWith("etf_") ? (x.rahavardLive ? `${tr("لحظه‌ای", "زیندوو", "Live")} • ${fa(x.c)}` : `${tr("قیمت روز قبل", "نرخی ڕۆژی پێشوو", "Prev Day Close")} • ${fa(x.c)}`) : fa(x.c);
+    const subMeta = fa(x.c);
     return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
       <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
       <div class="mkt-val">
@@ -7797,28 +7531,18 @@ function renderMarket(d, isCached) {
   const activeItems = prefs.filter(it => it.enabled);
   const goldItems = activeItems.filter(it => it.sec === "gold");
   const fxItems   = activeItems.filter(it => it.sec === "fx");
-  const etfItems  = activeItems.filter(it => it.sec === "etf");
 
   const goldBlock = document.getElementById("mktGoldBlock");
   const fxBlock   = document.getElementById("mktFxBlock");
-  const etfBlock  = document.getElementById("mktEtfBlock");
 
   const showGold = (currentMarketCatFilter === "all" || currentMarketCatFilter === "metals") && goldItems.length > 0;
   const showFx   = (currentMarketCatFilter === "all" || currentMarketCatFilter === "fx") && fxItems.length > 0;
-  const showEtf  = (currentMarketCatFilter === "etf") || (currentMarketCatFilter === "all" && etfItems.length > 0);
 
   if (goldBlock) goldBlock.style.display = showGold ? "block" : "none";
   if (fxBlock)   fxBlock.style.display   = showFx ? "block" : "none";
-  if (etfBlock)  etfBlock.style.display  = showEtf ? "block" : "none";
 
   document.getElementById("goldList").innerHTML = goldItems.map(buildRowHtml).join("");
   document.getElementById("fxList").innerHTML   = fxItems.map(buildRowHtml).join("");
-  const etfListEl = document.getElementById("etfList");
-  if (etfListEl) {
-    etfListEl.innerHTML = etfItems.length
-      ? etfItems.map(buildRowHtml).join("")
-      : `<div style="font-size:11.5px;color:var(--sec);padding:10px;background:var(--sub);border-radius:12px;text-align:center">${tr("برای نمایش صندوق‌های بورسی، روی «⚙️ انتخاب و اولویت» بزنید و صندوق دلخواه را فعال کنید.", "بۆ پیشاندانی سندووقەکانی بۆرسە، «هەڵبژاردن و پێشەنگی» بکەرەوە.", "Tap 'Watchlist & Priority' to enable Bourse ETFs.")}</div>`;
-  }
 }
 
 // Notes & Scheduled Time Alarms Management (Revolutionized Studio: Voice, Checklist, Priority, Colors, Tags, Progress)
@@ -9430,11 +9154,11 @@ function render(){
   const todLbl = tr("امروز: ", "ئەمڕۆ: ", "Today: ");
   if (tSpan) {
     if (cType === "gregorian") {
-      tSpan.innerHTML = todLbl + `<span dir="ltr" style="unicode-bidi:isolate">${toLatDigits(gToday.gd)} ${GM_EN[gToday.gm - 1]} ${toLatDigits(gToday.gy)}</span>`;
+      tSpan.innerHTML = todLbl + `<span dir="ltr" style="unicode-bidi:isolate">${toLatDigits(gToday.gd)} ${GM_EN[gToday.gm - 1]}</span>`;
     } else if (cType === "kurdish") {
-      tSpan.textContent = todLbl + fa(tod.jd) + (cfg.lang==="en"?" ":"ی ") + getKM()[tod.jm - 1] + " " + fa(kTodayYear);
+      tSpan.textContent = todLbl + fa(tod.jd) + (cfg.lang==="en"?" ":"ی ") + getKM()[tod.jm - 1];
     } else {
-      tSpan.textContent = todLbl + fa(tod.jd) + " " + (isKu ? getKM()[tod.jm - 1] : getJM()[tod.jm - 1]) + " " + fa(tod.jy);
+      tSpan.textContent = todLbl + fa(tod.jd) + " " + (isKu ? getKM()[tod.jm - 1] : getJM()[tod.jm - 1]);
     }
   }
   updatePersistentStatusDate(false);
@@ -12090,7 +11814,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "74.1";
+const APP_CURRENT_VER = "74.6";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
@@ -12342,26 +12066,37 @@ setTimeout(() => {
   function safeJsonParse(key, fb){ try { return JSON.parse(localStorage.getItem(key) || "null") ?? fb; } catch(e){ return fb; } }
   function fmtToman(n){ return fa(Math.round(Number(n)||0).toLocaleString("en-US")); }
 
-  // --- 1. HAPTIC FEEDBACK ---
+  // --- 1. HAPTIC FEEDBACK (Debounced + Delegated for Days, Tabs & Buttons) ---
+  let _lastHapticMs = 0;
   window.triggerHaptic = function(kind = "light") {
     if (cfg && cfg.haptic === false) return;
+    const now = Date.now();
+    if (now - _lastHapticMs < 35) return;
+    _lastHapticMs = now;
     try {
       if (window.AndroidBridge && typeof window.AndroidBridge.triggerHaptic === "function") {
         window.AndroidBridge.triggerHaptic(kind);
         return;
       }
       if (navigator && typeof navigator.vibrate === "function") {
-        navigator.vibrate(kind === "heavy" ? 18 : (kind === "medium" ? 12 : 7));
+        navigator.vibrate(kind === "heavy" ? 22 : (kind === "medium" ? 14 : 9));
       }
     } catch(e) {}
   };
+  document.addEventListener("click", function(ev) {
+    if (cfg && cfg.haptic === false) return;
+    const t = ev.target && ev.target.closest
+      ? ev.target.closest("#calCard .d, #calCard .cell, #calCard .m-day, .nbtn, .pill, .fchip, .ibtn, .w-city-btn, .sc-switch")
+      : null;
+    if (t) window.triggerHaptic("light");
+  }, true);
 
   // --- 2. MARKET CATALOG HELPER ---
   function getAllLiveAssets() {
     const d = (typeof lastMarketPayload !== "undefined" && lastMarketPayload) ? lastMarketPayload : null;
     const list = [];
     if (d) {
-      ["gold", "fx", "etf"].forEach(sec => {
+      ["gold", "fx"].forEach(sec => {
         if (Array.isArray(d[sec])) {
           d[sec].forEach(it => {
             if (it && it.ico && Number(it.p) > 0 && it.ico !== "ounce" && it.ico !== "silver_oz") {
@@ -12376,8 +12111,7 @@ setTimeout(() => {
         { ico: "g18", n: "طلای ۱۸ عیار (گرم)", p: 0, c: "0%" },
         { ico: "emami", n: "سکه امامی", p: 0, c: "0%" },
         { ico: "usd", n: "دلار آمریکا", p: 0, c: "0%" },
-        { ico: "etf_ayar", n: "صندوق طلای عیار", p: 0, c: "0%" },
-        { ico: "etf_noghran", n: "صندوق نقره نقران", p: 0, c: "0%" }
+        { ico: "eur", n: "یورو اروپا", p: 0, c: "0%" }
       );
     }
     return list;
@@ -12477,7 +12211,7 @@ setTimeout(() => {
     // Draw SVG Donut Chart
     if (totalToman <= 0 || !rows.length) {
       svgEl.innerHTML = `<circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--brd)" stroke-width="5"/>`;
-      listEl.innerHTML = `<div style="font-size:11px;color:var(--sec);text-align:center;padding:8px">${tr("هنوز دارایی ثبت نشده است. طلا، ارز یا صندوق خود را اضافه کنید.", "هیچ داراییەک تۆمار نەکراوە.", "No holdings added yet.")}</div>`;
+      listEl.innerHTML = `<div style="font-size:11px;color:var(--sec);text-align:center;padding:8px">${tr("هنوز دارایی ثبت نشده است. طلا، سکه یا ارز خود را اضافه کنید.", "هیچ داراییەک تۆمار نەکراوە.", "No holdings added yet.")}</div>`;
       return;
     }
     let offset = 0;
@@ -12506,11 +12240,153 @@ setTimeout(() => {
     }).join("");
   };
 
-  // --- 4. PRICE ALERTS ---
+  // --- 4. PRICE ALERTS (with 3-Digit Formatting & Live Number-to-Words) ---
+  function normalizePriceDigits(str) {
+    return String(str || "")
+      .replace(/[۰-۹]/g, d => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+      .replace(/[٠-٩]/g, d => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
+      .replace(/[^0-9]/g, "")
+      .slice(0, 15);
+  }
+
+  function numberToWordsFa(n) {
+    n = Math.floor(Number(n) || 0);
+    if (n <= 0) return "";
+    const ones = ["", "یک", "دو", "سه", "چهار", "پنج", "شش", "هفت", "هشت", "نه"];
+    const teens = ["ده", "یازده", "دوازده", "سیزده", "چهارده", "پانزده", "شانزده", "هفده", "هجده", "نوزده"];
+    const tens = ["", "", "بیست", "سی", "چهل", "پنجاه", "شصت", "هفتاد", "هشتاد", "نود"];
+    const hundreds = ["", "صد", "دویست", "سیصد", "چهارصد", "پانصد", "ششصد", "هفتصد", "هشتصد", "نهصد"];
+    const scales = ["", "هزار", "میلیون", "میلیارد", "تریلیون"];
+    function chunk(num) {
+      const p = [];
+      const h = Math.floor(num / 100), r = num % 100;
+      if (h) p.push(hundreds[h]);
+      if (r >= 10 && r < 20) p.push(teens[r - 10]);
+      else {
+        const t = Math.floor(r / 10), o = r % 10;
+        if (t) p.push(tens[t]);
+        if (o) p.push(ones[o]);
+      }
+      return p.join(" و ");
+    }
+    const parts = [];
+    let idx = 0;
+    while (n > 0 && idx < scales.length) {
+      const c = n % 1000;
+      if (c > 0) {
+        const w = chunk(c);
+        parts.unshift(scales[idx] ? (w + " " + scales[idx]) : w);
+      }
+      n = Math.floor(n / 1000);
+      idx++;
+    }
+    return parts.join(" و ");
+  }
+
+  function numberToWordsKu(n) {
+    n = Math.floor(Number(n) || 0);
+    if (n <= 0) return "";
+    const ones = ["", "یەک", "دوو", "سێ", "چوار", "پێنج", "شەش", "حەوت", "هەشت", "نۆ"];
+    const teens = ["دە", "یازدە", "دوازدە", "سێزدە", "چواردە", "پازدە", "شازدە", "حەڤدە", "هەژدە", "نۆزدە"];
+    const tens = ["", "", "بیست", "سی", "چل", "پەنجا", "شەست", "حەفتا", "هەشتا", "نەوەد"];
+    const hundreds = ["", "سەد", "دووسەد", "سێسەد", "چوارسەد", "پێنجسەد", "شەشسەد", "حەوتسەد", "هەشتسەد", "نۆسەد"];
+    const scales = ["", "هەزار", "ملیۆن", "ملیار", "ترلیۆن"];
+    function chunk(num) {
+      const p = [];
+      const h = Math.floor(num / 100), r = num % 100;
+      if (h) p.push(hundreds[h]);
+      if (r >= 10 && r < 20) p.push(teens[r - 10]);
+      else {
+        const t = Math.floor(r / 10), o = r % 10;
+        if (t) p.push(tens[t]);
+        if (o) p.push(ones[o]);
+      }
+      return p.join(" و ");
+    }
+    const parts = [];
+    let idx = 0;
+    while (n > 0 && idx < scales.length) {
+      const c = n % 1000;
+      if (c > 0) {
+        const w = chunk(c);
+        parts.unshift(scales[idx] ? (w + " " + scales[idx]) : w);
+      }
+      n = Math.floor(n / 1000);
+      idx++;
+    }
+    return parts.join(" و ");
+  }
+
+  function numberToWordsEn(n) {
+    n = Math.floor(Number(n) || 0);
+    if (n <= 0) return "";
+    const ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+    const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+    const scales = ["", "thousand", "million", "billion", "trillion"];
+    function chunk(num) {
+      const p = [];
+      const h = Math.floor(num / 100), r = num % 100;
+      if (h) p.push(ones[h] + " hundred");
+      if (r >= 10 && r < 20) p.push(teens[r - 10]);
+      else {
+        const t = Math.floor(r / 10), o = r % 10;
+        if (t && o) p.push(tens[t] + "-" + ones[o]);
+        else if (t) p.push(tens[t]);
+        else if (o) p.push(ones[o]);
+      }
+      return p.join(" ");
+    }
+    const parts = [];
+    let idx = 0;
+    while (n > 0 && idx < scales.length) {
+      const c = n % 1000;
+      if (c > 0) {
+        const w = chunk(c);
+        parts.unshift(scales[idx] ? (w + " " + scales[idx]) : w);
+      }
+      n = Math.floor(n / 1000);
+      idx++;
+    }
+    const out = parts.join(", ");
+    return out.charAt(0).toUpperCase() + out.slice(1);
+  }
+
+  function formatNumberToWordsLocal(num) {
+    const l = (cfg && cfg.lang) || "fa";
+    if (l === "en") return numberToWordsEn(num) + " Toman";
+    if (l === "ku") return numberToWordsKu(num) + " تمەن";
+    return numberToWordsFa(num) + " تومان";
+  }
+
+  window.onPaTargetInput = function(inp) {
+    if (!inp) return;
+    const raw = normalizePriceDigits(inp.value);
+    const wordsEl = document.getElementById("paTargetWords");
+    if (!raw) {
+      inp.value = "";
+      if (wordsEl) { wordsEl.style.display = "none"; wordsEl.textContent = ""; }
+      return;
+    }
+    const num = Number(raw);
+    const formatted = isFinite(num) ? num.toLocaleString("en-US") : raw;
+    if (inp.value !== formatted) inp.value = formatted;
+    if (wordsEl) {
+      if (isFinite(num) && num > 0) {
+        wordsEl.textContent = "💬 " + formatNumberToWordsLocal(num);
+        wordsEl.style.display = "block";
+      } else {
+        wordsEl.style.display = "none";
+      }
+    }
+  };
+
   window.addPriceAlert = function() {
     const ico = document.getElementById("paAssetSel")?.value;
     const dir = document.getElementById("paDirSel")?.value || "above";
-    const target = Number(document.getElementById("paTargetInp")?.value || 0);
+    const inp = document.getElementById("paTargetInp");
+    const raw = normalizePriceDigits(inp?.value || "");
+    const target = Number(raw || 0);
     if (!ico || !isFinite(target) || target <= 0) {
       if (typeof showToast === "function") showToast(tr("قیمت هدف معتبر وارد کنید", "نرخی دروست بنووسە", "Enter a valid target price"));
       return;
@@ -12518,7 +12394,9 @@ setTimeout(() => {
     const alerts = safeJsonParse(PA_KEY, []);
     alerts.push({ id: "pa_" + Date.now(), ico, dir, target: Math.round(target), fired: false });
     localStorage.setItem(PA_KEY, JSON.stringify(alerts));
-    document.getElementById("paTargetInp").value = "";
+    if (inp) inp.value = "";
+    const wordsEl = document.getElementById("paTargetWords");
+    if (wordsEl) { wordsEl.style.display = "none"; wordsEl.textContent = ""; }
     triggerHaptic("medium");
     renderPriceAlerts();
     evaluatePriceAlerts();
@@ -12827,13 +12705,15 @@ setTimeout(() => {
   window.renderPrayerTimes = function() {
     const card = document.getElementById("prayerTimesCard");
     const grid = document.getElementById("prayerTimesGrid");
-    const lbl = document.getElementById("prayerCityLbl");
+    const btn = document.getElementById("prayerCityBtn");
     if (!card || !grid) return;
     if (!cfg || !cfg.showPrayer) { card.style.display = "none"; return; }
     card.style.display = "flex";
-    const parts = String(cfg.city || "35.6892,51.3890,تهران").split(",");
+    const srcCity = cfg.prayerCity || cfg.city || "35.6892,51.3890,تهران";
+    const parts = String(srcCity).split(",");
     const lat = Number(parts[0]) || 35.6892, lon = Number(parts[1]) || 51.3890, cname = parts[2] || "تهران";
-    if (lbl) lbl.textContent = "📍 " + cname;
+    const dispName = (typeof trCity === "function") ? trCity(cname) : cname;
+    if (btn) btn.textContent = "📍 " + dispName + " ▾";
     const now = new Date();
     const nowHr = now.getHours() + now.getMinutes() / 60;
     const pt = computePrayerTimes(lat, lon, now);
@@ -12900,13 +12780,17 @@ setTimeout(() => {
     input.value = "";
   };
 
-  // --- 10. PRIVACY LOCK (4-Digit PIN + Android Native Biometric/Keyguard) ---
+  // --- 10. PRIVACY LOCK (Themed 4-Digit PIN + Native Android BiometricPrompt) ---
   let pinBuf = "";
+  let pinMode = "unlock"; // "unlock" | "set" | "disable"
   function hashPin(p) {
     let h = 2166136261;
     const s = "SC74_" + String(p);
     for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
     return (h >>> 0).toString(16);
+  }
+  function hasNativeBiometric() {
+    return !!(window.AndroidBridge && typeof window.AndroidBridge.requestDeviceAuth === "function");
   }
   function updateLockSettingsUI() {
     const hasPin = !!localStorage.getItem(LOCK_KEY);
@@ -12915,32 +12799,58 @@ setTimeout(() => {
     if (st) st.textContent = hasPin ? tr("فعال • قفل هنگام ورود به برنامه", "چالاکە • قوفڵی چوونەژوورەوە", "Enabled • Locked on launch") : tr("غیرفعال • محافظت از یادداشت‌ها و سبد دارایی", "ناچالاکە", "Disabled");
     if (btn) btn.textContent = hasPin ? tr("حذف قفل", "لابردنی قوفڵ", "Disable") : tr("تنظیم قفل", "دانانی قوفڵ", "Set PIN");
   }
+  function openPinOverlay(mode) {
+    pinMode = mode;
+    pinBuf = "";
+    updatePinDots();
+    const ov = document.getElementById("privacyLockOverlay");
+    const tit = document.getElementById("lockOverlayTitle");
+    const sub = document.getElementById("lockOverlaySub");
+    const cancelBtn = document.getElementById("pinCancelBtn");
+    const bioBtn = document.getElementById("pinBioBtn");
+    if (sub) sub.style.color = "var(--sec)";
+    if (mode === "set") {
+      if (tit) tit.textContent = tr("تنظیم رمز ۴ رقمی", "دانانی پینی ٤ ژمارەیی", "Set 4-Digit PIN");
+      if (sub) sub.textContent = tr("یک رمز ۴ رقمی برای قفل برنامه انتخاب کنید", "پینێکی ٤ ژمارەیی هەڵبژێرە", "Choose a 4-digit PIN to lock Smart Cal");
+      if (cancelBtn) { cancelBtn.style.display = "inline-block"; cancelBtn.textContent = tr("انصراف", "پاشگەزبوونەوە", "Cancel"); }
+      if (bioBtn) bioBtn.style.visibility = "hidden";
+    } else if (mode === "disable") {
+      if (tit) tit.textContent = tr("حذف قفل حریم خصوصی", "لابردنی قوفڵی تایبەتمەندی", "Disable Privacy Lock");
+      if (sub) sub.textContent = tr("رمز ۴ رقمی فعلی یا اثر انگشت را وارد کنید", "پینی ئێستا یان پەنجەمۆر بەکاربهێنە", "Enter current PIN or use fingerprint");
+      if (cancelBtn) { cancelBtn.style.display = "inline-block"; cancelBtn.textContent = tr("انصراف", "پاشگەزبوونەوە", "Cancel"); }
+      if (bioBtn) { bioBtn.style.visibility = "visible"; bioBtn.style.opacity = hasNativeBiometric() ? "1" : "0.3"; }
+    } else {
+      if (tit) tit.textContent = tr("Smart Cal قفل است", "Smart Cal قوفڵ کراوە", "Smart Cal is Locked");
+      if (sub) sub.textContent = tr("رمز ۴ رقمی یا اثر انگشت خود را وارد کنید", "پین یان پەنجەمۆرەکەت بەکاربهێنە", "Enter your 4-digit PIN or use fingerprint");
+      if (cancelBtn) cancelBtn.style.display = "none";
+      if (bioBtn) { bioBtn.style.visibility = "visible"; bioBtn.style.opacity = hasNativeBiometric() ? "1" : "0.3"; }
+    }
+    if (ov) ov.classList.add("show");
+  }
+  window.closePinOverlay = function() {
+    if (pinMode === "unlock") return;
+    pinBuf = "";
+    updatePinDots();
+    document.getElementById("privacyLockOverlay")?.classList.remove("show");
+  };
   window.configurePrivacyLock = function() {
     const existing = localStorage.getItem(LOCK_KEY);
-    if (existing) {
-      const check = prompt(tr("برای غیرفعال کردن قفل، رمز ۴ رقمی فعلی را وارد کنید:", "پینی ئێستا بنووسە:", "Enter current 4-digit PIN to disable:"));
-      if (check === null) return;
-      if (hashPin(check.trim()) === existing) {
-        localStorage.removeItem(LOCK_KEY);
-        updateLockSettingsUI();
-        if (typeof showToast === "function") showToast(tr("قفل حریم خصوصی غیرفعال شد 🔓", "قوفڵ ناچالاک کرا 🔓", "Privacy lock disabled 🔓"));
-      } else {
-        if (typeof showToast === "function") showToast(tr("رمز اشتباه است ❌", "پین هەڵەیە ❌", "Wrong PIN ❌"));
-      }
-      return;
-    }
-    const newPin = prompt(tr("یک رمز ۴ رقمی عددی وارد کنید (مثلاً 1234):", "پینێکی ٤ ژمارەیی بنووسە:", "Enter a 4-digit numeric PIN:"));
-    if (!newPin || !/^\d{4}$/.test(newPin.trim())) {
-      if (typeof showToast === "function") showToast(tr("لطفاً دقیقاً ۴ رقم عددی وارد کنید", "تکایە ٤ ژمارە بنووسە", "Please enter exactly 4 digits"));
-      return;
-    }
-    localStorage.setItem(LOCK_KEY, hashPin(newPin.trim()));
-    updateLockSettingsUI();
-    if (typeof showToast === "function") showToast(tr("قفل ۴ رقمی فعال شد 🔐", "قوفڵ چالاک کرا 🔐", "Privacy lock enabled 🔐"));
+    openPinOverlay(existing ? "disable" : "set");
   };
 
   function updatePinDots() {
     document.querySelectorAll("#lockPinDots .pin-dot").forEach((d, i) => d.classList.toggle("filled", i < pinBuf.length));
+  }
+  function completePinActionSuccess() {
+    pinBuf = "";
+    updatePinDots();
+    document.getElementById("privacyLockOverlay")?.classList.remove("show");
+    triggerHaptic("medium");
+    if (pinMode === "disable") {
+      localStorage.removeItem(LOCK_KEY);
+      updateLockSettingsUI();
+      if (typeof showToast === "function") showToast(tr("قفل حریم خصوصی غیرفعال شد 🔓", "قوفڵ ناچالاک کرا 🔓", "Privacy lock disabled 🔓"));
+    }
   }
   window.pinPadPress = function(digit) {
     triggerHaptic("light");
@@ -12948,24 +12858,31 @@ setTimeout(() => {
     pinBuf += String(digit);
     updatePinDots();
     if (pinBuf.length === 4) {
-      const saved = localStorage.getItem(LOCK_KEY);
-      if (hashPin(pinBuf) === saved) {
+      if (pinMode === "set") {
+        localStorage.setItem(LOCK_KEY, hashPin(pinBuf));
         pinBuf = "";
         updatePinDots();
         document.getElementById("privacyLockOverlay")?.classList.remove("show");
+        updateLockSettingsUI();
         triggerHaptic("medium");
+        if (typeof showToast === "function") showToast(tr("قفل ۴ رقمی و اثر انگشت فعال شد 🔐", "قوفڵ چالاک کرا 🔐", "Privacy lock enabled 🔐"));
+        return;
+      }
+      const saved = localStorage.getItem(LOCK_KEY);
+      if (hashPin(pinBuf) === saved) {
+        completePinActionSuccess();
       } else {
         pinBuf = "";
         updatePinDots();
         triggerHaptic("heavy");
         const sub = document.getElementById("lockOverlaySub");
-        if (sub) { sub.textContent = tr("رمز اشتباه است! دوباره تلاش کنید", "پین هەڵەیە!", "Wrong PIN! Try again"); sub.style.color = "#F87171"; }
+        if (sub) { sub.textContent = tr("رمز اشتباه است! دوباره تلاش کنید", "پین هەڵەیە!", "Wrong PIN! Try again"); sub.style.color = "var(--hol)"; }
       }
     }
   };
   window.pinPadBackspace = function() { pinBuf = pinBuf.slice(0, -1); updatePinDots(); triggerHaptic("light"); };
   window.triggerNativeBiometricUnlock = function() {
-    if (window.AndroidBridge && typeof window.AndroidBridge.requestDeviceAuth === "function") {
+    if (hasNativeBiometric()) {
       try { window.AndroidBridge.requestDeviceAuth(); } catch(e) {}
     } else {
       if (typeof showToast === "function") showToast(tr("ورود با اثر انگشت مخصوص نسخه اندروید است", "تایبەتە بە ئەندرۆید", "Biometric unlock is available in Android app"));
@@ -12973,10 +12890,7 @@ setTimeout(() => {
   };
   window.onNativeDeviceAuthResult = function(success) {
     if (success) {
-      pinBuf = "";
-      updatePinDots();
-      document.getElementById("privacyLockOverlay")?.classList.remove("show");
-      triggerHaptic("medium");
+      completePinActionSuccess();
     }
   };
 
@@ -12986,7 +12900,7 @@ setTimeout(() => {
     try {
       const assets = getAllLiveAssets();
       const map = Object.fromEntries(assets.map(a => [a.ico, a]));
-      const pick = ["g18", "emami", "usd", "etf_noghran", "etf_ayar"].map(k => map[k]).filter(Boolean).slice(0, 4);
+      const pick = ["g18", "emami", "usd", "eur"].map(k => map[k]).filter(Boolean).slice(0, 4);
       const rates = pick.map(x => ({ n: x.n.replace(/\(.*?\)/g, "").trim(), p: fmtToman(x.p), c: x.c || "0%" }));
       const todKey = (typeof tod !== "undefined") ? `${tod.jy}-${tod.jm}-${tod.jd}` : "";
       const todayNotes = (typeof notes === "object" && notes && Array.isArray(notes[todKey])) ? notes[todKey] : [];
@@ -13081,6 +12995,8 @@ setTimeout(() => {
     updateLockSettingsUI();
     renderPortfolio();
     renderPriceAlerts();
+    const paInp = document.getElementById("paTargetInp");
+    if (paInp && paInp.value) onPaTargetInput(paInp);
     renderRecurringList();
     renderPrayerTimes();
     calcMarketConverter();
@@ -13112,11 +13028,9 @@ setTimeout(() => {
       const sp = document.getElementById("setShowPrayer"); if (sp) sp.checked = !!cfg.showPrayer;
       const sh = document.getElementById("setHaptic"); if (sh) sh.checked = cfg.haptic !== false;
       if (localStorage.getItem(LOCK_KEY)) {
-        const ov = document.getElementById("privacyLockOverlay");
-        if (ov) ov.classList.add("show");
-        const bioBtn = document.getElementById("pinBioBtn");
-        if (bioBtn && !(window.AndroidBridge && typeof window.AndroidBridge.requestDeviceAuth === "function")) {
-          bioBtn.style.opacity = "0.3";
+        openPinOverlay("unlock");
+        if (hasNativeBiometric()) {
+          setTimeout(() => { try { window.AndroidBridge.requestDeviceAuth(); } catch(e) {} }, 450);
         }
       }
       safeJsonParse(REC_KEY, []).forEach(scheduleRecurringNativeAlarm);
@@ -13243,27 +13157,32 @@ setTimeout(() => {
   </div>
 </div>
 
-<!-- v74 Privacy Lock Overlay -->
+<!-- v74.2 Themed Privacy Lock & PIN Setup Overlay -->
 <div id="privacyLockOverlay" aria-modal="true">
-  <div style="font-size:36px">🔐</div>
-  <b style="font-size:16px" id="lockOverlayTitle">Smart Cal قفل است</b>
-  <span style="font-size:11.5px;opacity:0.75" id="lockOverlaySub">رمز ۴ رقمی خود را وارد کنید</span>
-  <div class="pin-dots" id="lockPinDots">
-    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
-  </div>
-  <div class="pin-pad">
-    <button type="button" class="pin-key" onclick="pinPadPress('1')">1</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('2')">2</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('3')">3</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('4')">4</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('5')">5</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('6')">6</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('7')">7</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('8')">8</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('9')">9</button>
-    <button type="button" class="pin-key" id="pinBioBtn" onclick="triggerNativeBiometricUnlock()" title="اثر انگشت / قفل گوشی">👆</button>
-    <button type="button" class="pin-key" onclick="pinPadPress('0')">0</button>
-    <button type="button" class="pin-key" onclick="pinPadBackspace()">⌫</button>
+  <div class="pin-sheet">
+    <div style="font-size:34px;line-height:1" id="lockOverlayIcon">🔐</div>
+    <b style="font-size:15.5px;text-align:center" id="lockOverlayTitle">Smart Cal قفل است</b>
+    <span style="font-size:11.5px;color:var(--sec);text-align:center" id="lockOverlaySub">رمز ۴ رقمی خود را وارد کنید</span>
+    <div class="pin-dots" id="lockPinDots">
+      <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+    </div>
+    <div class="pin-pad">
+      <button type="button" class="pin-key" onclick="pinPadPress('1')">1</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('2')">2</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('3')">3</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('4')">4</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('5')">5</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('6')">6</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('7')">7</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('8')">8</button>
+      <button type="button" class="pin-key" onclick="pinPadPress('9')">9</button>
+      <button type="button" class="pin-key" id="pinBioBtn" onclick="triggerNativeBiometricUnlock()" title="اثر انگشت / قفل گوشی">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
+      </button>
+      <button type="button" class="pin-key" onclick="pinPadPress('0')">0</button>
+      <button type="button" class="pin-key" onclick="pinPadBackspace()">⌫</button>
+    </div>
+    <button type="button" id="pinCancelBtn" class="pin-cancel-btn" style="display:none" onclick="closePinOverlay()">انصراف</button>
   </div>
 </div>
 
