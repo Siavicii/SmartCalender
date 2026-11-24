@@ -2702,18 +2702,38 @@ html:not(.app-ready) .view.active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-  padding: 9px 11px;
-  border-radius: 15px;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 10px;
+  padding: 5px 6px;
+  border-radius: 13px;
   background: var(--sub);
   border: 1px solid var(--brd);
 }
+.mkt-toolbar::-webkit-scrollbar { display: none; }
 .mkt-cat-pills {
   display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+.mkt-toolbar .fchip {
+  padding: 4px 7.5px;
+  font-size: 10.2px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#mktWatchToggleBtn {
+  height: 25px !important;
+  padding: 0 7px !important;
+  font-size: 10px !important;
+  border-radius: 99px !important;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .mkt-watch-panel {
   display: none;
@@ -3031,11 +3051,11 @@ setTimeout(function(){ if (window.__dismissSmartSplash) window.__dismissSmartSpl
       <div class="mkt-toolbar" id="mktCustomToolbar">
         <div class="mkt-cat-pills" id="mktCatFilterChips">
           <button type="button" class="fchip act" data-mcat="all" onclick="setMarketCatFilter('all', this)">همه</button>
-          <button type="button" class="fchip" data-mcat="metals" onclick="setMarketCatFilter('metals', this)">🪙 طلا و فلزات</button>
-          <button type="button" class="fchip" data-mcat="fx" onclick="setMarketCatFilter('fx', this)">💵 ارزها</button>
-          <button type="button" class="fchip" data-mcat="etf" onclick="setMarketCatFilter('etf', this)">📈 صندوق‌های بورسی</button>
+          <button type="button" class="fchip" data-mcat="metals" onclick="setMarketCatFilter('metals', this)">طلا و فلزات</button>
+          <button type="button" class="fchip" data-mcat="fx" onclick="setMarketCatFilter('fx', this)">ارزها</button>
+          <button type="button" class="fchip" data-mcat="etf" onclick="setMarketCatFilter('etf', this)">صندوق‌ها</button>
         </div>
-        <button type="button" class="ibtn" id="mktWatchToggleBtn" onclick="toggleMarketWatchPanel()" style="height:28px;padding:0 9px;font-size:11px;border-radius:10px;color:var(--pri);border-color:var(--pri)">⚙️ انتخاب و اولویت</button>
+        <button type="button" class="ibtn" id="mktWatchToggleBtn" onclick="toggleMarketWatchPanel()" style="color:var(--pri);border-color:var(--pri)">⚙️ اولویت</button>
       </div>
 
       <div class="mkt-watch-panel" id="mktWatchPanel">
@@ -6425,12 +6445,45 @@ async function fetchJsonFast(url, timeoutMs = 4500) {
   return null;
 }
 
-async function fetchTextViaProxy(targetUrl, timeoutMs = 6500) {
-  if (window.AndroidBridge && window.AndroidBridge.fetchUrlNative) {
+window.__nativeFetchCbs = window.__nativeFetchCbs || {};
+window.__nativeFetchSeq = window.__nativeFetchSeq || 0;
+window.__onNativeFetchDone = function(reqId, text) {
+  const cb = window.__nativeFetchCbs && window.__nativeFetchCbs[reqId];
+  if (cb) {
+    delete window.__nativeFetchCbs[reqId];
+    try { cb(text || ""); } catch (e) {}
+  }
+};
+function fetchUrlNativePromise(targetUrl, timeoutMs = 5000) {
+  if (!window.AndroidBridge || typeof window.AndroidBridge.fetchUrlNativeAsync !== "function") {
+    return Promise.resolve(null);
+  }
+  return new Promise((resolve) => {
+    const reqId = "nf_" + (++window.__nativeFetchSeq) + "_" + Date.now();
+    const tid = setTimeout(() => {
+      if (window.__nativeFetchCbs && window.__nativeFetchCbs[reqId]) {
+        delete window.__nativeFetchCbs[reqId];
+      }
+      resolve(null);
+    }, timeoutMs);
+    window.__nativeFetchCbs[reqId] = (txt) => {
+      clearTimeout(tid);
+      resolve(txt && txt.length > 120 ? txt : null);
+    };
     try {
-      const nativeTxt = window.AndroidBridge.fetchUrlNative(targetUrl);
-      if (nativeTxt && nativeTxt.length > 120) return nativeTxt;
-    } catch (e) {}
+      window.AndroidBridge.fetchUrlNativeAsync(reqId, targetUrl);
+    } catch (e) {
+      clearTimeout(tid);
+      delete window.__nativeFetchCbs[reqId];
+      resolve(null);
+    }
+  });
+}
+
+async function fetchTextViaProxy(targetUrl, timeoutMs = 6500) {
+  if (window.AndroidBridge && typeof window.AndroidBridge.fetchUrlNativeAsync === "function") {
+    const nativeTxt = await fetchUrlNativePromise(targetUrl, Math.min(timeoutMs, 5000));
+    if (nativeTxt) return nativeTxt;
   }
   const attempts = [
     { url: targetUrl, unwrapJson: false },
@@ -6496,8 +6549,8 @@ async function fetchTgjuLive(bust = "") {
         g18, g24: parseNode(c.geram24, true), emami: parseNode(c.sekee, true),
         nim: parseNode(c.nim, true), rob: parseNode(c.rob, true), ounce: parseNode(c.ons, false),
         liveExtra: {
-          silver_g:  pickKey(["silver", "noghreh", "price_silver", "geram_silver"], true),
-          silver_oz: pickKey(["silver_ons", "ons_silver", "xag", "price_xag"], false),
+          silver_g:  pickKey(["silver_999", "silver_999_gram", "silver", "noghreh", "price_silver", "geram_silver"], true),
+          silver_oz: pickKey(["silver_ons", "ons_silver", "xag", "price_xag", "silver_ounce"], false),
           plat_oz:   pickKey(["platinum", "ons_platinum", "xpt", "price_xpt"], false),
           pall_oz:   pickKey(["palladium", "ons_palladium", "xpd", "price_xpd"], false),
           chf:       pickKey(["price_chf", "chf"], true),
@@ -6575,9 +6628,10 @@ async function fetchCryptoIrStats(bust = "") {
 }
 
 async function fetchGlobalFxAndGold() {
-  const [fxData, goldData] = await Promise.all([
+  const [fxData, goldData, silverData] = await Promise.all([
     fetchJsonFast("https://open.er-api.com/v6/latest/USD", 4000),
-    fetchJsonFast("https://api.gold-api.com/price/XAU", 4000)
+    fetchJsonFast("https://api.gold-api.com/price/XAU", 4000),
+    fetchJsonFast("https://api.gold-api.com/price/XAG", 4000)
   ]);
   const out = {};
   if (fxData && fxData.rates) {
@@ -6586,11 +6640,18 @@ async function fetchGlobalFxAndGold() {
     if (fxData.rates.AED) lastFxRatios.AED = 1 / fxData.rates.AED;
     if (fxData.rates.TRY) lastFxRatios.TRY = 1 / fxData.rates.TRY;
     if (fxData.rates.CAD) lastFxRatios.CAD = 1 / fxData.rates.CAD;
+    if (fxData.rates.CHF) lastFxRatios.CHF = 1 / fxData.rates.CHF;
+    if (fxData.rates.CNY) lastFxRatios.CNY = 1 / fxData.rates.CNY;
+    if (fxData.rates.SAR) lastFxRatios.SAR = 1 / fxData.rates.SAR;
+    if (fxData.rates.IQD) lastFxRatios.IQD = 1000 / fxData.rates.IQD;
     out.fxUpdated = true;
   }
   if (goldData && goldData.price > 1800) {
     out.ounce = Math.round(Number(goldData.price));
     lastFxRatios.ounce = out.ounce;
+  }
+  if (silverData && silverData.price > 10) {
+    out.silverOz = Number(Number(silverData.price).toFixed(2));
   }
   return out;
 }
@@ -6760,9 +6821,8 @@ async function fetchFallbackBourseEtfs(bust = "") {
   const missing = Object.keys(RAHAVARD_ETF_SYMBOLS).filter(k => !found[k]);
   if (missing.length) {
     const bourseUrls = [
-      "https://www.tsetmc.com/Loader.aspx?ParTree=15",
-      "https://tsetmc.ir/",
-      "https://www.irbourse.com/"
+      "https://cdn.tsetmc.com/api/ClosingPrice/GetMarketWatch?market=0&industrialGroup=&paperTypes%5B0%5D=8&showTraded=false&withBestLimits=false",
+      "https://old.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0"
     ];
     const bourseRes = await Promise.all(
       bourseUrls.map(async (u) => {
@@ -6788,15 +6848,42 @@ async function fetchFallbackBourseEtfs(bust = "") {
   return found;
 }
 
+function getIranMarketHours() {
+  const ir = new Date(Date.now() + 3.5 * 3600000);
+  const wd = ir.getUTCDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  const hr = ir.getUTCHours();
+  const isFriday = (wd === 5);
+  const isThursday = (wd === 4);
+  // Iran Gold/Coin/FX market: Sat-Wed 10:00-20:30 (10..20), Thu 10:00-15:30 (10..15), Fri closed
+  const isGoldFxOpen = !isFriday && (isThursday ? (hr >= 10 && hr < 16) : (hr >= 10 && hr < 21));
+  // Bourse Gold/Silver ETFs: Sat-Wed 12:00-18:00
+  const isEtfOpen = (!isFriday && !isThursday) && (hr >= 12 && hr < 18);
+  return { wd, hr, isFriday, isThursday, isGoldFxOpen, isEtfOpen };
+}
+
 async function fetchMarket(manual = false) {
   if (mktFetching && !manual) return;
   const b = LATEST_MARKET_BASELINE;
   const btn = document.getElementById("mktRefreshBtn");
   const updEl = document.getElementById("mktUpd");
+  const irHours = getIranMarketHours();
 
   const cached = JSON.parse(localStorage.getItem(PWA_MKT_CACHE_KEY) || "null");
-  if (!manual && cached && cached.usd >= 50000 && cached.gold?.[0]?.p >= 3000000) {
+  const hasValidCache = !!(cached && cached.usd >= 50000 && cached.gold?.[0]?.p >= 3000000);
+  if (!manual && hasValidCache) {
     renderMarket(cached, true);
+    // Outside Gold/FX & ETF trading hours, use cached closing prices without hitting network automatically
+    if (!irHours.isGoldFxOpen && !irHours.isEtfOpen) {
+      if (updEl) {
+        const cleanT = String(cached.time || "").split(" (")[0];
+        updEl.textContent = tr(
+          `بازار بسته • آخرین نرخ ثبت‌شده (${cleanT})`,
+          `بازاڕ داخراوە • دوایین نرخی تۆمارکراو (${cleanT})`,
+          `Market Closed • Last saved (${fa(cleanT)})`
+        );
+      }
+      return;
+    }
   }
 
   mktFetching = true;
@@ -6805,14 +6892,19 @@ async function fetchMarket(manual = false) {
 
   const bust = String(Date.now());
   try {
+    let cachedRealEtfs = {};
+    try { cachedRealEtfs = JSON.parse(localStorage.getItem("smartcal_etf_real_live_v72") || "{}") || {}; } catch (e) {}
+    const hasCachedEtfs = Object.keys(cachedRealEtfs).length > 0;
+    const shouldFetchEtfs = irHours.isEtfOpen || !hasCachedEtfs || manual;
+
     const [tgju, cryptoIr, globalData, rahavardEtfs] = await Promise.all([
       fetchTgjuLive(bust),
       fetchCryptoIrStats(bust),
       fetchGlobalFxAndGold(),
-      fetchRahavardEtfs(bust)
+      shouldFetchEtfs ? fetchRahavardEtfs(bust) : Promise.resolve({})
     ]);
-    const fallbackEtfs = await fetchFallbackBourseEtfs(bust);
-    const mergedEtfs = { ...(fallbackEtfs || {}), ...(rahavardEtfs || {}) };
+    const fallbackEtfs = shouldFetchEtfs ? await fetchFallbackBourseEtfs(bust) : {};
+    const mergedEtfs = shouldFetchEtfs ? { ...(fallbackEtfs || {}), ...(rahavardEtfs || {}) } : {};
 
     let usdPrice = 0, srcName = "";
     if (tgju?.usd?.p >= 50000) { usdPrice = tgju.usd.p; srcName = "TGJU زنده"; }
@@ -6870,6 +6962,7 @@ async function fetchMarket(manual = false) {
         { ico: "cad", n: "دلار کانادا (CAD)", p: cadPrice, c: tgju?.cad?.dp ? fmtPct(tgju.cad.dp, b.chg.cad) : dynPct(cadPrice, b.cad, b.chg.cad) }
       ],
       liveExtra: tgju?.liveExtra || null,
+      silverOzLive: globalData.silverOz || null,
       rahavardEtfs: mergedEtfs
     };
 
@@ -7055,116 +7148,79 @@ function renderMarketWatchPanel() {
 }
 
 function enrichMarketData(d) {
-  const usd = Number(d.usd) || 268500;
-  const g18Obj = (d.gold || []).find(x => x.ico === "g18") || { p: 24890000, c: "+0.42%" };
-  const g18P = Number(g18Obj.p) || 24890000;
-  const silverOz = 51.4;
-  const silverGramToman = Math.max(1000, Math.round(((silverOz / 31.1035) * usd) / 100) * 100);
-  const platOz = 1645;
-  const pallOz = 1420;
-  const chfP = Math.round(usd * 1.135 / 50) * 50;
-  const cnyP = Math.round(usd * 0.138 / 10) * 10;
-  const sarP = Math.round(usd * 0.2666 / 10) * 10;
-  const iqd1kP = Math.max(100, Math.round(usd * 0.00076 / 5) * 5);
-
+  const usd = Number(d.usd) || 0;
   const allItemsMap = new Map();
   (d.gold || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: x.ico === "ounce" ? "usd" : "toman" }));
   (d.fx || []).forEach(x => allItemsMap.set(x.ico, { ...x, unit: "toman" }));
 
   const lx = (d && d.liveExtra) || {};
-  const resolveTgjuOrFormula = (ico, formulaPrice, formulaChg, unit) => {
+  const setFromLive = (ico, unit, fallbackPrice = 0, fallbackChg = "0.00%") => {
+    const meta = MKT_NAME_I18N[ico] || { fa: ico };
     const node = lx[ico];
     if (node && node.p > 0) {
-      return {
-        p: node.p,
-        c: fmtPct(node.dp, formulaChg),
-        unit
-      };
+      allItemsMap.set(ico, { ico, n: meta.fa, p: node.p, c: fmtPct(node.dp, fallbackChg), unit, live: true });
+    } else if (fallbackPrice > 0) {
+      allItemsMap.set(ico, { ico, n: meta.fa, p: fallbackPrice, c: fallbackChg, unit, live: true });
+    } else {
+      allItemsMap.set(ico, { ico, n: meta.fa, p: 0, c: "", unit, live: false, unavailable: true });
     }
-    return { p: formulaPrice, c: formulaChg, unit };
   };
 
-  const extraEntries = [
-    { ico: "silver_g",  p: silverGramToman, c: "+0.54%", unit: "toman" },
-    { ico: "silver_oz", p: silverOz,        c: "+0.48%", unit: "usd" },
-    { ico: "plat_oz",   p: platOz,          c: "+0.22%", unit: "usd" },
-    { ico: "pall_oz",   p: pallOz,          c: "-0.19%", unit: "usd" },
-    { ico: "chf",       p: chfP,            c: "+0.27%", unit: "toman" },
-    { ico: "cny",       p: cnyP,            c: "+0.12%", unit: "toman" },
-    { ico: "sar",       p: sarP,            c: "+0.24%", unit: "toman" },
-    { ico: "iqd1k",     p: iqd1kP,          c: "+0.18%", unit: "toman" }
-  ];
-  extraEntries.forEach(e => {
-    const meta = MKT_NAME_I18N[e.ico] || { fa: e.ico };
-    const res = resolveTgjuOrFormula(e.ico, e.p, e.c, e.unit);
-    allItemsMap.set(e.ico, { ico: e.ico, n: meta.fa, p: res.p, c: res.c, unit: res.unit });
-  });
+  // Silver 999 & Ounce: ONLY real live TGJU price or real live XAG from gold-api.com (no fake hardcoded numbers)
+  const liveSilverOz = (lx.silver_oz && lx.silver_oz.p > 0) ? lx.silver_oz.p : (d.silverOzLive || 0);
+  const calcSilverGram = (liveSilverOz > 0 && usd > 0) ? Math.round(((liveSilverOz / 31.1035) * usd) / 100) * 100 : 0;
+  setFromLive("silver_g", "toman", calcSilverGram, "0.00%");
+  setFromLive("silver_oz", "usd", liveSilverOz, "0.00%");
+  setFromLive("plat_oz", "usd", 0, "0.00%");
+  setFromLive("pall_oz", "usd", 0, "0.00%");
 
+  // Extra FX: live TGJU or live open.er-api.com ratio
+  setFromLive("chf", "toman", (usd > 0 && lastFxRatios.CHF) ? Math.round((usd * lastFxRatios.CHF) / 50) * 50 : 0);
+  setFromLive("cny", "toman", (usd > 0 && lastFxRatios.CNY) ? Math.round((usd * lastFxRatios.CNY) / 10) * 10 : 0);
+  setFromLive("sar", "toman", (usd > 0 && lastFxRatios.SAR) ? Math.round((usd * lastFxRatios.SAR) / 10) * 10 : 0);
+  setFromLive("iqd1k", "toman", (usd > 0 && lastFxRatios.IQD) ? Math.round((usd * lastFxRatios.IQD) / 5) * 5 : 0);
 
-
-  const nowDtEtf = new Date();
-  const isAfter12Noon = nowDtEtf.getHours() >= 12;
-  const todayStampEtf = `${nowDtEtf.getFullYear()}-${nowDtEtf.getMonth() + 1}-${nowDtEtf.getDate()}`;
-  const ETF_LAST_DAY_KEY = "smartcal_etf_last_day_v72";
-  let savedDayEtfs = {};
+  // Bourse ETFs: ONLY real fetched prices from Rahavard365 / TSETMC / TGJU (NEVER fake anchors!)
+  const ETF_REAL_CACHE_KEY = "smartcal_etf_real_live_v72";
+  let savedRealEtfs = {};
   try {
-    const rawDayEtf = JSON.parse(localStorage.getItem(ETF_LAST_DAY_KEY) || "null");
-    if (rawDayEtf && rawDayEtf.day === todayStampEtf && rawDayEtf.items) {
-      savedDayEtfs = rawDayEtf.items;
-    }
+    savedRealEtfs = JSON.parse(localStorage.getItem(ETF_REAL_CACHE_KEY) || "{}") || {};
   } catch (e) {}
 
-  // Anchored reference daily Toman prices for Bourse Gold/Silver ETFs so the current day always has a realistic last-day price
-  const ETF_DAILY_ANCHORS = {
-    etf_ayar:    { p: 31850000, c: "+0.45%" },
-    etf_mesghal: { p: 32940000, c: "+0.52%" },
-    etf_gohar:   { p: 30920000, c: "+0.38%" },
-    etf_noghreh: { p: 1845000,  c: "+0.64%" },
-    etf_simorgh: { p: 1792000,  c: "+0.49%" },
-    etf_saat:    { p: 1868000,  c: "+0.58%" },
-    etf_noghran: { p: 1764000,  c: "+0.41%" }
-  };
-
   const rEtfs = (d && d.rahavardEtfs) || {};
-  const nextSavedDayEtfs = { ...savedDayEtfs };
+  const nextSavedReal = { ...savedRealEtfs };
+
+  const irNowEtf = new Date(Date.now() + 3.5 * 3600000);
+  const irWdEtf = irNowEtf.getUTCDay();
+  const irHrEtf = irNowEtf.getUTCHours();
+  const isEtfOpenNow = (irWdEtf !== 4 && irWdEtf !== 5) && irHrEtf >= 12 && irHrEtf < 18;
 
   ["etf_ayar", "etf_mesghal", "etf_gohar", "etf_noghreh", "etf_simorgh", "etf_saat", "etf_noghran"].forEach(ico => {
     const meta = MKT_NAME_I18N[ico] || { fa: ico };
-    const hit = rEtfs[ico];
-    const anc = ETF_DAILY_ANCHORS[ico] || { p: 25000000, c: "+0.25%" };
-
+    const hit = rEtfs[ico] || (lx[ico] && lx[ico].p > 0 ? { p: lx[ico].p, c: fmtPct(lx[ico].dp, "0.00%"), src: "TGJU" } : null);
     if (hit && hit.p > 0) {
       const pVal = Math.round(Number(hit.p));
-      const cVal = hit.c || "+0.00%";
-      nextSavedDayEtfs[ico] = { p: pVal, c: cVal, src: hit.src || "rahavard365.com" };
+      const cVal = hit.c || "0.00%";
+      nextSavedReal[ico] = { p: pVal, c: cVal, src: hit.src || "بورس / ره‌آورد" };
       allItemsMap.set(ico, {
-        ico,
-        n: meta.fa,
-        p: pVal,
-        c: cVal,
-        unit: "toman",
-        rahavardLive: isAfter12Noon,
-        etfSrc: hit.src || "rahavard365.com"
+        ico, n: meta.fa, p: pVal, c: cVal, unit: "toman",
+        rahavardLive: isEtfOpenNow,
+        etfSrc: hit.src || "بورس / ره‌آورد"
+      });
+    } else if (savedRealEtfs[ico] && savedRealEtfs[ico].p > 0) {
+      allItemsMap.set(ico, {
+        ico, n: meta.fa, p: savedRealEtfs[ico].p, c: savedRealEtfs[ico].c || "0.00%", unit: "toman",
+        rahavardLive: false,
+        etfSrc: savedRealEtfs[ico].src || "قیمت روز قبل"
       });
     } else {
-      const prevDay = savedDayEtfs[ico];
-      const baseP = (prevDay && prevDay.p > 0) ? prevDay.p : anc.p;
-      const baseC = (prevDay && prevDay.c) ? prevDay.c : anc.c;
       allItemsMap.set(ico, {
-        ico,
-        n: meta.fa,
-        p: baseP,
-        c: baseC,
-        unit: "toman",
-        rahavardLive: false,
-        etfSrc: (prevDay && prevDay.src) ? prevDay.src : (isAfter12Noon ? "rahavard365 / tsetmc" : "آخرین قیمت روز جاری")
+        ico, n: meta.fa, p: 0, c: "", unit: "toman", rahavardLive: false, unavailable: true
       });
     }
   });
 
-  try {
-    localStorage.setItem(ETF_LAST_DAY_KEY, JSON.stringify({ day: todayStampEtf, items: nextSavedDayEtfs }));
-  } catch (e) {}
+  try { localStorage.setItem(ETF_REAL_CACHE_KEY, JSON.stringify(nextSavedReal)); } catch (e) {}
   return allItemsMap;
 }
 
@@ -7246,12 +7302,12 @@ function renderMarket(d, isCached) {
   const chips = document.querySelectorAll("#mktCatFilterChips .fchip");
   if (chips.length >= 4) {
     chips[0].textContent = tr("همه", "هەموو", "All");
-    chips[1].textContent = tr("🪙 طلا و فلزات", "🪙 زێڕ و کانزاکان", "🪙 Gold & Metals");
-    chips[2].textContent = tr("💵 ارزها", "💵 دراوەکان", "💵 Currencies");
-    chips[3].textContent = tr("📈 صندوق‌های بورسی", "📈 سندووقەکانی بۆرسە", "📈 Bourse ETFs");
+    chips[1].textContent = tr("طلا و فلزات", "زێڕ و کانزا", "Metals");
+    chips[2].textContent = tr("ارزها", "دراوەکان", "FX");
+    chips[3].textContent = tr("صندوق‌ها", "سندووقەکان", "ETFs");
   }
   const wBtn = document.getElementById("mktWatchToggleBtn");
-  if (wBtn) wBtn.textContent = tr("⚙️ انتخاب و اولویت", "⚙️ هەڵبژاردن و پێشەنگی", "⚙️ Watchlist & Priority");
+  if (wBtn) wBtn.textContent = tr("⚙️ اولویت", "⚙️ پێشەنگی", "⚙️ Filter");
   const gTitle = document.getElementById("mktGoldSecTitle");
   const fTitle = document.getElementById("mktFxSecTitle");
   const eTitle = document.getElementById("mktEtfSecTitle");
@@ -7273,12 +7329,14 @@ function renderMarket(d, isCached) {
     const badgeColor = isZero ? "var(--sec)" : (isNeg ? "var(--hol)" : "var(--grn)");
     const arrow = isZero ? "• " : (isNeg ? "▼ " : "▲ ");
     const unitStr = x.unit === "usd" ? tr("دلار", "دۆلار", "USD") : tr("تومان", "تمەن", "Toman");
-    const subMeta = x.ico && x.ico.startsWith("etf_") ? (x.rahavardLive ? `لحظه‌ای (${x.etfSrc || "rahavard365"}) • ${fa(x.c)}` : `${tr("آخرین نرخ روز جاری", "دوایین نرخی ڕۆژ", "Latest Today")} • ${fa(x.c)}`) : fa(x.c);
+    const subMeta = x.ico && x.ico.startsWith("etf_") ? (x.rahavardLive ? `${tr("لحظه‌ای", "زیندوو", "Live")} • ${fa(x.c)}` : `${tr("قیمت روز قبل", "نرخی ڕۆژی پێشوو", "Prev Day Close")} • ${fa(x.c)}`) : fa(x.c);
     return `<div class="mkt-row" style="${prefItem.star ? 'border:1px solid rgba(245,158,11,0.45)' : ''}">
       <div class="mkt-name">${getAssetIconHtml(x.ico)}<span>${esc(itemName)}</span>${starBadge}</div>
       <div class="mkt-val">
-        <div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${unitStr}</span></div>
-        <span style="color:${badgeColor};font-size:10.5px;font-weight:700;direction:ltr;display:inline-block">${arrow}${subMeta}</span>
+        ${x.unavailable || !x.p
+          ? `<div class="mkt-price" style="font-size:11.5px;color:var(--sec)">${tr("عدم دریافت نرخ زنده", "نرخی زیندوو بەردەست نییە", "Live rate unavailable")}</div>`
+          : `<div class="mkt-price">${fmtNum(x.p)} <span class="mkt-unit">${unitStr}</span></div>
+             <span style="color:${badgeColor};font-size:10.5px;font-weight:700;direction:ltr;display:inline-block">${arrow}${subMeta}</span>`}
       </div>
     </div>`;
   };
@@ -9817,7 +9875,7 @@ if (window.__dismissSmartSplash) window.__dismissSmartSplash();
 // Defer non-critical background work until after opening animation completes cleanly
 setTimeout(() => { try { checkBirthdaySurprise(false); } catch(e) {} }, 850);
 setTimeout(() => { try { fetchWeather(true); } catch(e) {} }, 980);
-setTimeout(() => { try { fetchMarket(false); } catch(e) {} }, 1250);
+// Market loads lazily when opening Assets tab for instant zero-lag startup
 setTimeout(() => {
   try { detectUserLocation(false); } catch(e) {}
   try { if (typeof detectAndSyncUserCountry === "function") detectAndSyncUserCountry(false); } catch(e) {}
@@ -9829,7 +9887,11 @@ setInterval(() => {
   }
 }, 600000);
 
-setInterval(()=>fetchMarket(false),300000);
+setInterval(() => {
+  if (typeof activeTabId !== "undefined" && activeTabId === "mkt") {
+    fetchMarket(false);
+  }
+}, 300000);
 
 // =========================================================================
 // OPTIONAL GOOGLE & PERSONAL CALENDAR SYNC (Android Native + PWA OAuth + ICS)
