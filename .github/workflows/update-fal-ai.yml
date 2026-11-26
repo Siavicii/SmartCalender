@@ -1,0 +1,72 @@
+name: AI Daily Horoscope Updater
+
+on:
+  schedule:
+    # Staggered non-round UTC minutes to avoid GitHub Actions :00/:30 queue drops
+    # 05:47 IRST (primary), 08:13 IRST (backup 1), 12:49 IRST (backup 2)
+    - cron: "17 2 * * *"
+    - cron: "43 4 * * *"
+    - cron: "19 9 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/update-fal-ai.yml"
+      - "scripts/ai_fal_updater.py"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force regenerate even if today's daily_fal.json already exists"
+        required: false
+        default: "true"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: smartcal-pwa-daily-fal
+  cancel-in-progress: false
+
+jobs:
+  update-fal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Gemini AI Daily Horoscope Generator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          FORCE_UPDATE: ${{ github.event.inputs.force || '' }}
+        run: python scripts/ai_fal_updater.py
+
+      - name: Commit updated daily_fal.json if changed
+        run: |
+          git config user.name "SmartCal AI Bot"
+          git config user.email "actions@users.noreply.github.com"
+          BRANCH="${GITHUB_REF_NAME:-main}"
+          git add daily_fal.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No changes in daily_fal.json."
+            exit 0
+          fi
+          git commit -m "chore(ai): update daily Gemini horoscopes in daily_fal.json"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "$BRANCH" || true
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Failed to push daily_fal.json after retries"
+          exit 1
