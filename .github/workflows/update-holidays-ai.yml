@@ -1,0 +1,55 @@
+name: AI Emergency Holidays Updater
+
+on:
+  schedule:
+    # Run every 3 hours on non-round minute (:23) to avoid GitHub Actions :00 queue drops
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: smartcal-pwa-holidays-ai
+  cancel-in-progress: false
+
+jobs:
+  update-holidays:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run AI Emergency Holiday Scanner
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/ai_holidays_updater.py
+
+      - name: Commit updated holidays.json if changed
+        run: |
+          git config user.name "SmartCal AI Bot"
+          git config user.email "actions@users.noreply.github.com"
+          BRANCH="${GITHUB_REF_NAME:-main}"
+          git add holidays.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No new emergency holidays detected."
+            exit 0
+          fi
+          git commit -m "chore(ai): update emergency holidays in holidays.json"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "$BRANCH" || true
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Failed to push holidays.json after retries"
+          exit 1
