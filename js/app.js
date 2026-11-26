@@ -1,6 +1,6 @@
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v75.1";
+  const VER = "v75.2";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -7977,7 +7977,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "75.1";
+const APP_CURRENT_VER = "75.2";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
