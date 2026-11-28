@@ -2943,3 +2943,139 @@ html:not(.app-ready) .view.active {
 .pin-cancel-btn{margin-top:4px;background:transparent;border:1px solid var(--brd);color:var(--sec);border-radius:12px;padding:7px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .pro-tabs{display:flex;gap:5px;flex-wrap:wrap}
 .pro-tabs .fchip{font-size:11px;padding:5px 10px}
+
+/* Selected Day Notes Box inside Day Status Card (v75.7) */
+.day-notes-box {
+  margin-top: 10px;
+  padding: 10px 11px;
+  border-radius: 14px;
+  background: var(--sub);
+  border: 1px solid var(--brd);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.dn-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.dn-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--pri);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dn-cnt {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--pri-bg);
+  color: var(--pri);
+  font-size: 10.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.dn-add-btn {
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--card);
+  color: var(--pri);
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dn-item {
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--card);
+  border: 1px solid var(--brd);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  transition: opacity 0.15s ease;
+}
+.dn-item.prio-high { border-inline-start: 3px solid #EF4444; }
+.dn-item.prio-med  { border-inline-start: 3px solid #F59E0B; }
+.dn-item.done { opacity: 0.62; }
+.dn-item.done .dn-txt { text-decoration: line-through; }
+.dn-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+.dn-chk {
+  margin-top: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid var(--brd);
+  background: var(--sub);
+  color: var(--txt);
+  font-size: 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.dn-body {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dn-txt {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--txt);
+  word-break: break-word;
+  white-space: pre-line;
+}
+.dn-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.dn-acts {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.dn-act {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--sec);
+  font-size: 11.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.dn-act:hover {
+  background: var(--sub);
+  border-color: var(--brd);
+}

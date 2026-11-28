@@ -1,6 +1,6 @@
 // Self-healing cache & Service Worker updater for v19
 (function(){
-  const VER = "v75.2";
+  const VER = "v75.7";
   if (localStorage.getItem("smartcal_sw_ver") !== VER) {
     localStorage.setItem("smartcal_sw_ver", VER);
     if ("caches" in window) {
@@ -4122,6 +4122,7 @@ function toggleChecklistItem(k, idx, lineIdx) {
   else n.clDone.push(lineIdx);
   notes[k][idx] = n;
   localStorage.setItem("cal_notes_v4", JSON.stringify(notes));
+  render();
   renderAllNotes();
 }
 
@@ -5273,6 +5274,72 @@ function copySingleDate(kind = 'j') {
   }
 }
 
+
+function renderSelectedDayNotes(sk) {
+  const box = document.getElementById("dayNotesBox");
+  if (!box) return;
+  const rawList = (typeof notes === "object" && notes && Array.isArray(notes[sk])) ? notes[sk] : [];
+  if (!rawList.length) {
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+  const trCat = c => {
+    const map = {
+      "شخصی": tr("شخصی","کەسی","Personal"),
+      "کاری": tr("کاری","کار","Work"),
+      "مالی": tr("مالی","دارایی","Finance"),
+      "خرید": tr("خرید","کڕین","Shopping"),
+      "مهم":  tr("مهم","گرنگ","Important")
+    };
+    return map[c] || c;
+  };
+  const items = rawList.map((raw, idx) => ({ idx, ...normNote(raw) }));
+  const prioW = p => p === "high" ? 3 : (p === "med" ? 2 : 1);
+  items.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0) || (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || prioW(b.prio) - prioW(a.prio));
+
+  const openCnt = items.filter(x => !x.done).length;
+  const titleLbl = tr("یادداشت‌های این روز", "تێبینییەکانی ئەم ڕۆژە", "Notes for This Day");
+  const addLbl = tr("➕ افزودن", "➕ زیادکردن", "➕ Add");
+  const safeSk = esc(sk);
+
+  box.style.display = "flex";
+  box.innerHTML = `
+    <div class="dn-head">
+      <div class="dn-title">
+        <span>📝 ${titleLbl}</span>
+        <span class="dn-cnt">${fa(items.length)}${openCnt < items.length ? ` • ${fa(openCnt)} ⏳` : ""}</span>
+      </div>
+      <button type="button" class="dn-add-btn" onclick="openNoteModal(sel)">${addLbl}</button>
+    </div>
+    <div class="dn-list">
+      ${items.map(it => {
+        const prioCls = it.prio === "high" ? "prio-high" : (it.prio === "med" ? "prio-med" : "");
+        const bgStyle = it.col ? `style="background:${esc(it.col)}"` : "";
+        const safeBody = esc(it.t || "").replace(/#([\w\u0600-\u06FF]+)/g, '<span class="note-tag">#$1</span>');
+        return `<div class="dn-item ${it.done ? "done" : ""} ${prioCls}" ${bgStyle}>
+          <div class="dn-main">
+            <button type="button" class="dn-chk" title="${tr("تغییر وضعیت انجام", "گۆڕینی دۆخ", "Toggle done")}" onclick="toggleNoteDone('${safeSk}',${it.idx})">${it.done ? "✅" : "⬜"}</button>
+            <div class="dn-body">
+              <div class="dn-txt">${safeBody}</div>
+              <div class="dn-meta">
+                ${it.pin ? `<span class="cat-pill">📌</span>` : ""}
+                <span class="cat-pill">${esc(trCat(it.cat || "شخصی"))}</span>
+                ${it.prio === "high" ? `<span class="cat-pill" style="color:#EF4444;border-color:#EF4444">🔥 ${tr("فوری","خێرا","Urgent")}</span>` : ""}
+                ${it.tm ? `<span class="cat-pill" style="color:var(--hol)">⏰ ${fa(it.tm)}</span>` : ""}
+              </div>
+            </div>
+          </div>
+          <div class="dn-acts">
+            <button type="button" class="dn-act" title="${tr("ویرایش", "دەستکاری", "Edit")}" onclick="openNoteModal({jy:${Number(sel.jy)},jm:${Number(sel.jm)},jd:${Number(sel.jd)}},{k:'${safeSk}',idx:${it.idx}})">✏️</button>
+            <button type="button" class="dn-act" style="color:var(--hol)" title="${tr("حذف", "سڕینەوە", "Delete")}" onclick="delNote('${safeSk}',${it.idx})">🗑️</button>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
 function updateOpenNotesBadge() {
   const badge = document.getElementById("notesOpenBadge");
   if (!badge) return;
@@ -5456,6 +5523,7 @@ function render(){
   document.getElementById("evBox").innerHTML = evHtml || `<div class="ev" style="opacity:.6">${tr("مناسبتی ثبت نشده است","هیچ بۆنەیەک تۆمار نەکراوە","No events recorded for this day")}</div>`;
 
   const sk = dayKey(sel.jy, sel.jm, sel.jd);
+  if (typeof renderSelectedDayNotes === "function") renderSelectedDayNotes(sk);
 
   const mBox = document.getElementById("monthEvBox");
   const groupedMList = [];
@@ -7977,7 +8045,7 @@ setTimeout(() => { try { applySavedCardOrders(); } catch (e) {} }, 60);
 
 
 // ====== IN-APP SMART UPDATE NOTIFIER (v70.3) ======
-const APP_CURRENT_VER = "75.2";
+const APP_CURRENT_VER = "75.7";
 let _pendingUpdateInfo = null;
 
 function cmpSemVer(a, b) {
